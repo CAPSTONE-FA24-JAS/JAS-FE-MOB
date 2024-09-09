@@ -1,11 +1,18 @@
-import { useRouter } from "expo-router";
+import { StackNavigationProp } from "@react-navigation/stack";
+import { useNavigation, useRouter } from "expo-router";
 import React from "react";
 import { View, Text, Image, TouchableOpacity } from "react-native";
 
+type RootStackParamList = {
+  LotDetailScreen: undefined;
+};
+
 const ItemLots = () => {
+  const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
+
   const router = useRouter();
   const goToAuctionDetail = () => {
-    router.push("/(tabs)/lot-detail"); // Path to your auction detail page
+    navigation.navigate("LotDetailScreen"); // Navigate back to Home
   };
   return (
     <TouchableOpacity className="w-[47%] mb-5" onPress={goToAuctionDetail}>

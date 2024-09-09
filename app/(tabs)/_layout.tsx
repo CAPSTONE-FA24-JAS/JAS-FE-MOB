@@ -28,6 +28,10 @@ import ConsignStep from "@/components/Pages/ConsignStep";
 import CustomHeaderDetail from "@/components/CustomHeaderDetail";
 import BiddingAuction from "@/components/Pages/ItemAuctionHome/BiddingAuction";
 import LotDetailScreen from "@/components/Pages/ItemAuctionHome/LotDetailScreen";
+import Terms from "@/components/Pages/MyProfile/Terms";
+import ChangePassword from "@/components/Pages/MyProfile/ChangePassword";
+import AccountInfo from "@/components/Pages/MyProfile/AccountInfo";
+import Help from "@/components/Pages/MyProfile/Help";
 
 // Declare Drawer and Stack Navigators
 const Drawer = createDrawerNavigator();
@@ -193,6 +197,34 @@ export default function AppNavigator() {
         component={LotDetailScreen}
         options={{
           title: "Lot Detail",
+        }}
+      />
+      <Stack.Screen
+        name="ChangePassword"
+        component={ChangePassword}
+        options={{
+          header: () => <CustomHeaderDetail title="Change Password" />,
+        }}
+      />
+      <Stack.Screen
+        name="AccountInfo"
+        component={AccountInfo}
+        options={{
+          header: () => <CustomHeaderDetail title="Account Infomation" />,
+        }}
+      />
+      <Stack.Screen
+        name="Help"
+        component={Help}
+        options={{
+          header: () => <CustomHeaderDetail title="Help" />,
+        }}
+      />
+      <Stack.Screen
+        name="Terms"
+        component={Terms}
+        options={{
+          header: () => <CustomHeaderDetail title="Terms and Conditions" />,
         }}
       />
     </Stack.Navigator>

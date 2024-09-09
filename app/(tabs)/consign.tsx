@@ -12,8 +12,8 @@ const Consign: React.FC = () => {
   const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
   return (
     <View className="flex-1 bg-white">
-      <View className="mx-4 h-full">
-        <Text className=" my-6 text-center text-lg font-semibold">
+      <View className="h-full mx-4">
+        <Text className="my-6 text-lg font-semibold text-center ">
           Consignment is a simple process that allows you to send us your
           valuable items for review. We can estimate its value and eventually
           offer it at one of our auctions!
@@ -26,13 +26,11 @@ const Consign: React.FC = () => {
         </View>
         <TouchableOpacity
           className="mt-10"
-          onPress={() => navigation.navigate("ConsignStep")}
-        >
+          onPress={() => navigation.navigate("ConsignStep")}>
           <View
             className="flex flex-row justify-center w-full items-center bg-blue-500 w-[200px] h-16 w-full rounded-lg"
-            style={{ marginBottom: 20 }}
-          >
-            <Text className="text-white text-xl uppercase font-bold">
+            style={{ marginBottom: 20 }}>
+            <Text className="text-xl font-bold text-white uppercase">
               Get Started
             </Text>
           </View>

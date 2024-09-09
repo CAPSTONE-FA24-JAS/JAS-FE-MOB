@@ -21,7 +21,7 @@ const ItemAuctionHomePage = () => {
     // router.push("/(tabs)/bidding-auction"); // Path to your auction detail page
   };
   return (
-    <TouchableOpacity className="w-[98%]" onPress={goToAuctionDetail}>
+    <TouchableOpacity className="w-[98%] py-1" onPress={goToAuctionDetail}>
       <Image
         className="w-[100%] h-[200px] rounded-lg relative"
         source={require("../../../assets/bgItemAuction.png")}

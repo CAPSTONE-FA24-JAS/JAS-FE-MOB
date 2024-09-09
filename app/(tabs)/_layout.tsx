@@ -28,6 +28,7 @@ import ConsignStep from "@/components/Pages/ConsignStep";
 import CustomHeaderDetail from "@/components/CustomHeaderDetail";
 import BiddingAuction from "@/components/Pages/ItemAuctionHome/BiddingAuction";
 import LotDetailScreen from "@/components/Pages/ItemAuctionHome/LotDetailScreen";
+import CreateFinanceProof from "@/components/Pages/CreateFinanceProof";
 import Terms from "@/components/Pages/MyProfile/Terms";
 import ChangePassword from "@/components/Pages/MyProfile/ChangePassword";
 import AccountInfo from "@/components/Pages/MyProfile/AccountInfo";
@@ -103,6 +104,13 @@ function MyAccountStack() {
           header: () => <CustomHeaderDetail title="Consignment Step" />,
         }}
       />
+      <Stack.Screen
+        name="CreateFinanceProof"
+        component={CreateFinanceProof}
+        options={{
+          header: () => <CustomHeaderDetail title="Create Finance Proof" />,
+        }}
+      />
     </Stack.Navigator>
   );
 }
@@ -138,8 +146,7 @@ function DrawerLayout() {
       screenOptions={{
         headerShown: false, // Hide default header
         drawerActiveTintColor: Colors.primary,
-      }}
-    >
+      }}>
       {/* Parent Categories */}
       <Drawer.Screen
         name="Auctions"

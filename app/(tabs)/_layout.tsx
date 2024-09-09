@@ -21,11 +21,13 @@ import FinanceProof from "./finance-proof";
 import TermsConditions from "./terms-conditions";
 import AboutScreen from "./about";
 import RateUs from "./rate-us";
-import LotDetailScreen from "./lot-detail";
+// import LotDetailScreen from "./lot-detail";
 import CustomDrawerContent from "@/components/Navigator/CustomDrawerContent";
-import BiddingAuction from "./bidding-auction";
+// import BiddingAuction from "./bidding-auction";
 import ConsignStep from "@/components/Pages/ConsignStep";
 import CustomHeaderDetail from "@/components/CustomHeaderDetail";
+import BiddingAuction from "@/components/Pages/ItemAuctionHome/BiddingAuction";
+import LotDetailScreen from "@/components/Pages/ItemAuctionHome/LotDetailScreen";
 
 // Declare Drawer and Stack Navigators
 const Drawer = createDrawerNavigator();
@@ -180,17 +182,17 @@ export default function AppNavigator() {
       {/* Additional Stack Screens */}
 
       <Stack.Screen
-        name="bidding-auction"
-        component={require("./bidding-auction").default}
+        name="BiddingAuction"
+        component={BiddingAuction}
         options={{
           title: "Auction Detail",
         }}
       />
       <Stack.Screen
-        name="lot-detail"
-        component={require("./lot-detail").default}
+        name="LotDetailScreen"
+        component={LotDetailScreen}
         options={{
-          title: "Auction Detail",
+          title: "Lot Detail",
         }}
       />
     </Stack.Navigator>

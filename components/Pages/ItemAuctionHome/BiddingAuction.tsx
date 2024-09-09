@@ -9,14 +9,14 @@ const BiddingAuction = () => {
   return (
     <>
       <Tab
+        dense
         value={index}
         onChange={(e) => setIndex(e)}
         indicatorStyle={{
           backgroundColor: "black",
           height: 3,
         }}
-        variant="primary"
-      >
+        variant="primary">
         <Tab.Item title="AUCTION" titleStyle={{ fontSize: 12 }} />
         <Tab.Item title="LOTS" titleStyle={{ fontSize: 12 }} />
       </Tab>

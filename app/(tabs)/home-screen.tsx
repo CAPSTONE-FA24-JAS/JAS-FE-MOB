@@ -11,7 +11,7 @@ const HomeScreen = () => {
 
   return (
     <ScrollView>
-      <View className="items-center flex-1">
+      <View className="items-center flex-1 py-3">
         <ItemAuctionHomePage />
         <ItemAuctionHomePage />
         <ItemAuctionHomePage />

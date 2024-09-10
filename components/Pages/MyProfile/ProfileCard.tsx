@@ -34,10 +34,12 @@ const ProfileCard: React.FC<ProfileCardProps> = ({
               Your Approved Bidding Limit:
             </Text>
             <Text className="text-gray-800 text-center w-full text-lg font-semibold">
-              {biddingLimit.toLocaleString("vi-VN", {
-                style: "currency",
-                currency: "VND",
-              })}
+              {biddingLimit
+                ? biddingLimit.toLocaleString("vi-VN", {
+                    style: "currency",
+                    currency: "VND",
+                  })
+                : 0 + " VND"}
             </Text>
           </View>
         </View>

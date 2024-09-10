@@ -42,6 +42,7 @@ const Login: React.FC = () => {
       await LoginApi(username, password, dispatch);
       setIsLoginSuccessful(true);
       showSuccessMessage("Login successful! Redirecting...");
+      router.push("/home-screen");
       console.log("Login successful, navigating to home..."); // Debug log
     } catch (error) {
       showErrorMessage("Invalid username or password.");

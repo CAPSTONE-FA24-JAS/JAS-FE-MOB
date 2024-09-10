@@ -7,7 +7,6 @@ import {
   MaterialCommunityIcons,
 } from "@expo/vector-icons";
 import Colors from "@/constants/Colors";
-// import CustomDrawerContent from "@/components/CustomDrawerContent";
 import CustomHeader from "@/components/CustomHeader";
 import HomeScreen from "./home-screen";
 import PastAuctions from "./past-auctions";
@@ -33,6 +32,7 @@ import Terms from "@/components/Pages/MyProfile/Terms";
 import ChangePassword from "@/components/Pages/MyProfile/ChangePassword";
 import AccountInfo from "@/components/Pages/MyProfile/AccountInfo";
 import Help from "@/components/Pages/MyProfile/Help";
+import Login from "../(auths)/login";
 
 // Declare Drawer and Stack Navigators
 const Drawer = createDrawerNavigator();
@@ -145,8 +145,14 @@ function DrawerLayout() {
       drawerContent={(props) => <CustomDrawerContent {...props} />}
       screenOptions={{
         headerShown: false, // Hide default header
-        drawerActiveTintColor: Colors.primary,
-      }}>
+        drawerStyle: {
+          backgroundColor: "white", // Set background color for the drawer menu
+        },
+        drawerActiveBackgroundColor: "lightgray", // Set background color for active item
+        drawerActiveTintColor: Colors.primary, // Set text color for active item
+        drawerInactiveTintColor: "black", // Set text color for inactive items
+      }}
+    >
       {/* Parent Categories */}
       <Drawer.Screen
         name="Auctions"

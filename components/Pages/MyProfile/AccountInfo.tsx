@@ -5,10 +5,11 @@ import Icon from "react-native-vector-icons/FontAwesome"; // Using FontAwesome f
 
 type RouteParams = {
   userData: {
-    userName: string;
+    firstName: string;
+    lastName: string;
     phoneNumber: string;
     email: string;
-    profileImage: string;
+    profilePicture: string;
     biddingLimit: number;
   };
 };
@@ -19,11 +20,14 @@ const AccountInfo: React.FC = () => {
 
   // State to hold the editable data
   const [profile, setProfile] = useState({
-    userName: userData.userName,
+    firstName: userData.firstName,
+    lastName: userData.lastName,
     phoneNumber: userData.phoneNumber,
     email: userData.email,
-    biddingLimit: userData.biddingLimit.toString(),
-    profileImage: userData.profileImage,
+    biddingLimit: userData.biddingLimit ?? 0,
+    profileImage:
+      userData.profilePicture ??
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/f/fd/Faenza-avatar-default-symbolic.svg/2048px-Faenza-avatar-default-symbolic.svg.png",
   });
 
   // Handle input change
@@ -57,9 +61,15 @@ const AccountInfo: React.FC = () => {
 
       {/* Editable Inputs for Profile Data */}
       <TextInput
-        value={profile.userName}
-        onChangeText={(value) => handleChange("userName", value)}
-        placeholder="Enter your name"
+        value={profile.firstName}
+        onChangeText={(value) => handleChange("firstName", value)}
+        placeholder="Enter your first name"
+        className="border-b border-gray-400 p-2 mb-4"
+      />
+      <TextInput
+        value={profile.lastName}
+        onChangeText={(value) => handleChange("lastName", value)}
+        placeholder="Enter your last name"
         className="border-b border-gray-400 p-2 mb-4"
       />
       <TextInput

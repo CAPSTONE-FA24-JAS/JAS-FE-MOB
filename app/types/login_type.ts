@@ -6,20 +6,33 @@ export interface UserAccount {
   profilePicture: any;
   email: string;
   gender: string;
+  dateOfBirth: any;
   address: any;
-  passwordHash: string;
-  status: boolean;
-  phoneNumber: string;
-  confirmationToken: string;
-  isConfirmed: boolean;
-  vnPayAccount: any;
-  vnPayBankCode: any;
-  vnPayAccountName: any;
+  passwordHash?: string;
+  status?: boolean;
+  phoneNumber?: string;
+  confirmationToken?: string;
+  isConfirmed?: boolean;
+  vnPayAccount?: any;
+  vnPayBankCode?: any;
+  vnPayAccountName?: any;
   roleId: number;
-  roleName: any;
+  role?: any;
+  blogs?: any;
+  bidLimit?: any;
+  wallet?: any;
+  id: number;
+  creationDate?: string;
+  createdBy?: number;
+  modificationDate?: string;
+  modificationBy?: number;
+  deletionDate?: any;
+  deleteBy?: any;
+  isDeleted?: boolean;
 }
+
 export interface Data {
-  account: UserAccount;
+  user: UserAccount;
   accessToken: string;
 }
 export interface LoginResponse {

@@ -11,17 +11,6 @@ import { router } from "expo-router";
 
 const API_URL = process.env.EXPO_PUBLIC_API_URL || "http://localhost:7251";
 
-// Define a mock response for register
-const mockRegisterResponse = {
-  message: "User registered successfully",
-  user: {
-    userId: "002",
-    userName: "Jane Doe",
-    email: "jane@example.com",
-    roles: ["user"], // Add other properties if needed
-  },
-};
-
 // authApi.ts
 
 export const LoginApi = async (
@@ -41,15 +30,42 @@ export const LoginApi = async (
     );
 
     const { data } = response.data;
+    console.log("====================================");
+    console.log("dataNe", JSON.stringify(data));
+    console.log("====================================");
 
     dispatch(
       login({
         token: data.accessToken,
         userResponse: {
-          userId: data.account.email,
-          userName: `${data.account.firstName} ${data.account.lastName}`,
-          email: data.account.email,
-          roles: ["user"],
+          id: data.user.id,
+          firstName: data.user.firstName,
+          lastName: data.user.lastName,
+          email: data.user.email,
+          profilePicture: data.user.profilePicture,
+          gender: data.user.gender,
+          dateOfBirth: data.user.dateOfBirth,
+          address: data.user.address,
+          passwordHash: data.user.passwordHash,
+          status: data.user.status,
+          phoneNumber: data.user.phoneNumber,
+          confirmationToken: data.user.confirmationToken,
+          isConfirmed: data.user.isConfirmed,
+          vnPayAccount: data.user.vnPayAccount,
+          vnPayBankCode: data.user.vnPayBankCode,
+          vnPayAccountName: data.user.vnPayAccountName,
+          roleId: data.user.roleId,
+          role: data.user.role,
+          blogs: data.user.blogs,
+          bidLimit: data.user.bidLimit,
+          wallet: data.user.wallet,
+          creationDate: data.user.creationDate,
+          createdBy: data.user.createdBy,
+          modificationDate: data.user.modificationDate,
+          modificationBy: data.user.modificationBy,
+          deletionDate: data.user.deletionDate,
+          deleteBy: data.user.deleteBy,
+          isDeleted: data.user.isDeleted,
         },
       })
     );

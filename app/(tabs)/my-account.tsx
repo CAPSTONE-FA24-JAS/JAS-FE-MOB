@@ -12,7 +12,7 @@ import { logout } from "@/redux/slices/authSlice";
 
 type RootStackParamList = {
   ChangePassword: undefined;
-  AccountInfo: { userData: UserInfo }; // Pass actual user data type here
+  AccountInfo?: { userData: UserInfo }; // Pass actual user data type here
   Help: undefined;
   Terms: undefined;
   login: undefined;

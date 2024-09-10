@@ -23,4 +23,5 @@ export interface UserInfo {
   vnPayAccountName: any;
   roleId: number;
   roleName: any;
+  bidLimit?: any;
 }

@@ -25,3 +25,11 @@ export interface UserInfo {
   roleName: any;
   bidLimit?: any;
 }
+// ============================== Dele Account ==============================
+export interface DeleteAccountResponse {
+  code: number;
+  message: string;
+  isSuccess: boolean;
+  data: any;
+  errorMessages: any;
+}

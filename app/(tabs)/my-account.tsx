@@ -77,22 +77,6 @@ const MyAccount = () => {
       <View className="mt-4 bg-white rounded-lg shadow">
         <TouchableOpacity
           className="flex-row justify-between items-center p-4 border-b border-gray-200"
-          onPress={() => handleNavigation("ChangePassword")}
-        >
-          <View className="flex-row items-center">
-            <MaterialCommunityIcons name="lock-reset" size={20} color="black" />
-            <Text className="ml-4 text-lg">Change Password</Text>
-          </View>
-          <MaterialCommunityIcons
-            name="chevron-right"
-            size={30}
-            color="gray"
-            style={{ marginRight: 10 }}
-            className=" w-fit float-right"
-          />
-        </TouchableOpacity>
-        <TouchableOpacity
-          className="flex-row justify-between items-center p-4 border-b border-gray-200"
           onPress={() => handleNavigation("AccountInfo")}
         >
           <View className="flex-row items-center">
@@ -107,6 +91,23 @@ const MyAccount = () => {
             className=" w-fit float-right"
           />
         </TouchableOpacity>
+        <TouchableOpacity
+          className="flex-row justify-between items-center p-4 border-b border-gray-200"
+          onPress={() => handleNavigation("ChangePassword")}
+        >
+          <View className="flex-row items-center">
+            <MaterialCommunityIcons name="lock-reset" size={20} color="black" />
+            <Text className="ml-4 text-lg">Change Password</Text>
+          </View>
+          <MaterialCommunityIcons
+            name="chevron-right"
+            size={30}
+            color="gray"
+            style={{ marginRight: 10 }}
+            className=" w-fit float-right"
+          />
+        </TouchableOpacity>
+
         <TouchableOpacity
           className="flex-row justify-between items-center p-4 border-b border-gray-200"
           onPress={() => handleNavigation("Help")}

@@ -85,19 +85,17 @@ const FinalValuationDetailsModal: React.FC<FinalValuationDetailsModalProps> = ({
       visible={isVisible}
       animationType="fade"
       transparent={true}
-      onRequestClose={onClose}
-    >
-      <View className="flex-1 justify-center items-center bg-black/50">
+      onRequestClose={onClose}>
+      <View className="items-center justify-center flex-1 bg-black/50">
         <View className="w-11/12 max-h-[95%] bg-white rounded-lg p-4">
           <TouchableOpacity
             onPress={onClose}
-            className="absolute top-4 right-4"
-          >
+            className="absolute top-4 right-4">
             <MaterialCommunityIcons name="close" size={24} color="#000" />
           </TouchableOpacity>
 
           {/* Modal Title */}
-          <Text className="text-2xl font-bold text-center mb-4 mt-10">
+          <Text className="mt-10 mb-4 text-2xl font-bold text-center">
             Final Valuation Details
           </Text>
 
@@ -110,15 +108,13 @@ const FinalValuationDetailsModal: React.FC<FinalValuationDetailsModalProps> = ({
             />
             <TouchableOpacity
               className="absolute left-0 p-4"
-              onPress={handlePreviousImage}
-            >
-              <Text className="text-white text-2xl">{"<"}</Text>
+              onPress={handlePreviousImage}>
+              <Text className="text-2xl text-white">{"<"}</Text>
             </TouchableOpacity>
             <TouchableOpacity
               className="absolute right-0 p-4"
-              onPress={handleNextImage}
-            >
-              <Text className="text-white text-2xl">{">"}</Text>
+              onPress={handleNextImage}>
+              <Text className="text-2xl text-white">{">"}</Text>
             </TouchableOpacity>
           </View>
 
@@ -126,13 +122,11 @@ const FinalValuationDetailsModal: React.FC<FinalValuationDetailsModalProps> = ({
           <View className="mb-4">{renderThumbnails()}</View>
 
           {/* Scrollable Content for item details */}
-          <Text className="text-2xl mb-2 font-bold text-2xl">
-            {details.name}
-          </Text>
+          <Text className="mb-2 text-2xl font-bold">{details.name}</Text>
           <ScrollView className="max-h-[60%] ml-2">
             <View className="flex-row gap-2 my-2">
               <Text className="text-lg font-bold text-gray-700 ">Owner:</Text>
-              <Text className="text-lg text-blue-500 font-semibold">
+              <Text className="text-lg font-semibold text-blue-500">
                 {" "}
                 {details.owner}
               </Text>
@@ -150,7 +144,7 @@ const FinalValuationDetailsModal: React.FC<FinalValuationDetailsModalProps> = ({
             </View>
 
             <View className="ml-4">
-              <View className="flex-row gap-2 items-start">
+              <View className="flex-row items-start gap-2">
                 <Text className="text-lg text-gray-800">•</Text>
 
                 <Text className="text-lg font-bold text-gray-700 ">
@@ -158,14 +152,14 @@ const FinalValuationDetailsModal: React.FC<FinalValuationDetailsModalProps> = ({
                 </Text>
                 <Text className="text-lg text-gray-800"> {details.weight}</Text>
               </View>
-              <View className="flex-row gap-2 items-start">
+              <View className="flex-row items-start gap-2">
                 <Text className="text-lg text-gray-800">•</Text>
                 <Text className="text-lg font-bold text-gray-700 ">
                   Height:
                 </Text>
                 <Text className="text-lg text-gray-800"> {details.height}</Text>
               </View>
-              <View className="flex-row gap-2 items-start">
+              <View className="flex-row items-start gap-2">
                 <Text className="text-lg text-gray-800">•</Text>
                 <Text className="text-lg font-bold text-gray-700 ">Depth:</Text>
                 <Text className="text-lg text-gray-800"> {details.depth}</Text>
@@ -173,11 +167,11 @@ const FinalValuationDetailsModal: React.FC<FinalValuationDetailsModalProps> = ({
             </View>
 
             {/* Additional Description Fields */}
-            <Text className="text-lg font-bold text-gray-700 mt-2">
+            <Text className="mt-2 text-lg font-bold text-gray-700">
               Description:
             </Text>
-            <View className="ml-4 mb-2">
-              <View className="flex-row gap-2 items-start">
+            <View className="mb-2 ml-4">
+              <View className="flex-row items-start gap-2">
                 <Text className="text-lg text-gray-800">•</Text>
                 <Text className="text-lg font-bold text-gray-700 ">Metal:</Text>
                 <Text className="text-lg text-gray-800">
@@ -185,7 +179,7 @@ const FinalValuationDetailsModal: React.FC<FinalValuationDetailsModalProps> = ({
                   {details.description.Metal}
                 </Text>
               </View>
-              <View className="flex-row gap-2 items-start">
+              <View className="flex-row items-start gap-2">
                 <Text className="text-lg text-gray-800">•</Text>
                 <Text className="text-lg font-bold text-gray-700 ">
                   Gemstone(s):
@@ -195,7 +189,7 @@ const FinalValuationDetailsModal: React.FC<FinalValuationDetailsModalProps> = ({
                   {details.description.Gemstone}
                 </Text>
               </View>
-              <View className="flex-row gap-2 items-start">
+              <View className="flex-row items-start gap-2">
                 <Text className="text-lg text-gray-800">•</Text>
                 <Text className="text-lg font-bold text-gray-700 ">
                   Measurements{" "}
@@ -226,15 +220,14 @@ const FinalValuationDetailsModal: React.FC<FinalValuationDetailsModalProps> = ({
             </Text>
             <TouchableOpacity
               onPress={() => Linking.openURL(details.authorizationLetter)}
-              className="flex-row items-center gap-2"
-            >
+              className="flex-row items-center gap-2">
               <MaterialCommunityIcons
                 name="paperclip"
                 size={24}
                 color="#3B82F6"
               />
 
-              <Text className="text-blue-500 text-lg font-bold underline">
+              <Text className="text-lg font-bold text-blue-500 underline">
                 View Authorization Letter (PDF)
               </Text>
             </TouchableOpacity>
@@ -243,16 +236,14 @@ const FinalValuationDetailsModal: React.FC<FinalValuationDetailsModalProps> = ({
           {/* Action Buttons */}
           <View className="flex-row justify-around mt-4">
             <TouchableOpacity
-              className="bg-red-500 py-3 px-8 rounded-lg"
-              onPress={onReject}
-            >
-              <Text className="text-white font-bold text-base">REJECT</Text>
+              className="px-8 py-3 bg-red-500 rounded-lg"
+              onPress={onReject}>
+              <Text className="text-base font-bold text-white">REJECT</Text>
             </TouchableOpacity>
             <TouchableOpacity
-              className="bg-green-500 py-3 px-8 rounded-lg"
-              onPress={onApprove}
-            >
-              <Text className="text-white font-bold text-base">APPROVE</Text>
+              className="px-8 py-3 bg-green-500 rounded-lg"
+              onPress={onApprove}>
+              <Text className="text-base font-bold text-white">APPROVE</Text>
             </TouchableOpacity>
           </View>
         </View>

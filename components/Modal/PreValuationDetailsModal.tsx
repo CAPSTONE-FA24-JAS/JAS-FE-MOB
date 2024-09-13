@@ -41,18 +41,16 @@ const PreValuationDetailsModal: React.FC<PreValuationDetailsModalProps> = ({
       visible={isVisible}
       animationType="slide"
       transparent={true}
-      onRequestClose={onClose}
-    >
-      <View className="flex-1 justify-center items-center bg-black/50">
+      onRequestClose={onClose}>
+      <View className="items-center justify-center flex-1 bg-black/50">
         <View className="w-11/12 bg-[#FBFBFB] rounded-lg p-4">
           <TouchableOpacity
             onPress={onClose}
-            className="absolute top-4 pb-2 right-4"
-          >
+            className="absolute pb-2 top-4 right-4">
             <MaterialCommunityIcons name="close" size={24} color="#000" />
           </TouchableOpacity>
           {/* Modal Title */}
-          <Text className="text-2xl font-bold text-center mb-4  mt-10">
+          <Text className="mt-10 mb-4 text-2xl font-bold text-center">
             Preliminary Valuation Details
           </Text>
 
@@ -79,13 +77,11 @@ const PreValuationDetailsModal: React.FC<PreValuationDetailsModalProps> = ({
               ))}
             </View>
             {/* Item details */}
-            <Text className="text-2xl mb-2 font-bold text-2xl">
-              {details.name}
-            </Text>
+            <Text className="mb-2 text-2xl font-bold">{details.name}</Text>
 
             <View className="flex-row gap-2 my-2">
               <Text className="text-lg font-bold text-gray-700 ">Owner:</Text>
-              <Text className="text-lg text-blue-500 font-semibold">
+              <Text className="text-lg font-semibold text-blue-500">
                 {" "}
                 {details.owner}
               </Text>
@@ -103,7 +99,7 @@ const PreValuationDetailsModal: React.FC<PreValuationDetailsModalProps> = ({
             </View>
 
             <View className="ml-4">
-              <View className="flex-row gap-2 items-start">
+              <View className="flex-row items-start gap-2">
                 <Text className="text-lg text-gray-800">•</Text>
 
                 <Text className="text-lg font-bold text-gray-700 ">
@@ -111,20 +107,20 @@ const PreValuationDetailsModal: React.FC<PreValuationDetailsModalProps> = ({
                 </Text>
                 <Text className="text-lg text-gray-800"> {details.weight}</Text>
               </View>
-              <View className="flex-row gap-2 items-start">
+              <View className="flex-row items-start gap-2">
                 <Text className="text-lg text-gray-800">•</Text>
                 <Text className="text-lg font-bold text-gray-700 ">
                   Height:
                 </Text>
                 <Text className="text-lg text-gray-800"> {details.height}</Text>
               </View>
-              <View className="flex-row gap-2 items-start">
+              <View className="flex-row items-start gap-2">
                 <Text className="text-lg text-gray-800">•</Text>
                 <Text className="text-lg font-bold text-gray-700 ">Depth:</Text>
                 <Text className="text-lg text-gray-800"> {details.depth}</Text>
               </View>
             </View>
-            <View className="flex-row gap-2 my-2 w-full">
+            <View className="flex-row w-full gap-2 my-2">
               <Text className="text-lg font-bold text-gray-700 w-[100px] ">
                 Description:
               </Text>
@@ -152,16 +148,14 @@ const PreValuationDetailsModal: React.FC<PreValuationDetailsModalProps> = ({
           {/* Action Buttons */}
           <View className="flex-row justify-around mt-4">
             <TouchableOpacity
-              className="bg-red-500 py-3 px-8 rounded-lg"
-              onPress={onReject}
-            >
-              <Text className="text-white font-bold">REJECT</Text>
+              className="px-8 py-3 bg-red-500 rounded-lg"
+              onPress={onReject}>
+              <Text className="font-bold text-white">REJECT</Text>
             </TouchableOpacity>
             <TouchableOpacity
-              className="bg-green-500 py-3 px-8 rounded-lg"
-              onPress={onApprove}
-            >
-              <Text className="text-white font-bold">APPROVE</Text>
+              className="px-8 py-3 bg-green-500 rounded-lg"
+              onPress={onApprove}>
+              <Text className="font-bold text-white">APPROVE</Text>
             </TouchableOpacity>
           </View>
         </View>

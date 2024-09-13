@@ -33,6 +33,7 @@ import ChangePassword from "@/components/Pages/MyProfile/ChangePassword";
 import AccountInfo from "@/components/Pages/MyProfile/AccountInfo";
 import Help from "@/components/Pages/MyProfile/Help";
 import Login from "../(auths)/login";
+import ConsignDetailTimeLine from "@/components/ConsignItemTimeLine";
 
 // Declare Drawer and Stack Navigators
 const Drawer = createDrawerNavigator();
@@ -151,8 +152,7 @@ function DrawerLayout() {
         drawerActiveBackgroundColor: "lightgray", // Set background color for active item
         drawerActiveTintColor: Colors.primary, // Set text color for active item
         drawerInactiveTintColor: "black", // Set text color for inactive items
-      }}
-    >
+      }}>
       {/* Parent Categories */}
       <Drawer.Screen
         name="Auctions"
@@ -238,6 +238,14 @@ export default function AppNavigator() {
         component={Terms}
         options={{
           header: () => <CustomHeaderDetail title="Terms and Conditions" />,
+        }}
+      />
+
+      <Stack.Screen
+        name="ConsignDetailTimeLine"
+        component={ConsignDetailTimeLine}
+        options={{
+          header: () => <CustomHeaderDetail title="HISTORY ITEM CONSIGN" />,
         }}
       />
     </Stack.Navigator>

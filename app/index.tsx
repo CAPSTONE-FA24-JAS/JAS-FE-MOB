@@ -26,6 +26,7 @@ const App = () => {
     console.log("Button Pressed");
     try {
       router.push("/(auths)/login");
+      // router.push("/home-screen");
       console.log("Navigating to /login");
     } catch (error) {
       console.error("Navigation error:", error);
@@ -37,30 +38,26 @@ const App = () => {
       <ImageBackground
         source={beachImage}
         resizeMode="cover"
-        style={{ flex: 1, width: "100%", height: "100%" }}
-      >
+        style={{ flex: 1, width: "100%", height: "100%" }}>
         <AppGradient colors={["rgba(0,0,0,0)", "rgba(0,0,0,0)"]}>
           <SafeAreaView
             style={{
               flex: 1,
               paddingHorizontal: 8,
               justifyContent: "space-between",
-            }}
-          >
+            }}>
             <Animated.View
               entering={FadeInDown.delay(300)
                 .mass(0.5)
                 .stiffness(80)
-                .springify(20)}
-            ></Animated.View>
+                .springify(20)}></Animated.View>
 
             <Animated.View
               entering={FadeInDown.delay(300)
                 .mass(0.5)
                 .stiffness(80)
                 .springify(20)}
-              style={{ marginBottom: 40, shadowOpacity: 0.8 }}
-            >
+              style={{ marginBottom: 40, shadowOpacity: 0.8 }}>
               <CustomButton
                 onPress={handleExplorePress}
                 title="BẮT ĐẦU KHÁM PHÁ"

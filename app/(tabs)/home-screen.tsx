@@ -86,17 +86,15 @@ const HomeScreen = () => {
 
         {/* Button to open PreValuationDetailsModal */}
         <TouchableOpacity
-          className="bg-green-500 py-3 px-8 rounded-lg"
-          onPress={() => setPreModalVisible(true)}
-        >
-          <Text className="text-white font-bold">Show Pre Valuation Modal</Text>
+          className="px-8 py-3 bg-green-500 rounded-lg"
+          onPress={() => setPreModalVisible(true)}>
+          <Text className="font-bold text-white">Show Pre Valuation Modal</Text>
         </TouchableOpacity>
         {/* Button to open FinalValuationDetailsModal */}
         <TouchableOpacity
-          className="bg-blue-500 py-3 px-8 mt-4 rounded-lg"
-          onPress={() => setFinalModalVisible(true)}
-        >
-          <Text className="text-white font-bold">
+          className="px-8 py-3 mt-4 bg-blue-500 rounded-lg"
+          onPress={() => setFinalModalVisible(true)}>
+          <Text className="font-bold text-white">
             Show Final Valuation Modal
           </Text>
         </TouchableOpacity>

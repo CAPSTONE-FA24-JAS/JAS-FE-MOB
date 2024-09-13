@@ -25,35 +25,31 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
       animationType="fade"
       transparent={true}
       visible={isVisible}
-      onRequestClose={onClose}
-    >
-      <View className="flex-1 justify-center items-center bg-black/50">
-        <View className="w-10/12 bg-white rounded-lg p-6 items-center">
+      onRequestClose={onClose}>
+      <View className="items-center justify-center flex-1 bg-black/50">
+        <View className="items-center w-10/12 p-6 bg-white rounded-lg">
           {/* Tiêu đề */}
           <Text
-            className={`text-2xl font-bold mb-4 text-${confirmTextColor}-600`}
-          >
+            className={`text-2xl font-bold mb-4 text-${confirmTextColor}-600`}>
             {confirmTitle}
           </Text>
 
           {/* Thông báo */}
-          <Text className="text-lg text-center mb-4">{message}</Text>
+          <Text className="mb-4 text-lg text-center">{message}</Text>
 
           {/* Các nút xác nhận và hủy */}
-          <View className="flex-row justify-evenly w-full">
+          <View className="flex-row w-full justify-evenly">
             {/* Nút Cancel */}
             <TouchableOpacity
               onPress={onClose}
-              className="bg-gray-500 py-3 px-8 rounded-lg"
-            >
+              className="px-8 py-3 bg-gray-500 rounded-lg">
               <Text className={`font-semibold text-white`}>Cancel</Text>
             </TouchableOpacity>
 
             {/* Nút Yes, Continue */}
             <TouchableOpacity
               onPress={onConfirm}
-              className={`bg-${confirmTextColor}-500 py-3 px-8 rounded-lg`}
-            >
+              className={`bg-${confirmTextColor}-500 py-3 px-8 rounded-lg`}>
               <Text className={`font-semibold text-white text-base`}>
                 Yes, Continue
               </Text>

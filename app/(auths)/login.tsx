@@ -63,8 +63,8 @@ const Login: React.FC = () => {
 
   return (
     <ScrollView contentContainerStyle={{ flex: 1 }} className="bg-[#FFFFFF]">
-      <View className="flex mx-auto my-auto bg-white w-full h-full">
-        <View className="mx-auto h-full my-auto w-full">
+      <View className="flex w-full h-full mx-auto my-auto bg-white">
+        <View className="w-full h-full mx-auto my-auto">
           <Image
             source={beachImage}
             className="w-full h-[40%] items-center mx-auto mb-2"
@@ -72,7 +72,7 @@ const Login: React.FC = () => {
           <View className="flex-row w-full mx-10 mb-10">
             <View className=" w-[50%]">
               <Text className="text-[#666666] text-3xl">Sign in</Text>
-              <Text className="w-full text-gray-400 text-lg ">
+              <Text className="w-full text-lg text-gray-400 ">
                 Welcome back
               </Text>
             </View>
@@ -88,7 +88,7 @@ const Login: React.FC = () => {
             </View>
           </View>
           <View className="w-full h-full mx-auto">
-            <View className="px-3  mb-4">
+            <View className="px-3 mb-4">
               <TextInput
                 placeholder="Email"
                 value={username}
@@ -96,7 +96,7 @@ const Login: React.FC = () => {
                 className="border-[1px] border-slate-300 px-4 py-4 rounded-lg text-lg mx-7"
               />
             </View>
-            <View className="my-3 px-3">
+            <View className="px-3 my-3">
               <View className="relative mx-7 border-[1px] border-slate-300 p-2 rounded-lg">
                 <TextInput
                   placeholder="Password"
@@ -105,7 +105,7 @@ const Login: React.FC = () => {
                   secureTextEntry={passwordVisibility}
                   value={password}
                   onChangeText={setPassword}
-                  className="text-lg ml-3 py-2 text-slate-400 " // Added pr-10 to avoid text overlap with icon
+                  className="py-2 ml-3 text-lg text-slate-400 " // Added pr-10 to avoid text overlap with icon
                   style={{ paddingRight: 40 }} // Extra padding to prevent text overlapping with icon
                 />
                 <TouchableOpacity
@@ -116,18 +116,17 @@ const Login: React.FC = () => {
                 </TouchableOpacity>
               </View>
             </View>
-            <View className="flex-row items-center justify-between mt-6 mx-10 ">
+            <View className="flex-row items-center justify-between mx-10 mt-6 ">
               <TouchableOpacity
                 className="w-[150px]  bg-[#4765F9] rounded-md"
-                onPress={handleLogin}
-              >
-                <Text className="text-xl text-white text-center uppercase px-9 py-3 font-semibold">
+                onPress={handleLogin}>
+                <Text className="py-3 text-xl font-semibold text-center text-white uppercase px-9">
                   Sign in
                 </Text>
               </TouchableOpacity>
-              <Text className="text-gray-500 text-lg">Forgot Password ?</Text>
+              <Text className="text-lg text-gray-500">Forgot Password ?</Text>
             </View>
-            <View className="flex-row items-center justify-center mt-20 mx-10">
+            <View className="flex-row items-center justify-center mx-10 mt-20">
               <Text className="text-lg text-gray-500">
                 Don’t have an account?
               </Text>

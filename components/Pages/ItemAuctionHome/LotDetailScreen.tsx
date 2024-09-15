@@ -1,6 +1,6 @@
 import React from "react";
 import { View, Text, Image, ScrollView, TouchableOpacity } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import Swiper from "react-native-swiper";
 
 const LotDetailScreen = () => {
   return (
@@ -8,12 +8,23 @@ const LotDetailScreen = () => {
       <View className="bg-red-600">
         <Text className="text-center text-white">Bid 13th 2min 56s Left</Text>
       </View>
-      {/* định làm swiper qua nma sắp tới dl gòi nên làm ảnh bth trước =)) */}
-      <Image
-        source={require("../../../assets/item2.jpg")}
-        className="w-full py-10 h-[200px] "
-        resizeMode="contain"
-      />
+      <View className="h-64">
+        <Swiper
+          showsPagination={true}
+          autoplay={true}
+          style={{ height: "100%" }}>
+          <Image
+            source={require("../../../assets/item2.jpg")}
+            className="w-full py-10 h-[200px] "
+            resizeMode="contain"
+          />
+          <Image
+            source={require("../../../assets/item2.jpg")}
+            className="w-full py-10 h-[200px] "
+            resizeMode="contain"
+          />
+        </Swiper>
+      </View>
 
       <View className="flex flex-row p-4 justify-evenly">
         <Text className="font-bold text-gray-400">Share</Text>

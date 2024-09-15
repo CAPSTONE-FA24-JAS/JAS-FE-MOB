@@ -1,15 +1,8 @@
+import { FinancialProof } from "@/app/types/finance_proof_type";
 import React from "react";
 import { View, Text } from "react-native";
 
-export interface FinancialProofItem {
-  id: string;
-  status: "Approved" | "Reject";
-  createDate: string;
-  expireDate?: string;
-  reason?: string;
-}
-
-const ItemFinanceProof = ({ item }: { item: FinancialProofItem }) => (
+const ItemFinanceProof = ({ item }: { item: FinancialProof }) => (
   <View className="p-2 mb-4 bg-gray-300 rounded-lg">
     <View className="flex-row justify-between p-3 mb-2 bg-slate-500">
       <Text
@@ -18,9 +11,9 @@ const ItemFinanceProof = ({ item }: { item: FinancialProofItem }) => (
         }`}>
         ID: {item.id} {item.status}
       </Text>
-      <Text className="text-gray-600">{item.createDate.split(" ")[0]}</Text>
+      <Text className="text-gray-600">{item.startDate.split(" ")[0]}</Text>
     </View>
-    <Text>Create Date: {item.createDate}</Text>
+    <Text>Create Date: {item.startDate}</Text>
     {item.expireDate && <Text>Expire Date: {item.expireDate}</Text>}
     <Text className="mt-2">Images Or Documents</Text>
     <View className="flex-row mt-2">
@@ -28,10 +21,12 @@ const ItemFinanceProof = ({ item }: { item: FinancialProofItem }) => (
         <View key={index} className="mr-2 bg-gray-400 rounded w-15 h-15" />
       ))}
     </View>
-    {item.reason && (
+    {item.accountName && (
       <View className="mt-2">
         <Text className="font-bold">Reason:</Text>
-        <Text className="text-sm">{item.reason}</Text>
+        <Text className="text-sm">
+          {item.accountName} do chưa có trương reason
+        </Text>
       </View>
     )}
   </View>

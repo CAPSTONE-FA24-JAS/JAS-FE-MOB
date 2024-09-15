@@ -12,50 +12,50 @@ export default function MyBids() {
         value={index}
         onChange={(e) => setIndex(e)}
         indicatorStyle={{
-          backgroundColor: "transparent", // Loại bỏ indicator
-          height: 0, // Đặt chiều cao indicator là 0
+          backgroundColor: "transparent",
+          height: 0,
         }}
         containerStyle={{
-          backgroundColor: "transparent", // Loại bỏ nền của tab container
-          alignSelf: "center", // Đặt toàn bộ tab ở giữa màn hình
-          width: "50%", // Giảm chiều rộng của tab xuống còn 50%
+          backgroundColor: "transparent",
+          alignSelf: "center",
+          width: "50%",
         }}>
         <Tab.Item
           title="Current"
           titleStyle={(active) => ({
             fontSize: 12,
-            color: active ? "white" : "black", // Màu chữ khi active và không active
+            color: active ? "white" : "black",
           })}
           containerStyle={(active) => ({
-            backgroundColor: active ? "black" : "transparent", // Thay đổi màu nền khi active
-            borderTopLeftRadius: 5, // Bo góc trái
-            borderBottomLeftRadius: 5, // Bo góc trái
-            borderWidth: 1, // Đặt viền cho tab
-            borderColor: active ? "black" : "gray", // Viền có màu khi active
-            width: "20%", // Đảm bảo mỗi tab item chiếm đầy 50% của container
+            backgroundColor: active ? "black" : "transparent",
+            borderTopLeftRadius: 5,
+            borderBottomLeftRadius: 5,
+            borderWidth: 1,
+            borderColor: active ? "black" : "gray",
+            width: "20%",
           })}
           buttonStyle={{
-            paddingVertical: 5, // Điều chỉnh padding dọc cho nhỏ hơn
-            paddingHorizontal: 10, // Điều chỉnh padding ngang
+            paddingVertical: 5,
+            paddingHorizontal: 10,
           }}
         />
         <Tab.Item
           title="Past"
           titleStyle={(active) => ({
             fontSize: 12,
-            color: active ? "white" : "black", // Màu chữ khi active và không active
+            color: active ? "white" : "black",
           })}
           containerStyle={(active) => ({
-            backgroundColor: active ? "black" : "transparent", // Thay đổi màu nền khi active
-            borderTopRightRadius: 5, // Bo góc phải
-            borderBottomRightRadius: 5, // Bo góc phải
-            borderWidth: 1, // Đặt viền cho tab
-            borderColor: active ? "black" : "gray", // Viền có màu khi active
-            width: "20%", // Đảm bảo mỗi tab item chiếm đầy 50% của container
+            backgroundColor: active ? "black" : "transparent",
+            borderTopRightRadius: 5,
+            borderBottomRightRadius: 5,
+            borderWidth: 1,
+            borderColor: active ? "black" : "gray",
+            width: "20%",
           })}
           buttonStyle={{
-            paddingVertical: 5, // Điều chỉnh padding dọc cho nhỏ hơn
-            paddingHorizontal: 10, // Điều chỉnh padding ngang
+            paddingVertical: 5,
+            paddingHorizontal: 10,
           }}
         />
       </Tab>

@@ -21,7 +21,7 @@ import { StackNavigationProp } from "@react-navigation/stack";
 
 // Define the types for navigation routes
 type RootStackParamList = {
-  ConsignDetailTimeLine: { item: ConsignItemProps }; // Định nghĩa rằng ConsignDetailTimeLine nhận param item
+  ConsignDetailTimeLine: { item: ConsignResponse }; // Định nghĩa rằng ConsignDetailTimeLine nhận một đối tượng item kiểu ConsignResponse
 };
 
 const HistoryItemConsign: React.FC = () => {
@@ -201,13 +201,7 @@ const HistoryItemConsign: React.FC = () => {
               status={item.status as ConsignItemProps["status"]}
               onViewDetails={() =>
                 navigation.navigate("ConsignDetailTimeLine", {
-                  item: {
-                    id: item.id,
-                    name: item.name,
-                    price: item.desiredPrice,
-                    status: item.status as ConsignItemProps["status"],
-                    image: item?.imageValuations[0]?.imageLink || "",
-                  },
+                  item, // Truyền toàn bộ đối tượng item kiểu ConsignResponse
                 })
               }
               image={item?.imageValuations[0]?.imageLink || ""}

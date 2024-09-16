@@ -22,10 +22,11 @@ export interface ConsignResponse {
   depth: number;
   description: string;
   status: string;
-  sellerId: number;
-  staffId: any;
+  sellerId?: number;
+  staffId?: any;
   seller: Seller;
   imageValuations: ImageValuation[];
+  note?: string;
 }
 
 export interface Seller {
@@ -52,3 +53,41 @@ export interface ImageValuation {
   imageLink: string;
   valuationId: number;
 }
+
+// // ===============get preliminary valuation by status of seller ===============
+// export interface PreValuationByStatusResponse {
+//   code: number;
+//   message: string;
+//   isSuccess: boolean;
+//   data: DataPreValuation;
+//   errorMessages: any;
+// }
+
+// export interface DataPreValuation {
+//   name: string;
+//   pricingTime: any;
+//   desiredPrice?: any;
+//   height: number;
+//   width: number;
+//   depth: number;
+//   description: string;
+//   status: string;
+//   imageOfReceip: any;
+//   actualStatusOfJewelry: any;
+//   deliveryDate: any;
+//   quantity: any;
+//   sellerId: number;
+//   staffId: number;
+//   seller: any;
+//   staff: any;
+//   imageValuations: any;
+//   valuationDocuments: any;
+//   id: number;
+//   creationDate: string;
+//   createdBy: number;
+//   modificationDate: any;
+//   modificationBy: any;
+//   deletionDate: any;
+//   deleteBy: any;
+//   isDeleted: boolean;
+// }

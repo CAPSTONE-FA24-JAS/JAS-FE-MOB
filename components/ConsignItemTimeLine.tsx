@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { View, Text, Image, ScrollView } from "react-native";
-import ConsignItem, { ConsignItemProps } from "./ConsignItem";
-import { useGlobalSearchParams } from "expo-router";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { ChevronDown, ChevronUp } from "lucide-react-native";
 import { useRoute } from "@react-navigation/native";
+import { ConsignResponse, ImageValuation } from "@/app/types/consign_type";
+import PreValuationDetailsModal from "./Modal/PreValuationDetailsModal";
+import { showErrorMessage, showSuccessMessage } from "./FlashMessageHelpers";
+import ImageGallery from "./ImageGallery";
 
 interface TimelineEvent {
   date: string;
@@ -23,10 +25,33 @@ interface TimelineEvent {
 
 const ConsignDetailTimeLine: React.FC = () => {
   const route = useRoute();
-  const { item } = route.params as { item: ConsignItemProps }; // Lấy params
+  const { item } = route.params as { item: ConsignResponse }; // Lấy params
 
   const [timeline, setTimeline] = useState<TimelineEvent[]>([]);
   const [expanded, setExpanded] = useState(false);
+
+  const [modalVisible, setModalVisible] = useState(false);
+
+  interface ValuationDetails {
+    id: number;
+    images: string[];
+    name: string;
+    owner: string;
+    artist: string;
+    category: string;
+    weight: string;
+    height: string;
+    depth: string;
+    description: string;
+    estimatedCost: number;
+    note: string;
+  }
+
+  const [valuationData, setValuationData] = useState<ValuationDetails | null>(
+    null
+  );
+  const [loadingValuation, setLoadingValuation] = useState(false);
+  console.log("valuationDataNe", valuationData);
 
   useEffect(() => {
     // Simulating API call to get timeline data
@@ -79,6 +104,30 @@ const ConsignDetailTimeLine: React.FC = () => {
     setTimeline(mockData);
   };
 
+  const handleViewPreValuation = () => {
+    // Sử dụng dữ liệu trực tiếp từ item để hiển thị trong modal
+    const valuationDetails: ValuationDetails = {
+      id: item.id,
+      // status: item.status,
+      images: item.imageValuations.map((img: ImageValuation) => img.imageLink),
+      name: item.name,
+      // pricingTime: item.pricingTime,
+      estimatedCost: item.desiredPrice,
+      weight: item.width.toString(),
+      height: item.height.toString(),
+      depth: item.depth.toString(),
+      description: item.description,
+      note: "Preliminary pricing is considered based on the images and dimensions you provide.",
+      owner: "dgf",
+      artist: "fv",
+      category: "àg",
+    };
+
+    // Đặt dữ liệu vào state và mở modal
+    setValuationData(valuationDetails);
+    setModalVisible(true);
+  };
+
   const getStatusColor = (status: string) => {
     switch (status) {
       case "Preliminary Valued":
@@ -105,24 +154,27 @@ const ConsignDetailTimeLine: React.FC = () => {
       <View className="p-4">
         {/* Hiển thị thông tin item */}
         <View className="flex-row items-center mb-4">
-          {item.image ? (
+          {item.imageValuations.length > 0 &&
+          item.imageValuations[0].imageLink ? (
             <Image
-              source={{ uri: item.image }}
-              className="w-20 h-20 mr-4 rounded"
+              source={{ uri: item.imageValuations[0].imageLink }}
+              className="w-32 h-32 mr-4 rounded"
             />
           ) : (
             <Image
               source={require("../assets/item-jas/item1.jpg")}
-              className="w-20 h-20 mr-4 rounded"
+              className="w-32 h-32 mr-4 rounded"
             />
           )}
-          <View className="w-[70%]">
+          <View className="w-[60%]">
             <View className="flex-row items-center justify-between ">
               <Text className="text-xl font-bold">{item.name}</Text>
               <Text className="text-gray-600">#{item.id}</Text>
             </View>
-            {item.price ? (
-              <Text className="mt-1 text-lg font-semibold">${item.price}</Text>
+            {item.desiredPrice ? (
+              <Text className="mt-1 text-lg font-semibold">
+                ${item.desiredPrice}
+              </Text>
             ) : (
               <Text className="mt-1 text-base text-gray-500 font-semibold">
                 Price not available
@@ -135,8 +187,29 @@ const ConsignDetailTimeLine: React.FC = () => {
             >
               {item.status}
             </Text>
+            {/* Nút "View Pre Valuation" nếu item.status là "Preliminary Valued" */}
+            {item.status === "Preliminary Valued" && (
+              <TouchableOpacity
+                className="mt-2  w-[70%] bg-green-500 p-2 rounded"
+                onPress={handleViewPreValuation} // Hàm này vẫn cần để gọi modal và set dữ liệu
+              >
+                <Text className="text-white font-bold text-center">
+                  View Pre Valuation
+                </Text>
+              </TouchableOpacity>
+            )}
           </View>
         </View>
+
+        {/* Tạo list ảnh hàng ngang nhỏ, ấn vào thì show modal ảnh phỏng lớn */}
+        <View>
+          <ImageGallery
+            images={item.imageValuations.map(
+              (img: ImageValuation) => img.imageLink
+            )}
+          />
+        </View>
+
         <View className="mt-4">
           {timeline
             .slice(0, expanded ? timeline.length : 1)
@@ -182,6 +255,16 @@ const ConsignDetailTimeLine: React.FC = () => {
           </TouchableOpacity>
         )}
       </View>
+
+      {item.status === "Preliminary Valued" && valuationData && (
+        <PreValuationDetailsModal
+          isVisible={modalVisible}
+          onClose={() => setModalVisible(false)}
+          details={valuationData} // Dữ liệu thực từ ConsignResponse đã chuyển đổi
+          onApprove={() => showSuccessMessage("Approved")}
+          onReject={() => showErrorMessage("Rejected")}
+        />
+      )}
     </ScrollView>
   );
 };

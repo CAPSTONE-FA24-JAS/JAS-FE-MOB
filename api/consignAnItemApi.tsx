@@ -3,6 +3,7 @@ import {
   showErrorMessage,
   showSuccessMessage,
 } from "@/components/FlashMessageHelpers";
+import { HistoryConsignmentResponse } from "@/app/types/consign_type";
 
 const API_URL = process.env.EXPO_PUBLIC_API_URL || "http://localhost:7251";
 
@@ -67,6 +68,41 @@ export const consignAnItem = async (
   } catch (error) {
     console.error("Lỗi khi ký gửi vật phẩm:", error);
     showErrorMessage("Không thể ký gửi vật phẩm.");
+    throw error;
+  }
+};
+
+// Hàm lấy lịch sử ký gửi
+export const getHistoryConsign = async (
+  sellerId: number,
+  status: string = "",
+  pageSize: number = 10,
+  pageIndex: number = 1
+): Promise<HistoryConsignmentResponse> => {
+  try {
+    // Gửi yêu cầu GET với các tham số
+    const response = await axios.get<HistoryConsignmentResponse>(
+      `${API_URL}/api/Valuations/getPreliminaryValuationByStatusOfSeller`,
+      {
+        params: {
+          sellerId: sellerId,
+          status: status,
+          pageSize: pageSize,
+          pageIndex: pageIndex,
+        },
+      }
+    );
+
+    // Kiểm tra phản hồi thành công hay không
+    if (response.data.isSuccess) {
+      console.log("Lịch sử ký gửi:", response.data);
+      return response.data;
+    } else {
+      throw new Error(response.data.message || "Lỗi khi lấy lịch sử ký gửi.");
+    }
+  } catch (error) {
+    console.error("Lỗi khi lấy lịch sử ký gửi:", error);
+    showErrorMessage("Không thể lấy lịch sử ký gửi.");
     throw error;
   }
 };

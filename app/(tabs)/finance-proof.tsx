@@ -1,15 +1,13 @@
-import { getListFinancialProof } from "@/api/financeProofApi";
-import ItemFinanceProof from "@/components/ItemFinaceProof";
-import { RootState } from "@/redux/store";
+import React, { useCallback, useState } from "react";
+import { View, Text, SectionList, TouchableOpacity } from "react-native";
+import { useSelector } from "react-redux";
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
-import React, { useCallback, useEffect, useState } from "react";
-import { View, Text, SectionList } from "react-native";
-import { FlatList, TouchableOpacity } from "react-native-gesture-handler";
-import { useSelector } from "react-redux";
+import { getListFinancialProof } from "@/api/financeProofApi";
+import { RootState } from "@/redux/store";
 import { FinancialProof } from "../types/finance_proof_type";
+import ItemFinanceProof from "@/components/ItemFinaceProof";
 
-// Định nghĩa kiểu RootStackParamList
 type RootStackParamList = {
   FinanceProof: undefined;
   CreateFinanceProof: undefined;
@@ -17,9 +15,9 @@ type RootStackParamList = {
 
 const FinanceProof = () => {
   const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
-  const [financialProofData, setFinancialProofData] =
-    useState<FinancialProof[]>();
-
+  const [financialProofData, setFinancialProofData] = useState<
+    FinancialProof[]
+  >([]);
   const { userResponse } = useSelector((state: RootState) => state.auth);
 
   useFocusEffect(
@@ -32,13 +30,39 @@ const FinanceProof = () => {
         .catch((error) => {
           console.error("Error fetching financial proof data:", error);
           setFinancialProofData([]);
-        })
-        .finally(() => {});
+        });
     }, [userResponse?.id])
   );
 
+  const groupDataByMonth = (data: FinancialProof[]) => {
+    const sortedData = [...data].sort(
+      (a, b) =>
+        new Date(b.startDate).getTime() - new Date(a.startDate).getTime()
+    );
+
+    const grouped = sortedData.reduce((acc, item) => {
+      const date = new Date(item.startDate);
+      const monthYear = `${date.toLocaleString("default", {
+        month: "long",
+      })} ${date.getFullYear()}`;
+      if (!acc[monthYear]) {
+        acc[monthYear] = [];
+      }
+      acc[monthYear].push(item);
+      return acc;
+    }, {} as Record<string, FinancialProof[]>);
+
+    return Object.entries(grouped)
+      .map(([title, data]) => ({ title, data }))
+      .sort((a, b) => {
+        const dateA = new Date(a.data[0].startDate);
+        const dateB = new Date(b.data[0].startDate);
+        return dateB.getTime() - dateA.getTime();
+      });
+  };
+
   return (
-    <View className="flex flex-col justify-center gap-2 m-3">
+    <View className="flex flex-col justify-center gap-2 m-2">
       {userResponse?.bidLimit ? (
         <Text className="text-3xl font-bold text-center">
           Your Approved Bidding Limit: {userResponse.bidLimit} VNĐ
@@ -57,11 +81,17 @@ const FinanceProof = () => {
         </Text>
       </TouchableOpacity>
 
-      {financialProofData && financialProofData.length > 0 ? (
-        <FlatList
-          data={financialProofData}
+      {financialProofData.length > 0 ? (
+        <SectionList
+          className="bg-transparent h-5/6"
+          sections={groupDataByMonth(financialProofData)}
           keyExtractor={(item) => item.id.toString()}
           renderItem={({ item }) => <ItemFinanceProof item={item} />}
+          renderSectionHeader={({ section: { title } }) => (
+            <Text className="p-2 text-xl font-bold bg-transparent">
+              {title}
+            </Text>
+          )}
         />
       ) : (
         <Text className="text-2xl font-bold text-center text-red-700">

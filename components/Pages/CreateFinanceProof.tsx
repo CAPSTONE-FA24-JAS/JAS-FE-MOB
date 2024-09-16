@@ -16,33 +16,34 @@ import * as FileSystem from "expo-file-system";
 import { useNavigation } from "expo-router";
 
 const CreateFinanceProof: React.FC = () => {
-  const [selectedFiles, setSelectedFiles] = useState<
-    DocumentPicker.DocumentPickerAsset[]
-  >([]);
+  const [selectedFile, setSelectedFile] = useState<
+    DocumentPicker.DocumentPickerAsset[] | null
+  >(null); // Single file state
   const navigation = useNavigation();
   const [isUploading, setIsUploading] = useState(false);
   const { userResponse } = useSelector((state: RootState) => state.auth);
 
   const handleFilePicker = async () => {
     try {
-      let result = await DocumentPicker.getDocumentAsync({
+      const result = await DocumentPicker.getDocumentAsync({
         type: ["image/jpeg", "image/png", "application/pdf"],
-        copyToCacheDirectory: true,
+        copyToCacheDirectory: false,
         multiple: false,
       });
 
-      if (result.assets) {
-        setSelectedFiles((prevFiles) => [...prevFiles, ...result.assets]);
+      if (!(result.canceled = false)) {
+        setSelectedFile(result.assets);
       } else {
         Alert.alert("File picking cancelled.");
       }
     } catch (error) {
-      console.error("Error picking files:", error);
-      Alert.alert("Error", "There was an error selecting files.");
+      console.error("Error picking file:", error);
+      Alert.alert("Error", "There was an error selecting file.");
     }
   };
+
   const handleFileUpload = async () => {
-    if (selectedFiles.length === 0) {
+    if (!selectedFile) {
       Alert.alert("No file selected", "Please select a file to upload.");
       return;
     }
@@ -51,7 +52,7 @@ const CreateFinanceProof: React.FC = () => {
 
     try {
       const accountId = userResponse?.id || 0;
-      const file = selectedFiles[0]; // Get the first (and only) file
+      const file = selectedFile[0];
 
       const fileUri = file.uri;
       const fileName = file.name || "unknown_file";
@@ -82,7 +83,7 @@ const CreateFinanceProof: React.FC = () => {
 
       setIsUploading(false);
       Alert.alert("Success", "File uploaded successfully.");
-      setSelectedFiles([]); // Clear file after successful upload
+      setSelectedFile(null); // Clear file after successful upload
       navigation.goBack();
     } catch (error) {
       setIsUploading(false);
@@ -93,25 +94,6 @@ const CreateFinanceProof: React.FC = () => {
       );
     }
   };
-
-  const renderFileItem = ({
-    item,
-  }: {
-    item: DocumentPicker.DocumentPickerAsset;
-  }) => (
-    <View className="flex-row items-center justify-between p-2 mb-2 bg-gray-100 rounded">
-      <Text numberOfLines={1} className="flex-1 mr-2">
-        {item.name}
-      </Text>
-      <TouchableOpacity
-        onPress={() =>
-          setSelectedFiles((files) => files.filter((f) => f.uri !== item.uri))
-        }
-        className="p-2">
-        <Text className="text-red-500">Remove</Text>
-      </TouchableOpacity>
-    </View>
-  );
 
   return (
     <View className="flex-1 bg-white">
@@ -140,27 +122,28 @@ const CreateFinanceProof: React.FC = () => {
           />
         </TouchableOpacity>
 
-        <FlatList
-          data={selectedFiles}
-          renderItem={renderFileItem}
-          keyExtractor={(item) => item.uri}
-          ListEmptyComponent={
-            <Text className="text-center">No files selected</Text>
-          }
-          className="mb-4"
-        />
+        {selectedFile && (
+          <View className="flex-row items-center justify-between p-2 mb-2 bg-gray-100 rounded">
+            <Text numberOfLines={1} className="flex-1 mr-2">
+              {selectedFile[0].name}
+            </Text>
+            <TouchableOpacity
+              onPress={() => setSelectedFile(null)} // Allow removing file
+              className="p-2">
+              <Text className="text-red-500">Remove</Text>
+            </TouchableOpacity>
+          </View>
+        )}
 
         <TouchableOpacity
           className="items-center p-4 mt-6 bg-blue-500 rounded-full"
           onPress={handleFileUpload}
-          disabled={isUploading || selectedFiles.length === 0}>
+          disabled={isUploading}>
           {isUploading ? (
             <ActivityIndicator size="small" color="#fff" />
           ) : (
             <Text className="text-lg font-bold text-white">
-              {selectedFiles.length > 0
-                ? `Upload ${selectedFiles.length} File(s)`
-                : "Select Files"}
+              {selectedFile ? `Upload File` : "Select File"}
             </Text>
           )}
         </TouchableOpacity>

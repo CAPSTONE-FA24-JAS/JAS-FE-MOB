@@ -5,6 +5,9 @@ import StepContent2 from "./ContentConsign/StepContent2";
 import StepContent3 from "./ContentConsign/StepContent3";
 import { useNavigation } from "expo-router";
 import { StackNavigationProp } from "@react-navigation/stack";
+import { useSelector } from "react-redux";
+import { RootState } from "@/redux/store";
+import { consignAnItem } from "@/api/consignAnItemApi";
 
 // Define the types for navigation routes
 type RootStackParamList = {
@@ -21,16 +24,52 @@ const ConsignStep: React.FC = () => {
   const [selectedImages, setSelectedImages] = useState<string[]>([]);
   const [isStep2Valid, setIsStep2Valid] = useState(false); // Track Step 2 validity
 
-  // Handle navigation between steps
+  // State để lưu giá trị từ StepContent2
+  const [description, setDescription] = useState("");
+  const [nameConsign, setNameConsign] = useState("");
+  const [height, setHeight] = useState("");
+  const [width, setWidth] = useState("");
+  const [depth, setDepth] = useState("");
+  // State để lưu data response của consignAnItem
+  const [apiResponseData, setApiResponseData] = useState<string[]>([]); // Đây là nơi lưu URL hình ảnh từ API
+
+  // Get the sellerId from Redux
+  const sellerId = useSelector(
+    (state: RootState) => state.auth.userResponse?.id
+  );
+
+  const handleConsignItem = async () => {
+    try {
+      if (sellerId !== undefined) {
+        const response = await consignAnItem(
+          sellerId,
+          nameConsign,
+          Number(height),
+          Number(width),
+          Number(depth),
+          description,
+          selectedImages
+        );
+        // Lưu dữ liệu từ response vào state
+        setApiResponseData(response.data);
+        // navigation.navigate("HistoryItemConsign");
+      } else {
+        console.error("Error: sellerId is undefined");
+      }
+    } catch (error) {
+      console.error("Error consigning item:", error);
+      throw error; // Ném lỗi để có thể bắt được trong confirmNext
+    }
+  };
+
   const goNext = () => {
     if (currentStep === 2) {
-      // Show confirmation modal before going to Step 3
+      // Hiển thị modal xác nhận trước khi tiếp tục đến bước 3
       setConfirmModalVisible(true);
     } else if (currentStep < 3) {
       setCurrentStep(currentStep + 1);
     } else {
-      // Show success modal after completing Step 3
-      setModalVisible(true);
+      setModalVisible(true); // Hiển thị modal thành công khi hoàn tất step 3
     }
   };
 
@@ -48,9 +87,20 @@ const ConsignStep: React.FC = () => {
     setConfirmModalVisible(false);
   };
 
-  const confirmNext = () => {
-    setCurrentStep(3);
-    closeConfirmModal();
+  const confirmNext = async () => {
+    if (currentStep === 2) {
+      // Người dùng xác nhận tiếp tục sau khi hiện modal xác nhận
+      try {
+        await handleConsignItem(); // Gọi API consignAnItem
+
+        // Nếu API thành công, chuyển sang bước 3
+        setCurrentStep(3);
+      } catch (error) {
+        console.error("Error consigning item:", error);
+      } finally {
+        closeConfirmModal(); // Đóng modal xác nhận sau khi API hoàn thành (dù thành công hay thất bại)
+      }
+    }
   };
 
   return (
@@ -90,9 +140,25 @@ const ConsignStep: React.FC = () => {
           />
         )}
         {currentStep === 2 && (
-          <StepContent2 setIsStep2Valid={setIsStep2Valid} />
+          <StepContent2
+            setIsStep2Valid={setIsStep2Valid}
+            setDescription={setDescription}
+            setHeight={setHeight}
+            setWidth={setWidth}
+            setDepth={setDepth}
+            setNameConsign={setNameConsign}
+          />
         )}
-        {currentStep === 3 && <StepContent3 />}
+        {currentStep === 3 && (
+          <StepContent3
+            apiResponseData={apiResponseData}
+            height={height}
+            width={width}
+            depth={depth}
+            nameConsign={nameConsign}
+            description={description}
+          />
+        )}
       </ScrollView>
 
       {/* Bottom Navigation */}

@@ -3,8 +3,9 @@ export interface FinancialProof {
   file: string;
   priceLimit: number;
   accountId: number;
+  reason?: string;
   accountName: string;
   startDate: string;
   expireDate: string;
-  status: string; // chưa biết tất cả trạng thái nên để v nhé
+  status: "Pending" | "Approve" | "Reject"; // chưa biết tất cả trạng thái nên để v nhé
 }

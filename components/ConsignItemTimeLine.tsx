@@ -4,31 +4,34 @@ import ConsignItem, { ConsignItemProps } from "./ConsignItem";
 import { useGlobalSearchParams } from "expo-router";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { ChevronDown, ChevronUp } from "lucide-react-native";
+import { useRoute } from "@react-navigation/native";
 
 interface TimelineEvent {
   date: string;
   title: string;
   description: string;
   document?: string;
-  status: "completed" | "pending" | "processing";
+  status:
+    | "Preliminary Valued"
+    | "Requested"
+    | "Product received"
+    | "Pending manager approved"
+    | "Manager approved"
+    | "Member accepted"
+    | "Rejected";
 }
 
 const ConsignDetailTimeLine: React.FC = () => {
-  const { query } = useGlobalSearchParams<{ query?: string }>();
+  const route = useRoute();
+  const { item } = route.params as { item: ConsignItemProps }; // Lấy params
+
   const [timeline, setTimeline] = useState<TimelineEvent[]>([]);
   const [expanded, setExpanded] = useState(false);
 
-  const [item, setItem] = useState<ConsignItemProps>({
-    id: "12345",
-    name: "Đồng Hồ Đẹp Nha",
-    price: 3000,
-    status: "APPROVED" as const,
-  });
-
   useEffect(() => {
     // Simulating API call to get timeline data
-    fetchTimelineData(query || "123");
-  }, []);
+    fetchTimelineData(item.id.toString());
+  }, [item]);
 
   const toggleExpanded = () => setExpanded(!expanded);
 
@@ -39,38 +42,38 @@ const ConsignDetailTimeLine: React.FC = () => {
         date: "09/09/2024",
         title: "CONSIGN ITEM SUCCESSFULLY",
         description: "Successfully",
-        status: "completed",
+        status: "Requested",
       },
       {
         date: "09/09/2024",
         title: "FINAL VALUATION",
         description: "Proof of Attorney - Pending",
         document: "yes",
-        status: "processing",
+        status: "Preliminary Valued",
       },
       {
         date: "09/09/2024",
         title: "PICKING UP SUCCESSFULLY",
         description: "Goods Receipt",
-        status: "completed",
+        status: "Manager approved",
       },
       {
         date: "09/09/2024",
         title: "PICKING UP",
         description: "Request Detail",
-        status: "completed",
+        status: "Member accepted",
       },
       {
         date: "09/09/2024",
         title: "PRELIMINARY VALUATION",
         description: "Preliminary Valuation - Pending",
-        status: "completed",
+        status: "Pending manager approved",
       },
       {
         date: "09/09/2024",
         title: "Request Consign Successfully",
         description: "Request Detail",
-        status: "completed",
+        status: "Product received",
       },
     ];
     setTimeline(mockData);
@@ -78,12 +81,20 @@ const ConsignDetailTimeLine: React.FC = () => {
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case "APPROVED":
-        return "text-green-500";
-      case "REJECTED":
-        return "text-red-500";
-      case "PENDING":
+      case "Preliminary Valued":
         return "text-yellow-500";
+      case "Requested":
+        return "text-blue-500";
+      case "Product received":
+        return "text-purple-500";
+      case "Pending manager approved":
+        return "text-orange-500";
+      case "Manager approved":
+        return "text-green-500";
+      case "Member accepted":
+        return "text-blue-500";
+      case "Rejected":
+        return "text-red-500";
       default:
         return "text-gray-500";
     }
@@ -92,18 +103,36 @@ const ConsignDetailTimeLine: React.FC = () => {
   return (
     <ScrollView className="flex-1 bg-white">
       <View className="p-4">
+        {/* Hiển thị thông tin item */}
         <View className="flex-row items-center mb-4">
-          <Image
-            source={require("../assets/item-jas/item1.jpg")}
-            className="w-20 h-20 mr-4 rounded"
-          />
-          <View>
-            <Text className="text-xl font-bold">{item.name}</Text>
-            <Text className="text-gray-600">#{item.id}</Text>
-            <Text className="mt-1 text-lg font-semibold">
-              ${item.price.toFixed(2)}
-            </Text>
-            <Text className={`${getStatusColor(item.status)} font-semibold`}>
+          {item.image ? (
+            <Image
+              source={{ uri: item.image }}
+              className="w-20 h-20 mr-4 rounded"
+            />
+          ) : (
+            <Image
+              source={require("../assets/item-jas/item1.jpg")}
+              className="w-20 h-20 mr-4 rounded"
+            />
+          )}
+          <View className="w-[70%]">
+            <View className="flex-row items-center justify-between ">
+              <Text className="text-xl font-bold">{item.name}</Text>
+              <Text className="text-gray-600">#{item.id}</Text>
+            </View>
+            {item.price ? (
+              <Text className="mt-1 text-lg font-semibold">${item.price}</Text>
+            ) : (
+              <Text className="mt-1 text-base text-gray-500 font-semibold">
+                Price not available
+              </Text>
+            )}
+            <Text
+              className={`uppercase ${getStatusColor(
+                item.status
+              )} font-semibold uppsercase `}
+            >
               {item.status}
             </Text>
           </View>
@@ -126,7 +155,8 @@ const ConsignDetailTimeLine: React.FC = () => {
                   {event.document && (
                     <TouchableOpacity
                       className="p-2 mt-1 bg-gray-200 rounded w-[50px]"
-                      onPress={() => alert("View document")}>
+                      onPress={() => alert("View document")}
+                    >
                       <Text className="text-gray-700">Print</Text>
                       {/* đoạn này đang kh biết tải hẳn luôn ha là mở modal */}
                     </TouchableOpacity>
@@ -139,7 +169,8 @@ const ConsignDetailTimeLine: React.FC = () => {
         {timeline.length > 1 && (
           <TouchableOpacity
             onPress={toggleExpanded}
-            className="flex-row items-center justify-center p-2 mt-2 bg-gray-100 rounded">
+            className="flex-row items-center justify-center p-2 mt-2 bg-gray-100 rounded"
+          >
             <Text className="mr-2">
               {expanded ? "Thu gọn" : "Xem toàn bộ lịch sử"}
             </Text>

@@ -54,6 +54,20 @@ export interface ImageValuation {
   valuationId: number;
 }
 
+export interface ValuationDetails {
+  id: number;
+  images: string[];
+  name: string;
+  owner: string;
+  artist: string;
+  category: string;
+  weight: string;
+  height: string;
+  depth: string;
+  description: string;
+  estimatedCost: number;
+  note: string;
+}
 // // ===============get preliminary valuation by status of seller ===============
 // export interface PreValuationByStatusResponse {
 //   code: number;

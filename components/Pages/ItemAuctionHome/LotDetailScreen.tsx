@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   View,
   Text,
@@ -9,13 +9,15 @@ import {
 } from "react-native";
 import { Divider } from "react-native-paper";
 import Swiper from "react-native-swiper";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useRoute } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "react-native-screens/lib/typescript/native-stack/types";
+import PlaceBidModal from "@/components/Modal/PlaceBidModal";
 
 // Define the navigation param list type
 type RootStackParamList = {
   PlaceBid: BidFormRouteParams;
   AutoBidSaveConfig: BidFormRouteParams;
+  RisingBidPage: { item: any }; // Update this to expect `item` as a param
 };
 
 // Define the BidFormRouteParams type
@@ -24,6 +26,16 @@ export type BidFormRouteParams = {
   lotName: string;
   startBid: number;
   estimatedPrice: { min: number; max: number };
+};
+
+type RouteParams = {
+  id: number;
+  name: string;
+  minPrice?: number;
+  maxPrice?: number;
+  price?: number;
+  image: string;
+  typeBid: number;
 };
 
 type LotDetailScreenNavigationProp =
@@ -38,8 +50,27 @@ const LotDetailScreen = () => {
     estimatedPrice: { min: 3500, max: 4000 },
   };
 
-  const handlePressPlaceBid = () => {
-    navigation.navigate("PlaceBid", data);
+  const route = useRoute();
+  const { id, name, minPrice, maxPrice, price, image, typeBid } =
+    route.params as RouteParams;
+
+  const [modalVisible, setModalVisible] = useState<boolean>(false);
+
+  const item = {
+    id,
+    image,
+    name,
+    minPrice: minPrice || 0,
+    maxPrice: maxPrice || 0,
+    price: price || 0,
+    typeBid,
+  };
+
+  const handleSubmitBid = (bid: any) => {
+    // Handle the bid submission
+    console.log("Bid submitted:", bid);
+    setModalVisible(false); // Close the modal after submission
+    navigation.navigate("RisingBidPage", { item });
   };
 
   const handlePressAutoBid = () => {
@@ -59,7 +90,8 @@ const LotDetailScreen = () => {
             <Swiper
               showsPagination={true}
               autoplay={true}
-              style={{ height: "100%" }}>
+              style={{ height: "100%" }}
+            >
               <Image
                 source={require("../../../assets/item2.jpg")}
                 className="w-full py-10 h-[200px]"
@@ -78,14 +110,34 @@ const LotDetailScreen = () => {
             <Text className="font-bold text-gray-400">Watch</Text>
           </View>
           <View className="p-4 space-y-2">
-            <Text className=" text-lg font-bold text-[#8f8f8f]">Lot #101</Text>
-            <Text className="text-base font-bold text-black">
-              Lalaounis Chimera Chocker
+            <Text className=" text-base font-bold text-[#8f8f8f]">
+              Lot #{id} - Hình Thức {typeBid}
             </Text>
-            <Text className="text-[#6c6c6c]">Est: US$3500 - US$4000</Text>
-            <Text className="font-bold text-[#6c6c6c]">
-              Start Bid: <Text className="font-normal">US$2600</Text>
+            <Text className="text-base text-xl font-bold text-black">
+              {name}
             </Text>
+            {minPrice && maxPrice && (
+              <View className="ml-4">
+                <Text className=" text-base text-[#6c6c6c] ">
+                  Est: ${minPrice} - ${maxPrice}
+                </Text>
+                <View className="flex-row gap-2 ">
+                  <Text className="text-base font-bold text-[#6c6c6c] ">
+                    Start Bid:
+                  </Text>
+                  <Text className="text-[#6c6c6c] text-base ">${minPrice}</Text>
+                </View>
+              </View>
+            )}
+            {price && (
+              <View className="flex-row ">
+                <Text className="text-base font-bold text-lg text-[#6c6c6c] ">
+                  Price:
+                </Text>
+                <Text className="text-[#6c6c6c] ml-2 text-lg ">${price}</Text>
+              </View>
+            )}
+
             <Divider bold={true} />
 
             <Text className="mt-6 mb-2 font-bold">
@@ -140,20 +192,41 @@ const LotDetailScreen = () => {
         </ScrollView>
       </View>
       <View className="absolute bottom-0 left-0 right-0 px-4 py-2 bg-white">
+        {typeBid === 1 && (
+          <TouchableOpacity className="py-3 mb-3 bg-blue-500 rounded-lg">
+            <Text className="font-semibold text-center text-white">
+              BUY IT NOW
+            </Text>
+          </TouchableOpacity>
+        )}
         <TouchableOpacity
           onPress={handlePressAutoBid}
-          className="mb-3 bg-blue-500 rounded-sm">
+          className="mb-3 bg-blue-500 rounded-sm"
+        >
           <Text className="py-3 font-semibold text-center text-white">
             BID AUTOMATION
           </Text>
         </TouchableOpacity>
-        <TouchableOpacity
-          onPress={handlePressPlaceBid}
-          className="bg-blue-500 rounded-sm">
-          <Text className="py-3 font-semibold text-center text-white">
-            PLACE BID
-          </Text>
-        </TouchableOpacity>
+        {typeBid !== 1 && (
+          <TouchableOpacity
+            className="py-3 bg-blue-500 rounded-lg"
+            onPress={() => setModalVisible(true)}
+          >
+            <Text className="font-semibold text-center text-white">
+              PLACE BID
+            </Text>
+          </TouchableOpacity>
+        )}
+
+        {/* Place Bid Modal */}
+        <PlaceBidModal
+          visible={modalVisible}
+          onClose={() => setModalVisible(false)}
+          item={item}
+          minPrice={item.minPrice}
+          maxPrice={item.maxPrice}
+          onSubmitBid={handleSubmitBid}
+        />
       </View>
     </SafeAreaView>
   );

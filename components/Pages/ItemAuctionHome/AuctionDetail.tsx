@@ -53,12 +53,12 @@ const AuctionDetailScreen = ({
           Live Bidding Begins: 27 August 2024 @ 22:00
         </Text>
         <Text className="mb-4 text-gray-600">New York, NY</Text>
-        <TouchableOpacity className="py-3 mb-3 bg-blue-500 rounded-lg">
+        <TouchableOpacity className="py-3 mb-3 bg-blue-500 rounded-sm">
           <Text className="font-semibold text-center text-white">
             VIEW LOTS
           </Text>
         </TouchableOpacity>
-        <TouchableOpacity className="py-3 bg-blue-500 rounded-lg">
+        <TouchableOpacity className="py-3 bg-blue-500 rounded-sm">
           <Text className="font-semibold text-center text-white">
             REGISTER TO BID
           </Text>

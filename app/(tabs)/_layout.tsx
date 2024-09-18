@@ -34,6 +34,8 @@ import AccountInfo from "@/components/Pages/MyProfile/AccountInfo";
 import Help from "@/components/Pages/MyProfile/Help";
 import Login from "../(auths)/login";
 import ConsignDetailTimeLine from "@/components/ConsignItemTimeLine";
+import PlaceBid from "@/components/Pages/PlaceBid";
+import AutoBidSaveConfig from "@/components/Pages/AutoBidSaveConfig";
 
 // Declare Drawer and Stack Navigators
 const Drawer = createDrawerNavigator();
@@ -240,12 +242,27 @@ export default function AppNavigator() {
           header: () => <CustomHeaderDetail title="Terms and Conditions" />,
         }}
       />
-
       <Stack.Screen
         name="ConsignDetailTimeLine"
         component={ConsignDetailTimeLine}
         options={{
           header: () => <CustomHeaderDetail title="HISTORY ITEM CONSIGN" />,
+        }}
+      />
+
+      <Stack.Screen
+        name="PlaceBid"
+        component={PlaceBid}
+        options={{
+          header: () => <CustomHeaderDetail title="PLACE BID" />,
+        }}
+      />
+
+      <Stack.Screen
+        name="AutoBidSaveConfig"
+        component={AutoBidSaveConfig}
+        options={{
+          header: () => <CustomHeaderDetail title="PLACE BID" />,
         }}
       />
     </Stack.Navigator>

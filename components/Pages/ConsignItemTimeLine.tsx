@@ -8,9 +8,9 @@ import {
   ImageValuation,
   ValuationDetails,
 } from "@/app/types/consign_type";
-import PreValuationDetailsModal from "./Modal/PreValuationDetailsModal";
-import { showErrorMessage, showSuccessMessage } from "./FlashMessageHelpers";
-import ImageGallery from "./ImageGallery";
+import PreValuationDetailsModal from "../Modal/PreValuationDetailsModal";
+import { showErrorMessage, showSuccessMessage } from "../FlashMessageHelpers";
+import ImageGallery from "../ImageGallery";
 import { updateStatusForValuation } from "@/api/consignAnItemApi";
 
 interface TimelineEvent {
@@ -184,7 +184,7 @@ const ConsignDetailTimeLine: React.FC = () => {
             />
           ) : (
             <Image
-              source={require("../assets/item-jas/item1.jpg")}
+              source={require("../../assets/item-jas/item1.jpg")}
               className="w-32 h-32 mr-4 rounded"
             />
           )}

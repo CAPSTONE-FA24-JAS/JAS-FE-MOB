@@ -33,9 +33,10 @@ import ChangePassword from "@/components/Pages/MyProfile/ChangePassword";
 import AccountInfo from "@/components/Pages/MyProfile/AccountInfo";
 import Help from "@/components/Pages/MyProfile/Help";
 import Login from "../(auths)/login";
-import ConsignDetailTimeLine from "@/components/ConsignItemTimeLine";
 import PlaceBid from "@/components/Pages/PlaceBid";
 import AutoBidSaveConfig from "@/components/Pages/AutoBidSaveConfig";
+import ConsignDetailTimeLine from "@/components/Pages/ConsignItemTimeLine";
+import RisingBidPage from "@/components/Pages/LiveBidding/RisingBidPage";
 
 // Declare Drawer and Stack Navigators
 const Drawer = createDrawerNavigator();
@@ -154,7 +155,8 @@ function DrawerLayout() {
         drawerActiveBackgroundColor: "lightgray", // Set background color for active item
         drawerActiveTintColor: Colors.primary, // Set text color for active item
         drawerInactiveTintColor: "black", // Set text color for inactive items
-      }}>
+      }}
+    >
       {/* Parent Categories */}
       <Drawer.Screen
         name="Auctions"
@@ -263,6 +265,13 @@ export default function AppNavigator() {
         component={AutoBidSaveConfig}
         options={{
           header: () => <CustomHeaderDetail title="PLACE BID" />,
+        }}
+      />
+      <Stack.Screen
+        name="RisingBidPage"
+        component={RisingBidPage}
+        options={{
+          header: () => <CustomHeaderDetail title="Live Bidding" />,
         }}
       />
     </Stack.Navigator>

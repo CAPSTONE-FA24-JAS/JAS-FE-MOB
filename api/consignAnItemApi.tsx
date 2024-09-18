@@ -106,3 +106,31 @@ export const getHistoryConsign = async (
     throw error;
   }
 };
+
+// Hàm cập nhật trạng thái của một ký gửi
+export const updateStatusForValuation = async (id: number, status: string) => {
+  try {
+    const response = await axios.put(
+      `${API_URL}/api/Valuations/UpdateStatusForValuations`,
+      null, // PUT không cần body trong trường hợp này
+      {
+        params: {
+          id: id,
+          status: status,
+        },
+      }
+    );
+
+    if (response.data.isSuccess) {
+      console.log("Cập nhật trạng thái thành công:", response.data);
+      showSuccessMessage("Cập nhật trạng thái thành công.");
+      return response.data;
+    } else {
+      throw new Error(response.data.message || "Lỗi khi cập nhật trạng thái.");
+    }
+  } catch (error) {
+    console.error("Lỗi khi cập nhật trạng thái:", error);
+    showErrorMessage("Không thể cập nhật trạng thái.");
+    throw error;
+  }
+};

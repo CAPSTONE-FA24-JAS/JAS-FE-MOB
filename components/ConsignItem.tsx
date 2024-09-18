@@ -14,6 +14,7 @@ export interface ConsignItemProps {
     | "Pending manager approved"
     | "Manager approved"
     | "Member accepted"
+    | "Approved"
     | "Rejected";
   onViewDetails?: () => void; // Include onViewDetails in the props
 }
@@ -24,8 +25,9 @@ const statusColors: { [key: string]: string } = {
   Requested: "text-blue-500",
   "Product received": "text-purple-500",
   "Pending manager approved": "text-orange-500",
-  "Manager approved": "text-green-500",
+  "Manager approved": "text-green-700",
   "Member accepted": "text-blue-500",
+  Approved: "text-green-300",
   Rejected: "text-red-500",
 };
 

@@ -15,6 +15,7 @@ interface PreValuationDetailsModalProps {
   onApprove: () => void;
   onReject: () => void;
   details: {
+    id: number;
     images: string[];
     name: string;
     owner: string;

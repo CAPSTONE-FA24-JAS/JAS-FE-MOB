@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -9,7 +9,7 @@ import {
   ScrollView,
 } from "react-native";
 import ConsignItem, { ConsignItemProps } from "@/components/ConsignItem";
-import { router, useNavigation } from "expo-router";
+import { router, useFocusEffect, useNavigation } from "expo-router";
 import {
   ConsignResponse,
   HistoryConsignmentResponse,
@@ -36,6 +36,7 @@ const HistoryItemConsign: React.FC = () => {
     | "Pending manager approved"
     | "Manager approved"
     | "Member accepted"
+    | "Approved"
     | "Rejected"
   >("ALL"); // Bộ lọc trạng thái
   const [searchQuery, setSearchQuery] = useState(""); // Dữ liệu tìm kiếm
@@ -44,7 +45,7 @@ const HistoryItemConsign: React.FC = () => {
   ); // Lấy userId từ Redux
 
   // Hàm gọi API
-  const fetchConsignmentHistory = async () => {
+  const fetchConsignmentHistory = useCallback(async () => {
     try {
       setLoading(true);
       if (sellerId !== undefined) {
@@ -60,12 +61,14 @@ const HistoryItemConsign: React.FC = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [sellerId]);
 
-  // Gọi API khi component mount
-  useEffect(() => {
-    fetchConsignmentHistory();
-  }, []);
+  // Re-fetch order details when page is focused
+  useFocusEffect(
+    useCallback(() => {
+      fetchConsignmentHistory();
+    }, [fetchConsignmentHistory])
+  );
 
   // Hàm lọc dữ liệu theo trạng thái
   const filteredItems = items.filter((item) => {
@@ -173,6 +176,14 @@ const HistoryItemConsign: React.FC = () => {
               <Text className="text-white font-bold uppercase">
                 Member accepted
               </Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              className={`px-4 py-2 mr-2 ${
+                selectedStatus === "Approved" ? "bg-yellow-500" : "bg-gray-400"
+              } rounded`}
+              onPress={() => setSelectedStatus("Approved")}
+            >
+              <Text className="text-white font-bold uppercase">Approved</Text>
             </TouchableOpacity>
             <TouchableOpacity
               className={`px-4 py-2 mr-2 ${

@@ -3,10 +3,15 @@ import { View, Text, Image, ScrollView } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { ChevronDown, ChevronUp } from "lucide-react-native";
 import { useRoute } from "@react-navigation/native";
-import { ConsignResponse, ImageValuation } from "@/app/types/consign_type";
+import {
+  ConsignResponse,
+  ImageValuation,
+  ValuationDetails,
+} from "@/app/types/consign_type";
 import PreValuationDetailsModal from "./Modal/PreValuationDetailsModal";
 import { showErrorMessage, showSuccessMessage } from "./FlashMessageHelpers";
 import ImageGallery from "./ImageGallery";
+import { updateStatusForValuation } from "@/api/consignAnItemApi";
 
 interface TimelineEvent {
   date: string;
@@ -20,32 +25,19 @@ interface TimelineEvent {
     | "Pending manager approved"
     | "Manager approved"
     | "Member accepted"
+    | "Approved"
     | "Rejected";
 }
 
 const ConsignDetailTimeLine: React.FC = () => {
   const route = useRoute();
-  const { item } = route.params as { item: ConsignResponse }; // Lấy params
+  const { item: routeItem } = route.params as { item: ConsignResponse }; // Lấy params
+  const [item, setItem] = useState(routeItem); // Create a local state for the item
 
   const [timeline, setTimeline] = useState<TimelineEvent[]>([]);
   const [expanded, setExpanded] = useState(false);
 
   const [modalVisible, setModalVisible] = useState(false);
-
-  interface ValuationDetails {
-    id: number;
-    images: string[];
-    name: string;
-    owner: string;
-    artist: string;
-    category: string;
-    weight: string;
-    height: string;
-    depth: string;
-    description: string;
-    estimatedCost: number;
-    note: string;
-  }
 
   const [valuationData, setValuationData] = useState<ValuationDetails | null>(
     null
@@ -139,13 +131,43 @@ const ConsignDetailTimeLine: React.FC = () => {
       case "Pending manager approved":
         return "text-orange-500";
       case "Manager approved":
-        return "text-green-500";
+        return "text-green-700";
       case "Member accepted":
         return "text-blue-500";
+      case "Approved":
+        return "text-green-300";
       case "Rejected":
         return "text-red-500";
       default:
         return "text-gray-500";
+    }
+  };
+
+  const handleApprove = async () => {
+    try {
+      await updateStatusForValuation(item.id, "Approved");
+      // Update the item status locally
+      setItem((prevItem) => ({
+        ...prevItem,
+        status: "Approved",
+      }));
+      setModalVisible(false);
+    } catch (error) {
+      console.error("Error approving valuation:", error);
+    }
+  };
+
+  const handleReject = async () => {
+    try {
+      await updateStatusForValuation(item.id, "Rejected");
+      // Update the item status locally
+      setItem((prevItem) => ({
+        ...prevItem,
+        status: "Rejected",
+      }));
+      setModalVisible(false);
+    } catch (error) {
+      console.error("Error rejecting valuation:", error);
     }
   };
 
@@ -183,7 +205,7 @@ const ConsignDetailTimeLine: React.FC = () => {
             <Text
               className={`uppercase ${getStatusColor(
                 item.status
-              )} font-semibold uppsercase `}
+              )} font-semibold uppercase`}
             >
               {item.status}
             </Text>
@@ -261,8 +283,8 @@ const ConsignDetailTimeLine: React.FC = () => {
           isVisible={modalVisible}
           onClose={() => setModalVisible(false)}
           details={valuationData} // Dữ liệu thực từ ConsignResponse đã chuyển đổi
-          onApprove={() => showSuccessMessage("Approved")}
-          onReject={() => showErrorMessage("Rejected")}
+          onApprove={handleApprove}
+          onReject={handleReject}
         />
       )}
     </ScrollView>

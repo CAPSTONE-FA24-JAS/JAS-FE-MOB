@@ -15,7 +15,7 @@ import Consign from "./consign";
 import HistoryItemConsign from "./history-item-consign";
 import WatchedLots from "./watched-lots";
 import MyBids from "./my-bids";
-import PastBids from "./past-bids";
+// import PastBids from "./invoice-list";
 import FinanceProof from "./finance-proof";
 import TermsConditions from "./terms-conditions";
 import AboutScreen from "./about";
@@ -37,7 +37,12 @@ import PlaceBid from "@/components/Pages/PlaceBid";
 import AutoBidSaveConfig from "@/components/Pages/AutoBidSaveConfig";
 import ConsignDetailTimeLine from "@/components/Pages/ConsignItemTimeLine";
 import RisingBidPage from "@/components/Pages/LiveBidding/RisingBidPage";
+import InvoiceList from "./invoice-list";
+import EditAddress from "@/components/Pages/Address/EditAddress";
 import DetailMyBid from "@/components/Pages/MyBids/BidDetail/DetailMyBid";
+// import InvoiceDetail from "@/components/Pages/Invoice/InvoiceDetailConfirm"; // Ensure this path is correct and the component is properly exported
+import InvoiceDetailConfirm from "@/components/Pages/Invoice/InvoiceDetailConfirm";
+import ViewInvoiceDetail from "@/components/Pages/Invoice/ViewInvoiceDetail";
 
 // Declare Drawer and Stack Navigators
 const Drawer = createDrawerNavigator();
@@ -93,9 +98,9 @@ function MyAccountStack() {
         options={{ header: () => <CustomHeader title="My Bids" /> }}
       />
       <Stack.Screen
-        name="PastBids"
-        component={PastBids}
-        options={{ header: () => <CustomHeader title="Past Bids" /> }}
+        name="InvoiceList"
+        component={InvoiceList}
+        options={{ header: () => <CustomHeader title="Invoice List" /> }}
       />
       <Stack.Screen
         name="FinanceProof"
@@ -114,13 +119,6 @@ function MyAccountStack() {
         component={CreateFinanceProof}
         options={{
           header: () => <CustomHeaderDetail title="Create Finance Proof" />,
-        }}
-      />
-      <Stack.Screen
-        name="DetailMyBid"
-        component={DetailMyBid}
-        options={{
-          header: () => <CustomHeaderDetail title="My Bid Detail" />,
         }}
       />
     </Stack.Navigator>
@@ -280,6 +278,34 @@ export default function AppNavigator() {
         component={RisingBidPage}
         options={{
           header: () => <CustomHeaderDetail title="Live Bidding" />,
+        }}
+      />
+      <Stack.Screen
+        name="EditAddress"
+        component={EditAddress}
+        options={{
+          header: () => <CustomHeaderDetail title="Edit Address" />,
+        }}
+      />
+      <Stack.Screen
+        name="DetailMyBid"
+        component={DetailMyBid}
+        options={{
+          header: () => <CustomHeaderDetail title="My Bid Detail" />,
+        }}
+      />
+      <Stack.Screen
+        name="InvoiceDetail"
+        component={ViewInvoiceDetail}
+        options={{
+          header: () => <CustomHeaderDetail title="Invoice Detail" />,
+        }}
+      />
+      <Stack.Screen
+        name="InvoiceDetailConfirm"
+        component={InvoiceDetailConfirm}
+        options={{
+          header: () => <CustomHeaderDetail title="Invoice Detail Confirm" />,
         }}
       />
     </Stack.Navigator>

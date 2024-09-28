@@ -1,5 +1,7 @@
 // AddressInfo.tsx
 import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { StackNavigationProp } from "@react-navigation/stack";
+import { useNavigation } from "expo-router";
 import React from "react";
 import { View, Text, TouchableOpacity } from "react-native";
 
@@ -11,15 +13,23 @@ interface AddressInfoProps {
     address: any;
   };
 }
+// Define the types for navigation routes
+type RootStackParamList = {
+  EditAddress: undefined;
+};
 
 const AddressInfo: React.FC<AddressInfoProps> = ({ user }) => {
+  const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
+  const handleEditAddress = () => {
+    navigation.navigate("EditAddress");
+  };
   return (
     <View className="p-4 mx-4 bg-white rounded-md  shadow-lg">
       <View className="flex-row justify-between">
         <Text className="text-xl font-bold mb-2 text-gray-900">
           Adress Information
         </Text>
-        <TouchableOpacity>
+        <TouchableOpacity onPress={handleEditAddress}>
           <MaterialCommunityIcons name="pencil" size={24} color="#848484" />
         </TouchableOpacity>
       </View>

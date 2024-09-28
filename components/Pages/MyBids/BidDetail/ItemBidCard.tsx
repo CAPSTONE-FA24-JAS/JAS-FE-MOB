@@ -11,6 +11,7 @@ interface ItemBidCardProps {
   maxBid: string;
   id: number;
   statusColor: string;
+  status: string;
 }
 
 const ItemBidCard: React.FC<ItemBidCardProps> = ({
@@ -22,6 +23,7 @@ const ItemBidCard: React.FC<ItemBidCardProps> = ({
   estimate,
   soldPrice,
   maxBid,
+  status,
 }) => {
   return (
     <View className="p-4  bg-white my-2 mx-4 rounded-lg shadow">
@@ -71,6 +73,9 @@ const ItemBidCard: React.FC<ItemBidCardProps> = ({
               </Text>
             </TouchableOpacity>
           </View>
+          <Text className="text-base uppercase font-bold text-gray-900">
+            {status}
+          </Text>
         </View>
         <View></View>
       </View>

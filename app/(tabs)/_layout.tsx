@@ -37,6 +37,7 @@ import PlaceBid from "@/components/Pages/PlaceBid";
 import AutoBidSaveConfig from "@/components/Pages/AutoBidSaveConfig";
 import ConsignDetailTimeLine from "@/components/Pages/ConsignItemTimeLine";
 import RisingBidPage from "@/components/Pages/LiveBidding/RisingBidPage";
+import DetailMyBid from "@/components/Pages/MyBids/BidDetail/DetailMyBid";
 
 // Declare Drawer and Stack Navigators
 const Drawer = createDrawerNavigator();
@@ -113,6 +114,13 @@ function MyAccountStack() {
         component={CreateFinanceProof}
         options={{
           header: () => <CustomHeaderDetail title="Create Finance Proof" />,
+        }}
+      />
+      <Stack.Screen
+        name="DetailMyBid"
+        component={DetailMyBid}
+        options={{
+          header: () => <CustomHeaderDetail title="My Bid Detail" />,
         }}
       />
     </Stack.Navigator>

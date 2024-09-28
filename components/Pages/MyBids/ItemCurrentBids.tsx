@@ -11,12 +11,13 @@ const ItemCurrentBids: React.FC<ItemCurrentBidsProps> = ({ isLive }) => {
       <View className="flex items-center w-[40%] ">
         <Image
           className="object-cover w-[100%] h-[200px] "
-          source={require("../../assets/item.jpg")}
+          source={require("../../../assets/item.jpg")}
         />
         <View
           className={
             isLive ? "bg-red-800 p-2 w-[100%]" : "bg-lime-800 p-2 w-[100%]"
-          }>
+          }
+        >
           <Text className="text-lg font-bold text-center text-white">
             {isLive ? "Live Bidding" : "Comming Soon"}
           </Text>

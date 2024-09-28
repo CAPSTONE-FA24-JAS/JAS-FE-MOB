@@ -12,6 +12,7 @@ interface ItemPastBidsProps {
   soldPrice: string;
   maxBid: string;
   id: number;
+  status: string;
 }
 
 type RootStackParamList = {
@@ -24,6 +25,7 @@ type RootStackParamList = {
     soldPrice: string;
     maxBid: string;
     id: number;
+    status: string;
   };
 };
 
@@ -36,6 +38,7 @@ const ItemPastBids: React.FC<ItemPastBidsProps> = ({
   soldPrice,
   maxBid,
   id,
+  status,
 }) => {
   const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
 
@@ -51,9 +54,10 @@ const ItemPastBids: React.FC<ItemPastBidsProps> = ({
           soldPrice,
           maxBid,
           id,
+          status,
         });
       }}
-      className="flex-row flex-1 gap-2 my-1"
+      className="flex-row flex-1 gap-2 my-1 p-4 bg-white rounded-lg shadow-lg"
     >
       <View className="flex items-center w-[40%]">
         <Image
@@ -78,6 +82,7 @@ const ItemPastBids: React.FC<ItemPastBidsProps> = ({
         <Text className="text-lg font-bold">Est: {estimate}</Text>
         <Text className="text-lg font-bold">SOLD: {soldPrice}</Text>
         <Text className="text-lg font-bold">Your max bid: {maxBid}</Text>
+        <Text className="text-lg font-bold uppercase">Status: {status}</Text>
       </View>
     </TouchableOpacity>
   );

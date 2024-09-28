@@ -152,7 +152,7 @@ const CustomDrawerContent: React.FC<CustomDrawerContentProps> = (props) => {
 
         <TouchableOpacity
           onPress={() =>
-            props.navigation.navigate("Account", { screen: "PastBids" })
+            props.navigation.navigate("Account", { screen: "InvoiceList" })
           }
         >
           <View
@@ -163,7 +163,7 @@ const CustomDrawerContent: React.FC<CustomDrawerContentProps> = (props) => {
             }}
           >
             <MaterialCommunityIcons name="credit-card" size={24} color="blue" />
-            <Text style={{ marginLeft: 20 }}>Past Bids</Text>
+            <Text style={{ marginLeft: 20 }}>Invoice List</Text>
           </View>
         </TouchableOpacity>
 

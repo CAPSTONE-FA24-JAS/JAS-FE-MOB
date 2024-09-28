@@ -18,7 +18,7 @@ const PastBids: React.FC = () => {
     },
     {
       id: 2,
-      isWin: true,
+      isWin: false,
       title: "Luxury Watches",
       lotNumber: "Lot #205",
       description: "Rolex Submariner in Gold",
@@ -40,7 +40,7 @@ const PastBids: React.FC = () => {
     },
     {
       id: 4,
-      isWin: true,
+      isWin: false,
       title: "Modern Art",
       lotNumber: "Lot #410",
       description: "Abstract Painting by XYZ",

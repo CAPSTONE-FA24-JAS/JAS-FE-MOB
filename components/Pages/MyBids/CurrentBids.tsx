@@ -1,6 +1,6 @@
 import React from "react";
 import { View, Text, ScrollView } from "react-native";
-import ItemCurrentBids from "../ItemCurrentBids";
+import ItemCurrentBids from "./ItemCurrentBids";
 
 const CurrentBids: React.FC = () => {
   return (

@@ -90,8 +90,7 @@ const LotDetailScreen = () => {
             <Swiper
               showsPagination={true}
               autoplay={true}
-              style={{ height: "100%" }}
-            >
+              style={{ height: "100%" }}>
               <Image
                 source={require("../../../assets/item2.jpg")}
                 className="w-full py-10 h-[200px]"
@@ -113,9 +112,7 @@ const LotDetailScreen = () => {
             <Text className=" text-base font-bold text-[#8f8f8f]">
               Lot #{id} - Hình Thức {typeBid}
             </Text>
-            <Text className="text-base text-xl font-bold text-black">
-              {name}
-            </Text>
+            <Text className="text-xl font-bold text-black ">{name}</Text>
             {minPrice && maxPrice && (
               <View className="ml-4">
                 <Text className=" text-base text-[#6c6c6c] ">
@@ -131,7 +128,7 @@ const LotDetailScreen = () => {
             )}
             {price && (
               <View className="flex-row ">
-                <Text className="text-base font-bold text-lg text-[#6c6c6c] ">
+                <Text className="font-bold text-lg text-[#6c6c6c] ">
                   Price:
                 </Text>
                 <Text className="text-[#6c6c6c] ml-2 text-lg ">${price}</Text>
@@ -201,8 +198,7 @@ const LotDetailScreen = () => {
         )}
         <TouchableOpacity
           onPress={handlePressAutoBid}
-          className="mb-3 bg-blue-500 rounded-sm"
-        >
+          className="mb-3 bg-blue-500 rounded-sm">
           <Text className="py-3 font-semibold text-center text-white">
             BID AUTOMATION
           </Text>
@@ -210,15 +206,13 @@ const LotDetailScreen = () => {
         {typeBid !== 1 && (
           <TouchableOpacity
             className="py-3 bg-blue-500 rounded-lg"
-            onPress={() => setModalVisible(true)}
-          >
+            onPress={() => setModalVisible(true)}>
             <Text className="font-semibold text-center text-white">
               PLACE BID
             </Text>
           </TouchableOpacity>
         )}
 
-        {/* Place Bid Modal */}
         <PlaceBidModal
           visible={modalVisible}
           onClose={() => setModalVisible(false)}

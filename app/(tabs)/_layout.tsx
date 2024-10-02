@@ -43,6 +43,13 @@ import DetailMyBid from "@/components/Pages/MyBids/BidDetail/DetailMyBid";
 // import InvoiceDetail from "@/components/Pages/Invoice/InvoiceDetailConfirm"; // Ensure this path is correct and the component is properly exported
 import InvoiceDetailConfirm from "@/components/Pages/Invoice/InvoiceDetailConfirm";
 import ViewInvoiceDetail from "@/components/Pages/Invoice/ViewInvoiceDetail";
+import Payment from "@/components/Pages/Payment/Payment";
+import PaymentUpload from "@/components/Pages/Payment/PaymentUpload";
+import PaymentSuccess from "@/components/Pages/Payment/PaymentSuccess";
+import { Text, View } from "react-native";
+import BidSuccess from "@/components/Pages/MyBids/BidSuccess";
+import PowerOfAttorney from "@/components/Pages/Documents/PowerOfAttorney";
+import OTP from "@/components/Pages/OTP/OTP";
 
 // Declare Drawer and Stack Navigators
 const Drawer = createDrawerNavigator();
@@ -306,6 +313,60 @@ export default function AppNavigator() {
         component={InvoiceDetailConfirm}
         options={{
           header: () => <CustomHeaderDetail title="Invoice Detail Confirm" />,
+        }}
+      />
+      <Stack.Screen
+        name="Payment"
+        component={Payment}
+        options={{
+          header: () => <CustomHeaderDetail title="Payment" />,
+        }}
+      />
+      <Stack.Screen
+        name="PaymentUpload"
+        component={PaymentUpload}
+        options={{
+          header: () => <CustomHeaderDetail title="Payment Upload" />,
+        }}
+      />
+      <Stack.Screen
+        name="PaymentSuccess"
+        component={PaymentSuccess}
+        options={{
+          header: () => (
+            <Text className="text-center pt-20 bg-white text-2xl font-bold  uppercase">
+              Payment Success
+            </Text>
+          ),
+        }}
+      />
+      <Stack.Screen
+        name="BidSuccess"
+        component={BidSuccess}
+        options={{
+          header: () => (
+            <Text className="text-center pt-20 bg-white text-2xl font-bold  uppercase">
+              Bid Success
+            </Text>
+          ),
+        }}
+      />
+      <Stack.Screen
+        name="PowerOfAttorney"
+        component={PowerOfAttorney}
+        options={{
+          header: () => <CustomHeaderDetail title="Power Of Attorney" />,
+        }}
+      />
+      <Stack.Screen
+        name="OTP"
+        component={OTP}
+        options={{
+          header: () => (
+            <Text className="text-center pt-20 bg-white text-2xl font-bold  uppercase">
+              OTP Verification
+            </Text>
+          ),
         }}
       />
     </Stack.Navigator>

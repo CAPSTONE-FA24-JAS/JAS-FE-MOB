@@ -12,6 +12,8 @@ import PreValuationDetailsModal from "../Modal/PreValuationDetailsModal";
 import { showErrorMessage, showSuccessMessage } from "../FlashMessageHelpers";
 import ImageGallery from "../ImageGallery";
 import { updateStatusForValuation } from "@/api/consignAnItemApi";
+import { StackNavigationProp } from "@react-navigation/stack";
+import { useNavigation } from "expo-router";
 
 interface TimelineEvent {
   date: string;
@@ -29,7 +31,14 @@ interface TimelineEvent {
     | "Rejected";
 }
 
+// Define the types for navigation routes
+type RootStackParamList = {
+  PowerOfAttorney: undefined;
+};
+
 const ConsignDetailTimeLine: React.FC = () => {
+  const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
+
   const route = useRoute();
   const { item: routeItem } = route.params as { item: ConsignResponse }; // Lấy params
   const [item, setItem] = useState(routeItem); // Create a local state for the item
@@ -64,7 +73,7 @@ const ConsignDetailTimeLine: React.FC = () => {
       {
         date: "09/09/2024",
         title: "FINAL VALUATION",
-        description: "Proof of Attorney - Pending",
+        description: "Power of Attorney - Pending",
         document: "yes",
         status: "Preliminary Valued",
       },
@@ -94,6 +103,10 @@ const ConsignDetailTimeLine: React.FC = () => {
       },
     ];
     setTimeline(mockData);
+  };
+
+  const handlePowerOfAttorney = () => {
+    navigation.navigate("PowerOfAttorney");
   };
 
   const handleViewPreValuation = () => {
@@ -250,7 +263,7 @@ const ConsignDetailTimeLine: React.FC = () => {
                   {event.document && (
                     <TouchableOpacity
                       className="p-2 mt-1 bg-gray-200 rounded w-[50px]"
-                      onPress={() => alert("View document")}
+                      onPress={handlePowerOfAttorney}
                     >
                       <Text className="text-gray-700">Print</Text>
                       {/* đoạn này đang kh biết tải hẳn luôn ha là mở modal */}

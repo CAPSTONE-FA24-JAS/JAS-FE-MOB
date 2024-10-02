@@ -21,6 +21,7 @@ const StyledTouchableOpacity = styled(TouchableOpacity);
 // Define the types for navigation routes
 type RootStackParamList = {
   EditAddress: undefined;
+  Payment: undefined;
 };
 
 const InvoiceDetailConfirm: React.FC = () => {
@@ -73,10 +74,11 @@ const InvoiceDetailConfirm: React.FC = () => {
   };
 
   const handleConfirm = () => {
-    console.log("Confirmed");
+    navigation.navigate("Payment");
   };
 
   const handleEditAddress = () => {
+    setModalVisible(false); // Close the modal
     navigation.navigate("EditAddress");
   };
 

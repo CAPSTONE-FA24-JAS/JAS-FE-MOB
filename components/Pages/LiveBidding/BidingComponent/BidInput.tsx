@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import { View, TextInput, TouchableOpacity, Text } from "react-native";
 import { Picker } from "@react-native-picker/picker"; // Import Picker for dropdown
+import { useNavigation } from "expo-router";
+import { StackNavigationProp } from "@react-navigation/stack";
 
 interface BidInputProps {
   highestBid: number;
@@ -14,8 +16,14 @@ interface BidInputProps {
     typeBid: number;
   };
 }
+// Define the types for navigation routes
+type RootStackParamList = {
+  BidSuccess: undefined;
+};
 
 const BidInput: React.FC<BidInputProps> = ({ highestBid, item }) => {
+  const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
+
   const [bidValue, setBidValue] = useState<number>(highestBid + 100);
   const [step, setStep] = useState<number>(100); // Step value from dropdown
   const [error, setError] = useState<string | null>(null);
@@ -36,6 +44,7 @@ const BidInput: React.FC<BidInputProps> = ({ highestBid, item }) => {
     if (error) {
       console.log("Invalid bid");
     } else {
+      navigation.navigate("BidSuccess");
       console.log("Bid placed:", bidValue);
     }
   };
@@ -43,10 +52,10 @@ const BidInput: React.FC<BidInputProps> = ({ highestBid, item }) => {
   // Render UI for typeBid 3
   if (item.typeBid === 3) {
     return (
-      <View className="px-4">
-        <View className="flex-row items-center ">
+      <View className="px-4 w-full">
+        <View className="flex-row items-center justify-center ">
           {/* Step size picker */}
-          <View className="border border-gray-300 h-12 rounded-md mr-4">
+          <View className="border border-gray-300 h-12 w-[25%] rounded-md mr-4">
             <Picker
               selectedValue={step}
               className="h-12 w-[120px]"

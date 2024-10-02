@@ -6,7 +6,7 @@ import { StackNavigationProp } from "@react-navigation/stack";
 // Define the types for navigation routes
 type RootStackParamList = {
   HomePage: undefined;
-  InvoiceList: undefined;
+  Account: { screen: "InvoiceList" };
 };
 
 const PaymentSuccess: React.FC = () => {
@@ -15,7 +15,8 @@ const PaymentSuccess: React.FC = () => {
     navigation.navigate("HomePage");
   };
   const handleInvoiceList = () => {
-    navigation.navigate("InvoiceList");
+    // Navigate to 'InvoiceList' through 'Account' stack
+    navigation.navigate("Account", { screen: "InvoiceList" as const });
   };
   return (
     <View className="flex-1 bg-white pt-20 ">

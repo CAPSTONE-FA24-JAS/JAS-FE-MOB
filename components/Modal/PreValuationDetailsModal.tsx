@@ -59,7 +59,7 @@ const PreValuationDetailsModal: React.FC<PreValuationDetailsModalProps> = ({
 
           <ScrollView className="max-h-[80%]">
             {/* Images (2 rows, 2 columns) */}
-            <View className="flex-row justify-between mb-4">
+            <View className="flex-row justify-between mb-4 mx-auto">
               {details.images.slice(0, 2).map((img, idx) => (
                 <Image
                   key={idx}

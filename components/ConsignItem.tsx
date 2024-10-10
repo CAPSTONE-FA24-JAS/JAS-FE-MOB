@@ -25,7 +25,7 @@ const statusColors: { [key: string]: string } = {
   Requested: "text-blue-500",
   Assigned: "text-indigo-500",
   RequestedPreliminary: "text-yellow-500",
-  Preliminary: "text-yellow-500",
+  Preliminary: "text-brown-500",
   ApprovedPreliminary: "text-green-500",
   "Received Jewelry": "text-purple-500",
   "Final Valuated": "text-orange-500",

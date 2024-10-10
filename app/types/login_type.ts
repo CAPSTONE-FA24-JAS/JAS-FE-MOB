@@ -2,16 +2,17 @@
 
 export interface UserAccount {
   $id?: string;
-  email: string;
+  id: number;
+  email: string | null;
   gender: any;
   passwordHash: string;
   roleId: number;
   roleName: string;
-  customerDTO: CustomerDto;
+  customerDTO: CustomerDTO;
   staffDTO?: any;
 }
 
-export interface CustomerDto {
+export interface CustomerDTO {
   $id?: string;
   id: number;
   firstName: string;
@@ -34,12 +35,4 @@ export interface Data {
   $id?: string;
   user: UserAccount;
   accessToken: string;
-}
-export interface LoginResponse {
-  $id?: string;
-  code: number;
-  message: string;
-  isSuccess: boolean;
-  data: Data;
-  errorMessages?: any;
 }

@@ -1,21 +1,24 @@
 import { Response } from "@/app/types/respone_type";
 import apiClient from "./config";
-import { FinancialProof } from "@/app/types/finance_proof_type";
+import {
+  FinancialProof,
+  FinancialProofResponse,
+} from "@/app/types/finance_proof_type";
 
 const API_URL = process.env.EXPO_PUBLIC_API_URL || "http://localhost:7251";
 
 export const getListFinancialProof = async (
   userId: number = 0
-): Promise<Response<FinancialProof[]>> => {
+): Promise<Response<FinancialProofResponse>> => {
   try {
     console.log("Bắt đầu gọi API GetListFinancialProof...", userId);
     console.log(
       "API_URL:",
-      `${API_URL}/api/BidLimit/ViewAllBidLimitByAccount?accountId=${userId}`
+      `${API_URL}/api/BidLimit/ViewAllBidLimitByAccount?customerId=${userId}`
     );
 
-    const response = await apiClient.get<Response<FinancialProof[]>>(
-      `${API_URL}/api/BidLimit/ViewAllBidLimitByAccount?accountId=${userId}`
+    const response = await apiClient.get<Response<FinancialProofResponse>>(
+      `${API_URL}/api/BidLimit/ViewAllBidLimitByAccount?customerId=${userId}`
     );
 
     if (response.data.isSuccess) {
@@ -35,14 +38,14 @@ export const createFinancialProof = async (
   fileUri: string,
   fileType: string,
   fileName: string,
-  accountId: number
+  CustomerId: number
 ) => {
   try {
     console.log("Starting CreateFinancialProof API call...", {
       fileUri,
       fileType,
       fileName,
-      accountId,
+      CustomerId,
     });
 
     if (!fileUri) {
@@ -56,7 +59,7 @@ export const createFinancialProof = async (
       name: fileName,
     } as any);
 
-    formData.append("AccountId", accountId.toString());
+    formData.append("CustomerId", CustomerId.toString());
 
     console.log("FormData created:", formData);
 

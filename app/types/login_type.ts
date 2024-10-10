@@ -1,44 +1,45 @@
 // types/authTypes.ts
 
 export interface UserAccount {
+  $id?: string;
+  email: string;
+  gender: any;
+  passwordHash: string;
+  roleId: number;
+  roleName: string;
+  customerDTO: CustomerDto;
+  staffDTO?: any;
+}
+
+export interface CustomerDto {
+  $id?: string;
+  id: number;
   firstName: string;
   lastName: string;
-  profilePicture: any;
-  email: string;
+  profilePicture: string;
   gender: string;
-  dateOfBirth: any;
-  address: any;
-  passwordHash?: string;
-  status?: boolean;
-  phoneNumber?: string;
-  confirmationToken?: string;
-  isConfirmed?: boolean;
-  vnPayAccount?: any;
-  vnPayBankCode?: any;
-  vnPayAccountName?: any;
-  roleId: number;
-  role?: any;
-  blogs?: any;
-  bidLimit?: any;
-  wallet?: any;
-  id: number;
-  creationDate?: string;
-  createdBy?: number;
-  modificationDate?: string;
-  modificationBy?: number;
-  deletionDate?: any;
-  deleteBy?: any;
-  isDeleted?: boolean;
+  dateOfBirth: string;
+  address: string;
+  citizenIdentificationCard: string;
+  idIssuanceDate: string;
+  idExpirationDate: string;
+  accountDTO?: AccountDto;
+}
+
+export interface AccountDto {
+  $ref?: string;
 }
 
 export interface Data {
+  $id?: string;
   user: UserAccount;
   accessToken: string;
 }
 export interface LoginResponse {
+  $id?: string;
   code: number;
   message: string;
   isSuccess: boolean;
   data: Data;
-  errorMessages: any;
+  errorMessages?: any;
 }

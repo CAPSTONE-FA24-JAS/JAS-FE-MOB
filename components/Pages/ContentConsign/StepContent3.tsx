@@ -3,7 +3,10 @@ import { View, Text, Image } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 
 interface StepContent3Props {
-  apiResponseData: string[]; // Nhận URLs của hình ảnh từ ConsignStep
+  apiResponseData: {
+    $id: string;
+    $values: string[];
+  }; // Nhận URLs của hình ảnh từ ConsignStep
   height: string;
   width: string;
   depth: string;
@@ -19,6 +22,8 @@ const StepContent3: React.FC<StepContent3Props> = ({
   nameConsign,
   description,
 }) => {
+  console.log("apiResponseDataNha", apiResponseData);
+
   return (
     <ScrollView className="flex-1">
       <Text className="text-3xl text-blue-500 font-bold my-4">Success!</Text>
@@ -30,15 +35,17 @@ const StepContent3: React.FC<StepContent3Props> = ({
       <Text className="text-xl font-bold my-4">Review:</Text>
       <View className="mx-2">
         {/* Hiển thị các hình ảnh từ phản hồi API */}
-        <View className="flex-row flex-wrap justify-around gap-2">
-          {apiResponseData?.map((imageUrl, index) => (
-            <Image
-              key={index}
-              source={{ uri: imageUrl }}
-              className="w-40 h-40  rounded-lg shadow-md"
-            />
-          ))}
-        </View>
+        {apiResponseData?.$values?.length > 0 && (
+          <View className="flex-row flex-wrap justify-around gap-2">
+            {apiResponseData?.$values?.map((imageUrl, index) => (
+              <Image
+                key={index}
+                source={{ uri: imageUrl }}
+                className="w-40 h-40  rounded-lg shadow-md"
+              />
+            ))}
+          </View>
+        )}
 
         {/* Hiển thị thông tin sản phẩm */}
         <Text className="text-xl font-semibold mt-4 uppercase">

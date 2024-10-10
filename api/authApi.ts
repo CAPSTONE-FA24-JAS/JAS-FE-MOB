@@ -80,10 +80,7 @@ export const LoginApi = async (
   }
 };
 
-export const registerApi = async (
-  signupUser: SignUpUser,
-  dispatch: AppDispatch
-): Promise<void> => {
+export const registerApi = async (signupUser: SignUpUser): Promise<void> => {
   try {
     console.log("Starting registration...", signupUser);
 
@@ -100,17 +97,12 @@ export const registerApi = async (
       // Nếu đăng ký không thành công, ném ra lỗi với thông báo từ API
       throw new Error(response.data.message || "Registration failed.");
     }
-  } catch (error: unknown) {
-    if (axios.isAxiosError(error) && error.response) {
-      const apiResponse = error.response.data as Response<any>;
-      console.error("Registration error:", apiResponse.message);
-      throw new Error(apiResponse.message || "An unexpected error occurred.");
-    } else if (error instanceof Error) {
-      console.error("Registration error:", error.message);
-      throw error;
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      console.error("Axios error:", error.toJSON());
     } else {
-      console.error("Unexpected error:", error);
-      throw new Error("An unexpected error occurred.");
+      console.error("Registration error:", error);
     }
+    throw error;
   }
 };

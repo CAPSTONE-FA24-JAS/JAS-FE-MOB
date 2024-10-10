@@ -30,6 +30,9 @@ const SignUpScreen = () => {
   const [isLoading, setIsLoading] = useState(false); // Add loading state
 
   const handleRegister = async () => {
+    const date = new Date();
+    const dateNow = date.toISOString();
+
     if (
       !firstName ||
       !lastName ||
@@ -45,22 +48,34 @@ const SignUpScreen = () => {
       showErrorMessage("Error, Passwords do not match");
       return;
     }
-
     const signupUser: SignUpUser = {
-      firstName,
-      lastName,
       email,
       passwordHash: password,
-      gender: "male",
       phoneNumber,
+      registerCustomerDTO: {
+        firstName,
+        lastName,
+        profilePicture: "",
+        gender: "male",
+        dateOfBirth: dateNow,
+        address: "",
+        citizenIdentificationCard: "",
+        idIssuanceDate: dateNow,
+        idExpirationDate: dateNow,
+      },
     };
-
     try {
       setIsLoading(true); // Start loading
-      await registerApi(signupUser, dispatch); // Call the register API
+      await registerApi(signupUser); // Call the register API
       showSuccessMessage(
         "Register successful! Please check email to confirm account and log in to continue"
       );
+      setFirstName("");
+      setLastName("");
+      setEmail("");
+      setPassword("");
+      setRetypePassword("");
+      setPhoneNumber("");
     } catch (error: unknown) {
       if (axios.isAxiosError(error)) {
         if (error.response && error.response.data) {

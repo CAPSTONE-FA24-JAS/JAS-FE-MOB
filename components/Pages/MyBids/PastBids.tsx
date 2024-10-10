@@ -3,7 +3,6 @@ import { View, Text, ScrollView } from "react-native";
 import ItemPastBids from "./ItemPastBids";
 
 const PastBids: React.FC = () => {
-  // Dữ liệu giả cho các item với trạng thái win/loose
   const bidsData = [
     {
       id: 1,

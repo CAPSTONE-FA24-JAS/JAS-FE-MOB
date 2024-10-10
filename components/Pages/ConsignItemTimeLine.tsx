@@ -6,7 +6,8 @@ import { useRoute } from "@react-navigation/native";
 import {
   ConsignResponse,
   ImageValuation,
-  ValuationDetails,
+  Value2,
+  ValueConsign,
 } from "@/app/types/consign_type";
 import PreValuationDetailsModal from "../Modal/PreValuationDetailsModal";
 import { showErrorMessage, showSuccessMessage } from "../FlashMessageHelpers";
@@ -40,7 +41,7 @@ const ConsignDetailTimeLine: React.FC = () => {
   const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
 
   const route = useRoute();
-  const { item: routeItem } = route.params as { item: ConsignResponse }; // Lấy params
+  const { item: routeItem } = route.params as { item: ValueConsign }; // Lấy params
   const [item, setItem] = useState(routeItem); // Create a local state for the item
 
   const [timeline, setTimeline] = useState<TimelineEvent[]>([]);
@@ -48,9 +49,7 @@ const ConsignDetailTimeLine: React.FC = () => {
 
   const [modalVisible, setModalVisible] = useState(false);
 
-  const [valuationData, setValuationData] = useState<ValuationDetails | null>(
-    null
-  );
+  const [valuationData, setValuationData] = useState<any | null>(null);
   const [loadingValuation, setLoadingValuation] = useState(false);
   console.log("valuationDataNe", valuationData);
 
@@ -111,16 +110,16 @@ const ConsignDetailTimeLine: React.FC = () => {
 
   const handleViewPreValuation = () => {
     // Sử dụng dữ liệu trực tiếp từ item để hiển thị trong modal
-    const valuationDetails: ValuationDetails = {
+    const valuationDetails = {
       id: item.id,
-      // status: item.status,
-      images: item.imageValuations.map((img: ImageValuation) => img.imageLink),
+      status: item.status,
+      images: item.imageValuations.$values.map((img) => img.imageLink),
       name: item.name,
-      // pricingTime: item.pricingTime,
+      pricingTime: item.pricingTime,
       estimatedCost: item.desiredPrice,
-      weight: item.width.toString(),
-      height: item.height.toString(),
-      depth: item.depth.toString(),
+      width: item.width,
+      height: item.height,
+      depth: item.depth,
       description: item.description,
       note: "Preliminary pricing is considered based on the images and dimensions you provide.",
       owner: "dgf",
@@ -135,20 +134,24 @@ const ConsignDetailTimeLine: React.FC = () => {
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case "Preliminary Valued":
-        return "text-yellow-500";
       case "Requested":
         return "text-blue-500";
-      case "Product received":
-        return "text-purple-500";
-      case "Pending manager approved":
-        return "text-orange-500";
-      case "Manager approved":
-        return "text-green-700";
-      case "Member accepted":
+      case "Assigned":
+        return "text-indigo-500";
+      case "RequestedPreliminary":
+        return "text-yellow-500";
+      case "Preliminary":
+        return "text-brown-500";
+      case "ApprovedPreliminary":
+        return "text-purple-700";
+      case "Received Jewelry":
         return "text-blue-500";
-      case "Approved":
+      case "Final Valuated":
+        return "text-orange-300";
+      case "Manager Approved":
         return "text-green-300";
+      case "Authorized":
+        return "text-blue-300";
       case "Rejected":
         return "text-red-500";
       default:
@@ -158,11 +161,11 @@ const ConsignDetailTimeLine: React.FC = () => {
 
   const handleApprove = async () => {
     try {
-      await updateStatusForValuation(item.id, "Approved");
+      await updateStatusForValuation(item.id, 3);
       // Update the item status locally
       setItem((prevItem) => ({
         ...prevItem,
-        status: "Approved",
+        status: "Preliminary",
       }));
       setModalVisible(false);
     } catch (error) {
@@ -172,11 +175,11 @@ const ConsignDetailTimeLine: React.FC = () => {
 
   const handleReject = async () => {
     try {
-      await updateStatusForValuation(item.id, "Rejected");
+      await updateStatusForValuation(item.id, 9);
       // Update the item status locally
       setItem((prevItem) => ({
         ...prevItem,
-        status: "Rejected",
+        status: "Rejected Preliminary",
       }));
       setModalVisible(false);
     } catch (error) {
@@ -189,10 +192,10 @@ const ConsignDetailTimeLine: React.FC = () => {
       <View className="p-4">
         {/* Hiển thị thông tin item */}
         <View className="flex-row items-center mb-4">
-          {item.imageValuations.length > 0 &&
-          item.imageValuations[0].imageLink ? (
+          {item.imageValuations.$values.length > 0 &&
+          item.imageValuations.$values[0].imageLink ? (
             <Image
-              source={{ uri: item.imageValuations[0].imageLink }}
+              source={{ uri: item.imageValuations.$values[0].imageLink }}
               className="w-32 h-32 mr-4 rounded"
             />
           ) : (
@@ -223,7 +226,7 @@ const ConsignDetailTimeLine: React.FC = () => {
               {item.status}
             </Text>
             {/* Nút "View Pre Valuation" nếu item.status là "Preliminary Valued" */}
-            {item.status === "Preliminary Valued" && (
+            {item.status === "RequestedPreliminary" && (
               <TouchableOpacity
                 className="mt-2  w-[70%] bg-green-500 p-2 rounded"
                 onPress={handleViewPreValuation} // Hàm này vẫn cần để gọi modal và set dữ liệu
@@ -239,8 +242,8 @@ const ConsignDetailTimeLine: React.FC = () => {
         {/* Tạo list ảnh hàng ngang nhỏ, ấn vào thì show modal ảnh phỏng lớn */}
         <View>
           <ImageGallery
-            images={item.imageValuations.map(
-              (img: ImageValuation) => img.imageLink
+            images={item.imageValuations.$values.map(
+              (img: Value2) => img.imageLink
             )}
           />
         </View>
@@ -291,7 +294,7 @@ const ConsignDetailTimeLine: React.FC = () => {
         )}
       </View>
 
-      {item.status === "Preliminary Valued" && valuationData && (
+      {item.status === "RequestedPreliminary" && valuationData && (
         <PreValuationDetailsModal
           isVisible={modalVisible}
           onClose={() => setModalVisible(false)}

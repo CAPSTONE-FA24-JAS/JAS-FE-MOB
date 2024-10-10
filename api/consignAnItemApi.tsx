@@ -110,7 +110,7 @@ export const getHistoryConsign = async (
 };
 
 // Hàm cập nhật trạng thái của một ký gửi
-export const updateStatusForValuation = async (id: number, status: string) => {
+export const updateStatusForValuation = async (id: number, status: number) => {
   try {
     const response = await axios.put(
       `${API_URL}/api/Valuations/UpdateStatusForValuations`,

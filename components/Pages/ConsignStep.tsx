@@ -31,14 +31,16 @@ const ConsignStep: React.FC = () => {
   const [width, setWidth] = useState("");
   const [depth, setDepth] = useState("");
   // State để lưu data response của consignAnItem
-  const [apiResponseData, setApiResponseData] = useState<string[]>([]); // Đây là nơi lưu URL hình ảnh từ API
+  const [apiResponseData, setApiResponseData] = useState<any>(); // Đây là nơi lưu URL hình ảnh từ API
 
   // Get the sellerId from Redux
   const sellerId = useSelector(
-    (state: RootState) => state.auth.userResponse?.id
+    (state: RootState) => state.auth.userResponse?.customerDTO.id
   );
 
   const handleConsignItem = async () => {
+    console.log("sellerIdnha", sellerId);
+
     try {
       if (sellerId !== undefined) {
         const response = await consignAnItem(
@@ -48,7 +50,8 @@ const ConsignStep: React.FC = () => {
           Number(width),
           Number(depth),
           description,
-          selectedImages
+          selectedImages,
+          4
         );
         // Lưu dữ liệu từ response vào state
         setApiResponseData(response.data);

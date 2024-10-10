@@ -7,28 +7,31 @@ export interface ConsignItemProps {
   price: number;
   image: string;
   status:
-    | "ALL"
-    | "Preliminary Valued"
     | "Requested"
-    | "Product received"
-    | "Pending manager approved"
-    | "Manager approved"
-    | "Member accepted"
-    | "Approved"
-    | "Rejected";
+    | "Assigned"
+    | "RequestedPreliminary"
+    | "Preliminary"
+    | "ApprovedPreliminary"
+    | "Received Jewelry"
+    | "Final Valuated"
+    | "Manager Approved"
+    | "Authorized"
+    | "Rejected Preliminary";
   onViewDetails?: () => void; // Include onViewDetails in the props
 }
 
 // Cập nhật statusColors cho tất cả trạng thái
 const statusColors: { [key: string]: string } = {
-  "Preliminary Valued": "text-yellow-500",
   Requested: "text-blue-500",
-  "Product received": "text-purple-500",
-  "Pending manager approved": "text-orange-500",
-  "Manager approved": "text-green-700",
-  "Member accepted": "text-blue-500",
-  Approved: "text-green-300",
-  Rejected: "text-red-500",
+  Assigned: "text-indigo-500",
+  RequestedPreliminary: "text-yellow-500",
+  Preliminary: "text-yellow-500",
+  ApprovedPreliminary: "text-green-500",
+  "Received Jewelry": "text-purple-500",
+  "Final Valuated": "text-orange-500",
+  "Manager Approved": "text-green-700",
+  Authorized: "text-blue-500",
+  "Rejected Preliminary": "text-red-500",
 };
 
 const ConsignItem: React.FC<ConsignItemProps> = ({

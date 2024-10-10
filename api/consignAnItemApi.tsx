@@ -14,7 +14,8 @@ export const consignAnItem = async (
   width: number,
   depth: number,
   description: string,
-  images: string[]
+  images: string[],
+  status: number
 ) => {
   try {
     const formData = new FormData();
@@ -37,8 +38,6 @@ export const consignAnItem = async (
       } as any); // Chuyển uri trực tiếp, không cần Blob
     });
 
-    console.log("formDataNe", formData);
-
     const response = await axios.post(
       `${API_URL}/api/Valuations/consignAnItem`,
       formData,
@@ -50,6 +49,7 @@ export const consignAnItem = async (
           Depth: depth,
           Description: description,
           SellerId: sellerId,
+          Status: status,
         },
         headers: {
           "Content-Type": "multipart/form-data",
@@ -72,30 +72,32 @@ export const consignAnItem = async (
   }
 };
 
-// Hàm lấy lịch sử ký gửi
 export const getHistoryConsign = async (
   sellerId: number,
-  status: string = "",
+  status?: number, // status là tùy chọn
   pageSize: number = 10,
   pageIndex: number = 1
 ): Promise<HistoryConsignmentResponse> => {
   try {
-    // Gửi yêu cầu GET với các tham số
+    const params: any = {
+      sellerId: sellerId,
+      pageSize: pageSize,
+      pageIndex: pageIndex,
+    };
+    console.log("params", params);
+
+    if (status !== undefined) {
+      params.status = status; // Chỉ thêm status nếu khác undefined
+    }
+
     const response = await axios.get<HistoryConsignmentResponse>(
       `${API_URL}/api/Valuations/getPreliminaryValuationByStatusOfSeller`,
-      {
-        params: {
-          sellerId: sellerId,
-          status: status,
-          pageSize: pageSize,
-          pageIndex: pageIndex,
-        },
-      }
+      { params }
     );
 
-    // Kiểm tra phản hồi thành công hay không
     if (response.data.isSuccess) {
       console.log("Lịch sử ký gửi:", response.data);
+      showSuccessMessage(response.data.message || "Đã lấy lịch sử");
       return response.data;
     } else {
       throw new Error(response.data.message || "Lỗi khi lấy lịch sử ký gửi.");

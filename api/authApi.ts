@@ -1,6 +1,6 @@
 // authApi.ts
 
-import { LoginResponse } from "@/app/types/login_type";
+import { Data } from "@/app/types/login_type";
 import { Response } from "@/app/types/respone_type";
 import { DataSignUpResponse, SignUpUser } from "@/app/types/signup_type";
 import { showErrorMessage } from "@/components/FlashMessageHelpers";
@@ -21,7 +21,7 @@ export const LoginApi = async (
   try {
     console.log("Bắt đầu đăng nhập...", email, password);
 
-    const response = await axios.post<LoginResponse>(
+    const response = await axios.post<Response<Data>>(
       `${API_URL}/api/Authentication/Login`,
       {
         email,
@@ -37,43 +37,7 @@ export const LoginApi = async (
     dispatch(
       login({
         token: data.accessToken,
-        userResponse: {
-          id: data.user.customerDTO.id, //
-          firstName: data.user.customerDTO.firstName,
-          lastName: data.user.customerDTO.lastName,
-          email: data.user.email, //
-          profilePicture: data.user.customerDTO.profilePicture,
-          gender: data.user.customerDTO.gender, //
-          dateOfBirth: data.user.customerDTO.dateOfBirth,
-          address: data.user.customerDTO.address,
-          passwordHash: data.user.passwordHash, //
-          idIssuanceDate: data.user.customerDTO.idIssuanceDate,
-          idExpirationDate: data.user.customerDTO.idExpirationDate,
-          citizenIdentificationCard:
-            data.user.customerDTO.citizenIdentificationCard,
-          // status: data.user.status,
-          // phoneNumber: data.user.phoneNumber,
-          // confirmationToken: data.user.confirmationToken,
-          // isConfirmed: data.user.isConfirmed,
-          // vnPayAccount: data.user.vnPayAccount,
-          // vnPayBankCode: data.user.vnPayBankCode,
-          // vnPayAccountName: data.user.vnPayAccountName,
-          roleId: data.user.roleId,
-          // role: data.user.role,
-          // blogs: data.user.blogs,
-          // bidLimit: data.user.bidLimit,
-          // wallet: data.user.wallet,
-          // creationDate: data.user.creationDate,
-          // createdBy: data.user.createdBy,
-          // modificationDate: data.user.modificationDate,
-          // modificationBy: data.user.modificationBy,
-          // deletionDate: data.user.deletionDate,
-          // deleteBy: data.user.deleteBy,
-          // isDeleted: data.user.isDeleted,
-          roleName: data.user.roleName, //
-          customerDTO: data.user.customerDTO, //
-          staffDTO: data.user.staffDTO, //
-        },
+        userResponse: { ...data.user },
       })
     );
     console.log("Đăng nhập thành công.");

@@ -23,9 +23,9 @@ const FinanceProof = () => {
   useFocusEffect(
     useCallback(() => {
       console.log("FinanceProof Screen Mounted or Returned");
-      getListFinancialProof(userResponse?.id)
+      getListFinancialProof(userResponse?.customerDTO.id)
         .then((response) => {
-          setFinancialProofData(response.data);
+          setFinancialProofData(response.data.$values);
         })
         .catch((error) => {
           console.error("Error fetching financial proof data:", error);
@@ -63,7 +63,7 @@ const FinanceProof = () => {
 
   return (
     <View className="flex flex-col justify-center gap-10 p-2">
-      {userResponse?.bidLimit ? (
+      {/* {userResponse?.bidLimit ? (
         <Text className="text-2xl font-bold ">
           Your Approved Bidding Limit: {userResponse.bidLimit} VNĐ
         </Text>
@@ -71,7 +71,7 @@ const FinanceProof = () => {
         <Text className="text-2xl font-bold text-center ">
           You Have Not Been Approved For A Bidding Limit
         </Text>
-      )}
+      )} */}
 
       <TouchableOpacity
         className="self-start w-1/2 p-2 bg-blue-500 rounded-lg"

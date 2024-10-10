@@ -6,7 +6,6 @@ import {
   Image,
   Alert,
   ActivityIndicator,
-  FlatList,
 } from "react-native";
 import * as DocumentPicker from "expo-document-picker";
 import { createFinancialProof } from "@/api/financeProofApi";
@@ -51,7 +50,12 @@ const CreateFinanceProof: React.FC = () => {
     setIsUploading(true);
 
     try {
-      const accountId = userResponse?.id || 0;
+      if (!userResponse) {
+        Alert.alert("Error", "User information is missing.");
+        setIsUploading(false);
+        return;
+      }
+      const CustomerId = userResponse.customerDTO.id;
       const file = selectedFile[0];
 
       const fileUri = file.uri;
@@ -62,7 +66,7 @@ const CreateFinanceProof: React.FC = () => {
         fileUri,
         fileName,
         fileType,
-        accountId,
+        CustomerId,
       });
 
       // Check if file exists and log its details
@@ -77,7 +81,7 @@ const CreateFinanceProof: React.FC = () => {
         fileUri,
         fileType,
         fileName,
-        accountId
+        CustomerId
       );
       console.log("Upload result:", result);
 

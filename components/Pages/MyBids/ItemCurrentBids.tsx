@@ -1,41 +1,86 @@
+import { StackNavigationProp } from "@react-navigation/stack";
+import { useNavigation } from "@react-navigation/native";
 import React from "react";
-import { View, Image, Text } from "react-native";
+import { View, Image, Text, TouchableOpacity } from "react-native";
 
 interface ItemCurrentBidsProps {
-  isLive: boolean; // State để xác định trạng thái
+  isLive: boolean;
+  title: string;
+  lotNumber: string;
+  description: string;
+  estimate: string;
+  currentBid: string;
+  timeLeft: string;
+  id: number;
+  endTime: string;
 }
 
-const ItemCurrentBids: React.FC<ItemCurrentBidsProps> = ({ isLive }) => {
+type RootStackParamList = {
+  DetailCurrentBid: {
+    isLive: boolean;
+    title: string;
+    lotNumber: string;
+    description: string;
+    estimate: string;
+    currentBid: string;
+    timeLeft: string;
+    id: number;
+    endTime: string;
+  };
+};
+
+const ItemCurrentBids: React.FC<ItemCurrentBidsProps> = ({
+  isLive,
+  title,
+  lotNumber,
+  description,
+  estimate,
+  currentBid,
+  timeLeft,
+  id,
+  endTime,
+}) => {
+  const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
+
   return (
-    <View className="flex-row flex-1 gap-2 my-1 bg-slate-200">
-      <View className="flex items-center w-[40%] ">
+    <TouchableOpacity
+      onPress={() => {
+        console.log("lotNumber", lotNumber);
+      }}
+      className="flex-row flex-1 gap-2 p-4 my-1 bg-white rounded-lg shadow-lg">
+      <View className="flex items-center w-[40%]">
         <Image
-          className="object-cover w-[100%] h-[200px] "
+          className="w-[100%] h-[200px] rounded-lg"
           source={require("../../../assets/item.jpg")}
         />
         <View
           className={
-            isLive ? "bg-red-800 p-2 w-[100%]" : "bg-lime-800 p-2 w-[100%]"
-          }
-        >
+            isLive ? "bg-red-600 p-2 w-[100%]" : "bg-[#98C583] p-2 w-[100%]"
+          }>
           <Text className="text-lg font-bold text-center text-white">
-            {isLive ? "Live Bidding" : "Comming Soon"}
+            {isLive ? "Live Bidding" : "Coming Soon"}
           </Text>
-          <Text className="font-bold text-center text-white">
-            12 September 2024 22:00 GMT +7 Left
+          <Text className="text-sm font-bold text-center text-white">
+            {timeLeft} left
           </Text>
         </View>
       </View>
 
-      <View>
-        <Text className="text-lg font-bold">Fine Jewels</Text>
-        <Text className="text-lg font-bold">Lot #102</Text>
-        <Text className="flex-shrink text-lg font-bold">
-          Breitling Colt Chronograph in Steelssssssssssssssssssss
+      <View className="w-[60%]">
+        <Text className="text-xl font-bold">{title}</Text>
+        <Text className="text-lg font-semibold text-gray-600">{lotNumber}</Text>
+        <Text className="mt-1 text-lg font-bold">{description}</Text>
+        <Text className="mt-1 text-base text-gray-600">
+          Est: <Text className="font-semibold">{estimate}</Text>
         </Text>
-        <Text className="text-lg font-bold">Est: US3500 - US4000</Text>
+        <Text className="text-base text-gray-600">
+          Current: <Text className="font-semibold">{currentBid}</Text>
+        </Text>
+        <Text className="text-base text-gray-600">
+          Your Bid: <Text className="font-semibold">{currentBid}</Text>
+        </Text>
       </View>
-    </View>
+    </TouchableOpacity>
   );
 };
 

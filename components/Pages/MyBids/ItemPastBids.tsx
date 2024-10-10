@@ -57,8 +57,7 @@ const ItemPastBids: React.FC<ItemPastBidsProps> = ({
           status,
         });
       }}
-      className="flex-row flex-1 gap-2 my-1 p-4 bg-white rounded-lg shadow-lg"
-    >
+      className="flex-row flex-1 gap-2 p-4 my-1 bg-white rounded-lg shadow-lg">
       <View className="flex items-center w-[40%]">
         <Image
           className="object-cover w-[100%] h-[200px] rounded-lg"
@@ -67,8 +66,7 @@ const ItemPastBids: React.FC<ItemPastBidsProps> = ({
         <View
           className={
             isWin ? "bg-[#98C583] p-2 w-[100%]" : "bg-[#C5838F] p-2 w-[100%]"
-          }
-        >
+          }>
           <Text className="text-lg font-bold text-center text-white">
             {isWin ? "You Win !!!" : "You Lose !!!"}
           </Text>
@@ -76,13 +74,18 @@ const ItemPastBids: React.FC<ItemPastBidsProps> = ({
       </View>
 
       <View className="w-[60%]">
-        <Text className="text-lg font-bold">{title}</Text>
-        <Text className="text-lg font-bold">{lotNumber}</Text>
-        <Text className="flex-shrink text-lg font-bold">{description}</Text>
-        <Text className="text-lg font-bold">Est: {estimate}</Text>
-        <Text className="text-lg font-bold">SOLD: {soldPrice}</Text>
-        <Text className="text-lg font-bold">Your max bid: {maxBid}</Text>
-        <Text className="text-lg font-bold uppercase">Status: {status}</Text>
+        <Text className="text-xl font-bold">{title}</Text>
+        <Text className="text-lg font-semibold text-gray-600">{lotNumber}</Text>
+        <Text className="mt-1 text-lg font-bold">{description}</Text>
+        <Text className="mt-1 text-base text-gray-600">
+          Est: <Text className="font-semibold">{estimate}</Text>
+        </Text>
+        <Text className="text-base text-gray-600">
+          SOLD: <Text className="font-semibold">{soldPrice}</Text>
+        </Text>
+        <Text className="text-base text-gray-600">
+          Your max bid: <Text className="font-semibold">{maxBid}</Text>
+        </Text>
       </View>
     </TouchableOpacity>
   );

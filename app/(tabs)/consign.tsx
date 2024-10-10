@@ -28,7 +28,7 @@ const Consign: React.FC = () => {
           className="mt-10"
           onPress={() => navigation.navigate("ConsignStep")}>
           <View
-            className="flex flex-row justify-center w-full items-center bg-blue-500 w-[200px] h-16 w-full rounded-lg"
+            className="flex flex-row items-center justify-center w-full h-16 bg-blue-500 rounded-lg"
             style={{ marginBottom: 20 }}>
             <Text className="text-xl font-bold text-white uppercase">
               Get Started

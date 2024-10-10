@@ -61,10 +61,10 @@ export default function MyBids() {
       </Tab>
 
       <TabView value={index} onChange={setIndex} animationType="spring">
-        <TabView.Item className="px-2">
+        <TabView.Item className="m-2">
           <CurrentBids />
         </TabView.Item>
-        <TabView.Item style={{ width: "100%" }}>
+        <TabView.Item className="m-2">
           <PastBids />
         </TabView.Item>
       </TabView>

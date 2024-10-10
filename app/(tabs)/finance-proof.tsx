@@ -62,21 +62,21 @@ const FinanceProof = () => {
   };
 
   return (
-    <View className="flex flex-col justify-center gap-2 m-2">
+    <View className="flex flex-col justify-center gap-10 p-2">
       {userResponse?.bidLimit ? (
-        <Text className="text-3xl font-bold text-center">
+        <Text className="text-2xl font-bold ">
           Your Approved Bidding Limit: {userResponse.bidLimit} VNĐ
         </Text>
       ) : (
-        <Text className="text-3xl font-bold text-center text-red-700">
+        <Text className="text-2xl font-bold text-center ">
           You Have Not Been Approved For A Bidding Limit
         </Text>
       )}
 
       <TouchableOpacity
-        className="w-1/2 p-2 m-2 bg-blue-200 rounded-lg"
+        className="self-start w-1/2 p-2 bg-blue-500 rounded-lg"
         onPress={() => navigation.navigate("CreateFinanceProof")}>
-        <Text className="text-lg font-bold text-center text-blue-500">
+        <Text className="text-lg font-bold text-center text-white">
           Create A Finance Proof
         </Text>
       </TouchableOpacity>
@@ -94,7 +94,7 @@ const FinanceProof = () => {
           )}
         />
       ) : (
-        <Text className="text-2xl font-bold text-center text-red-700">
+        <Text className="text-lg font-bold text-center">
           You Have Not Created Any Financial Proof
         </Text>
       )}

@@ -18,10 +18,20 @@ export interface DataSignUpResponse {
 }
 
 export interface SignUpUser {
-  firstName: string;
-  lastName: string;
   email: string;
   passwordHash: string;
-  gender: string;
   phoneNumber: string;
+  registerCustomerDTO: registerCustomer;
+}
+
+export interface registerCustomer {
+  firstName: string;
+  lastName: string;
+  profilePicture?: string;
+  gender?: string;
+  dateOfBirth?: string;
+  address?: string;
+  citizenIdentificationCard?: string;
+  idIssuanceDate?: string;
+  idExpirationDate?: string;
 }

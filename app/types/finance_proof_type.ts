@@ -10,8 +10,3 @@ export interface FinancialProof {
   expireDate: string;
   status: "Pending" | "Approve" | "Reject"; // chưa biết tất cả trạng thái nên để v nhé
 }
-
-export interface FinancialProofResponse {
-  $id?: string;
-  $values: FinancialProof[];
-}

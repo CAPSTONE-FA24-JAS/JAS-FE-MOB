@@ -3,7 +3,12 @@ import {
   showErrorMessage,
   showSuccessMessage,
 } from "@/components/FlashMessageHelpers";
-import { HistoryConsignmentResponse } from "@/app/types/consign_type";
+import {
+  HistoryConsignmentResponse,
+  TimeLineConsignment,
+} from "@/app/types/consign_type";
+import { Response } from "@/app/types/respone_type";
+import apiClient from "./config";
 
 const API_URL = process.env.EXPO_PUBLIC_API_URL || "http://localhost:7251";
 
@@ -81,6 +86,7 @@ export const getHistoryConsign = async (
   try {
     const params: any = {
       sellerId: sellerId,
+      status: status,
       pageSize: pageSize,
       pageIndex: pageIndex,
     };
@@ -90,15 +96,18 @@ export const getHistoryConsign = async (
       params.status = status; // Chỉ thêm status nếu khác undefined
     }
 
-    const response = await axios.get<HistoryConsignmentResponse>(
-      `${API_URL}/api/Valuations/getPreliminaryValuationByStatusOfSeller`,
+    const response = await axios.get<Response<HistoryConsignmentResponse>>(
+      `${API_URL}/api/Valuations/getPreliminaryValuationByStatusOfSeller?sellerId=${sellerId}`,
       { params }
+    );
+    console.log(
+      `${API_URL}/api/Valuations/getPreliminaryValuationByStatusOfSeller?sellerId=${sellerId}`
     );
 
     if (response.data.isSuccess) {
       console.log("Lịch sử ký gửi:", response.data);
       showSuccessMessage(response.data.message || "Đã lấy lịch sử");
-      return response.data;
+      return response.data.data;
     } else {
       throw new Error(response.data.message || "Lỗi khi lấy lịch sử ký gửi.");
     }
@@ -134,5 +143,24 @@ export const updateStatusForValuation = async (id: number, status: number) => {
     console.error("Lỗi khi cập nhật trạng thái:", error);
     showErrorMessage("Không thể cập nhật trạng thái.");
     throw error;
+  }
+};
+
+export const getDetailHistoryValuation = async (
+  id: number
+): Promise<TimeLineConsignment[]> => {
+  try {
+    const response = await apiClient.get<Response<TimeLineConsignment[]>>(
+      `/api/Valuations/getDetailHistoryValuation?valuationId=${id}`
+    );
+    console.log("id", id);
+
+    console.log("responsegetDetailHistoryValuation", response);
+
+    return response.data.data;
+  } catch (error) {
+    console.error("Lỗi khi lấy chi tiết lịch sử định giá:", error);
+    showErrorMessage("Không thể lấy chi tiết lịch sử định giá.");
+    return [];
   }
 };

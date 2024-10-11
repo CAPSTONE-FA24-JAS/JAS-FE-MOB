@@ -1,15 +1,12 @@
 import { Response } from "@/app/types/respone_type";
 import apiClient from "./config";
-import {
-  FinancialProof,
-  FinancialProofResponse,
-} from "@/app/types/finance_proof_type";
+import { FinancialProof } from "@/app/types/finance_proof_type";
 
 const API_URL = process.env.EXPO_PUBLIC_API_URL || "http://localhost:7251";
 
 export const getListFinancialProof = async (
   userId: number = 0
-): Promise<Response<FinancialProofResponse>> => {
+): Promise<Response<FinancialProof>> => {
   try {
     console.log("Bắt đầu gọi API GetListFinancialProof...", userId);
     console.log(
@@ -17,7 +14,7 @@ export const getListFinancialProof = async (
       `${API_URL}/api/BidLimit/ViewAllBidLimitByAccount?customerId=${userId}`
     );
 
-    const response = await apiClient.get<Response<FinancialProofResponse>>(
+    const response = await apiClient.get<Response<FinancialProof>>(
       `${API_URL}/api/BidLimit/ViewAllBidLimitByAccount?customerId=${userId}`
     );
 

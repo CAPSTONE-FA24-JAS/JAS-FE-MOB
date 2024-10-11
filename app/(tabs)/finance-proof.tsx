@@ -22,10 +22,11 @@ const FinanceProof = () => {
 
   useFocusEffect(
     useCallback(() => {
-      console.log("FinanceProof Screen Mounted or Returned");
       getListFinancialProof(userResponse?.customerDTO.id)
         .then((response) => {
-          setFinancialProofData(response.data.$values);
+          return setFinancialProofData(
+            Array.isArray(response.data) ? response.data : []
+          );
         })
         .catch((error) => {
           console.error("Error fetching financial proof data:", error);
@@ -61,6 +62,8 @@ const FinanceProof = () => {
       });
   };
 
+  console.log("financialProofData", financialProofData);
+
   return (
     <View className="flex flex-col justify-center gap-10 p-2">
       {/* {userResponse?.bidLimit ? (
@@ -81,7 +84,7 @@ const FinanceProof = () => {
         </Text>
       </TouchableOpacity>
 
-      {financialProofData.length > 0 ? (
+      {financialProofData ? (
         <SectionList
           className="bg-transparent h-5/6"
           sections={groupDataByMonth(financialProofData)}

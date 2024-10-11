@@ -4,33 +4,19 @@ import { TouchableOpacity } from "react-native-gesture-handler";
 import { ChevronDown, ChevronUp } from "lucide-react-native";
 import { useRoute } from "@react-navigation/native";
 import {
-  ConsignResponse,
-  ImageValuation,
-  Value2,
-  ValueConsign,
+  dataResponseConsignList,
+  TimeLineConsignment,
 } from "@/app/types/consign_type";
 import PreValuationDetailsModal from "../Modal/PreValuationDetailsModal";
 import { showErrorMessage, showSuccessMessage } from "../FlashMessageHelpers";
 import ImageGallery from "../ImageGallery";
-import { updateStatusForValuation } from "@/api/consignAnItemApi";
+import {
+  getDetailHistoryValuation,
+  updateStatusForValuation,
+} from "@/api/consignAnItemApi";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { useNavigation } from "expo-router";
-
-interface TimelineEvent {
-  date: string;
-  title: string;
-  description: string;
-  document?: string;
-  status:
-    | "Preliminary Valued"
-    | "Requested"
-    | "Product received"
-    | "Pending manager approved"
-    | "Manager approved"
-    | "Member accepted"
-    | "Approved"
-    | "Rejected";
-}
+import { get } from "react-native/Libraries/TurboModule/TurboModuleRegistry";
 
 // Define the types for navigation routes
 type RootStackParamList = {
@@ -41,10 +27,10 @@ const ConsignDetailTimeLine: React.FC = () => {
   const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
 
   const route = useRoute();
-  const { item: routeItem } = route.params as { item: ValueConsign }; // Lấy params
+  const { item: routeItem } = route.params as { item: dataResponseConsignList }; // Lấy params
   const [item, setItem] = useState(routeItem); // Create a local state for the item
 
-  const [timeline, setTimeline] = useState<TimelineEvent[]>([]);
+  const [timeline, setTimeline] = useState<TimeLineConsignment[]>([]);
   const [expanded, setExpanded] = useState(false);
 
   const [modalVisible, setModalVisible] = useState(false);
@@ -54,54 +40,19 @@ const ConsignDetailTimeLine: React.FC = () => {
   console.log("valuationDataNe", valuationData);
 
   useEffect(() => {
-    // Simulating API call to get timeline data
-    fetchTimelineData(item.id.toString());
+    fetchTimelineData("30"); //hard tamj id ddeer test UI
   }, [item]);
 
   const toggleExpanded = () => setExpanded(!expanded);
 
   const fetchTimelineData = async (itemId: string) => {
-    // Replace this with actual API call
-    const mockData: TimelineEvent[] = [
-      {
-        date: "09/09/2024",
-        title: "CONSIGN ITEM SUCCESSFULLY",
-        description: "Successfully",
-        status: "Requested",
-      },
-      {
-        date: "09/09/2024",
-        title: "FINAL VALUATION",
-        description: "Power of Attorney - Pending",
-        document: "yes",
-        status: "Preliminary Valued",
-      },
-      {
-        date: "09/09/2024",
-        title: "PICKING UP SUCCESSFULLY",
-        description: "Goods Receipt",
-        status: "Manager approved",
-      },
-      {
-        date: "09/09/2024",
-        title: "PICKING UP",
-        description: "Request Detail",
-        status: "Member accepted",
-      },
-      {
-        date: "09/09/2024",
-        title: "PRELIMINARY VALUATION",
-        description: "Preliminary Valuation - Pending",
-        status: "Pending manager approved",
-      },
-      {
-        date: "09/09/2024",
-        title: "Request Consign Successfully",
-        description: "Request Detail",
-        status: "Product received",
-      },
-    ];
-    setTimeline(mockData);
+    getDetailHistoryValuation(Number(itemId)).then((response) => {
+      console.log("timeline", response);
+      if (!response) {
+        setTimeline([]);
+      }
+      setTimeline(response);
+    });
   };
 
   const handlePowerOfAttorney = () => {
@@ -113,10 +64,10 @@ const ConsignDetailTimeLine: React.FC = () => {
     const valuationDetails = {
       id: item.id,
       status: item.status,
-      images: item.imageValuations.$values.map((img) => img.imageLink),
+      images: item.imageValuations[0]?.imageLink,
       name: item.name,
       pricingTime: item.pricingTime,
-      estimatedCost: item.desiredPrice,
+      estimatedCost: item.pricingTime,
       width: item.width,
       height: item.height,
       depth: item.depth,
@@ -192,10 +143,10 @@ const ConsignDetailTimeLine: React.FC = () => {
       <View className="p-4">
         {/* Hiển thị thông tin item */}
         <View className="flex-row items-center mb-4">
-          {item.imageValuations.$values.length > 0 &&
-          item.imageValuations.$values[0].imageLink ? (
+          {item.imageValuations[0].imageLink &&
+          item.imageValuations[0].imageLink ? (
             <Image
-              source={{ uri: item.imageValuations.$values[0].imageLink }}
+              source={{ uri: item.imageValuations[0].imageLink }}
               className="w-32 h-32 mr-4 rounded"
             />
           ) : (
@@ -209,20 +160,19 @@ const ConsignDetailTimeLine: React.FC = () => {
               <Text className="text-xl font-bold">{item.name}</Text>
               <Text className="text-gray-600">#{item.id}</Text>
             </View>
-            {item.desiredPrice ? (
+            {item.pricingTime ? (
               <Text className="mt-1 text-lg font-semibold">
-                ${item.desiredPrice}
+                ${item.pricingTime}
               </Text>
             ) : (
-              <Text className="mt-1 text-base text-gray-500 font-semibold">
+              <Text className="mt-1 text-base font-semibold text-gray-500">
                 Price not available
               </Text>
             )}
             <Text
               className={`uppercase ${getStatusColor(
                 item.status
-              )} font-semibold uppercase`}
-            >
+              )} font-semibold uppercase`}>
               {item.status}
             </Text>
             {/* Nút "View Pre Valuation" nếu item.status là "Preliminary Valued" */}
@@ -231,7 +181,7 @@ const ConsignDetailTimeLine: React.FC = () => {
                 className="mt-2  w-[70%] bg-green-500 p-2 rounded"
                 onPress={handleViewPreValuation} // Hàm này vẫn cần để gọi modal và set dữ liệu
               >
-                <Text className="text-white font-bold text-center">
+                <Text className="font-bold text-center text-white">
                   View Pre Valuation
                 </Text>
               </TouchableOpacity>
@@ -242,46 +192,45 @@ const ConsignDetailTimeLine: React.FC = () => {
         {/* Tạo list ảnh hàng ngang nhỏ, ấn vào thì show modal ảnh phỏng lớn */}
         <View>
           <ImageGallery
-            images={item.imageValuations.$values.map(
-              (img: Value2) => img.imageLink
-            )}
+            images={item.imageValuations.map((img) => img.imageLink)}
           />
         </View>
 
         <View className="mt-4">
-          {timeline
-            .slice(0, expanded ? timeline.length : 1)
-            .map((event, index) => (
-              <View key={index} className="flex-row mb-4">
-                <View className="items-center mr-4">
-                  <View className="w-3 h-3 bg-blue-500 rounded-full" />
-                  {index !== (expanded ? timeline.length - 1 : 0) && (
-                    <View className="w-0.5 h-[80px] bg-gray-300 mt-1" />
-                  )}
+          {timeline &&
+            timeline.length > 0 &&
+            timeline
+              .slice(0, expanded ? timeline.length : 1)
+              .map((event, index) => (
+                <View key={index} className="flex-row mb-4">
+                  <View className="items-center mr-4">
+                    <View className="w-3 h-3 bg-blue-500 rounded-full" />
+                    {index !== (expanded ? timeline.length - 1 : 0) && (
+                      <View className="w-0.5 h-[80px] bg-gray-300 mt-1" />
+                    )}
+                  </View>
+                  <View className="flex-1">
+                    <Text className="text-sm text-gray-500">
+                      {event.creationDate}
+                    </Text>
+                    <Text className="font-bold">{event.statusName}</Text>
+                    {event.statusName == "RecivedJewelry" && ( // chưa biết cái nào hiển thị tài liệu nên để đây
+                      <TouchableOpacity
+                        className="p-2 mt-1 bg-gray-200 rounded w-[50px]"
+                        onPress={handlePowerOfAttorney}>
+                        <Text className="text-gray-700">Print</Text>
+                        {/* đoạn này đang kh biết tải hẳn luôn ha là mở modal */}
+                      </TouchableOpacity>
+                    )}
+                  </View>
                 </View>
-                <View className="flex-1">
-                  <Text className="text-sm text-gray-500">{event.date}</Text>
-                  <Text className="font-bold">{event.title}</Text>
-                  <Text className="text-gray-600">{event.description}</Text>
-                  {event.document && (
-                    <TouchableOpacity
-                      className="p-2 mt-1 bg-gray-200 rounded w-[50px]"
-                      onPress={handlePowerOfAttorney}
-                    >
-                      <Text className="text-gray-700">Print</Text>
-                      {/* đoạn này đang kh biết tải hẳn luôn ha là mở modal */}
-                    </TouchableOpacity>
-                  )}
-                </View>
-              </View>
-            ))}
+              ))}
         </View>
 
         {timeline.length > 1 && (
           <TouchableOpacity
             onPress={toggleExpanded}
-            className="flex-row items-center justify-center p-2 mt-2 bg-gray-100 rounded"
-          >
+            className="flex-row items-center justify-center p-2 mt-2 bg-gray-100 rounded">
             <Text className="mr-2">
               {expanded ? "Thu gọn" : "Xem toàn bộ lịch sử"}
             </Text>

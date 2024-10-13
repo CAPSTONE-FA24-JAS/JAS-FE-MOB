@@ -1,11 +1,47 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Tab, TabView } from "@rneui/themed";
 import AuctionDetailScreen from "./AuctionDetail";
 import AuctionLots from "./AuctionLots";
+import { useRoute } from "@react-navigation/native";
+import { AuctionData } from "@/app/types/auction_type";
+import { viewAuctionById } from "@/api/auctionApi";
+import { ActivityIndicator, View } from "react-native";
 
 const BiddingAuction = () => {
+  const route = useRoute();
+  const auctionId = (route.params as { auctionId: number })?.auctionId;
+
+  const [auctionDetails, setAuctionDetails] = useState<AuctionData | null>(
+    null
+  );
+  const [loading, setLoading] = useState<boolean>(true);
+
   const [index, setIndex] = React.useState(0);
   const [isSwiperActive, setIsSwiperActive] = useState<boolean>(false);
+
+  useEffect(() => {
+    if (!auctionId) return;
+    const fetchAuctionDetails = async () => {
+      try {
+        const response = await viewAuctionById(auctionId);
+        setAuctionDetails(response.data);
+      } catch (error) {
+        console.error("Failed to fetch auction details:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchAuctionDetails();
+  }, [auctionId]);
+
+  if (loading) {
+    return (
+      <View className="flex-1 justify-center items-center">
+        <ActivityIndicator size="large" color="#0000ff" />
+      </View>
+    );
+  }
 
   return (
     <>
@@ -21,7 +57,8 @@ const BiddingAuction = () => {
           backgroundColor: "transparent",
           alignSelf: "center",
           width: "50%",
-        }}>
+        }}
+      >
         <Tab.Item
           title="AUCTION"
           titleStyle={(active) => ({
@@ -66,9 +103,15 @@ const BiddingAuction = () => {
         value={index}
         onChange={setIndex}
         animationType="spring"
-        disableSwipe={isSwiperActive}>
+        disableSwipe={isSwiperActive}
+      >
         <TabView.Item style={{ width: "100%" }}>
-          <AuctionDetailScreen setIsSwiperActive={setIsSwiperActive} />
+          {auctionDetails && (
+            <AuctionDetailScreen
+              setIsSwiperActive={setIsSwiperActive}
+              dataAuction={auctionDetails}
+            />
+          )}
         </TabView.Item>
         <TabView.Item style={{ width: "100%" }}>
           <AuctionLots />

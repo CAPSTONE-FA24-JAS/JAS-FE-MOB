@@ -45,16 +45,24 @@ const AuctionDetailScreen: React.FC<AuctionDetailScreenProps> = ({
   return (
     <ScrollView className="bg-white">
       {dataAuction?.status === "Living" ? (
-        <View className="bg-red-600">
-          <Text className="text-center text-white">Bid {countdown} Left</Text>
+        <View className="bg-red-600 py-2">
+          <Text className="text-center text-white font-semibold">
+            Bid {countdown} Left
+          </Text>
         </View>
       ) : dataAuction?.status === "NotStarted" ? (
-        <View className="bg-yellow-600">
-          <Text className="text-center text-white">
+        <View className="bg-yellow-600 py-2">
+          <Text className="text-center text-white  font-semibold">
             Upcoming After {countdown}
           </Text>
         </View>
-      ) : null}
+      ) : (
+        <View className="bg-gray-600 py-2">
+          <Text className="text-center text-white font-semibold">
+            END BIDING
+          </Text>
+        </View>
+      )}
 
       <View className="h-64">
         <Swiper
@@ -87,30 +95,8 @@ const AuctionDetailScreen: React.FC<AuctionDetailScreenProps> = ({
               />
             </View>
           )}
-          {/* <View>
-            <Image
-              source={require("../../../assets/bgItemAuction.png")}
-              className="w-full h-full"
-              resizeMode="cover"
-            />
-          </View>
-          <View>
-            <Image
-              source={require("../../../assets/bgItemAuction.png")}
-              className="w-full h-full"
-              resizeMode="cover"
-            />
-          </View>
-          <View>
-            <Image
-              source={require("../../../assets/bgItemAuction.png")}
-              className="w-full h-full"
-              resizeMode="cover"
-            />
-          </View> */}
         </Swiper>
       </View>
-
       <View className="p-4">
         <Text className="mb-2 text-xl font-bold">
           {dataAuction?.name || "Unnamed Auction"}

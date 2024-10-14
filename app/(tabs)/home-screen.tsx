@@ -119,7 +119,7 @@ const HomeScreen = () => {
     authorizationLetter: "https://example.com/authorization-letter.pdf",
   };
 
-  console.log("auctionsNe", auctions);
+  // console.log("auctionsNe", auctions);
 
   return (
     <View className="flex-1 bg-white">
@@ -150,7 +150,7 @@ const HomeScreen = () => {
       />
 
       {/* FinalValuationDetailsModal */}
-      <FinalValuationDetailsModal
+      {/* <FinalValuationDetailsModal
         isVisible={isFinalModalVisible}
         onClose={() => setFinalModalVisible(false)}
         details={finalValuationDetails}
@@ -162,7 +162,7 @@ const HomeScreen = () => {
           showErrorMessage("Rejected");
           setFinalModalVisible(false);
         }}
-      />
+      /> */}
     </View>
   );
 };

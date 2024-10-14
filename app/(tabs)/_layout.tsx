@@ -50,6 +50,9 @@ import { Text, View } from "react-native";
 import BidSuccess from "@/components/Pages/MyBids/BidSuccess";
 import PowerOfAttorney from "@/components/Pages/Documents/PowerOfAttorney";
 import OTP from "@/components/Pages/OTP/OTP";
+import MyWalletMain from "@/components/Pages/Wallet/MyWalletMain";
+import Deposit from "@/components/Pages/Wallet/Deposit";
+import Withdraw from "@/components/Pages/Wallet/Widthraw";
 
 // Declare Drawer and Stack Navigators
 const Drawer = createDrawerNavigator();
@@ -367,6 +370,27 @@ export default function AppNavigator() {
               OTP Verification
             </Text>
           ),
+        }}
+      />
+      <Stack.Screen
+        name="MyWallet"
+        component={MyWalletMain}
+        options={{
+          header: () => <CustomHeaderDetail title="My Wallet" />,
+        }}
+      />
+      <Stack.Screen
+        name="Withdraw"
+        component={Withdraw}
+        options={{
+          header: () => <CustomHeaderDetail title="Withdraw" />,
+        }}
+      />
+      <Stack.Screen
+        name="Deposit"
+        component={Deposit}
+        options={{
+          header: () => <CustomHeaderDetail title="Deposit" />,
         }}
       />
     </Stack.Navigator>

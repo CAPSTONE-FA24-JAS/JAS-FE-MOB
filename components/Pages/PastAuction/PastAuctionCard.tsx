@@ -1,26 +1,33 @@
 import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { StackNavigationProp } from "@react-navigation/stack";
+import { useNavigation } from "expo-router";
 import React from "react";
-import { View, Text, Image } from "react-native";
+import { View, Text, Image, TouchableOpacity } from "react-native";
 
 interface PastAuctionCardProps {
   auctionTitle: string;
   auctionStartTime: string;
   auctionEndTime: string;
-  auctionWinner: string;
   auctionImage: string;
   auctionStatus: string;
   totalLots: number;
+  auctionId: number;
 }
+
+type RootStackParamList = {
+  BiddingAuction: { auctionId: number };
+};
 
 const PastAuctionCard: React.FC<PastAuctionCardProps> = ({
   auctionTitle,
-  auctionWinner,
   auctionImage,
   auctionStatus,
   auctionStartTime,
   auctionEndTime,
   totalLots,
+  auctionId,
 }) => {
+  const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
   // Parse the auctionStartTime string into a Date object
   const auctionStartTimeObj = new Date(auctionStartTime);
   const auctionEndTimeObj = new Date(auctionEndTime);
@@ -52,16 +59,25 @@ const PastAuctionCard: React.FC<PastAuctionCardProps> = ({
   const endDay = auctionEndTimeObj.getUTCDate();
   const endMonth = monthsOfYear[auctionEndTimeObj.getUTCMonth()];
 
-  console.log("====================================");
-  console.log("auctionImage", auctionImage);
-  console.log("====================================");
+  const goToAuctionDetail = () => {
+    if (auctionId) {
+      navigation.navigate("BiddingAuction", { auctionId: auctionId });
+    }
+  };
 
   return (
-    <View className="mb-4 p-2 bg-white rounded-lg shadow relative">
+    <TouchableOpacity
+      onPress={goToAuctionDetail}
+      className="mb-4 p-2 bg-white border-2 border-gray-100 rounded-lg shadow-lg relative"
+    >
       <View className="relative w-full ">
         <Image
-          source={{ uri: auctionImage }} // Replace with your logo path
-          className="w-full h-52 rounded-md"
+          source={
+            auctionImage?.startsWith("http")
+              ? { uri: auctionImage }
+              : require("../../../assets/bgItemAuction.png")
+          }
+          className="w-full h-52 "
           resizeMode="cover"
         />
         <Text className="text-xl font-bold mt-2 absolute bottom-0 text-white left-0 bg-[#0090ff8a] w-full p-2">
@@ -96,9 +112,9 @@ const PastAuctionCard: React.FC<PastAuctionCardProps> = ({
             color="black"
             style={{ marginRight: 10 }}
           />
-          <Text className="text-sm w-full text-lg font-bold uppercase">
+          <Text className=" w-full text-lg font-bold uppercase">
             {" "}
-            {auctionStatus}
+            {auctionStatus === "Past" ? "LIVE AUTION PAST" : "Other past"}
           </Text>
         </View>
         <View className="flex-row items-center justify-between my-1">
@@ -115,7 +131,7 @@ const PastAuctionCard: React.FC<PastAuctionCardProps> = ({
           />
         </View>
       </View>
-    </View>
+    </TouchableOpacity>
   );
 };
 

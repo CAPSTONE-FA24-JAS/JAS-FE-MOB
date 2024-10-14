@@ -16,6 +16,8 @@ export interface AuctionsData {
   description: string;
   imageLink: string;
   status: string;
+  totalLot: number;
+  winner?: string;
 }
 
 // Enum for Auction Status

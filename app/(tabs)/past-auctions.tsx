@@ -1,59 +1,115 @@
-import React from "react";
-import { View, ScrollView, Text, Image } from "react-native";
+import React, { useEffect, useState } from "react";
+import {
+  View,
+  ScrollView,
+  Text,
+  Image,
+  ActivityIndicator,
+  TouchableOpacity,
+  FlatList,
+} from "react-native";
 import PastAuctionCard from "@/components/Pages/PastAuction/PastAuctionCard";
+import { viewAuctions } from "@/api/auctionApi";
+import { AuctionsData } from "../types/auction_type";
 
 const PastAuctions = () => {
-  // Mock data for past auctions
-  const pastAuctions = [
-    {
-      id: 1,
-      name: "Fine Jewels Auction",
-      startTime: "2024-08-29T22:26:19.2129981",
-      endTime: "2024-09-1T23:26:19.2129981",
-      image: "https://thewatchclub.vn/wp-content/uploads/2022/05/4-1.jpg",
-      status: "End Auctions",
-      totalLots: 100,
-      winner: "John Doe",
-    },
-    {
-      id: 2,
-      name: "Antique Art Auction",
-      startTime: "2024-08-29T22:26:19.2129981",
-      endTime: "2024-09-1T23:26:19.2129981",
-      image: "https://thewatchclub.vn/wp-content/uploads/2022/05/4-1.jpg",
-      status: "End Auctions",
-      totalLots: 80,
-      winner: "Jane Smith",
-    },
-    {
-      id: 3,
-      name: "Modern Paintings Auction",
-      startTime: "2024-08-29T22:26:19.2129981",
-      endTime: "2024-09-1T23:26:19.2129981",
-      image: "https://thewatchclub.vn/wp-content/uploads/2022/05/4-1.jpg",
-      status: "Live Auctions",
-      totalLots: 120,
-      winner: "Michael Johnson",
-    },
-  ];
+  const [auctions, setAuctions] = useState<AuctionsData[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
+
+  // Fetch auctions on component mount
+  useEffect(() => {
+    const fetchAuctions = async () => {
+      try {
+        const response = await viewAuctions();
+        if (response.isSuccess) {
+          // Filter auctions with status "NotStarted" or "Living"
+          const filteredAuctions = response.data.filter(
+            (auction) => auction.status === "Past"
+          );
+          setAuctions(filteredAuctions);
+        } else {
+          setError(response.message || "Failed to load auctions.");
+        }
+      } catch (err) {
+        setError("Failed to load auctions.");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchAuctions();
+  }, []);
+
+  if (loading) {
+    return (
+      <View className="flex-1 justify-center items-center">
+        <ActivityIndicator size="large" color="#0000ff" />
+        <Text className="mt-2">Loading auctions...</Text>
+      </View>
+    );
+  }
+
+  if (error) {
+    return (
+      <View className="flex-1 justify-center bg-white items-center">
+        <Text className="text-red-500">{error}</Text>
+        <TouchableOpacity
+          className="mt-4 px-4 py-2 bg-blue-500 rounded"
+          onPress={() => {
+            setLoading(true);
+            setError(null);
+            // Retry fetching auctions
+            viewAuctions()
+              .then((response) => {
+                if (response.isSuccess) {
+                  const filteredAuctions = response.data.filter(
+                    (auction) => auction.status === "Past"
+                  );
+                  setAuctions(filteredAuctions);
+                } else {
+                  setError(response.message || "Failed to load auctions.");
+                }
+              })
+              .catch(() => {
+                setError("Failed to load auctions.");
+              })
+              .finally(() => setLoading(false));
+          }}
+        >
+          <Text className="text-white">Retry</Text>
+        </TouchableOpacity>
+      </View>
+    );
+  }
 
   return (
-    <ScrollView>
-      <View className="p-4">
-        {pastAuctions.map((auction) => (
+    <View className="flex-1 bg-white">
+      <FlatList
+        data={auctions}
+        keyExtractor={(auction) => auction.id.toString()}
+        renderItem={({ item }) => (
           <PastAuctionCard
-            key={auction.id}
-            auctionTitle={auction.name}
-            auctionStartTime={auction.startTime}
-            auctionEndTime={auction.endTime}
-            auctionWinner={auction.winner}
-            auctionImage={auction.image}
-            auctionStatus={auction.status}
-            totalLots={auction.totalLots}
+            key={item.id}
+            auctionId={item.id}
+            auctionTitle={item.name || "No Name"}
+            auctionStartTime={item.startTime}
+            auctionEndTime={item.endTime}
+            auctionImage={item.imageLink}
+            auctionStatus={item.status}
+            totalLots={item.totalLot}
           />
-        ))}
-      </View>
-    </ScrollView>
+        )}
+        contentContainerStyle={{ padding: 10 }}
+        ListEmptyComponent={
+          <View className="items-center py-20">
+            <Text className="text-gray-500 font-semibold">
+              No auctions available.
+            </Text>
+          </View>
+        }
+      />
+    </View>
   );
 };
 

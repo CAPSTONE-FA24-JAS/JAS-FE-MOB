@@ -1,6 +1,7 @@
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 import React, { useState } from "react";
 import { View, Text, TouchableOpacity, ScrollView } from "react-native";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
+import Icon from "react-native-vector-icons/MaterialIcons";
 
 interface FAQItemProps {
   question: string;
@@ -23,28 +24,27 @@ const faqData: FAQItemProps[] = [
     answer:
       "Bids cannot be canceled once placed. Please ensure you're confident about your bid before placing it.",
   },
-  {
-    question: "How do I know if I've won an auction?",
-    answer:
-      "You will receive a notification via email and in-app if you win an auction. The item will appear in your account under 'Won Auctions'.",
-  },
-  {
-    question: "Is there a bidding limit?",
-    answer:
-      "Yes, each user has a bidding limit based on their account status. You can view your bidding limit in your account settings.",
-  },
 ];
 
 const FAQItem: React.FC<FAQItemProps> = ({ question, answer }) => {
   const [isExpanded, setIsExpanded] = useState(false);
 
   return (
-    <View className="border-b border-gray-200">
+    <View className="border-b border-gray-200 border-2 my-1 rounded-md">
       <TouchableOpacity
         className="p-4 flex-row justify-between items-center"
         onPress={() => setIsExpanded(!isExpanded)}
       >
-        <Text className="text-lg">{question}</Text>
+        <View className=" flex-row ">
+          <MaterialCommunityIcons name="chat" size={24} color="black" />
+          <Text
+            className="text-lg ml-2 w-[85%] font-semibold"
+            numberOfLines={1} // Limits text to 1 line and adds ellipsis if needed
+            ellipsizeMode="tail" // Specifies where to truncate the text
+          >
+            {question}
+          </Text>
+        </View>
         <MaterialCommunityIcons
           name={isExpanded ? "chevron-up" : "chevron-down"}
           size={24}
@@ -60,12 +60,9 @@ const FAQItem: React.FC<FAQItemProps> = ({ question, answer }) => {
   );
 };
 
-const Help: React.FC = () => {
+const InfoCard: React.FC = () => {
   return (
-    <ScrollView className="p-4 bg-white flex-1">
-      <Text className="text-2xl font-bold mb-4">
-        Frequently Asked Questions
-      </Text>
+    <ScrollView className="p-2 bg-white flex-1">
       {faqData.map((item, index) => (
         <FAQItem key={index} question={item.question} answer={item.answer} />
       ))}
@@ -73,4 +70,4 @@ const Help: React.FC = () => {
   );
 };
 
-export default Help;
+export default InfoCard;

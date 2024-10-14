@@ -72,8 +72,8 @@ const ItemAuctionHomePage: React.FC<ItemAuctionHomePageProps> = ({
             timeZone: "GMT",
           })}
         </StyledText>
-        <StyledText className="text-white text-sm">
-          {auction?.description || "No Description"}
+        <StyledText className="text-white text-sm font-semibold">
+          Total lot {auction?.totalLot || 0}
         </StyledText>
       </StyledView>
     </StyledTouchableOpacity>

@@ -74,6 +74,9 @@ const DetailMyBid: React.FC = () => {
           user={{
             ...user,
             phoneNumber: user.phoneNumber || "",
+            firstName: user.firstName || "",
+            lastName: user.lastName || "",
+            address: user.address || {},
           }}
         />
       )}

@@ -4,6 +4,7 @@ import { TextInput, Checkbox, Button } from "react-native-paper";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { useNavigation } from "expo-router";
 import { StackNavigationProp } from "@react-navigation/stack";
+import { RouteProp, useRoute } from "@react-navigation/native";
 
 interface BenUyQuyen {
   hoTen: string;
@@ -24,8 +25,16 @@ type RootStackParamList = {
   OTP: undefined;
 };
 
+interface RouteParams {
+  details: any; // Replace 'any' with the appropriate type
+  onApprove: () => void;
+}
+
 const PowerOfAttorney: React.FC = () => {
   const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
+  const route = useRoute<RouteProp<{ params: RouteParams }, "params">>();
+  const { details } = route.params;
+  // console.log("detailsaknha", details);
 
   const [formData, setFormData] = useState<FormData>({
     benUyQuyen: {
@@ -85,62 +94,41 @@ const PowerOfAttorney: React.FC = () => {
 
         {/* Section I: BÊN UỶ QUYỀN */}
         <Text className="font-bold text-lg mb-2">I. BÊN UỶ QUYỀN</Text>
-        <TextInput
-          label="Họ tên"
-          value={formData.benUyQuyen.hoTen}
-          onChangeText={(value) =>
-            handleInputChange("benUyQuyen", "hoTen", value)
-          }
-          mode="outlined"
-          className="mb-2"
-        />
-        <TextInput
-          label="Địa chỉ"
-          value={formData.benUyQuyen.diaChi}
-          onChangeText={(value) =>
-            handleInputChange("benUyQuyen", "diaChi", value)
-          }
-          mode="outlined"
-          className="mb-2"
-        />
-        <TextInput
-          label="Số CMND"
-          value={formData.benUyQuyen.soCMND}
-          onChangeText={(value) =>
-            handleInputChange("benUyQuyen", "soCMND", value)
-          }
-          mode="outlined"
-          className="mb-2"
-        />
-        <View className="flex-row justify-between">
-          <TextInput
-            label="Ngày cấp"
-            value={formData.benUyQuyen.ngayCap}
-            onChangeText={(value) =>
-              handleInputChange("benUyQuyen", "ngayCap", value)
-            }
-            mode="outlined"
-            className="flex-1 mr-2"
-          />
-          <TextInput
-            label="Nơi cấp"
-            value={formData.benUyQuyen.noiCap}
-            onChangeText={(value) =>
-              handleInputChange("benUyQuyen", "noiCap", value)
-            }
-            mode="outlined"
-            className="flex-1 ml-2"
-          />
+        <View className="flex-row mb-2">
+          <Text className=" mr-2">Họ tên:</Text>
+          <Text className="font-semibold text-gray-800 ">
+            {details?.owner || "Không xác định"}
+          </Text>
         </View>
-        <TextInput
-          label="Quốc tịch"
-          value={formData.benUyQuyen.quocTich}
-          onChangeText={(value) =>
-            handleInputChange("benUyQuyen", "quocTich", value)
-          }
-          mode="outlined"
-          className="mb-4"
-        />
+        <View className="flex-row mb-2">
+          <Text className=" mr-2">Địa chỉ:</Text>
+          <Text className="font-semibold text-gray-800 ">
+            {details?.address || "Không xác định"}
+          </Text>
+        </View>
+        <View className="flex-row mb-2">
+          <Text className=" mr-2">Số CCCD:</Text>
+          <Text className="font-semibold text-gray-800 ">
+            {details?.CCCD || "Không xác định"}
+          </Text>
+        </View>
+
+        <View className="flex-row ">
+          <View className="flex-row mb-2 mr-10">
+            <Text className=" mr-2">Ngày cấp:</Text>
+            <Text className="font-semibold text-gray-800 ">
+              {details?.idIssuanceDate
+                ? new Date(details.idIssuanceDate).toLocaleDateString("vi-VN")
+                : "Không xác định"}
+            </Text>
+          </View>
+          <View className="flex-row mb-2">
+            <Text className=" mr-2">Quốc tịch:</Text>
+            <Text className="font-semibold text-gray-800 ">
+              {details?.country || "Không xác định"}
+            </Text>
+          </View>
+        </View>
 
         {/* Section II: BÊN ĐƯỢC UỶ QUYỀN */}
         <Text className="font-bold text-lg mb-2">II. BÊN ĐƯỢC UỶ QUYỀN</Text>

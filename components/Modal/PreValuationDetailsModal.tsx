@@ -21,7 +21,7 @@ interface PreValuationDetailsModalProps {
     owner: string;
     artist: string;
     category: string;
-    weight: string;
+    width: string;
     height: string;
     depth: string;
     description: string;
@@ -105,12 +105,10 @@ const PreValuationDetailsModal: React.FC<PreValuationDetailsModalProps> = ({
               <View className="flex-row items-start gap-2">
                 <Text className="text-lg text-gray-800">•</Text>
 
-                <Text className="text-lg font-bold text-gray-700 ">
-                  Weight:
-                </Text>
+                <Text className="text-lg font-bold text-gray-700 ">Width:</Text>
                 <Text className="text-lg text-gray-800">
                   {" "}
-                  {details.weight} cm
+                  {details.width} cm
                 </Text>
               </View>
               <View className="flex-row items-start gap-2">

@@ -2,25 +2,15 @@ import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
-  Button,
   TouchableOpacity,
   ActivityIndicator,
   FlatList,
 } from "react-native";
-import { ScrollView } from "react-native-gesture-handler";
 import ItemAuctionHomePage from "@/components/Pages/ItemAuctionHome/ItemAuctionHomePage";
-import FinalValuationDetailsModal from "@/components/Modal/FinalValuationDetailsModal";
-import {
-  showErrorMessage,
-  showSuccessMessage,
-} from "@/components/FlashMessageHelpers";
 import { AuctionsData } from "../types/auction_type";
 import { viewAuctions } from "@/api/auctionApi";
 
 const HomeScreen = () => {
-  const [isFinalModalVisible, setFinalModalVisible] = useState(false);
-  const [isPreModalVisible, setPreModalVisible] = useState(false);
-
   const [auctions, setAuctions] = useState<AuctionsData[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
@@ -31,11 +21,17 @@ const HomeScreen = () => {
       try {
         const response = await viewAuctions();
         if (response.isSuccess) {
-          // Filter auctions with status "NotStarted" or "Living"
-          const filteredAuctions = response.data.filter(
-            (auction) =>
-              auction.status === "NotStarted" || auction.status === "Living"
-          );
+          // Lọc các phiên đấu giá có endTime trong tương lai
+          const now = new Date();
+          const filteredAuctions = response.data
+            .filter(
+              (auction) =>
+                (auction.status === "NotStarted" ||
+                  auction.status === "Living") &&
+                new Date(auction.endTime) > now // Lọc theo thời gian hiện tại
+            )
+            .sort((a, b) => b.id - a.id); // Sắp xếp id giảm dần
+
           setAuctions(filteredAuctions);
         } else {
           setError(response.message || "Failed to load auctions.");
@@ -94,31 +90,6 @@ const HomeScreen = () => {
     );
   }
 
-  // Fake data for FinalValuationDetailsModal
-  const finalValuationDetails = {
-    images: [
-      "https://locphuc.com.vn/Content/Images/072023/DFH0109BRW.WG01A/nhan-kim-cuong-DFH0109BRW-WG01A-g1.jpg",
-      "https://locphuc.com.vn/Content/Images/072023/DFH0109BRW.WG01A/nhan-kim-cuong-DFH0109BRW-WG01A-g1.jpg",
-      "https://locphuc.com.vn/Content/Images/072023/DFH0109BRW.WG01A/nhan-kim-cuong-DFH0109BRW-WG01A-g1.jpg",
-      "https://locphuc.com.vn/Content/Images/072023/DFH0109BRW.WG01A/nhan-kim-cuong-DFH0109BRW-WG01A-g1.jpg",
-    ],
-    name: "Antique Vase",
-    owner: "John Doe",
-    artist: "Unknown",
-    category: "Decorative Arts",
-    weight: "2 kg",
-    height: "30 cm",
-    depth: "10 cm",
-    description: {
-      Metal: "Bronze",
-      Gemstone: "None",
-      Measurements: "30x10x10 cm",
-    },
-    estimatedCost: 1500,
-    note: "If the customer accepts the above valuation, please sign the document attached below.",
-    authorizationLetter: "https://example.com/authorization-letter.pdf",
-  };
-
   // console.log("auctionsNe", auctions);
 
   return (
@@ -128,41 +99,12 @@ const HomeScreen = () => {
         keyExtractor={(item) => item.id.toString()}
         renderItem={({ item }) => <ItemAuctionHomePage auction={item} />}
         contentContainerStyle={{ padding: 10 }}
-        ListHeaderComponent={
-          <View className="items-center flex-1 py-3">
-            {/* You can add other components here if needed */}
-            {/* Button to open FinalValuationDetailsModal */}
-            <TouchableOpacity
-              className="px-8 py-3 mt-4 bg-blue-500 rounded-lg"
-              onPress={() => setFinalModalVisible(true)}
-            >
-              <Text className="font-bold text-white">
-                Show Final Valuation Modal
-              </Text>
-            </TouchableOpacity>
-          </View>
-        }
         ListEmptyComponent={
           <View className="items-center py-20">
             <Text className="text-gray-500">No auctions available.</Text>
           </View>
         }
       />
-
-      {/* FinalValuationDetailsModal */}
-      {/* <FinalValuationDetailsModal
-        isVisible={isFinalModalVisible}
-        onClose={() => setFinalModalVisible(false)}
-        details={finalValuationDetails}
-        onApprove={() => {
-          showSuccessMessage("Approved");
-          setFinalModalVisible(false);
-        }}
-        onReject={() => {
-          showErrorMessage("Rejected");
-          setFinalModalVisible(false);
-        }}
-      /> */}
     </View>
   );
 };

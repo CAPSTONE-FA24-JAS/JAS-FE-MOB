@@ -82,7 +82,7 @@ export const getHistoryConsign = async (
   status?: number, // status là tùy chọn
   pageSize: number = 10,
   pageIndex: number = 1
-): Promise<HistoryConsignmentResponse> => {
+): Promise<HistoryConsignmentResponse | null> => {
   try {
     const params: any = {
       sellerId: sellerId,
@@ -105,6 +105,11 @@ export const getHistoryConsign = async (
     );
 
     if (response.data.isSuccess) {
+      if (response.data.data === null) {
+        console.log("No consign items available for this status.");
+        return null; // Return null or handle it appropriately
+      }
+
       console.log("Lịch sử ký gửi:", response.data);
       showSuccessMessage(response.data.message || "Đã lấy lịch sử");
       return response.data.data;
@@ -146,6 +151,7 @@ export const updateStatusForValuation = async (id: number, status: number) => {
   }
 };
 
+//  ra timeline
 export const getDetailHistoryValuation = async (
   id: number
 ): Promise<TimeLineConsignment[]> => {
@@ -155,7 +161,7 @@ export const getDetailHistoryValuation = async (
     );
     console.log("id", id);
 
-    console.log("responsegetDetailHistoryValuation", response);
+    // console.log("responsegetDetailHistoryValuation", response);
 
     return response.data.data;
   } catch (error) {

@@ -8,9 +8,9 @@ type ConsignStatus =
   | "RequestedPreliminary"
   | "Preliminary"
   | "ApprovedPreliminary"
-  | "Received Jewelry"
-  | "Final Valuated"
-  | "Manager Approved"
+  | "RecivedJewelry"
+  | "FinalValuated"
+  | "ManagerApproved"
   | "Authorized"
   | "Rejected Preliminary";
 
@@ -18,7 +18,8 @@ type ConsignStatus =
 export interface ConsignItemProps {
   id: number;
   name: string;
-  price: number | string;
+  minPrice: number | string;
+  maxPrice: number | string;
   image: string;
   status: ConsignStatus;
   date: string;
@@ -32,9 +33,9 @@ const statusColors: Record<ConsignStatus, string> = {
   RequestedPreliminary: "text-yellow-500",
   Preliminary: "text-brown-500",
   ApprovedPreliminary: "text-green-500",
-  "Received Jewelry": "text-purple-500",
-  "Final Valuated": "text-orange-500",
-  "Manager Approved": "text-green-700",
+  RecivedJewelry: "text-purple-500",
+  FinalValuated: "text-orange-500",
+  ManagerApproved: "text-green-700",
   Authorized: "text-blue-500",
   "Rejected Preliminary": "text-red-500",
 };
@@ -42,7 +43,8 @@ const statusColors: Record<ConsignStatus, string> = {
 const ConsignItem: React.FC<ConsignItemProps> = ({
   id,
   name,
-  price,
+  minPrice,
+  maxPrice,
   status,
   onViewDetails,
   image,
@@ -63,24 +65,25 @@ const ConsignItem: React.FC<ConsignItemProps> = ({
             <Text className="text-gray-600">#{id}</Text>
           </View>
           <Text className="text-lg font-semibold">{name}</Text>
-          {price ? (
-            <Text className="mt-1 text-lg font-bold">{price}$</Text>
+          {minPrice || maxPrice ? (
+            <View className="flex-row">
+              {minPrice && (
+                <Text className="mt-1 mr-2 text-lg font-bold">{minPrice}$</Text>
+              )}
+              {maxPrice && (
+                <Text className="mt-1 text-lg font-bold">- {maxPrice}$</Text>
+              )}
+            </View>
           ) : null}
-          {/*
-          it take me 2hours to find out why this code doesn't work pls don't do this
-          DON'T DO
 
-          widgetNumber === 10 && <MyComponent />
-          DO DO
-          
-          widgetNumber === 10 ? <MyComponent /> : null */}
           <View className="flex flex-row items-center justify-between">
             <Text className={`${statusColor} uppercase font-semibold w-1/2`}>
               {status}
             </Text>
             <TouchableOpacity
               onPress={onViewDetails}
-              className="w-[45%] p-2 mt-2 bg-gray-600 rounded">
+              className="w-[45%] p-2 mt-2 bg-gray-600 rounded"
+            >
               <Text className="font-semibold text-center text-white">
                 XEM CHI TIẾT
               </Text>

@@ -30,6 +30,7 @@ const HistoryItemConsign: React.FC = () => {
   const [loading, setLoading] = useState(true); // Trạng thái loading
   const [selectedStatus, setSelectedStatus] = useState<number | null>(null); // Bộ lọc trạng thái
   const [searchQuery, setSearchQuery] = useState(""); // Dữ liệu tìm kiếm
+  const [noConsignmentMessage, setNoConsignmentMessage] = useState(""); // Dữ liệu tìm kiếm
   const sellerId = useSelector(
     (state: RootState) => state.auth.userResponse?.customerDTO.id
   ); // Lấy userId từ Redux
@@ -37,9 +38,11 @@ const HistoryItemConsign: React.FC = () => {
   // console.log("itemsAPI", items);
 
   // Hàm gọi API
+  // Hàm gọi API
   const fetchConsignmentHistory = useCallback(async () => {
     try {
       setLoading(true);
+
       if (sellerId !== undefined) {
         const response = await getHistoryConsign(
           sellerId,
@@ -47,16 +50,26 @@ const HistoryItemConsign: React.FC = () => {
           // pageSize
           // pageIndex
         );
-        // console.log("responsegetHistoryConsign", response);
 
-        setItems(
-          Array.isArray(response.dataResponse) ? response.dataResponse : []
-        );
+        if (response === null) {
+          // Khi response là null, nghĩa là không có dữ liệu
+          setNoConsignmentMessage(
+            "Không có Consign item nào ở trạng thái này."
+          );
+          setItems([]); // Set items là một mảng rỗng
+        } else {
+          // Nếu có dữ liệu
+          setNoConsignmentMessage(""); // Xóa thông báo không có dữ liệu
+          setItems(
+            Array.isArray(response.dataResponse) ? response.dataResponse : []
+          );
+        }
       } else {
         console.error("Seller ID is undefined");
       }
     } catch (error) {
       console.error("Lỗi khi lấy lịch sử ký gửi:", error);
+      setNoConsignmentMessage("Đã xảy ra lỗi khi lấy lịch sử ký gửi.");
     } finally {
       setLoading(false);
     }
@@ -81,15 +94,17 @@ const HistoryItemConsign: React.FC = () => {
     );
   }
 
+  // console.log("searchedItems", JSON.stringify(searchedItems));
+
   const statusTextMap = [
     "Requested",
     "Assigned",
     "RequestedPreliminary",
     "Preliminary",
     "ApprovedPreliminary",
-    "Received Jewelry",
-    "Final Valuated",
-    "Manager Approved",
+    "RecivedJewelry",
+    "FinalValuated",
+    "ManagerApproved",
     "Authorized",
     "Rejected Preliminary",
   ];
@@ -100,13 +115,15 @@ const HistoryItemConsign: React.FC = () => {
         <ScrollView
           horizontal={true}
           showsHorizontalScrollIndicator={false}
-          className="mb-4">
+          className="mb-4"
+        >
           <View className="flex-row items-center">
             <TouchableOpacity
               className={`px-4 py-2 mr-2 ${
                 selectedStatus === null ? "bg-gray-800" : "bg-gray-400"
               } rounded`}
-              onPress={() => setSelectedStatus(null)}>
+              onPress={() => setSelectedStatus(null)}
+            >
               <Text className="font-bold text-white uppercase">ALL</Text>
             </TouchableOpacity>
 
@@ -116,7 +133,8 @@ const HistoryItemConsign: React.FC = () => {
                 className={`px-4 py-2 mr-2 ${
                   selectedStatus === status ? "bg-yellow-500" : "bg-gray-400"
                 } rounded`}
-                onPress={() => setSelectedStatus(status)}>
+                onPress={() => setSelectedStatus(status)}
+              >
                 <Text className="font-bold text-white uppercase">
                   {statusTextMap[status]}
                 </Text>
@@ -131,7 +149,8 @@ const HistoryItemConsign: React.FC = () => {
           onChangeText={(text) => setSearchQuery(text)}
           value={searchQuery}
         />
-        {searchedItems && searchedItems.length === 0 ? (
+        {(searchedItems && searchedItems.length === 0) ||
+        noConsignmentMessage ? (
           <Text className="text-lg text-center">Không có ký gửi nào</Text>
         ) : (
           <FlatList
@@ -141,7 +160,8 @@ const HistoryItemConsign: React.FC = () => {
               <ConsignItem
                 id={item.id}
                 name={item.name}
-                price={item.pricingTime ? item.pricingTime : 0}
+                minPrice={item.estimatePriceMin ? item.estimatePriceMin : 0}
+                maxPrice={item.estimatePriceMax ? item.estimatePriceMax : 0}
                 status={item.status as ConsignItemProps["status"]}
                 date={item.creationDate}
                 onViewDetails={() =>

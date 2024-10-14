@@ -1,6 +1,10 @@
 // types/authTypes.ts
 
 export interface UserAccount {
+  address?: {};
+  lastName?: string;
+  firstName?: string;
+  phoneNumber?: string;
   $id?: string;
   id: number;
   email: string | null;

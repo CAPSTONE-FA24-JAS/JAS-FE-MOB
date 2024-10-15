@@ -25,13 +25,13 @@ export const getValuationById = async (valuationId: number) => {
   }
 };
 
-export const requestOTPMail = async (jewelryId: number, sellerId: number) => {
+export const requestOTPMail = async (valuationId: number, sellerId: number) => {
   try {
     const response = await axios.put(
-      `${API_URL}/api/Jewelrys/RequestOTPForAuthorizedBySeller?jewelryId=${jewelryId}&sellerId=${sellerId}`,
+      `${API_URL}/api/Jewelrys/RequestOTPForAuthorizedBySeller?valuationId=${valuationId}&sellerId=${sellerId}`,
       {
         params: {
-          jewelryId: jewelryId,
+          valuationId: valuationId,
           sellerId: sellerId,
         },
       }
@@ -49,16 +49,16 @@ export const requestOTPMail = async (jewelryId: number, sellerId: number) => {
 };
 
 export const checkOTP = async (
-  jewelryId: number,
+  valuationId: number,
   sellerId: number,
   opt: string
 ) => {
   try {
     const response = await axios.put(
-      `${API_URL}/api/Jewelrys/VerifyOTPForAuthorizedBySeller?jewelryId=${jewelryId}&sellerId=${sellerId}&opt=${opt}`,
+      `${API_URL}/api/Jewelrys/VerifyOTPForAuthorizedBySeller?valuationId=${valuationId}&sellerId=${sellerId}&opt=${opt}`,
       {
         params: {
-          jewelryId: jewelryId,
+          valuationId: valuationId,
           sellerId: sellerId,
           opt: opt,
         },
@@ -66,7 +66,7 @@ export const checkOTP = async (
     );
 
     if (response.data.isSuccess) {
-      return response.data.message;
+      return response.data;
     } else {
       throw new Error("Failed to fetch valuation");
     }

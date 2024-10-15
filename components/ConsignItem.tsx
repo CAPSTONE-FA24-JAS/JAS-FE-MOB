@@ -12,7 +12,7 @@ type ConsignStatus =
   | "FinalValuated"
   | "ManagerApproved"
   | "Authorized"
-  | "Rejected Preliminary";
+  | "RejectedPreliminary";
 
 // Define the props interface
 export interface ConsignItemProps {
@@ -37,7 +37,7 @@ const statusColors: Record<ConsignStatus, string> = {
   FinalValuated: "text-orange-500",
   ManagerApproved: "text-green-700",
   Authorized: "text-blue-500",
-  "Rejected Preliminary": "text-red-500",
+  RejectedPreliminary: "text-red-500",
 };
 
 const ConsignItem: React.FC<ConsignItemProps> = ({
@@ -52,6 +52,19 @@ const ConsignItem: React.FC<ConsignItemProps> = ({
 }) => {
   const statusColor = statusColors[status] || "text-gray-500";
   const imageLink = image ? image : "https://via.placeholder.com/150";
+
+  const statusTextMap: Record<ConsignStatus, string> = {
+    Requested: "Requested",
+    Assigned: "Assigned",
+    RequestedPreliminary: "Requested Preliminary",
+    Preliminary: "Preliminary",
+    ApprovedPreliminary: "Approved Preliminary",
+    RecivedJewelry: "Recived Jewelry",
+    FinalValuated: "Final Valuated",
+    ManagerApproved: "Manager Approved",
+    Authorized: "Authorized",
+    RejectedPreliminary: "Rejected Preliminary",
+  };
 
   return (
     <View className="p-4 mb-2 bg-white rounded-lg shadow">
@@ -78,7 +91,7 @@ const ConsignItem: React.FC<ConsignItemProps> = ({
 
           <View className="flex flex-row items-center justify-between">
             <Text className={`${statusColor} uppercase font-semibold w-1/2`}>
-              {status}
+              {statusTextMap[status as ConsignStatus]}
             </Text>
             <TouchableOpacity
               onPress={onViewDetails}

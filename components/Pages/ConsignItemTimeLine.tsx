@@ -24,22 +24,42 @@ type RootStackParamList = {
   PowerOfAttorney: undefined;
 };
 
+type ConsignStatus =
+  | "Requested"
+  | "Assigned"
+  | "RequestedPreliminary"
+  | "Preliminary"
+  | "ApprovedPreliminary"
+  | "RecivedJewelry"
+  | "FinalValuated"
+  | "ManagerApproved"
+  | "Authorized"
+  | "RejectedPreliminary";
+
+const statusTextMap: Record<ConsignStatus, string> = {
+  Requested: "Requested",
+  Assigned: "Assigned",
+  RequestedPreliminary: "Requested Preliminary",
+  Preliminary: "Preliminary",
+  ApprovedPreliminary: "Approved Preliminary",
+  RecivedJewelry: "Recived Jewelry",
+  FinalValuated: "Final Valuated",
+  ManagerApproved: "Manager Approved",
+  Authorized: "Authorized",
+  RejectedPreliminary: "Rejected Preliminary",
+};
 const ConsignDetailTimeLine: React.FC = () => {
   const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
 
   const route = useRoute();
   const { item: routeItem } = route.params as { item: dataResponseConsignList }; // Lấy params
   const [item, setItem] = useState(routeItem); // Create a local state for the item
-
   const [timeline, setTimeline] = useState<TimeLineConsignment[]>([]);
   const [expanded, setExpanded] = useState(false);
-
   const [modalVisible, setModalVisible] = useState(false);
-
   const [valuationData, setValuationData] = useState<any | null>(null);
-
   const [isFinalModalVisible, setFinalModalVisible] = useState(false);
-  console.log("valuationDataNe", valuationData);
+  // console.log("valuationDataNe", valuationData);
 
   useEffect(() => {
     fetchTimelineData("30"); //hard tamj id ddeer test UI
@@ -96,16 +116,16 @@ const ConsignDetailTimeLine: React.FC = () => {
       case "Preliminary":
         return "text-brown-500";
       case "ApprovedPreliminary":
-        return "text-purple-700";
+        return "text-green-500";
       case "RecivedJewelry":
-        return "text-blue-500";
+        return "text-purple-500";
       case "FinalValuated":
-        return "text-orange-300";
+        return "text-orange-500";
       case "ManagerApproved":
-        return "text-green-300";
+        return "text-green-700";
       case "Authorized":
-        return "text-blue-300";
-      case "Rejected":
+        return "text-blue-500";
+      case "RejectedPreliminary":
         return "text-red-500";
       default:
         return "text-gray-500";
@@ -132,9 +152,10 @@ const ConsignDetailTimeLine: React.FC = () => {
       // Update the item status locally
       setItem((prevItem) => ({
         ...prevItem,
-        status: "Rejected Preliminary",
+        status: "RejectedPreliminary",
       }));
       setModalVisible(false);
+      setFinalModalVisible(false);
     } catch (error) {
       console.error("Error rejecting valuation:", error);
     }
@@ -146,6 +167,7 @@ const ConsignDetailTimeLine: React.FC = () => {
     // Sử dụng dữ liệu trực tiếp từ item để hiển thị trong modal
     const finalValuationDetails = {
       id: item.id,
+      sellerId: item.seller.id,
       status: item.status,
       images: item.imageValuations.map((item) => item.imageLink),
       name: item.name,
@@ -164,35 +186,12 @@ const ConsignDetailTimeLine: React.FC = () => {
       idIssuanceDate: item.seller.idIssuanceDate,
       idExpirationDate: item.seller.idExpirationDate,
       country: "Viet Nam",
+      email: item.seller.accountDTO.email,
     };
 
     // Đặt dữ liệu vào state và mở modal
     setValuationData(finalValuationDetails);
     setFinalModalVisible(true);
-  };
-
-  const finalValuationDetails = {
-    images: [
-      "https://locphuc.com.vn/Content/Images/072023/DFH0109BRW.WG01A/nhan-kim-cuong-DFH0109BRW-WG01A-g1.jpg",
-      "https://locphuc.com.vn/Content/Images/072023/DFH0109BRW.WG01A/nhan-kim-cuong-DFH0109BRW-WG01A-g1.jpg",
-      "https://locphuc.com.vn/Content/Images/072023/DFH0109BRW.WG01A/nhan-kim-cuong-DFH0109BRW-WG01A-g1.jpg",
-      "https://locphuc.com.vn/Content/Images/072023/DFH0109BRW.WG01A/nhan-kim-cuong-DFH0109BRW-WG01A-g1.jpg",
-    ],
-    name: "Antique Vase",
-    owner: "John Doe",
-    artist: "Unknown",
-    category: "Decorative Arts",
-    width: "2 kg",
-    height: "30 cm",
-    depth: "10 cm",
-    description: {
-      Metal: "Bronze",
-      Gemstone: "None",
-      Measurements: "30x10x10 cm",
-    },
-    estimatedCost: 1500,
-    note: "If the customer accepts the above valuation, please sign the document attached below.",
-    authorizationLetter: "https://example.com/authorization-letter.pdf",
   };
 
   return (
@@ -230,7 +229,7 @@ const ConsignDetailTimeLine: React.FC = () => {
                 item.status
               )} font-semibold uppercase`}
             >
-              {item.status}
+              {statusTextMap[item.status as ConsignStatus]}
             </Text>
             <View className="flex-row w-full justify-between">
               {/* Nút "View Pre Valuation" nếu item.status là "Preliminary Valued" */}
@@ -337,10 +336,7 @@ const ConsignDetailTimeLine: React.FC = () => {
             showSuccessMessage("Approved");
             setFinalModalVisible(false);
           }}
-          onReject={() => {
-            showErrorMessage("Rejected");
-            setFinalModalVisible(false);
-          }}
+          onReject={handleReject}
         />
       )}
     </ScrollView>

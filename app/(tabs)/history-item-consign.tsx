@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import {
   View,
   Text,
@@ -18,6 +18,7 @@ import { getHistoryConsign } from "@/api/consignAnItemApi";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
 import { StackNavigationProp } from "@react-navigation/stack";
+import LoadingOverlay from "@/components/LoadingOverlay";
 
 // Define the types for navigation routes
 type RootStackParamList = {
@@ -35,9 +36,8 @@ const HistoryItemConsign: React.FC = () => {
     (state: RootState) => state.auth.userResponse?.customerDTO.id
   ); // Lấy userId từ Redux
 
-  // console.log("itemsAPI", items);
+  // const scrollViewRef = useRef<ScrollView>(null);
 
-  // Hàm gọi API
   // Hàm gọi API
   const fetchConsignmentHistory = useCallback(async () => {
     try {
@@ -76,35 +76,26 @@ const HistoryItemConsign: React.FC = () => {
   }, [sellerId, selectedStatus]);
 
   // Gọi API khi selectedStatus thay đổi
-  useEffect(() => {
-    fetchConsignmentHistory();
-  }, [fetchConsignmentHistory]);
+  useFocusEffect(
+    useCallback(() => {
+      fetchConsignmentHistory();
+    }, [fetchConsignmentHistory])
+  );
 
   // Hàm xử lý tìm kiếm
   const searchedItems = items?.filter((item) =>
     item.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  // Nếu đang loading, hiển thị vòng xoay
-  if (loading) {
-    return (
-      <View className="items-center justify-center flex-1">
-        <ActivityIndicator size="large" color="#0000ff" />
-      </View>
-    );
-  }
-
-  // console.log("searchedItems", JSON.stringify(searchedItems));
-
   const statusTextMap = [
     "Requested",
     "Assigned",
-    "RequestedPreliminary",
+    "Requested Preliminary",
     "Preliminary",
-    "ApprovedPreliminary",
-    "RecivedJewelry",
-    "FinalValuated",
-    "ManagerApproved",
+    "Approved Preliminary",
+    "Recived Jewelry",
+    "Final Valuated",
+    "Manager Approved",
     "Authorized",
     "Rejected Preliminary",
   ];
@@ -127,7 +118,7 @@ const HistoryItemConsign: React.FC = () => {
               <Text className="font-bold text-white uppercase">ALL</Text>
             </TouchableOpacity>
 
-            {[...Array(10).keys()].map((status) => (
+            {[...Array(10).keys()].map((status, index) => (
               <TouchableOpacity
                 key={status}
                 className={`px-4 py-2 mr-2 ${
@@ -136,50 +127,55 @@ const HistoryItemConsign: React.FC = () => {
                 onPress={() => setSelectedStatus(status)}
               >
                 <Text className="font-bold text-white uppercase">
-                  {statusTextMap[status]}
+                  {index + 1}. {statusTextMap[status]}
                 </Text>
               </TouchableOpacity>
             ))}
           </View>
         </ScrollView>
-
-        <TextInput
-          className="p-2 mb-4 bg-white rounded"
-          placeholder="Search..."
-          onChangeText={(text) => setSearchQuery(text)}
-          value={searchQuery}
-        />
-        {(searchedItems && searchedItems.length === 0) ||
-        noConsignmentMessage ? (
-          <Text className="text-lg text-center">Không có ký gửi nào</Text>
+        {loading ? (
+          <LoadingOverlay visible={loading} />
         ) : (
-          <FlatList
-            className="h-[70vh]"
-            data={searchedItems} // Hiển thị searchedItems
-            renderItem={({ item }) => (
-              <ConsignItem
-                id={item.id}
-                name={item.name}
-                minPrice={item.estimatePriceMin ? item.estimatePriceMin : 0}
-                maxPrice={item.estimatePriceMax ? item.estimatePriceMax : 0}
-                status={item.status as ConsignItemProps["status"]}
-                date={item.creationDate}
-                onViewDetails={() =>
-                  navigation.navigate("ConsignDetailTimeLine", {
-                    item,
-                  })
-                }
-                image={item.imageValuations[0]?.imageLink || ""}
+          <View>
+            <TextInput
+              className="p-2 mb-4 bg-white rounded"
+              placeholder="Search..."
+              onChangeText={(text) => setSearchQuery(text)}
+              value={searchQuery}
+            />
+            {(searchedItems && searchedItems.length === 0) ||
+            noConsignmentMessage ? (
+              <Text className="text-lg text-center">Không có ký gửi nào</Text>
+            ) : (
+              <FlatList
+                className="h-[70vh]"
+                data={searchedItems} // Hiển thị searchedItems
+                renderItem={({ item }) => (
+                  <ConsignItem
+                    id={item.id}
+                    name={item.name}
+                    minPrice={item.estimatePriceMin ? item.estimatePriceMin : 0}
+                    maxPrice={item.estimatePriceMax ? item.estimatePriceMax : 0}
+                    status={item.status as ConsignItemProps["status"]}
+                    date={item.creationDate}
+                    onViewDetails={() =>
+                      navigation.navigate("ConsignDetailTimeLine", {
+                        item,
+                      })
+                    }
+                    image={item.imageValuations[0]?.imageLink || ""}
+                  />
+                )}
+                keyExtractor={(item) => item.id.toString()}
               />
             )}
-            keyExtractor={(item) => item.id.toString()}
-          />
-        )}
 
-        {items.length > 10 && (
-          <TouchableOpacity className="w-full p-3 mt-4 bg-gray-800 rounded">
-            <Text className="text-center text-white">XEM THÊM</Text>
-          </TouchableOpacity>
+            {items.length > 10 && (
+              <TouchableOpacity className="w-full p-3 mt-4 bg-gray-800 rounded">
+                <Text className="text-center text-white">XEM THÊM</Text>
+              </TouchableOpacity>
+            )}
+          </View>
         )}
       </View>
     </View>

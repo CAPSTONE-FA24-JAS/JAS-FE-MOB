@@ -36,6 +36,8 @@ interface FinalValuationDetailsModalProps {
     idIssuanceDate: string;
     idExpirationDate: string;
     country: string;
+    sellerId: number;
+    email: string;
   };
 }
 
@@ -43,6 +45,7 @@ interface FinalValuationDetailsModalProps {
 type RootStackParamList = {
   PowerOfAttorney: {
     details: FinalValuationDetailsModalProps["details"];
+    isOTP: boolean;
   };
 };
 
@@ -72,6 +75,7 @@ const FinalValuationDetailsModal: React.FC<FinalValuationDetailsModalProps> = ({
     onClose();
     navigation.navigate("PowerOfAttorney", {
       details: details,
+      isOTP: false,
     });
   };
 
@@ -253,12 +257,12 @@ const FinalValuationDetailsModal: React.FC<FinalValuationDetailsModalProps> = ({
             >
               <Text className="text-base font-bold text-white">REJECT</Text>
             </TouchableOpacity>
-            {/* <TouchableOpacity
+            <TouchableOpacity
               className="px-8 py-3 bg-green-500 rounded-lg"
-              onPress={onApprove}
+              onPress={handlePowerOfAttorney}
             >
               <Text className="text-base font-bold text-white">APPROVE</Text>
-            </TouchableOpacity> */}
+            </TouchableOpacity>
           </View>
         </View>
       </View>

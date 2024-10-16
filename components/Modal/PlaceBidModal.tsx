@@ -18,7 +18,7 @@ interface PlaceBidModalProps {
     id: number;
     image: string;
     name: string;
-    typeBid: number;
+    typeBid: string;
   };
   minPrice: number;
   maxPrice: number;
@@ -37,7 +37,7 @@ const PlaceBidModal: React.FC<PlaceBidModalProps> = ({
 
   // For typeBid 4, select a random value between minPrice and maxPrice
   useEffect(() => {
-    if (item.typeBid === 4) {
+    if (item.typeBid === "Auction_Price_GraduallyReduced") {
       const randomBid = Math.floor(
         Math.random() * (maxPrice - minPrice + 1) + minPrice
       );
@@ -60,13 +60,15 @@ const PlaceBidModal: React.FC<PlaceBidModalProps> = ({
       visible={visible}
       transparent={true}
       animationType="slide"
-      onRequestClose={onClose}>
+      onRequestClose={onClose}
+    >
       <View className="items-center justify-center flex-1 bg-black/50">
         <View className="w-[90%] bg-white rounded-lg p-4 relative">
           {/* Close button */}
           <TouchableOpacity
             onPress={onClose}
-            className="absolute z-10 top-4 right-4">
+            className="absolute z-10 top-4 right-4"
+          >
             <MaterialCommunityIcons name="close" size={24} color="#000" />
           </TouchableOpacity>
 
@@ -85,13 +87,13 @@ const PlaceBidModal: React.FC<PlaceBidModalProps> = ({
               <Text className="text-base font-bold">{item.name}</Text>
 
               {/* Estimation visibility */}
-              {item.typeBid === 3 && (
+              {item.typeBid === "Public_Auction" && (
                 <Text className="text-base text-gray-500">
                   Start price: ${minPrice}
                 </Text>
               )}
 
-              {item.typeBid === 4 && (
+              {item.typeBid === "Auction_Price_GraduallyReduced" && (
                 <Text className="text-base text-gray-500">
                   Max Price: ${maxPrice}
                 </Text>
@@ -105,9 +107,9 @@ const PlaceBidModal: React.FC<PlaceBidModalProps> = ({
               How to Biding?
             </Text>
             <Text className="mb-2 text-lg font-bold text-center text-gray-600">
-              {item.typeBid === 2
+              {item.typeBid === "Secret_Auction"
                 ? "One-time Bidding Instructions"
-                : item.typeBid === 3
+                : item.typeBid === "Public_Auction"
                 ? "Rising Bid Instructions"
                 : "Descending Bid Instructions"}
             </Text>
@@ -115,17 +117,18 @@ const PlaceBidModal: React.FC<PlaceBidModalProps> = ({
             <Swiper
               showsPagination={true}
               autoplay={true}
-              style={{ height: "100%" }}>
+              style={{ height: "100%" }}
+            >
               <View className="items-center justify-center w-full h-full">
-                {item.typeBid === 2 ? (
+                {item.typeBid === "Secret_Auction" ? (
                   <Text className="mb-16 text-lg font-bold text-center text-gray-800">
                     Step 1: Place your secret bid.
                   </Text>
-                ) : item.typeBid === 3 ? (
+                ) : item.typeBid === "Public_Auction" ? (
                   <Text className="mb-16 text-lg font-bold text-center text-gray-800">
                     Step 1: Place your initial bid.
                   </Text>
-                ) : item.typeBid === 4 ? (
+                ) : item.typeBid === "Auction_Price_GraduallyReduced" ? (
                   <Text className="mb-16 text-lg font-bold text-center text-gray-800">
                     Step 1: Wait for price drops.
                   </Text>
@@ -133,15 +136,15 @@ const PlaceBidModal: React.FC<PlaceBidModalProps> = ({
               </View>
 
               <View className="items-center justify-center w-full h-full">
-                {item.typeBid === 2 ? (
+                {item.typeBid === "Secret_Auction" ? (
                   <Text className="mb-16 text-lg font-bold text-center text-gray-800">
                     Step 2: Wait for the auction to end.
                   </Text>
-                ) : item.typeBid === 3 ? (
+                ) : item.typeBid === "Public_Auction" ? (
                   <Text className="mb-16 text-lg font-bold text-center text-gray-800">
                     Step 2: Watch as others place bids.
                   </Text>
-                ) : item.typeBid === 4 ? (
+                ) : item.typeBid === "Auction_Price_GraduallyReduced" ? (
                   <Text className="mb-16 text-lg font-bold text-center text-gray-800">
                     Step 2: Accept a price when you're ready.
                   </Text>
@@ -149,15 +152,15 @@ const PlaceBidModal: React.FC<PlaceBidModalProps> = ({
               </View>
 
               <View className="items-center justify-center w-full h-full">
-                {item.typeBid === 2 ? (
+                {item.typeBid === "Secret_Auction" ? (
                   <Text className="mb-16 text-lg font-bold text-center text-gray-800">
                     Step 3: Highest bid wins.
                   </Text>
-                ) : item.typeBid === 3 ? (
+                ) : item.typeBid === "Public_Auction" ? (
                   <Text className="mb-16 text-lg font-bold text-center text-gray-800">
                     Step 3: Continue bidding to stay in the lead.
                   </Text>
-                ) : item.typeBid === 4 ? (
+                ) : item.typeBid === "Auction_Price_GraduallyReduced" ? (
                   <Text className="mb-16 text-lg font-bold text-center text-gray-800">
                     Step 3: First bidder wins.
                   </Text>
@@ -173,7 +176,7 @@ const PlaceBidModal: React.FC<PlaceBidModalProps> = ({
 
           {/* Conditional Input Field Logic */}
           <View className="flex-row items-center justify-center mb-6">
-            {item.typeBid === 4 ? (
+            {item.typeBid === "Auction_Price_GraduallyReduced" ? (
               <TextInput
                 value={bidValue.toString()}
                 className="w-40 h-12 px-4 text-xl font-semibold text-center bg-gray-200 border border-gray-300"
@@ -183,7 +186,8 @@ const PlaceBidModal: React.FC<PlaceBidModalProps> = ({
               <>
                 <TouchableOpacity
                   onPress={handleDecreaseBid}
-                  className="px-6 py-3 bg-gray-200 rounded-l-lg">
+                  className="px-6 py-3 bg-gray-200 rounded-l-lg"
+                >
                   <Text className="text-xl">-</Text>
                 </TouchableOpacity>
                 <TextInput
@@ -199,7 +203,8 @@ const PlaceBidModal: React.FC<PlaceBidModalProps> = ({
                 />
                 <TouchableOpacity
                   onPress={handleIncreaseBid}
-                  className="px-6 py-3 bg-gray-200 rounded-r-lg">
+                  className="px-6 py-3 bg-gray-200 rounded-r-lg"
+                >
                   <Text className="text-xl">+</Text>
                 </TouchableOpacity>
               </>
@@ -209,7 +214,8 @@ const PlaceBidModal: React.FC<PlaceBidModalProps> = ({
           {/* Submit Button */}
           <TouchableOpacity
             onPress={() => onSubmitBid(bidValue)}
-            className="py-3 bg-blue-500 rounded-lg">
+            className="py-3 bg-blue-500 rounded-lg"
+          >
             <Text className="text-lg font-semibold text-center text-white">
               SUBMIT BID
             </Text>

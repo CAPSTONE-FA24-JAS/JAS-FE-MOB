@@ -1,5 +1,8 @@
+import { getLotsByAuctionId } from "@/api/lotAPI";
+import { AuctionData } from "@/app/types/auction_type";
+import { Lot } from "@/app/types/lot_type";
 import ItemLots from "@/components/ItemLots";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -8,50 +11,39 @@ import {
   TouchableOpacity,
 } from "react-native";
 
-const AuctionLots = () => {
-  // Mock data for the 4 items
-  const items = [
-    {
-      id: "101",
-      name: "Lalaounis Chimera Chocker",
-      price: 2600,
-      minPrice: null,
-      maxPrice: null,
-      image:
-        "https://laimut.com/wp-content/uploads/Vong-Co-Swarovski-Chinh-Hang-Angelic-necklace-10.jpg",
-      typeBid: 1,
-    },
-    {
-      id: "102",
-      name: "Cartier Love Bracelet",
-      price: null,
-      minPrice: null,
-      maxPrice: null,
-      image:
-        "https://laimut.com/wp-content/uploads/Vong-Co-Swarovski-Chinh-Hang-Angelic-necklace-10.jpg",
-      typeBid: 2,
-    },
-    {
-      id: "103",
-      name: "Hermès Birkin Bag",
-      price: null,
-      minPrice: 3500,
-      maxPrice: 4000,
-      image:
-        "https://laimut.com/wp-content/uploads/Vong-Co-Swarovski-Chinh-Hang-Angelic-necklace-10.jpg",
-      typeBid: 3,
-    },
-    {
-      id: "104",
-      name: "Patek Philippe Nautilus",
-      price: null,
-      minPrice: 3500,
-      maxPrice: 4000,
-      image:
-        "https://laimut.com/wp-content/uploads/Vong-Co-Swarovski-Chinh-Hang-Angelic-necklace-10.jpg",
-      typeBid: 4,
-    },
-  ];
+interface Item {
+  id: string;
+  name: string;
+  price: number | null;
+  minPrice: number | null;
+  maxPrice: number | null;
+  image: string;
+  typeBid: number;
+}
+
+interface AuctionLotsProps {
+  dataAuction: AuctionData;
+}
+
+const AuctionLots: React.FC<AuctionLotsProps> = ({ dataAuction }) => {
+  const [items, setItems] = useState<Lot[]>([]);
+  console.log("responsegetLots", items);
+
+  useEffect(() => {
+    const fetchLots = async () => {
+      try {
+        const response = await getLotsByAuctionId(dataAuction.id);
+
+        if (response && response.isSuccess) {
+          setItems(response.data);
+        }
+      } catch (error) {
+        console.error("Failed to fetch lots:", error);
+      }
+    };
+
+    fetchLots();
+  }, [dataAuction.id]);
 
   return (
     <ScrollView className="bg-white">
@@ -76,12 +68,13 @@ const AuctionLots = () => {
           <ItemLots
             key={item.id}
             id={item.id}
-            name={item.name}
-            minPrice={item.minPrice || 0}
-            maxPrice={item.maxPrice || 0}
-            price={item.price || 0}
-            image={item.image}
-            typeBid={item.typeBid}
+            name={item.name || "Unnamed Lot"}
+            minPrice={item.startPrice || 0}
+            maxPrice={item.endPrice || 0}
+            price={item.buyNowPrice || 0}
+            image={item.imageLinkJewelry}
+            typeBid={item.lotType}
+            status={item.status}
           />
         ))}
       </View>

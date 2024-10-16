@@ -15,32 +15,38 @@ const AuctionDetailScreen: React.FC<AuctionDetailScreenProps> = ({
   const [countdown, setCountdown] = useState<string>("");
 
   useEffect(() => {
+    // Calculate the initial time difference based on auction status
+    const now = new Date().getTime();
+    let timeDiff = 0;
+
+    if (dataAuction?.status === "Living") {
+      timeDiff = new Date(dataAuction.endTime).getTime() - now;
+    } else if (dataAuction?.status === "NotStarted") {
+      timeDiff = new Date(dataAuction.startTime).getTime() - now;
+    }
+
     const updateCountdown = () => {
-      const now = new Date().getTime();
-      let timeDiff;
+      if (timeDiff > 0) {
+        // Decrease timeDiff by 1 second (1000 ms) in each interval
+        timeDiff -= 1000;
 
-      if (dataAuction?.status === "Living") {
-        timeDiff = new Date(dataAuction.endTime).getTime() - now;
-      } else if (dataAuction?.status === "NotStarted") {
-        timeDiff = new Date(dataAuction.startTime).getTime() - now;
-      }
-
-      if (timeDiff && timeDiff > 0) {
         const hours = Math.floor(
           (timeDiff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
         );
         const minutes = Math.floor((timeDiff % (1000 * 60 * 60)) / (1000 * 60));
         const seconds = Math.floor((timeDiff % (1000 * 60)) / 1000);
+
         setCountdown(`${hours}h ${minutes}min ${seconds}s`);
       } else {
         setCountdown("Expired");
       }
     };
 
+    // Start the interval to update the countdown every second
     const intervalId = setInterval(updateCountdown, 1000);
 
     return () => clearInterval(intervalId);
-  }, [dataAuction]);
+  }, [dataAuction.status, dataAuction.endTime, dataAuction.startTime]);
 
   return (
     <ScrollView className="bg-white">

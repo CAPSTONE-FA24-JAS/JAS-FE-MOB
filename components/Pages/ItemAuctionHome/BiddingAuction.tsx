@@ -114,7 +114,7 @@ const BiddingAuction = () => {
           )}
         </TabView.Item>
         <TabView.Item style={{ width: "100%" }}>
-          <AuctionLots />
+          {auctionDetails && <AuctionLots dataAuction={auctionDetails} />}
         </TabView.Item>
       </TabView>
     </>

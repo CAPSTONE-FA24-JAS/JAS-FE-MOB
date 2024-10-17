@@ -23,6 +23,8 @@ import {
   showErrorMessage,
   showSuccessMessage,
 } from "@/components/FlashMessageHelpers";
+import { Checkbox } from "react-native-paper";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const Login: React.FC = () => {
   const [username, setUsername] = useState("");
@@ -31,6 +33,8 @@ const Login: React.FC = () => {
   const [rightIcon, setRightIcon] = useState<"eye" | "eye-off">("eye"); // Explicitly type the state
   const [passwordVisibility, setPasswordVisibility] = useState(true);
   const [isLoginSuccessful, setIsLoginSuccessful] = useState(false);
+  const [rememberMe, setRememberMe] = useState(false);
+
   const router = useRouter();
 
   const handleLogin = async () => {
@@ -42,6 +46,15 @@ const Login: React.FC = () => {
       await LoginApi(username, password, dispatch);
       setIsLoginSuccessful(true);
       showSuccessMessage("Login successful! Redirecting...");
+      if (rememberMe) {
+        // Save credentials
+        await AsyncStorage.setItem("rememberedEmail", username);
+        await AsyncStorage.setItem("rememberedPassword", password);
+      } else {
+        // Clear saved credentials
+        await AsyncStorage.removeItem("rememberedEmail");
+        await AsyncStorage.removeItem("rememberedPassword");
+      }
       router.replace("/home-screen");
       console.log("Login successful, navigating to home..."); // Debug log
     } catch (error) {
@@ -49,6 +62,25 @@ const Login: React.FC = () => {
       console.error("Login error:", error);
     }
   };
+
+  useEffect(() => {
+    const loadRememberedCredentials = async () => {
+      try {
+        const savedEmail = await AsyncStorage.getItem("rememberedEmail");
+        const savedPassword = await AsyncStorage.getItem("rememberedPassword");
+
+        if (savedEmail && savedPassword) {
+          setUsername(savedEmail);
+          setPassword(savedPassword);
+          setRememberMe(true);
+        }
+      } catch (error) {
+        console.error("Failed to load remembered credentials:", error);
+      }
+    };
+
+    loadRememberedCredentials();
+  }, []);
 
   useEffect(() => {
     if (isLoginSuccessful) {
@@ -116,10 +148,22 @@ const Login: React.FC = () => {
                 </TouchableOpacity>
               </View>
             </View>
+            <View className="px-3  flex-row items-center mx-7">
+              <Checkbox
+                status={rememberMe ? "checked" : "unchecked"}
+                onPress={() => setRememberMe(!rememberMe)}
+                color="gray"
+              />
+              <Text style={{ fontSize: 16, marginLeft: 8, color: "gray" }}>
+                Remember Password
+              </Text>
+            </View>
+
             <View className="flex-row items-center justify-between mx-10 mt-6 ">
               <TouchableOpacity
                 className="w-[150px]  bg-[#4765F9] rounded-md"
-                onPress={handleLogin}>
+                onPress={handleLogin}
+              >
                 <Text className="py-3 text-xl font-semibold text-center text-white uppercase px-9">
                   Sign in
                 </Text>

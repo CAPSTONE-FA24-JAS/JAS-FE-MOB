@@ -14,10 +14,10 @@ export interface UserAccount {
   roleName: string;
   customerDTO: CustomerDTO;
   staffDTO?: any;
+  // walletId?: number;
 }
 
 export interface CustomerDTO {
-  $id?: string;
   id: number;
   firstName: string;
   lastName: string;
@@ -28,6 +28,9 @@ export interface CustomerDTO {
   citizenIdentificationCard: string;
   idIssuanceDate: string;
   idExpirationDate: string;
+  priceLimit: any;
+  expireDate: any;
+  walletDTO: any;
   accountDTO?: AccountDto;
 }
 

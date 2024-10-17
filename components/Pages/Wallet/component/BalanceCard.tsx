@@ -3,8 +3,13 @@ import { Text, TouchableOpacity, View } from "react-native";
 import { Card, Avatar } from "react-native-paper";
 import Icon from "react-native-vector-icons/MaterialIcons";
 
-const BalanceCard: React.FC = () => {
+interface BalanceCardProps {
+  balance: string | null;
+}
+
+const BalanceCard: React.FC<BalanceCardProps> = ({ balance }) => {
   const [isBalanceVisible, setIsBalanceVisible] = useState<boolean>(false);
+  console.log("BalanceCardProps", balance);
 
   return (
     <View className="p-2">
@@ -26,7 +31,7 @@ const BalanceCard: React.FC = () => {
         />
         <Card.Content>
           <Text className="text-3xl font-bold text-gray-800">
-            {isBalanceVisible ? "55.000.000 VND" : "******** VND"}
+            {isBalanceVisible ? `${balance || "0"} VND` : "******** VND"}
           </Text>
         </Card.Content>
       </Card>

@@ -60,15 +60,21 @@ const MyAccount = () => {
       {/* Profile Card */}
       {userInfo ? (
         <ProfileCard
-          userName={userInfo.firstName + " " + userInfo.lastName}
+          userName={
+            userInfo.customerDTO.lastName + " " + userInfo.customerDTO.firstName
+          }
           phoneNumber={userInfo.phoneNumber}
           email={userInfo.email}
           profileImage={
-            userInfo.profilePicture
-              ? userInfo.profilePicture
+            userInfo.customerDTO.profilePicture
+              ? userInfo.customerDTO.profilePicture
               : "https://upload.wikimedia.org/wikipedia/commons/thumb/f/fd/Faenza-avatar-default-symbolic.svg/2048px-Faenza-avatar-default-symbolic.svg.png"
           }
-          biddingLimit={userInfo.bidLimit ? userInfo.bidLimit : 0}
+          biddingLimit={
+            userInfo.customerDTO.priceLimit
+              ? userInfo.customerDTO.priceLimit
+              : 0
+          }
         />
       ) : (
         <Text>Loading...</Text>

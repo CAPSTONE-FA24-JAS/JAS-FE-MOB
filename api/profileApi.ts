@@ -12,56 +12,74 @@ import { logout } from "@/redux/slices/authSlice";
 
 const API_URL = process.env.EXPO_PUBLIC_API_URL || "http://localhost:7251";
 
+// Get Profile
 export const getProfile = async (userId: number): Promise<ProfileResponse> => {
   try {
+    console.log("Retrieving profile for user ID:", userId);
+
     const response = await axios.get<ProfileResponse>(
       `${API_URL}/api/Account/ViewProfile`,
-      {
-        params: {
-          Id: userId,
-        },
-      }
+      { params: { Id: userId } }
     );
 
     if (response.data.isSuccess) {
-      //   console.log("Lấy thông tin người dùng thành công:", response.data.data);
+      console.log("Profile retrieved successfully:", response.data.data);
       return response.data;
     } else {
-      throw new Error(
-        response.data.message || "Lỗi khi lấy thông tin người dùng"
-      );
+      throw new Error(response.data.message || "Failed to retrieve profile.");
     }
   } catch (error) {
-    console.error("Lỗi khi gọi API ViewProfile:", error);
-    showErrorMessage("Không thể lấy thông tin người dùng.");
+    console.error("API error on ViewProfile:", error);
+    showErrorMessage("Unable to retrieve profile information.");
     throw error;
   }
 };
 
-export const deleAccount = async (
+// Delete Account
+export const deleteAccount = async (
   userId: number
 ): Promise<DeleteAccountResponse> => {
   try {
     const response = await axios.put<DeleteAccountResponse>(
-      `${API_URL}/api/Account/DeleteAccount?Id=${userId}`,
-      {
-        params: {
-          Id: userId,
-        },
-      }
+      `${API_URL}/api/Account/DeleteAccount`,
+      null,
+      { params: { Id: userId } }
     );
 
     if (response.data.isSuccess) {
-      // Display success message
-      showSuccessMessage("Đã xóa tài khoản thành công");
-
+      showSuccessMessage("Account deleted successfully.");
       return response.data;
     } else {
-      throw new Error(response.data.message || "Lỗi khi xóa tài khoản");
+      throw new Error(response.data.message || "Failed to delete account.");
     }
   } catch (error) {
-    console.error("Lỗi khi gọi API Delete Account:", error);
-    showErrorMessage("Không thể xoá thông tin người dùng.");
+    console.error("API error on Delete Account:", error);
+    showErrorMessage("Unable to delete account.");
+    throw error;
+  }
+};
+
+// (Optional) Update Profile
+export const updateProfile = async (
+  userId: number,
+  profileData: any
+): Promise<ProfileResponse> => {
+  try {
+    const response = await axios.put<ProfileResponse>(
+      `${API_URL}/api/Account/UpdateProfile`,
+      profileData,
+      { params: { Id: userId } }
+    );
+
+    if (response.data.isSuccess) {
+      showSuccessMessage("Profile updated successfully.");
+      return response.data;
+    } else {
+      throw new Error(response.data.message || "Failed to update profile.");
+    }
+  } catch (error) {
+    console.error("API error on Update Profile:", error);
+    showErrorMessage("Unable to update profile.");
     throw error;
   }
 };

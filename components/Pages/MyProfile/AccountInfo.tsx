@@ -2,23 +2,17 @@ import React, { useState } from "react";
 import { View, TextInput, Image, TouchableOpacity, Text } from "react-native";
 import { useRoute } from "@react-navigation/native";
 import Icon from "react-native-vector-icons/FontAwesome"; // Using FontAwesome for camera icon
-import { deleAccount } from "@/api/profileApi";
+import { deleteAccount } from "@/api/profileApi";
 import { RootState } from "@/redux/store";
 import { useDispatch, useSelector } from "react-redux";
 import ConfirmModal from "@/components/Modal/ConfirmModalProps ";
 import { logout } from "@/redux/slices/authSlice";
 import { useNavigation } from "expo-router";
 import { StackNavigationProp } from "@react-navigation/stack";
+import { UserInfo } from "@/app/types/profilte_type";
 
 type RouteParams = {
-  userData: {
-    firstName: string;
-    lastName: string;
-    phoneNumber: string;
-    email: string;
-    profilePicture: string;
-    biddingLimit: number;
-  };
+  userData: UserInfo;
 };
 type RootStackParamList = {
   login: undefined;
@@ -33,13 +27,13 @@ const AccountInfo: React.FC = () => {
 
   // State to hold the editable data
   const [profile, setProfile] = useState({
-    firstName: userData.firstName,
-    lastName: userData.lastName,
+    firstName: userData.customerDTO.firstName,
+    lastName: userData.customerDTO.lastName,
     phoneNumber: userData.phoneNumber,
     email: userData.email,
-    biddingLimit: userData.biddingLimit ?? 0,
+    biddingLimit: userData.customerDTO.priceLimit ?? 0,
     profileImage:
-      userData.profilePicture ??
+      userData.customerDTO.profilePicture ??
       "https://upload.wikimedia.org/wikipedia/commons/thumb/f/fd/Faenza-avatar-default-symbolic.svg/2048px-Faenza-avatar-default-symbolic.svg.png",
   });
   const [isConfirmModalVisible, setConfirmModalVisible] = useState(false);
@@ -63,7 +57,7 @@ const AccountInfo: React.FC = () => {
   const handleDeleteAccount = async () => {
     if (!userId) return;
     try {
-      await deleAccount(userId);
+      await deleteAccount(userId);
       // Trigger logout
       setConfirmModalVisible(false); // Close the modal
       dispatch(logout()); // Dispatch the logout action to log out the user

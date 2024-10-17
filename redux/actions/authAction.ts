@@ -14,8 +14,8 @@ export const signup = createAsyncThunk(
 
     try {
       const response = await apiClient.post<Response<DataSignUpResponse>>(url, {
-        firstName: SignUpUser.firstName,
-        lastName: SignUpUser.lastName,
+        firstName: SignUpUser.registerCustomerDTO.firstName,
+        lastName: SignUpUser.registerCustomerDTO.lastName,
         email: SignUpUser.email,
         gender: "male",
         passwordHash: SignUpUser.passwordHash,

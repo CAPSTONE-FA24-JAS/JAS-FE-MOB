@@ -16,7 +16,7 @@ interface PreValuationDetailsModalProps {
   onReject: () => void;
   details: {
     id: number;
-    images: string[];
+    images: { id: number; imageLink: string }[];
     name: string;
     owner: string;
     artist: string;
@@ -60,27 +60,18 @@ const PreValuationDetailsModal: React.FC<PreValuationDetailsModalProps> = ({
           <ScrollView className="max-h-[80%]">
             {/* Images (2 rows, 2 columns) */}
             <View className="flex-row justify-between mb-4 mx-auto">
-              {details.images.slice(0, 2).map((img, idx) => (
+              {details?.images?.map((img, idx) => (
                 <Image
                   key={idx}
-                  source={{ uri: img }}
+                  source={{ uri: img?.imageLink }}
                   className="w-1/2 h-40 m-1 rounded-md"
                   resizeMode="cover"
                 />
               ))}
             </View>
-            <View className="flex-row justify-between mb-4">
-              {details.images.slice(2, 4).map((img, idx) => (
-                <Image
-                  key={idx}
-                  source={{ uri: img }}
-                  className="w-1/2 h-40 m-1 rounded-md"
-                  resizeMode="cover"
-                />
-              ))}
-            </View>
+
             {/* Item details */}
-            <Text className="mb-2 text-2xl font-bold">{details.name}</Text>
+            <Text className="mb-2 text-2xl font-bold">{details?.name}</Text>
 
             {/* <View className="flex-row gap-2 my-2">
               <Text className="text-lg font-bold text-gray-700 ">Owner:</Text>

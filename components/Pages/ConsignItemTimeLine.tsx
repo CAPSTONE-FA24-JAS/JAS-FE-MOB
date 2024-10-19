@@ -86,7 +86,7 @@ const ConsignDetailTimeLine: React.FC = () => {
     const valuationDetails = {
       id: item.id,
       status: item.status,
-      images: item.imageValuations[0]?.imageLink,
+      images: item.imageValuations,
       name: item.name,
       pricingTime: item.pricingTime,
       estimatedCost: "chưa có",
@@ -99,6 +99,7 @@ const ConsignDetailTimeLine: React.FC = () => {
       artist: "fv",
       category: "àg",
     };
+    console.log("valuationDetails", valuationDetails);
 
     // Đặt dữ liệu vào state và mở modal
     setValuationData(valuationDetails);
@@ -193,6 +194,8 @@ const ConsignDetailTimeLine: React.FC = () => {
     setValuationData(finalValuationDetails);
     setFinalModalVisible(true);
   };
+
+  console.log("valuationData", valuationData);
 
   return (
     <ScrollView className="flex-1 bg-white">

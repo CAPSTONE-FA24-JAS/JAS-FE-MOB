@@ -382,7 +382,7 @@ const LotDetailScreen = () => {
           className="py-3 bg-blue-500 mt-4 rounded-lg"
           onPress={handleRegisterToBid}
         >
-          <Text className="font-semibold text-center text-white">
+          <Text className="font-semibold uppercase text-center text-white">
             Register To Bid
           </Text>
         </TouchableOpacity>

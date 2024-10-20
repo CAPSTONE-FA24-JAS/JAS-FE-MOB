@@ -53,6 +53,7 @@ import OTP from "@/components/Pages/OTP/OTP";
 import MyWalletMain from "@/components/Pages/Wallet/MyWalletMain";
 import Deposit from "@/components/Pages/Wallet/Deposit";
 import Withdraw from "@/components/Pages/Wallet/Widthraw";
+import RegisterToBid from "@/components/Pages/MyBids/RegisterToBid";
 
 // Declare Drawer and Stack Navigators
 const Drawer = createDrawerNavigator();
@@ -391,6 +392,13 @@ export default function AppNavigator() {
         component={Deposit}
         options={{
           header: () => <CustomHeaderDetail title="Deposit" />,
+        }}
+      />
+      <Stack.Screen
+        name="RegisterToBid"
+        component={RegisterToBid}
+        options={{
+          header: () => <CustomHeaderDetail title="Register To Bid" />,
         }}
       />
     </Stack.Navigator>

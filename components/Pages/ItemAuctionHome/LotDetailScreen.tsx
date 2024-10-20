@@ -22,6 +22,7 @@ type RootStackParamList = {
   PlaceBid: BidFormRouteParams;
   AutoBidSaveConfig: BidFormRouteParams;
   RisingBidPage: { item: any }; // Update this to expect `item` as a param
+  RegisterToBid: LotDetail; // Add this line
 };
 
 // Define the BidFormRouteParams type
@@ -48,12 +49,12 @@ type LotDetailScreenNavigationProp =
 
 const LotDetailScreen = () => {
   const navigation = useNavigation<LotDetailScreenNavigationProp>();
-  const data: BidFormRouteParams = {
-    lotId: 101,
-    lotName: "Lalaounis Chimera Chocker",
-    startBid: 2600,
-    estimatedPrice: { min: 3500, max: 4000 },
-  };
+  // const data: BidFormRouteParams = {
+  //   lotId: 101,
+  //   lotName: "Lalaounis Chimera Chocker",
+  //   startBid: 2600,
+  //   estimatedPrice: { min: 3500, max: 4000 },
+  // };
 
   const route = useRoute();
   const { id, name, minPrice, maxPrice, price, image, typeBid } =
@@ -102,7 +103,7 @@ const LotDetailScreen = () => {
   };
 
   const handlePressAutoBid = () => {
-    navigation.navigate("AutoBidSaveConfig", data);
+    // navigation.navigate("AutoBidSaveConfig", data);
   };
 
   if (loading) {
@@ -261,6 +262,12 @@ const LotDetailScreen = () => {
     }
   };
 
+  const handleRegisterToBid = () => {
+    if (lotDetail) {
+      navigation.navigate("RegisterToBid", lotDetail);
+    }
+  };
+
   return (
     <SafeAreaView className="flex-1 bg-white">
       <View className="flex-1">
@@ -370,6 +377,15 @@ const LotDetailScreen = () => {
             </Text>
           </TouchableOpacity>
         )}
+
+        <TouchableOpacity
+          className="py-3 bg-blue-500 mt-4 rounded-lg"
+          onPress={handleRegisterToBid}
+        >
+          <Text className="font-semibold text-center text-white">
+            Register To Bid
+          </Text>
+        </TouchableOpacity>
 
         <PlaceBidModal
           visible={modalVisible}

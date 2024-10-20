@@ -61,3 +61,33 @@ export const getLotDetailById = async (
     throw error;
   }
 };
+
+// Function to register to bid for a lot
+export const registerToBid = async (
+  currentPrice: number,
+  customerId: number,
+  lotId: number
+): Promise<void> => {
+  try {
+    const response = await apiClient.post(`${API_URL}/api/Lot/RegisterToBid`, {
+      currentPrice,
+      customerId,
+      lotId,
+    });
+
+    if (response.data.isSuccess) {
+      console.log("Register to bid success:", response.data);
+      showSuccessMessage(
+        response.data.message || "Register customer to lot successfully."
+      );
+    } else {
+      throw new Error(
+        response.data.message || "Failed to register customer to lot."
+      );
+    }
+  } catch (error) {
+    console.error("Error registering to bid:", error);
+    showErrorMessage("Unable to register customer to lot.");
+    throw error;
+  }
+};

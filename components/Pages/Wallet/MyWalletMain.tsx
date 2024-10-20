@@ -34,7 +34,7 @@ const MyWalletMain: React.FC = () => {
     (state: RootState) => state.profile.profile?.customerDTO?.walletDTO?.id
   );
 
-  console.log("haveWallet", haveWallet);
+  console.log("haveWalletak", haveWallet);
 
   // Reload wallet status by fetching user profile
   useEffect(() => {

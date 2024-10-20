@@ -1,5 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { View, ScrollView, Text, TouchableOpacity } from "react-native";
+import {
+  View,
+  ScrollView,
+  Text,
+  TouchableOpacity,
+  ActivityIndicator,
+} from "react-native";
 import { Button, Checkbox, Modal, IconButton } from "react-native-paper";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import BalanceCard from "../Wallet/component/BalanceCard";
@@ -16,7 +22,7 @@ import { registerToBid } from "@/api/lotAPI";
 const RegisterToBid = () => {
   const route = useRoute();
   const lotDetail = route.params as LotDetail;
-  console.log("lotDetail", lotDetail);
+  //   console.log("lotDetail", lotDetail);
 
   const navigation = useNavigation();
   const [checkedTerms, setCheckedTerms] = useState(false);
@@ -34,22 +40,26 @@ const RegisterToBid = () => {
   console.log("haveWalletNE", haveWallet);
 
   useEffect(() => {
-    if (haveWallet) {
-      // Fetch wallet balance if walletId is available
-      getWalletBalance(haveWallet);
-    }
+    const fetchData = async () => {
+      if (haveWallet) {
+        await getWalletBalance(haveWallet); // Fetch balance
+      }
+    };
+
+    fetchData();
   }, [haveWallet]);
 
-  // Function to fetch wallet balance
   const getWalletBalance = async (walletId: number) => {
     try {
       const response = await checkWalletBalance(walletId);
       if (response && response.isSuccess) {
-        setBalance(response.data.balance); // Set balance
+        setBalance(response.data.balance);
         showSuccessMessage("Check Wallet balance retrieved successfully.");
+      } else {
+        setBalance(null); // Set null if response fails
       }
     } catch (error) {
-      showErrorMessage("Failed to check retrieve wallet balance.");
+      showErrorMessage("Failed to retrieve wallet balance.");
     }
   };
 
@@ -77,7 +87,14 @@ const RegisterToBid = () => {
   return (
     <ScrollView className="flex-1 bg-white p-4">
       {/* Hiển thị số dư hiện tại */}
-      <BalanceCard balance={balance} />
+      {balance === null ? (
+        <ActivityIndicator size="large" color="#0000ff" />
+      ) : (
+        <View className="flex-1 bg-white ">
+          <BalanceCard balance={balance} />
+          {/* Các phần tử khác */}
+        </View>
+      )}
 
       {/* Thông tin đặt cọc */}
       <View className="border rounded-lg p-4">

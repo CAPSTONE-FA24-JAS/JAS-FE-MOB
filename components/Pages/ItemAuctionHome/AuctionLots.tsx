@@ -9,17 +9,8 @@ import {
   ScrollView,
   TextInput,
   TouchableOpacity,
+  ActivityIndicator,
 } from "react-native";
-
-interface Item {
-  id: string;
-  name: string;
-  price: number | null;
-  minPrice: number | null;
-  maxPrice: number | null;
-  image: string;
-  typeBid: number;
-}
 
 interface AuctionLotsProps {
   dataAuction: AuctionData;
@@ -27,10 +18,11 @@ interface AuctionLotsProps {
 
 const AuctionLots: React.FC<AuctionLotsProps> = ({ dataAuction }) => {
   const [items, setItems] = useState<Lot[]>([]);
-  console.log("responsegetLots", items);
+  const [loading, setLoading] = useState<boolean>(true); // Thêm state loading
 
   useEffect(() => {
     const fetchLots = async () => {
+      setLoading(true); // Bắt đầu loading
       try {
         const response = await getLotsByAuctionId(dataAuction.id);
 
@@ -39,6 +31,8 @@ const AuctionLots: React.FC<AuctionLotsProps> = ({ dataAuction }) => {
         }
       } catch (error) {
         console.error("Failed to fetch lots:", error);
+      } finally {
+        setLoading(false); // Kết thúc loading
       }
     };
 
@@ -50,6 +44,8 @@ const AuctionLots: React.FC<AuctionLotsProps> = ({ dataAuction }) => {
       <View className="bg-red-600">
         <Text className="text-center text-white">Bid 13th 2min 56s Left</Text>
       </View>
+
+      {/* Search and filter section */}
       <View className="flex flex-row justify-around py-3 searchbar">
         <TextInput
           placeholder="Search"
@@ -62,22 +58,37 @@ const AuctionLots: React.FC<AuctionLotsProps> = ({ dataAuction }) => {
           <Text className="text-center">Sort</Text>
         </TouchableOpacity>
       </View>
-      {/* Render the list of items */}
-      <View className="flex flex-row flex-wrap justify-around listLots">
-        {items.map((item) => (
-          <ItemLots
-            key={item.id}
-            id={item.id}
-            name={item.name || "Unnamed Lot"}
-            minPrice={item.startPrice || 0}
-            maxPrice={item.endPrice || 0}
-            price={item.buyNowPrice || 0}
-            image={item.imageLinkJewelry}
-            typeBid={item.lotType}
-            status={item.status}
-          />
-        ))}
-      </View>
+
+      {/* Hiển thị loading khi dữ liệu đang được tải */}
+      {loading ? (
+        <View className="flex-1 justify-center items-center mt-10">
+          <ActivityIndicator size="large" color="#0000ff" />
+          <Text className="mt-2 text-gray-500">Loading lots...</Text>
+        </View>
+      ) : (
+        // Render the list of items when loading is complete
+        <View className="flex flex-row flex-wrap justify-around listLots">
+          {items.length > 0 ? (
+            items.map((item) => (
+              <ItemLots
+                key={item.id}
+                id={item.id}
+                name={item.name || "Unnamed Lot"}
+                minPrice={item.startPrice || 0}
+                maxPrice={item.endPrice || 0}
+                price={item.buyNowPrice || 0}
+                image={item.imageLinkJewelry}
+                typeBid={item.lotType}
+                status={item.status}
+              />
+            ))
+          ) : (
+            <Text className="text-center text-gray-500 mt-10">
+              No lots available.
+            </Text>
+          )}
+        </View>
+      )}
     </ScrollView>
   );
 };

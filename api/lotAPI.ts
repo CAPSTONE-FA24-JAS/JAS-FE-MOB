@@ -45,7 +45,7 @@ export const getLotDetailById = async (
     );
 
     if (response.data.isSuccess) {
-      console.log("Received lot details:", response.data);
+      // console.log("Received lot details:", response.data);
       showSuccessMessage(
         response.data.message || "Successfully retrieved lot details."
       );

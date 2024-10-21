@@ -3,27 +3,19 @@ import { View, TextInput, TouchableOpacity, Text } from "react-native";
 import { Picker } from "@react-native-picker/picker"; // Import Picker for dropdown
 import { useNavigation } from "expo-router";
 import { StackNavigationProp } from "@react-navigation/stack";
+import { LotDetail } from "@/app/types/lot_type";
 
 interface BidInputProps {
   highestBid: number;
-  item: {
-    id: number;
-    name: string;
-    minPrice?: number;
-    maxPrice?: number;
-    price?: number;
-    image: string;
-    typeBid: number;
-  };
+  item: LotDetail;
+  onPlaceBid: (price: number) => Promise<void>;
 }
-// Define the types for navigation routes
-type RootStackParamList = {
-  BidSuccess: undefined;
-};
 
-const BidInput: React.FC<BidInputProps> = ({ highestBid, item }) => {
-  const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
-
+const BidInput: React.FC<BidInputProps> = ({
+  highestBid,
+  item,
+  onPlaceBid,
+}) => {
   const [bidValue, setBidValue] = useState<number>(highestBid + 100);
   const [step, setStep] = useState<number>(100); // Step value from dropdown
   const [error, setError] = useState<string | null>(null);
@@ -44,25 +36,23 @@ const BidInput: React.FC<BidInputProps> = ({ highestBid, item }) => {
     if (error) {
       console.log("Invalid bid");
     } else {
-      navigation.navigate("BidSuccess");
+      onPlaceBid(bidValue);
       console.log("Bid placed:", bidValue);
     }
   };
 
   // Render UI for typeBid 3
-  if (item.typeBid === 3) {
+  if (item.lotType === "Public_Auction") {
     return (
-      <View className="px-4 w-full">
+      <View className="w-full px-4 py-2">
         <View className="flex-row items-center justify-center ">
-          {/* Step size picker */}
           <View className="border border-gray-300 h-12 w-[25%] rounded-md mr-4">
             <Picker
               selectedValue={step}
               className="h-12 w-[120px]"
               onValueChange={(itemValue: React.SetStateAction<number>) =>
                 setStep(itemValue)
-              }
-            >
+              }>
               <Picker.Item label="100" value={100} />
               <Picker.Item label="200" value={200} />
               <Picker.Item label="500" value={500} />
@@ -73,46 +63,43 @@ const BidInput: React.FC<BidInputProps> = ({ highestBid, item }) => {
           {/* Bid input and increase/decrease buttons */}
           <TouchableOpacity
             onPress={() => setBidValue((prev) => prev - step)}
-            className="bg-gray-300 w-10 p-2 h-12"
-          >
-            <Text className="text-lg text-center text-xl">-</Text>
+            className="w-10 h-12 p-2 bg-gray-300">
+            <Text className="text-xl text-center ">-</Text>
           </TouchableOpacity>
 
           <TextInput
             value={bidValue.toString()}
             onChangeText={handleBidChange}
             keyboardType="numeric"
-            className="border px-10 font-semibold text-xl h-12 w-32 text-center border-gray-300"
+            className="w-32 h-12 px-10 text-xl font-semibold text-center border border-gray-300"
           />
 
           <TouchableOpacity
             onPress={() => setBidValue((prev) => prev + step)}
-            className="bg-gray-300 w-10 p-2 h-12"
-          >
-            <Text className="text-lg text-center text-xl">+</Text>
+            className="w-10 h-12 p-2 bg-gray-300">
+            <Text className="text-xl text-center ">+</Text>
           </TouchableOpacity>
 
           {/* Submit button */}
           <TouchableOpacity
             onPress={handleSubmitBid}
-            className="bg-blue-500 py-2 px-3 rounded-md ml-4"
-          >
-            <Text className="text-white text-center font-semibold text-xl">
+            className="px-3 py-2 ml-4 bg-blue-500 rounded-md">
+            <Text className="text-xl font-semibold text-center text-white">
               PUT
             </Text>
           </TouchableOpacity>
         </View>
 
         {/* Error message */}
-        {error && <Text className="text-red-500 mt-2">{error}</Text>}
+        {error && <Text className="mt-2 text-red-500">{error}</Text>}
       </View>
     );
   }
 
   // Render UI for typeBid 4 (disabled input)
-  if (item.typeBid === 4) {
+  if (item.lotType === "Secret_Auction") {
     return (
-      <View className="px-4 flex-row mx-auto">
+      <View className="flex-row px-4 mx-auto">
         <TextInput
           value={bidValue.toString()}
           editable={false} // Disable input
@@ -120,9 +107,8 @@ const BidInput: React.FC<BidInputProps> = ({ highestBid, item }) => {
         />
         <TouchableOpacity
           onPress={handleSubmitBid}
-          className="bg-blue-500 py-2 px-3 rounded-md ml-4"
-        >
-          <Text className="text-white text-center font-semibold text-xl">
+          className="px-3 py-2 ml-4 bg-blue-500 rounded-md">
+          <Text className="text-xl font-semibold text-center text-white">
             PUT
           </Text>
         </TouchableOpacity>

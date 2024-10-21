@@ -8,7 +8,7 @@ interface ProductCardProps {
   name: string;
   image: string;
   minPrice?: number;
-  typeBid: number;
+  typeBid: string;
   maxPrice?: number;
 }
 
@@ -28,25 +28,25 @@ const ProductCard: React.FC<ProductCardProps> = ({
         resizeMode="contain"
       />
       <View className="flex-row items-center justify-between">
-        <Text className="text-lg font-bold mt-2">Lot {id}</Text>
-        {typeBid === 3 ? (
-          <Text className="text-sm text-gray-400 font-medium mt- mr-2">
+        <Text className="mt-2 text-lg font-bold">Lot {id}</Text>
+        {typeBid === "Public_Auction" ? (
+          <Text className="mr-2 text-sm font-medium text-gray-400 mt-">
             Start Price: ${minPrice}
           </Text>
         ) : (
-          <Text className="text-lg text-gray-700 font-medium mt- mr-2">
+          <Text className="mr-2 text-lg font-medium text-gray-700 mt-">
             Original Price: ${maxPrice}
           </Text>
         )}
       </View>
-      <Text className="text-gray-700 font-semibold text-base ">{name}</Text>
-      {typeBid === 4 && (
-        <View className="w-full p-2 bg-gray-100 mt-2 rounded-md">
+      <Text className="text-base font-semibold text-gray-700 ">{name}</Text>
+      {typeBid === "Auction_Price_GraduallyReduced" && (
+        <View className="w-full p-2 mt-2 bg-gray-100 rounded-md">
           <Text className="text-xl font-semibold text-center text-gray-800">
             Lot {id} - Current Bid
           </Text>
 
-          <View className="flex-row justify-center gap-2 items-center  mt-2">
+          <View className="flex-row items-center justify-center gap-2 mt-2">
             <MaterialCommunityIcons
               name="arrow-down-bold-box-outline"
               size={35}

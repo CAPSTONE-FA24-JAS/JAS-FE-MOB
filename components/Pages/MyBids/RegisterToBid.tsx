@@ -1,11 +1,5 @@
 import React, { useEffect, useState } from "react";
-import {
-  View,
-  ScrollView,
-  Text,
-  TouchableOpacity,
-  ActivityIndicator,
-} from "react-native";
+import { View, ScrollView, Text, TouchableOpacity } from "react-native";
 import { Button, Checkbox, Modal, IconButton } from "react-native-paper";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import BalanceCard from "../Wallet/component/BalanceCard";
@@ -19,12 +13,16 @@ import {
 import { LotDetail } from "@/app/types/lot_type";
 import { registerToBid } from "@/api/lotAPI";
 
+type RootStackParamList = {
+  [x: string]: any;
+};
+
 const RegisterToBid = () => {
   const route = useRoute();
   const lotDetail = route.params as LotDetail;
-  //   console.log("lotDetail", lotDetail);
+  console.log("lotDetail", lotDetail);
 
-  const navigation = useNavigation();
+  const navigation = useNavigation<RootStackParamList>();
   const [checkedTerms, setCheckedTerms] = useState(false);
   const [checkedAge, setCheckedAge] = useState(false);
   const [balance, setBalance] = useState<string | null>(null); // Store balance here
@@ -32,7 +30,7 @@ const RegisterToBid = () => {
     (state: RootState) => state.auth.userResponse?.customerDTO?.id
   );
   const haveWallet = useSelector(
-    (state: RootState) => state.profile.profile?.customerDTO?.walletDTO?.id
+    (state: RootState) => state.auth.userResponse?.customerDTO?.walletDTO?.id
   );
 
   console.log("accountIdNe", userId);
@@ -40,26 +38,21 @@ const RegisterToBid = () => {
   console.log("haveWalletNE", haveWallet);
 
   useEffect(() => {
-    const fetchData = async () => {
-      if (haveWallet) {
-        await getWalletBalance(haveWallet); // Fetch balance
-      }
-    };
-
-    fetchData();
+    if (haveWallet) {
+      getWalletBalance(haveWallet);
+    }
   }, [haveWallet]);
 
+  // Function to fetch wallet balance
   const getWalletBalance = async (walletId: number) => {
     try {
       const response = await checkWalletBalance(walletId);
       if (response && response.isSuccess) {
-        setBalance(response.data.balance);
+        setBalance(response.data.balance); // Set balance
         showSuccessMessage("Check Wallet balance retrieved successfully.");
-      } else {
-        setBalance(null); // Set null if response fails
       }
     } catch (error) {
-      showErrorMessage("Failed to retrieve wallet balance.");
+      showErrorMessage("Failed to check retrieve wallet balance.");
     }
   };
 
@@ -78,27 +71,20 @@ const RegisterToBid = () => {
     try {
       await registerToBid(lotDetail.deposit, userId, lotDetail.id);
       showSuccessMessage("Register customer to lot successfully.");
-      navigation.goBack(); // Quay lại màn hình trước đó sau khi đăng ký thành công
+      navigation.navigate("RisingBidPage", { itemId: 41 }); // fix cứng ở đây
     } catch (error) {
       showErrorMessage("Failed to register to bid.");
     }
   };
 
   return (
-    <ScrollView className="flex-1 bg-white p-4">
+    <ScrollView className="flex-1 p-4 bg-white">
       {/* Hiển thị số dư hiện tại */}
-      {balance === null ? (
-        <ActivityIndicator size="large" color="#0000ff" />
-      ) : (
-        <View className="flex-1 bg-white ">
-          <BalanceCard balance={balance} />
-          {/* Các phần tử khác */}
-        </View>
-      )}
+      <BalanceCard balance={balance} />
 
       {/* Thông tin đặt cọc */}
-      <View className="border rounded-lg p-4">
-        <Text className="text-lg font-bold mb-4">DEPOSIT INFORMATION</Text>
+      <View className="p-4 border rounded-lg">
+        <Text className="mb-4 text-lg font-bold">DEPOSIT INFORMATION</Text>
 
         <View className="flex-row justify-between mb-2">
           <Text className="text-base font-semibold text-gray-500">
@@ -141,7 +127,7 @@ const RegisterToBid = () => {
           </Text>
         </View>
 
-        <View className="border-t my-2" />
+        <View className="my-2 border-t" />
 
         <View className="flex-row justify-between mb-2">
           <Text className="text-base font-semibold text-gray-500">
@@ -169,7 +155,7 @@ const RegisterToBid = () => {
             status={checkedTerms ? "checked" : "unchecked"}
             onPress={() => setCheckedTerms(!checkedTerms)}
           />
-          <Text className="text-base ml-2">
+          <Text className="ml-2 text-base">
             I have read and agree to the{" "}
             <Text className="text-blue-500">Terms of Use</Text> and{" "}
             <Text className="text-blue-500">Privacy Policy</Text>.
@@ -181,15 +167,14 @@ const RegisterToBid = () => {
             status={checkedAge ? "checked" : "unchecked"}
             onPress={() => setCheckedAge(!checkedAge)}
           />
-          <Text className="text-base ml-2">I am 18 years of age or older</Text>
+          <Text className="ml-2 text-base">I am 18 years of age or older</Text>
         </View>
       </View>
 
       <TouchableOpacity
         className="py-3 bg-blue-500 rounded-sm"
         onPress={handleRegisterToBid}
-        disabled={!checkedTerms || !checkedAge}
-      >
+        disabled={!checkedTerms || !checkedAge}>
         <Text className="font-semibold text-center text-white">
           REGISTER TO BID
         </Text>

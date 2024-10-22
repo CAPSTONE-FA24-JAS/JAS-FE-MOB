@@ -37,6 +37,7 @@ const RegisterToBid = () => {
   console.log("balanceNe", balance);
   console.log("haveWalletNE", haveWallet);
 
+
   useEffect(() => {
     if (haveWallet) {
       getWalletBalance(haveWallet);
@@ -55,6 +56,8 @@ const RegisterToBid = () => {
       showErrorMessage("Failed to check retrieve wallet balance.");
     }
   };
+
+
 
   // Hàm xử lý đăng ký đấu giá
   const handleRegisterToBid = async () => {
@@ -80,7 +83,10 @@ const RegisterToBid = () => {
   return (
     <ScrollView className="flex-1 p-4 bg-white">
       {/* Hiển thị số dư hiện tại */}
+
       <BalanceCard balance={balance} />
+     
+
 
       {/* Thông tin đặt cọc */}
       <View className="p-4 border rounded-lg">

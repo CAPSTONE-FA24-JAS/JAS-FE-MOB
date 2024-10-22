@@ -63,3 +63,28 @@ export const createWallet = async (
     throw error;
   }
 };
+
+// Function to top up the wallet
+export const depositWallet = async (
+  walletId: number,
+  amount: number
+): Promise<string> => {
+  try {
+    const response = await axios.post(`${API_URL}/api/Wallet/TopUp`, {
+      walletId,
+      amount,
+    });
+
+    if (response.status === 200 && response.data) {
+      const paymentLink = response.data; // Assume response contains the payment link as a plain string
+      console.log("Payment link:", paymentLink);
+      return paymentLink;
+    } else {
+      throw new Error("Failed to top up wallet.");
+    }
+  } catch (error) {
+    console.error("Error topping up wallet:", error);
+    showErrorMessage("Unable to top up wallet.");
+    throw error;
+  }
+};

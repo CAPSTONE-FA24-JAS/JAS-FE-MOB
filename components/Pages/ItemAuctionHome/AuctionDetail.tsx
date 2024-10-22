@@ -19,9 +19,9 @@ const AuctionDetailScreen: React.FC<AuctionDetailScreenProps> = ({
     const now = new Date().getTime();
     let timeDiff = 0;
 
-    if (dataAuction?.status === "Living") {
+    if (dataAuction?.status === "Live") {
       timeDiff = new Date(dataAuction.endTime).getTime() - now;
-    } else if (dataAuction?.status === "NotStarted") {
+    } else if (dataAuction?.status === "UpComing") {
       timeDiff = new Date(dataAuction.startTime).getTime() - now;
     }
 
@@ -50,13 +50,13 @@ const AuctionDetailScreen: React.FC<AuctionDetailScreenProps> = ({
 
   return (
     <ScrollView className="bg-white">
-      {dataAuction?.status === "Living" ? (
+      {dataAuction?.status === "Live" ? (
         <View className="bg-red-600 py-2">
           <Text className="text-center text-white font-semibold">
             Bid {countdown} Left
           </Text>
         </View>
-      ) : dataAuction?.status === "NotStarted" ? (
+      ) : dataAuction?.status === "UpComing" ? (
         <View className="bg-yellow-600 py-2">
           <Text className="text-center text-white  font-semibold">
             Upcoming After {countdown}

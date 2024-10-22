@@ -34,30 +34,7 @@ const MyWalletMain: React.FC = () => {
     (state: RootState) => state.profile.profile?.customerDTO?.walletDTO?.id
   );
 
-  console.log("haveWalletak", haveWallet);
-
-  // Reload wallet status by fetching user profile
-  useEffect(() => {
-    if (!haveWallet && accountId !== undefined) {
-      dispatch(fetchProfile(accountId));
-    } else if (haveWallet) {
-      // Fetch wallet balance if walletId is available
-      getWalletBalance(haveWallet);
-    }
-  }, [dispatch, accountId, haveWallet]);
-
-  // Function to fetch wallet balance
-  const getWalletBalance = async (walletId: number) => {
-    try {
-      const response = await checkWalletBalance(walletId);
-      if (response && response.isSuccess) {
-        setBalance(response.data.balance); // Set balance
-        showSuccessMessage("Check Wallet balance retrieved successfully.");
-      }
-    } catch (error) {
-      showErrorMessage("Failed to check retrieve wallet balance.");
-    }
-  };
+  console.log("Wallet id", haveWallet);
 
   const handleCreateWallet = async () => {
     if (!userId) {
@@ -110,7 +87,7 @@ const MyWalletMain: React.FC = () => {
       ) : (
         <ScrollView className="bg-white flex-1 p-2">
           {/* Balance */}
-          <BalanceCard balance={balance} />
+          <BalanceCard />
           {/* Transaction Buttons */}
 
           {/* Transaction Buttons */}

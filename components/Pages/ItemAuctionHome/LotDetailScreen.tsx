@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -14,8 +14,11 @@ import { useNavigation, useRoute } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "react-native-screens/lib/typescript/native-stack/types";
 import PlaceBidModal from "@/components/Modal/PlaceBidModal";
 import { LotDetail } from "@/app/types/lot_type";
-import { getLotDetailById } from "@/api/lotAPI";
+import { checkCustomerInLot, getLotDetailById } from "@/api/lotAPI";
 import moment from "moment-timezone";
+import { useSelector } from "react-redux";
+import { RootState } from "@/redux/store";
+import { useFocusEffect } from "expo-router";
 
 // Define the navigation param list type
 type RootStackParamList = {
@@ -49,13 +52,10 @@ type LotDetailScreenNavigationProp =
 
 const LotDetailScreen = () => {
   const navigation = useNavigation<LotDetailScreenNavigationProp>();
-  // const data: BidFormRouteParams = {
-  //   lotId: 101,
-  //   lotName: "Lalaounis Chimera Chocker",
-  //   startBid: 2600,
-  //   estimatedPrice: { min: 3500, max: 4000 },
-  // };
-
+  // Sử dụng useAppSelector để lấy userId từ Redux store
+  const userId = useSelector(
+    (state: RootState) => state.auth.userResponse?.customerDTO?.id
+  );
   const route = useRoute();
   const { id, name, minPrice, maxPrice, price, image, typeBid } =
     route.params as RouteParams;
@@ -63,27 +63,55 @@ const LotDetailScreen = () => {
   const [lotDetail, setLotDetail] = useState<LotDetail | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
-
   const [modalVisible, setModalVisible] = useState<boolean>(false);
+  const [isRegistered, setIsRegistered] = useState<boolean>(false); // Thêm trạng thái isRegistered
+  const [checkingRegistration, setCheckingRegistration] =
+    useState<boolean>(true); // Trạng thái kiểm tra đăng ký
 
-  useEffect(() => {
-    const fetchLotDetail = async () => {
-      try {
-        const data = await getLotDetailById(id);
-        if (data?.isSuccess) {
-          setLotDetail(data.data);
-        } else {
-          setError(data?.message || "Không thể tải dữ liệu.");
-        }
-      } catch (err) {
-        setError("Đã xảy ra lỗi khi tải dữ liệu.");
-      } finally {
-        setLoading(false);
+  // Hàm fetchLotDetail
+  const fetchLotDetail = async () => {
+    try {
+      const data = await getLotDetailById(id);
+      if (data?.isSuccess) {
+        setLotDetail(data.data);
+      } else {
+        setError(data?.message || "Không thể tải dữ liệu.");
       }
-    };
+    } catch (err) {
+      setError("Đã xảy ra lỗi khi tải dữ liệu.");
+    } finally {
+      setLoading(false);
+    }
+  };
 
+  // Hàm fetchRegistrationStatus
+  const fetchRegistrationStatus = useCallback(async () => {
+    try {
+      setCheckingRegistration(true); // Reset trạng thái kiểm tra
+      if (userId !== undefined) {
+        const registered = await checkCustomerInLot(userId, id);
+        setIsRegistered(registered);
+      } else {
+        setIsRegistered(false);
+      }
+    } catch (error) {
+      setIsRegistered(false);
+    } finally {
+      setCheckingRegistration(false);
+    }
+  }, [userId, id]);
+
+  // Sử dụng useEffect để fetch lot detail khi component mount
+  useEffect(() => {
     fetchLotDetail();
   }, [id]);
+
+  // Sử dụng useFocusEffect để gọi lại fetchRegistrationStatus khi màn hình được focus
+  useFocusEffect(
+    useCallback(() => {
+      fetchRegistrationStatus();
+    }, [fetchRegistrationStatus])
+  );
 
   const item = {
     id,
@@ -352,40 +380,50 @@ const LotDetailScreen = () => {
         </ScrollView>
       </View>
       <View className="absolute bottom-0 left-0 right-0 px-4 py-2 bg-white">
-        {(typeBid === "Fixed_Price" || typeBid === "Public_Auction") && (
-          <TouchableOpacity className="py-3 mb-3 bg-blue-500 rounded-lg">
-            <Text className="font-semibold text-center text-white">
-              BUY IT NOW
+        {isRegistered && (
+          <View>
+            <Text className="text-center mb-4 font-semibold text-green-500">
+              Bạn đã đăng ký tham gia đấu giá.
             </Text>
-          </TouchableOpacity>
-        )}
-        <TouchableOpacity
-          onPress={handlePressAutoBid}
-          className="mb-3 bg-blue-500 rounded-sm"
-        >
-          <Text className="py-3 font-semibold text-center text-white">
-            BID AUTOMATION
-          </Text>
-        </TouchableOpacity>
-        {typeBid !== "Fixed_Price" && (
-          <TouchableOpacity
-            className="py-3 bg-blue-500 rounded-lg"
-            onPress={() => setModalVisible(true)}
-          >
-            <Text className="font-semibold text-center text-white">
-              PLACE BID
-            </Text>
-          </TouchableOpacity>
+
+            {(typeBid === "Fixed_Price" || typeBid === "Public_Auction") && (
+              <TouchableOpacity className="py-3 mb-3 bg-blue-500 rounded-lg">
+                <Text className="font-semibold text-center text-white">
+                  BUY IT NOW
+                </Text>
+              </TouchableOpacity>
+            )}
+            <TouchableOpacity
+              onPress={handlePressAutoBid}
+              className="mb-3 bg-blue-500 rounded-sm"
+            >
+              <Text className="py-3 font-semibold text-center text-white">
+                BID AUTOMATION
+              </Text>
+            </TouchableOpacity>
+            {typeBid !== "Fixed_Price" && (
+              <TouchableOpacity
+                className="py-3 bg-blue-500 rounded-lg"
+                onPress={() => setModalVisible(true)}
+              >
+                <Text className="font-semibold text-center text-white">
+                  PLACE BID
+                </Text>
+              </TouchableOpacity>
+            )}
+          </View>
         )}
 
-        <TouchableOpacity
-          className="py-3 bg-blue-500 mt-4 rounded-lg"
-          onPress={handleRegisterToBid}
-        >
-          <Text className="font-semibold uppercase text-center text-white">
-            Register To Bid
-          </Text>
-        </TouchableOpacity>
+        {!isRegistered && (
+          <TouchableOpacity
+            className="py-3 bg-blue-500 mt-4 rounded-lg"
+            onPress={handleRegisterToBid}
+          >
+            <Text className="font-semibold uppercase text-center text-white">
+              Register To Bid
+            </Text>
+          </TouchableOpacity>
+        )}
 
         <PlaceBidModal
           visible={modalVisible}

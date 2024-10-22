@@ -20,9 +20,9 @@ export const getLotsByAuctionId = async (
 
     if (response.data.isSuccess) {
       console.log("Received list of lots:", response.data);
-      showSuccessMessage(
-        response.data.message || "Successfully retrieved lots."
-      );
+      // showSuccessMessage(
+      //   response.data.message || "Successfully retrieved lots."
+      // );
       return response.data;
     } else {
       throw new Error(response.data.message || "Failed to retrieve lots.");
@@ -46,9 +46,9 @@ export const getLotDetailById = async (
 
     if (response.data.isSuccess) {
       // console.log("Received lot details:", response.data);
-      showSuccessMessage(
-        response.data.message || "Successfully retrieved lot details."
-      );
+      // showSuccessMessage(
+      //   response.data.message || "Successfully retrieved lot details."
+      // );
       return response.data;
     } else {
       throw new Error(
@@ -88,6 +88,36 @@ export const registerToBid = async (
   } catch (error) {
     console.error("Error registering to bid:", error);
     showErrorMessage("Unable to register customer to lot.");
+    throw error;
+  }
+};
+
+// Function to check if a customer is in a lot
+export const checkCustomerInLot = async (
+  customerId: number,
+  lotId: number
+): Promise<boolean> => {
+  try {
+    const response = await axios.get(`${API_URL}/api/Lot/CheckCustomerInLot`, {
+      params: { customerId, lotId },
+    });
+
+    if (response.data.isSuccess && response.data.data) {
+      console.log("Customer is in the lot.");
+      // showSuccessMessage(
+      //   response.data.message || "Customer was joined to lot."
+      // );
+      return true;
+    } else {
+      console.log("Customer is not in the lot.");
+      // showErrorMessage(
+      //   response.data.message || "Customer hasn't joined the lot."
+      // );
+      return false;
+    }
+  } catch (error) {
+    console.error("Error checking customer in lot:", error);
+    showErrorMessage("Unable to check customer's participation in the lot.");
     throw error;
   }
 };

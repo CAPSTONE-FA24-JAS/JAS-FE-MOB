@@ -39,30 +39,6 @@ const RegisterToBid = () => {
   console.log("balanceNe", balance);
   console.log("haveWalletNE", haveWallet);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      if (haveWallet) {
-        await getWalletBalance(haveWallet); // Fetch balance
-      }
-    };
-
-    fetchData();
-  }, [haveWallet]);
-
-  const getWalletBalance = async (walletId: number) => {
-    try {
-      const response = await checkWalletBalance(walletId);
-      if (response && response.isSuccess) {
-        setBalance(response.data.balance);
-        showSuccessMessage("Check Wallet balance retrieved successfully.");
-      } else {
-        setBalance(null); // Set null if response fails
-      }
-    } catch (error) {
-      showErrorMessage("Failed to retrieve wallet balance.");
-    }
-  };
-
   // Hàm xử lý đăng ký đấu giá
   const handleRegisterToBid = async () => {
     if (!userId) {
@@ -91,7 +67,7 @@ const RegisterToBid = () => {
         <ActivityIndicator size="large" color="#0000ff" />
       ) : (
         <View className="flex-1 bg-white ">
-          <BalanceCard balance={balance} />
+          <BalanceCard />
           {/* Các phần tử khác */}
         </View>
       )}

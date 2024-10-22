@@ -58,7 +58,7 @@ const ItemAuctionHomePage: React.FC<ItemAuctionHomePageProps> = ({
       <StyledView className="absolute bottom-5 left-4 right-4">
         <StyledText className="text-white text-lg font-bold mb-1">
           {auction?.name || "Unnamed Auction"} -{" "}
-          {auction?.status === "NotStarted" ? "Upcoming" : "Living"}
+          {auction?.status ? auction?.status : "Upcoming"}
         </StyledText>
         <StyledText className="text-white text-sm font-bold mb-0.5">
           Live bidding begins:

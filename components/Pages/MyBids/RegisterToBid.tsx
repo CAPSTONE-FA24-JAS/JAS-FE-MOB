@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { View, ScrollView, Text, TouchableOpacity } from "react-native";
-import { Button, Checkbox, Modal, IconButton } from "react-native-paper";
+import { Checkbox } from "react-native-paper";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import BalanceCard from "../Wallet/component/BalanceCard";
 import { useSelector } from "react-redux";
@@ -180,8 +180,7 @@ const RegisterToBid = () => {
       <TouchableOpacity
         className="py-3 bg-blue-500 rounded-sm"
         onPress={handleRegisterToBid}
-        disabled={!checkedTerms || !checkedAge}
-      >
+        disabled={!checkedTerms || !checkedAge}>
         <Text className="font-semibold text-center text-white">
           REGISTER TO BID
         </Text>

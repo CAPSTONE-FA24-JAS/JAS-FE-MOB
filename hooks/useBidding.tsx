@@ -9,7 +9,7 @@ import axios from "axios";
 const API_BASE_URL = process.env.EXPO_PUBLIC_API_URL || "http://localhost:7251";
 
 interface Message {
-  accountId: string;
+  customerId: string;
   currentPrice: number;
   bidTime: string;
 }
@@ -46,12 +46,12 @@ export function useBidding(): UseBiddingResult {
     // Xử lý sự kiện khi có người đặt giá
     connection.on(
       "SendBiddingPrice",
-      (accountId: string, price: number, bidTime: string) => {
-        console.log(`New bid from ${accountId}: ${price} at ${bidTime}`);
+      (customerId: string, price: number, bidTime: string) => {
+        console.log(`New bid from ${customerId}: ${price} at ${bidTime}`);
         setMessages((prev) => [
           ...prev,
           {
-            accountId,
+            customerId,
             currentPrice: price,
             bidTime,
           },

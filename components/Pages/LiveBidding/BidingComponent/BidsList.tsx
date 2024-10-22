@@ -2,21 +2,20 @@ import { LotDetail } from "@/app/types/lot_type";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import React, { useMemo } from "react";
 import { View, Text } from "react-native";
-import { ScrollView } from "react-native-gesture-handler";
 
 interface Bid {
   time: string;
   amount: number;
-  AccountId: number;
+  customerId: number | string;
 }
 
 interface BidsListProps {
   item: LotDetail;
   bids: Bid[];
-  currentUserId?: number; // Add this prop to identify current user's bids
+  currentCusId?: number; // Add this prop to identify current user's bids
 }
 
-const BidsList: React.FC<BidsListProps> = ({ item, bids, currentUserId }) => {
+const BidsList: React.FC<BidsListProps> = ({ item, bids, currentCusId }) => {
   // Sort bids by time, newest first
   const sortedBids = useMemo(() => {
     return [...bids].sort((a, b) => {
@@ -43,7 +42,7 @@ const BidsList: React.FC<BidsListProps> = ({ item, bids, currentUserId }) => {
     return (
       <View className="p-4 ">
         {sortedBids.map((bid, index) => {
-          const isCurrentUserBid = bid.AccountId === currentUserId;
+          const isCurrentUserBid = bid.customerId === currentCusId;
 
           return (
             <View key={index}>
@@ -80,7 +79,7 @@ const BidsList: React.FC<BidsListProps> = ({ item, bids, currentUserId }) => {
 
   if (item.lotType === "Secret_Auction") {
     const firstBid = sortedBids[0];
-    const isWinnerCurrentUser = firstBid?.AccountId === currentUserId;
+    const isWinnerCurrentUser = firstBid?.customerId === currentCusId;
 
     return (
       <View className="p-4">
@@ -92,7 +91,7 @@ const BidsList: React.FC<BidsListProps> = ({ item, bids, currentUserId }) => {
           }`}>
           <View>
             <Text className="text-gray-500">{formatTime(firstBid?.time)}</Text>
-            <Text className="text-lg font-bold">{firstBid?.AccountId}</Text>
+            <Text className="text-lg font-bold">{firstBid?.customerId}</Text>
             {isWinnerCurrentUser && (
               <Text className="text-xs text-blue-600">Your winning bid</Text>
             )}
@@ -123,7 +122,7 @@ const BidsList: React.FC<BidsListProps> = ({ item, bids, currentUserId }) => {
           }`}>
           {isWinnerCurrentUser
             ? "Congratulations! You won the auction!"
-            : `Congratulations! ${firstBid?.AccountId} won the auction!`}
+            : `Congratulations! ${firstBid?.customerId} won the auction!`}
         </Text>
       </View>
     );

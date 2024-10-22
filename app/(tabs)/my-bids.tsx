@@ -2,9 +2,14 @@ import { Tab, TabView } from "@rneui/base";
 import React from "react";
 import PastBids from "@/components/Pages/MyBids/PastBids";
 import CurrentBids from "@/components/Pages/MyBids/CurrentBids";
+import { useSelector } from "react-redux";
+import { RootState } from "@/redux/store";
 
 export default function MyBids() {
   const [index, setIndex] = React.useState(0);
+  const userId = useSelector(
+    (state: RootState) => state.auth.userResponse?.customerDTO?.id
+  );
   return (
     <>
       <Tab
@@ -19,7 +24,8 @@ export default function MyBids() {
           backgroundColor: "transparent",
           alignSelf: "center",
           width: "50%",
-        }}>
+        }}
+      >
         <Tab.Item
           title="Current"
           titleStyle={(active) => ({
@@ -62,10 +68,10 @@ export default function MyBids() {
 
       <TabView value={index} onChange={setIndex} animationType="spring">
         <TabView.Item className="m-2">
-          <CurrentBids />
+          {userId !== undefined && <CurrentBids customerId={userId} />}
         </TabView.Item>
         <TabView.Item className="m-2">
-          <PastBids />
+          {userId !== undefined && <PastBids customerId={userId} />}
         </TabView.Item>
       </TabView>
     </>

@@ -1,5 +1,6 @@
 import { StackNavigationProp } from "@react-navigation/stack";
 import { useNavigation, useRouter } from "expo-router";
+import moment from "moment-timezone";
 import React from "react";
 import { View, Text, Image, TouchableOpacity } from "react-native";
 
@@ -13,6 +14,8 @@ type RootStackParamList = {
     image: string;
     typeBid: string;
     status: string;
+    startTime?: string;
+    endTime?: string;
   };
 };
 
@@ -25,6 +28,8 @@ interface ItemLotsProps {
   image: string;
   typeBid: string;
   status: string;
+  startTime?: string;
+  endTime?: string;
 }
 
 const ItemLots: React.FC<ItemLotsProps> = ({
@@ -36,6 +41,8 @@ const ItemLots: React.FC<ItemLotsProps> = ({
   image,
   typeBid,
   status,
+  startTime,
+  endTime,
 }) => {
   const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
 
@@ -50,6 +57,8 @@ const ItemLots: React.FC<ItemLotsProps> = ({
       image,
       typeBid,
       status,
+      startTime,
+      endTime,
     });
   };
   const formatTypeBid = (typeBid: string) => {
@@ -69,9 +78,9 @@ const ItemLots: React.FC<ItemLotsProps> = ({
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case "Created":
+      case "Ready":
         return "#7EBF9C";
-      case "Living":
+      case "Auctionning":
         return "#FFA500";
       case "Sold":
         return "#4CAF50";
@@ -79,26 +88,22 @@ const ItemLots: React.FC<ItemLotsProps> = ({
         return "#FF0000";
       case "Pausing":
         return "#FFD700";
-      case "Close":
-        return "#9E9E9E";
       default:
-        return "#7EBF9C";
+        return "#666666";
     }
   };
   const formatStatus = (status: string) => {
     switch (status) {
-      case "Creaeted": // sai chính tả
-        return "New Lot";
-      case "Living":
-        return "In Progress";
+      case "Ready": // sai chính tả
+        return "New Lot ready";
+      case "Auctionning":
+        return "Auctionning";
       case "Sold":
         return "Sold";
       case "Canceled":
         return "Canceled";
       case "Pausing":
         return "Paused";
-      case "Close":
-        return "Closed";
       default:
         return status;
     }
@@ -125,10 +130,20 @@ const ItemLots: React.FC<ItemLotsProps> = ({
           source={{ uri: image }}
         />
         <View className="flex gap-0 mt-2 mx-2">
+          <Text className=" text-sm  text-[#8f8f8f] ">
+            {moment(startTime).format(" DD/MM/YYYY")} -{" "}
+            {moment(endTime).format(" DD/MM/YYYY")}
+          </Text>
           <Text className=" text-base font-bold text-[#8f8f8f] ">
             Lot #{id}
           </Text>
-          <Text className=" text-lg font-bold text-black ">{name}</Text>
+          <Text
+            className=" text-base font-bold text-black "
+            numberOfLines={2} // Số dòng tối đa
+            ellipsizeMode="tail"
+          >
+            {name}
+          </Text>
           {minPrice && maxPrice && (
             <View className="ml-4">
               <Text className=" text-base text-[#6c6c6c] ">
@@ -145,7 +160,7 @@ const ItemLots: React.FC<ItemLotsProps> = ({
 
           {price && (
             <View className="flex-row ">
-              <Text className="text-gray-800 font-semibold text-lg ">
+              <Text className="text-gray-800 font-semibold text-base ">
                 ${price}
               </Text>
             </View>

@@ -57,7 +57,7 @@ const ItemAuctionHomePage: React.FC<ItemAuctionHomePageProps> = ({
       {/* Nội dung văn bản */}
       <StyledView className="absolute bottom-5 left-4 right-4">
         <StyledText className="text-white text-lg font-bold mb-1">
-          {auction?.name || "Unnamed Auction"} -{" "}
+          #{auction.id} | {auction?.name || "Unnamed Auction"} -{" "}
           {auction?.status ? auction?.status : "Upcoming"}
         </StyledText>
         <StyledText className="text-white text-sm font-bold mb-0.5">

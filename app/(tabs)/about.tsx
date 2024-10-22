@@ -73,7 +73,7 @@ const AboutScreen: React.FC = () => {
           About the App
         </Text>
         <Text className="text-lg text-gray-700">
-          Welcome to Jewelry Auction, the premier platform for auctioning and
+          Welcome to Jewelry Auction, the premier platform for Auctionning and
           purchasing exquisite jewelry. Our app connects sellers and buyers
           worldwide, offering a seamless and secure way to explore unique
           jewelry pieces.

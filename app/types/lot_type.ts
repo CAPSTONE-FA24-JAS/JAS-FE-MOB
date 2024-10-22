@@ -12,7 +12,7 @@ export interface Lot {
   startPrice?: number;
   endPrice?: number; // chỉ dùng trong phương thức đầu giá ngược
   currentPrice: any;
-  name?: string;
+  title?: string;
   finalPriceSold?: number;
   status: string;
   bidIncrement?: number;

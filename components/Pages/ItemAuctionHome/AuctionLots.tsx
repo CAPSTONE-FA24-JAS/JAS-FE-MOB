@@ -73,13 +73,15 @@ const AuctionLots: React.FC<AuctionLotsProps> = ({ dataAuction }) => {
               <ItemLots
                 key={item.id}
                 id={item.id}
-                name={item.name || "Unnamed Lot"}
+                name={item.title || "Unnamed Lot"}
                 minPrice={item.startPrice || 0}
                 maxPrice={item.endPrice || 0}
                 price={item.buyNowPrice || 0}
                 image={item.imageLinkJewelry}
                 typeBid={item.lotType}
                 status={item.status}
+                startTime={item.startTime}
+                endTime={item.endTime}
               />
             ))
           ) : (

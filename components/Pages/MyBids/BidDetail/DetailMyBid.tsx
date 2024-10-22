@@ -15,12 +15,16 @@ type RootStackParamList = {
     isWin: boolean;
     title: string;
     lotNumber: string;
-    description: string;
-    estimate: string;
     soldPrice: string;
-    maxBid: string;
     id: number;
     status: string;
+    typeBid: string;
+    minPrice: number;
+    maxPrice: number;
+    image: string;
+    endTime: string;
+    startTime: string;
+    yourMaxBid: number;
   };
   InvoiceDetail: undefined;
   InvoiceDetailConfirm: undefined;
@@ -30,15 +34,19 @@ const DetailMyBid: React.FC = () => {
   const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
   const route = useRoute<RouteProp<RootStackParamList, "DetailMyBid">>();
   const {
-    id,
     isWin,
     title,
     lotNumber,
-    description,
-    estimate,
     soldPrice,
-    maxBid,
+    id,
     status,
+    typeBid,
+    minPrice,
+    maxPrice,
+    image,
+    endTime,
+    startTime,
+    yourMaxBid,
   } = route.params;
 
   const user = useSelector((state: RootState) => state.auth.userResponse);
@@ -63,11 +71,15 @@ const DetailMyBid: React.FC = () => {
         isWin={isWin}
         title={title}
         lotNumber={lotNumber}
-        description={description}
-        estimate={estimate}
         soldPrice={soldPrice}
-        maxBid={maxBid}
         status={status}
+        typeBid={typeBid}
+        minPrice={minPrice}
+        maxPrice={maxPrice}
+        image={image}
+        endTime={endTime}
+        startTime={startTime}
+        yourMaxBid={yourMaxBid}
       />
       {user && isWin && (
         <AddressInfo
@@ -81,25 +93,25 @@ const DetailMyBid: React.FC = () => {
         />
       )}
       <TimeLineBid />
-      {status === "pending" ? (
-        <TouchableOpacity
-          className="bg-blue-500 p-3 rounded mt-4"
-          onPress={handleConfirmInvoice}
-        >
-          <Text className="text-white text-center font-semibold uppercase text-base">
-            Confirm Invoice
-          </Text>
-        </TouchableOpacity>
-      ) : (
-        <TouchableOpacity
-          className="bg-blue-500 p-3 rounded mt-4"
-          onPress={handleViewInvoice}
-        >
-          <Text className="text-white text-center font-semibold uppercase text-base">
-            View Invoice
-          </Text>
-        </TouchableOpacity>
-      )}
+      {/* {status === "pending" ? ( */}
+      <TouchableOpacity
+        className="bg-blue-500 p-3 mx-4 rounded mt-4"
+        onPress={handleConfirmInvoice}
+      >
+        <Text className="text-white text-center font-semibold uppercase text-base">
+          Confirm Invoice
+        </Text>
+      </TouchableOpacity>
+      {/* ) : ( */}
+      <TouchableOpacity
+        className="bg-blue-500 p-3  mx-4 rounded my-4"
+        onPress={handleViewInvoice}
+      >
+        <Text className="text-white text-center font-semibold uppercase text-base">
+          View Invoice
+        </Text>
+      </TouchableOpacity>
+      {/* )} */}
     </View>
   );
 };

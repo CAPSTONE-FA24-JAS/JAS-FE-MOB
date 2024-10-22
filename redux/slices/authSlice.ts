@@ -9,7 +9,7 @@ import { signup } from "../actions/authAction";
 interface AuthState {
   isAuthenticated: boolean;
   token?: string;
-  userResponse?: UserAccount; // Update this to match your types
+  userResponse?: UserAccount;
   signUpResponse?: DataSignUpResponse;
   isPending?: boolean;
 }
@@ -25,8 +25,10 @@ export const authSlice = createSlice({
   reducers: {
     login: (
       state,
-      action: PayloadAction<{ token: string; userResponse: any }>
+      action: PayloadAction<{ token: string; userResponse: UserAccount }>
     ) => {
+      console.log("login slice", action.payload.userResponse);
+
       state.isAuthenticated = true;
       state.token = action.payload.token;
       state.userResponse = action.payload.userResponse;

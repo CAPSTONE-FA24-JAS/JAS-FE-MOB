@@ -14,7 +14,7 @@ export interface UserAccount {
   roleName: string;
   customerDTO: CustomerDTO;
   staffDTO?: any;
-  // walletId?: number;
+  walletId: number;
 }
 
 export interface CustomerDTO {
@@ -30,8 +30,14 @@ export interface CustomerDTO {
   idExpirationDate: string;
   priceLimit: any;
   expireDate: any;
-  walletDTO: any;
+  walletDTO: walletDTO;
   accountDTO?: AccountDto;
+}
+
+interface walletDTO {
+  id: number;
+  balance: string;
+  customerDTO: any;
 }
 
 export interface AccountDto {

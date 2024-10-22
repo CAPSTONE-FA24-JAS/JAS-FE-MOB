@@ -15,9 +15,11 @@ export const checkWalletBalance = async (
   walletId: number
 ): Promise<WalletBalanceResponse | null> => {
   try {
+    console.log("Checking wallet balance...");
+    console.log("Wallet ID:", walletId);
+
     const response = await axios.get<WalletBalanceResponse>(
-      `${API_URL}/api/Wallet/CheckBalance`,
-      { params: { walletId } }
+      `${API_URL}/api/Wallet/CheckBalance?walletId=${walletId}`
     );
 
     if (response.data.isSuccess) {

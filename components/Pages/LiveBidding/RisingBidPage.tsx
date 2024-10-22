@@ -40,7 +40,7 @@ const RisingBidPage: React.FC = () => {
     floorFeePercent: 0,
     startTime: "",
     endTime: "",
-    actualEndTime: null,
+    actualEndTime: "",
     isExtend: false,
     haveFinancialProof: false,
     lotType: "",
@@ -52,9 +52,14 @@ const RisingBidPage: React.FC = () => {
     staff: {} as Staff,
     auction: {} as Auction,
     jewelry: {
+      id: 0,
       name: "",
-      imageJewelries: [],
-    } as unknown as Jewelry,
+      imageJewelries: [
+        {
+          imageLink: "",
+        },
+      ],
+    } as Jewelry,
     startPrice: 0,
     finalPriceSold: 0,
     bidIncrement: 0,
@@ -63,9 +68,10 @@ const RisingBidPage: React.FC = () => {
 
   const {
     isConnected,
-    currentPrice,
+    highestPrice,
     messages,
     error,
+    endTime,
     joinChatRoom,
     sendBid,
     disconnect,
@@ -80,7 +86,6 @@ const RisingBidPage: React.FC = () => {
     };
   }, [accountId, itemId, joinChatRoom]);
 
-  // Fetch lot details
   useEffect(() => {
     const fetchLotDetail = async () => {
       if (!itemId) return;
@@ -123,14 +128,17 @@ const RisingBidPage: React.FC = () => {
         </View>
       ),
     },
-    { key: "timer", component: <CountDownTimer initialTime={10 * 60} /> },
+    { key: "timer", component: <CountDownTimer endTime={endTime ?? ""} /> },
     {
       key: "product",
       component: (
         <ProductCard
           id={String(item.id)}
           name={item.jewelry?.name ?? ""}
-          image={item.jewelry?.imageJewelries?.[0]?.imageLink ?? ""}
+          image={
+            item.jewelry?.imageJewelries?.[0]?.imageLink ||
+            "https://fastly.picsum.photos/id/237/400/200"
+          }
           typeBid={item.lotType}
           minPrice={item.startPrice ?? 0}
           maxPrice={item.finalPriceSold ?? 0}
@@ -152,7 +160,6 @@ const RisingBidPage: React.FC = () => {
   }
 
   if (error) {
-    // You might want to show this error in a more user-friendly way
     console.error("Bidding error:", error);
   }
 
@@ -167,7 +174,7 @@ const RisingBidPage: React.FC = () => {
         ListFooterComponent={() => <View style={{ height: 100 }} />}
       />
       <View className="absolute bottom-0 left-0 right-0 bg-white shadow-lg">
-        <BidInput highestBid={currentPrice} item={item} onPlaceBid={sendBid} />
+        <BidInput highestBid={highestPrice} item={item} onPlaceBid={sendBid} />
         <NavigationButtons />
       </View>
       {!isConnected && (

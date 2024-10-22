@@ -26,10 +26,12 @@ const BidsList: React.FC<BidsListProps> = ({ item, bids, currentUserId }) => {
     });
   }, [bids]);
 
-  // Format time to display in a more readable format
   const formatTime = (timeString: string) => {
     const date = new Date(timeString);
-    return date.toLocaleTimeString("en-US", {
+    return date.toLocaleString("en-GB", {
+      day: "2-digit",
+      month: "2-digit",
+      year: "2-digit",
       hour: "numeric",
       minute: "numeric",
       second: "numeric",
@@ -39,7 +41,7 @@ const BidsList: React.FC<BidsListProps> = ({ item, bids, currentUserId }) => {
 
   if (item.lotType === "Public_Auction") {
     return (
-      <View className="p-4">
+      <View className="p-4 ">
         {sortedBids.map((bid, index) => {
           const isCurrentUserBid = bid.AccountId === currentUserId;
 

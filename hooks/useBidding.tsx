@@ -16,8 +16,8 @@ interface Message {
 
 interface UseBiddingResult {
   isConnected: boolean;
-  endTime: Date | null;
-  currentPrice: number;
+  endTime: string;
+  highestPrice: number;
   messages: Message[];
   error: string | null;
   joinChatRoom: (
@@ -30,9 +30,9 @@ interface UseBiddingResult {
 
 export function useBidding(): UseBiddingResult {
   const [isConnected, setIsConnected] = useState(false);
-  const [currentPrice, setCurrentPrice] = useState<number>(0);
+  const [highestPrice, setHighestPrice] = useState<number>(0);
   const [messages, setMessages] = useState<Message[]>([]);
-  const [endTime, setEndTime] = useState<Date | null>(null);
+  const [endTime, setEndTime] = useState<string>("");
   const [error, setError] = useState<string | null>(null);
 
   const connectionRef = useRef<HubConnection | null>(null);
@@ -62,13 +62,20 @@ export function useBidding(): UseBiddingResult {
     // Xử lý sự kiện cập nhật giá cao nhất
     connection.on("SendTopPrice", (price: number, bidTime: string) => {
       console.log(`Top price updated: ${price} at ${bidTime}`);
-      setCurrentPrice(price);
+      setHighestPrice(price);
     });
 
     // Xử lý sự kiện cập nhật thời gian kết thúc
     connection.on("SendEndTimeLot", (lotId: number, newEndTime: string) => {
       console.log(`End time updated for lot ${lotId}: ${newEndTime}`);
-      setEndTime(new Date(newEndTime));
+      setEndTime(newEndTime);
+    });
+
+    //get all history bid
+
+    connection.on("SendHistoryBiddingOfLot", (bids: Message[]) => {
+      console.log(`All bids`, bids);
+      setMessages(bids);
     });
   }, []);
 
@@ -144,14 +151,16 @@ export function useBidding(): UseBiddingResult {
       return;
     }
 
+    const body = {
+      currentPrice: price,
+      bidTime: new Date().toISOString(),
+      connectionId: connectionRef.current.connectionId,
+    };
+
     try {
       const response = await axios.post(
         `${API_BASE_URL}/api/BidPrices/PlaceBiding/place-bid`,
-        {
-          currentPrice: price,
-          bidTime: new Date().toISOString(),
-          connectionId: connectionRef.current.connectionId,
-        }
+        body
       );
 
       if (!response.data.isSuccess) {
@@ -172,8 +181,8 @@ export function useBidding(): UseBiddingResult {
         connectionRef.current = null;
         setIsConnected(false);
         setMessages([]);
-        setCurrentPrice(0);
-        setEndTime(null);
+        setHighestPrice(0);
+        setEndTime("");
         setError(null);
       } catch (err) {
         const errorMessage =
@@ -194,7 +203,7 @@ export function useBidding(): UseBiddingResult {
   return {
     isConnected,
     endTime,
-    currentPrice,
+    highestPrice,
     messages,
     error,
     joinChatRoom,

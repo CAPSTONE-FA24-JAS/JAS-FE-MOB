@@ -2,19 +2,51 @@ import React, { useState, useEffect } from "react";
 import { Text, View } from "react-native";
 
 interface CountDownTimerProps {
-  initialTime: number; // in seconds
+  endTime: string; // in seconds
 }
 
-const CountDownTimer: React.FC<CountDownTimerProps> = ({ initialTime }) => {
-  const [timeLeft, setTimeLeft] = useState(initialTime);
+const CountDownTimer: React.FC<CountDownTimerProps> = ({ endTime }) => {
+  const [timeLeft, setTimeLeft] = useState({
+    days: 0,
+    hours: 0,
+    minutes: 0,
+    seconds: 0,
+  });
+
+  const calculateTimeLeft = () => {
+    const difference = new Date(endTime).getTime() - new Date().getTime();
+
+    if (difference <= 0) {
+      return {
+        days: 0,
+        hours: 0,
+        minutes: 0,
+        seconds: 0,
+      };
+    }
+
+    return {
+      days: Math.floor(difference / (1000 * 60 * 60 * 24)),
+      hours: Math.floor((difference / (1000 * 60 * 60)) % 24),
+      minutes: Math.floor((difference / 1000 / 60) % 60),
+      seconds: Math.floor((difference / 1000) % 60),
+    };
+  };
 
   useEffect(() => {
-    const interval = setInterval(() => {
-      setTimeLeft((prev) => (prev > 0 ? prev - 1 : 0));
+    setTimeLeft(calculateTimeLeft());
+
+    const timer = setInterval(() => {
+      const newTimeLeft = calculateTimeLeft();
+      setTimeLeft(newTimeLeft);
+
+      if (Object.values(newTimeLeft).every((v) => v === 0)) {
+        clearInterval(timer);
+      }
     }, 1000);
 
-    return () => clearInterval(interval);
-  }, []);
+    return () => clearInterval(timer);
+  }, [endTime]);
 
   const formatTime = (seconds: number) => {
     const min = Math.floor(seconds / 60);
@@ -23,9 +55,11 @@ const CountDownTimer: React.FC<CountDownTimerProps> = ({ initialTime }) => {
   };
 
   return (
-    <View className="bg-red-600 p-2 w-full  ">
-      <Text className="text-white text-center font-semibold text-base">
-        Estimate Time: {formatTime(timeLeft)} left
+    <View className="w-full p-1 bg-red-600 ">
+      <Text className="text-sm font-semibold text-center text-white">
+        Estimate Time:
+        {` ${timeLeft.days}d ${timeLeft.hours}h ${timeLeft.minutes}m ${timeLeft.seconds}s `}
+        left
       </Text>
     </View>
   );

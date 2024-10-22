@@ -1,3 +1,4 @@
+import { ImageJewelry } from "@/app/types/lot_type";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import React from "react";
 import { View, Text, Image } from "react-native";

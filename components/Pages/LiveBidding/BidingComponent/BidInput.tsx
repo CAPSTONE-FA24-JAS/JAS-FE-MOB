@@ -9,7 +9,7 @@ import {
 import { Picker } from "@react-native-picker/picker";
 import { LotDetail } from "@/app/types/lot_type";
 import { useSelector } from "react-redux";
-import store, { RootState } from "@/redux/store";
+import { RootState } from "@/redux/store";
 
 interface BidInputProps {
   highestBid: number;
@@ -22,9 +22,7 @@ const BidInput: React.FC<BidInputProps> = ({
   item,
   onPlaceBid,
 }) => {
-  const [bidValue, setBidValue] = useState<number>(
-    () => highestBid + (item.bidIncrement ?? 100)
-  );
+  const [bidValue, setBidValue] = useState<number>(() => highestBid);
   const [step, setStep] = useState<number>(() => item.bidIncrement ?? 100);
   const [error, setError] = useState<string | null>(null);
   const priceLimit = useSelector(
@@ -81,6 +79,13 @@ const BidInput: React.FC<BidInputProps> = ({
       (item.bidIncrement ?? 100) * 10,
     ];
 
+    const handleSubtract = () => {
+      if (bidValue - step <= highestBid) {
+        return;
+      }
+      setBidValue((prev) => prev - step);
+    };
+
     return (
       <View className="w-full p-2">
         <View className="">
@@ -106,7 +111,7 @@ const BidInput: React.FC<BidInputProps> = ({
 
           <View className="w-[40%] flex-row items-center border border-gray-300 rounded-md">
             <TouchableOpacity
-              onPress={() => setBidValue((prev) => prev - step)}
+              onPress={handleSubtract}
               className="flex items-center justify-center w-10 h-12 bg-gray-100">
               <Text className="text-2xl font-semibold">-</Text>
             </TouchableOpacity>

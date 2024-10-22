@@ -31,6 +31,9 @@ const RisingBidPage: React.FC = () => {
   const accountId = useSelector(
     (state: RootState) => state.auth.userResponse?.id
   );
+  const customerId = useSelector(
+    (state: RootState) => state.auth.userResponse?.customerDTO.id
+  );
 
   const [item, setItem] = useState<LotDetail>({
     buyNowPrice: undefined,
@@ -106,7 +109,7 @@ const RisingBidPage: React.FC = () => {
   // Convert messages to bid format
   const bids = messages.map((message) => ({
     amount: parseInt(String(message.currentPrice)),
-    AccountId: parseInt(String(message.accountId)),
+    customerId: parseInt(String(message.customerId)),
     time: message.bidTime,
   }));
 
@@ -147,7 +150,7 @@ const RisingBidPage: React.FC = () => {
     },
     {
       key: "bids",
-      component: <BidsList bids={bids} item={item} currentUserId={accountId} />,
+      component: <BidsList bids={bids} item={item} currentCusId={customerId} />,
     },
   ];
 

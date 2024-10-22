@@ -8,29 +8,25 @@ import {
 } from "react-native";
 import ItemAuctionHomePage from "@/components/Pages/ItemAuctionHome/ItemAuctionHomePage";
 import { AuctionsData } from "../types/auction_type";
-import { viewAuctions } from "@/api/auctionApi";
+import { getAuctionsByStatus, viewAuctions } from "@/api/auctionApi";
 
 const HomeScreen = () => {
   const [auctions, setAuctions] = useState<AuctionsData[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
-  // Fetch auctions on component mount
+  // Fetch auctions with status 'Living' on component mount
   useEffect(() => {
     const fetchAuctions = async () => {
       try {
-        const response = await viewAuctions();
+        const response = await getAuctionsByStatus(2);
         if (response.isSuccess) {
-          // Lọc các phiên đấu giá có endTime trong tương lai
           const now = new Date();
           const filteredAuctions = response.data
             .filter(
-              (auction) =>
-                (auction.status === "NotStarted" ||
-                  auction.status === "Living") &&
-                new Date(auction.endTime) > now // Lọc theo thời gian hiện tại
+              (auction) => new Date(auction.endTime) > now // Ensure endTime is in the future
             )
-            .sort((a, b) => b.id - a.id); // Sắp xếp id giảm dần
+            .sort((a, b) => b.id - a.id); // Sort by id in descending order
 
           setAuctions(filteredAuctions);
         } else {
@@ -65,13 +61,11 @@ const HomeScreen = () => {
             setLoading(true);
             setError(null);
             // Retry fetching auctions
-            viewAuctions()
+            getAuctionsByStatus(2)
               .then((response) => {
                 if (response.isSuccess) {
                   const filteredAuctions = response.data.filter(
-                    (auction) =>
-                      auction.status === "NotStarted" ||
-                      auction.status === "Living"
+                    (auction) => new Date(auction.endTime) > new Date()
                   );
                   setAuctions(filteredAuctions);
                 } else {

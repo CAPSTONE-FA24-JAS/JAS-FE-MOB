@@ -123,11 +123,7 @@ const AuctionDetailScreen: React.FC<AuctionDetailScreenProps> = ({
             VIEW LOTS
           </Text>
         </TouchableOpacity>
-        <TouchableOpacity className="py-3 bg-blue-500 rounded-sm">
-          <Text className="font-semibold text-center text-white">
-            REGISTER TO BID
-          </Text>
-        </TouchableOpacity>
+
         <Text className="mt-6 mb-2 font-bold">AUCTION DESCRIPTION</Text>
         <Text className="text-gray-700">
           {dataAuction?.description ||

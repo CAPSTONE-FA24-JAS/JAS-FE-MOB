@@ -37,27 +37,29 @@ const RegisterToBid = () => {
   console.log("balanceNe", balance);
   console.log("haveWalletNE", haveWallet);
 
-
   useEffect(() => {
-    if (haveWallet) {
-      getWalletBalance(haveWallet);
-    }
+    const fetchData = async () => {
+      if (haveWallet) {
+        await getWalletBalance(haveWallet); // Fetch balance
+      }
+    };
+
+    fetchData();
   }, [haveWallet]);
 
-  // Function to fetch wallet balance
   const getWalletBalance = async (walletId: number) => {
     try {
       const response = await checkWalletBalance(walletId);
       if (response && response.isSuccess) {
-        setBalance(response.data.balance); // Set balance
+        setBalance(response.data.balance);
         showSuccessMessage("Check Wallet balance retrieved successfully.");
+      } else {
+        setBalance(null); // Set null if response fails
       }
     } catch (error) {
-      showErrorMessage("Failed to check retrieve wallet balance.");
+      showErrorMessage("Failed to retrieve wallet balance.");
     }
   };
-
-
 
   // Hàm xử lý đăng ký đấu giá
   const handleRegisterToBid = async () => {
@@ -84,9 +86,7 @@ const RegisterToBid = () => {
     <ScrollView className="flex-1 p-4 bg-white">
       {/* Hiển thị số dư hiện tại */}
 
-      <BalanceCard balance={balance} />
-     
-
+      <BalanceCard />
 
       {/* Thông tin đặt cọc */}
       <View className="p-4 border rounded-lg">
@@ -180,7 +180,8 @@ const RegisterToBid = () => {
       <TouchableOpacity
         className="py-3 bg-blue-500 rounded-sm"
         onPress={handleRegisterToBid}
-        disabled={!checkedTerms || !checkedAge}>
+        disabled={!checkedTerms || !checkedAge}
+      >
         <Text className="font-semibold text-center text-white">
           REGISTER TO BID
         </Text>

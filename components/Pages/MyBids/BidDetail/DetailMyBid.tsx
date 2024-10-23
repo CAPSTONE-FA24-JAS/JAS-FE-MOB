@@ -9,13 +9,14 @@ import { RootState } from "@/redux/store";
 import TimeLineBid from "./TimeLineBid";
 import { useNavigation } from "expo-router";
 import { StackNavigationProp } from "@react-navigation/stack";
+import { DataCurentBidResponse } from "@/app/types/bid_type";
 
 type RootStackParamList = {
   DetailMyBid: {
-    isWin: boolean;
+    isWin?: boolean;
     title: string;
     lotNumber: string;
-    soldPrice: string;
+    soldPrice?: string;
     id: number;
     status: string;
     typeBid: string;
@@ -24,7 +25,8 @@ type RootStackParamList = {
     image: string;
     endTime: string;
     startTime: string;
-    yourMaxBid: number;
+    yourMaxBid?: number;
+    itemBid: DataCurentBidResponse;
   };
   InvoiceDetail: undefined;
   InvoiceDetailConfirm: undefined;
@@ -47,6 +49,7 @@ const DetailMyBid: React.FC = () => {
     endTime,
     startTime,
     yourMaxBid,
+    itemBid,
   } = route.params;
 
   const user = useSelector((state: RootState) => state.auth.userResponse);
@@ -68,10 +71,10 @@ const DetailMyBid: React.FC = () => {
         key={id}
         id={id}
         statusColor={statusColor}
-        isWin={isWin}
+        isWin={isWin ? true : false}
         title={title}
         lotNumber={lotNumber}
-        soldPrice={soldPrice}
+        soldPrice={soldPrice ? soldPrice : ""}
         status={status}
         typeBid={typeBid}
         minPrice={minPrice}
@@ -79,7 +82,7 @@ const DetailMyBid: React.FC = () => {
         image={image}
         endTime={endTime}
         startTime={startTime}
-        yourMaxBid={yourMaxBid}
+        yourMaxBid={yourMaxBid ? yourMaxBid : 0}
       />
       {user && isWin && (
         <AddressInfo

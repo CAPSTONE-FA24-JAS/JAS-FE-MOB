@@ -1,14 +1,15 @@
 import React, { useEffect, useState } from "react";
 import { ActivityIndicator, ScrollView, Text, View } from "react-native";
 import ItemCurrentBids from "./ItemCurrentBids";
-import { BidItem, getBidsOfCustomer } from "@/api/bidApi";
+import { getBidsOfCustomer } from "@/api/bidApi";
+import { DataCurentBidResponse } from "@/app/types/bid_type";
 
 interface CurrentBidsProps {
   customerId: number; // ID của khách hàng, có thể truyền qua props hoặc lấy từ context
 }
 
 const CurrentBids: React.FC<CurrentBidsProps> = ({ customerId }) => {
-  const [bidsData, setBidsData] = useState<BidItem[]>([]);
+  const [bidsData, setBidsData] = useState<DataCurentBidResponse[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -107,25 +108,26 @@ const CurrentBids: React.FC<CurrentBidsProps> = ({ customerId }) => {
       {bidsData.map((item) => (
         <ItemCurrentBids
           key={item.id}
-          id={item.id}
+          id={item.lotId}
           isLive={
-            item.status === "Auctionning"
+            item.lotDTO.status === "Auctionning"
               ? true
-              : item.status === "Ready"
+              : item.lotDTO.status === "Ready"
               ? false
               : false
           } // Điều chỉnh theo logic của bạn
-          title={item.title}
-          minPrice={item.startPrice || 0}
-          maxPrice={item.endPrice || 0} // chưa có trong api
-          image={item.imageLinkJewelry}
-          status={item.status}
-          lotNumber={`Lot #${item.id}`} // Hoặc lấy từ dữ liệu API nếu có
-          typeBid={item.lotType} // Điều chỉnh theo dữ liệu thực
-          price={item.buyNowPrice || 0}
-          timeLeft={calculateTimeLeft(item.endTime)} // Hàm tính thời gian còn lại
-          endTime={item.endTime} // Chuyển đổi thời gian kết thúc
-          startTime={item.startTime} // Chuyển đổi thời gian kết thúc
+          title={item.lotDTO.title}
+          minPrice={item.lotDTO.startPrice || 0}
+          maxPrice={item.lotDTO.endPrice || 0} // chưa có trong api
+          image={item.lotDTO.imageLinkJewelry}
+          status={item.lotDTO.status}
+          lotNumber={`Lot #${item.lotId}`} // Hoặc lấy từ dữ liệu API nếu có
+          typeBid={item.lotDTO.lotType} // Điều chỉnh theo dữ liệu thực
+          price={item.lotDTO.buyNowPrice || 0}
+          timeLeft={calculateTimeLeft(item.lotDTO.endTime)} // Hàm tính thời gian còn lại
+          endTime={item.lotDTO.endTime} // Chuyển đổi thời gian kết thúc
+          startTime={item.lotDTO.startTime} // Chuyển đổi thời gian kết thúc
+          itemBid={item}
         />
       ))}
     </ScrollView>

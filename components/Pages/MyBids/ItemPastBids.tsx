@@ -3,12 +3,13 @@ import { useNavigation } from "@react-navigation/native";
 import React from "react";
 import { View, Image, Text, TouchableOpacity } from "react-native";
 import moment from "moment-timezone";
+import { DataCurentBidResponse } from "@/app/types/bid_type";
 
 interface ItemPastBidsProps {
   isWin: boolean;
   title: string;
   lotNumber: string;
-  soldPrice: string;
+  soldPrice: number;
   id: number;
   status: string;
   typeBid: string;
@@ -18,6 +19,7 @@ interface ItemPastBidsProps {
   endTime: string;
   startTime: string;
   yourMaxBid: number;
+  itemBid: DataCurentBidResponse;
 }
 
 type RootStackParamList = {
@@ -25,7 +27,7 @@ type RootStackParamList = {
     isWin: boolean;
     title: string;
     lotNumber: string;
-    soldPrice: string;
+    soldPrice: number;
     id: number;
     status: string;
     typeBid: string;
@@ -35,6 +37,7 @@ type RootStackParamList = {
     endTime: string;
     startTime: string;
     yourMaxBid: number;
+    itemBid: DataCurentBidResponse;
   };
 };
 
@@ -52,6 +55,7 @@ const ItemPastBids: React.FC<ItemPastBidsProps> = ({
   endTime,
   startTime,
   yourMaxBid,
+  itemBid,
 }) => {
   const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
   const getStatusColor = (status: string) => {
@@ -119,6 +123,7 @@ const ItemPastBids: React.FC<ItemPastBidsProps> = ({
           endTime,
           startTime,
           yourMaxBid,
+          itemBid,
         });
       }}
       className="flex-row flex-1 gap-2 p-4 my-1 bg-white rounded-lg shadow-lg"
@@ -169,22 +174,56 @@ const ItemPastBids: React.FC<ItemPastBidsProps> = ({
         {minPrice !== 0 && maxPrice !== 0 && (
           <View className="">
             <Text className=" text-base text-[#6c6c6c] ">
-              Est: ${minPrice} - ${maxPrice}
+              Est:{" "}
+              {minPrice.toLocaleString("vi-VN", {
+                style: "currency",
+                currency: "VND",
+              })}{" "}
+              -{" "}
+              {maxPrice.toLocaleString("vi-VN", {
+                style: "currency",
+                currency: "VND",
+              })}
             </Text>
             <View className="flex-row gap-2 ">
               <Text className="text-base font-bold text-[#6c6c6c] ">
                 Start Bid:
               </Text>
-              <Text className="text-[#6c6c6c] text-base ">${minPrice}</Text>
+              <Text className="text-[#6c6c6c] text-base ">
+                {minPrice.toLocaleString("vi-VN", {
+                  style: "currency",
+                  currency: "VND",
+                })}
+              </Text>
             </View>
           </View>
         )}
         <Text className="text-base text-gray-600">
-          SOLD: <Text className="font-semibold">{soldPrice}</Text>
+          SOLD:{" "}
+          <Text className="font-semibold">
+            {soldPrice.toLocaleString("vi-VN", {
+              style: "currency",
+              currency: "VND",
+            })}
+          </Text>
         </Text>
         <Text className="text-base text-gray-600">
-          Your max bid: <Text className="font-semibold">{yourMaxBid}</Text>
+          Your max bid:{" "}
+          <Text className="font-semibold">
+            {yourMaxBid.toLocaleString("vi-VN", {
+              style: "currency",
+              currency: "VND",
+            })}
+          </Text>
         </Text>
+        {isWin && (
+          <Text className="text-base text-gray-600">
+            Have Invoice:{" "}
+            <Text className="font-semibold">
+              {itemBid.isInvoiced ? "Yes" : "No"}
+            </Text>
+          </Text>
+        )}
       </View>
     </TouchableOpacity>
   );

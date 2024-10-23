@@ -3,6 +3,7 @@ import { useNavigation } from "@react-navigation/native";
 import React from "react";
 import { View, Image, Text, TouchableOpacity } from "react-native";
 import moment from "moment-timezone";
+import { DataCurentBidResponse } from "@/app/types/bid_type";
 
 interface ItemCurrentBidsProps {
   isLive: boolean;
@@ -18,23 +19,21 @@ interface ItemCurrentBidsProps {
   id: number;
   endTime: string;
   startTime: string;
+  itemBid: DataCurentBidResponse;
 }
 
 type RootStackParamList = {
-  DetailCurrentBid: {
-    isLive: boolean;
-    title: string;
-    lotNumber: string;
-    typeBid: string;
-    minPrice: number;
-    maxPrice: number;
-    image: string;
-    status: string;
-    price: number;
-    timeLeft: string;
-    id: number;
-    endTime: string;
-    startTime: string;
+  LotDetailScreen: {
+    id: number; //
+    name: string; // title
+    minPrice?: number; //
+    maxPrice?: number; //
+    price?: number; //
+    image: string; //
+    typeBid: string; //
+    status: string; //
+    startTime?: string; //
+    endTime?: string; //
   };
 };
 
@@ -52,9 +51,23 @@ const ItemCurrentBids: React.FC<ItemCurrentBidsProps> = ({
   id,
   endTime,
   startTime,
+  itemBid,
 }) => {
   const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
-
+  const goToAuctionDetail = () => {
+    navigation.navigate("LotDetailScreen", {
+      id,
+      name: title,
+      minPrice,
+      maxPrice,
+      price,
+      image,
+      typeBid,
+      status,
+      startTime,
+      endTime,
+    });
+  };
   const getStatusColor = (status: string) => {
     switch (status) {
       case "Ready":
@@ -105,9 +118,7 @@ const ItemCurrentBids: React.FC<ItemCurrentBidsProps> = ({
 
   return (
     <TouchableOpacity
-      onPress={() => {
-        console.log("lotNumber", lotNumber);
-      }}
+      onPress={goToAuctionDetail}
       className="flex-row flex-1 gap-2 p-4 my-1 bg-white rounded-lg shadow-lg"
     >
       <View className="flex items-center w-[40%]">
@@ -163,23 +174,62 @@ const ItemCurrentBids: React.FC<ItemCurrentBidsProps> = ({
         {minPrice !== 0 && maxPrice !== 0 && (
           <View className="">
             <Text className=" text-base text-[#6c6c6c] ">
-              Est: ${minPrice} - ${maxPrice}
+              Est:{" "}
+              {minPrice.toLocaleString("vi-VN", {
+                style: "currency",
+                currency: "VND",
+              })}{" "}
+              -{" "}
+              {maxPrice.toLocaleString("vi-VN", {
+                style: "currency",
+                currency: "VND",
+              })}
             </Text>
             <View className="flex-row gap-2 ">
               <Text className="text-base font-bold text-[#6c6c6c] ">
                 Start Bid:
               </Text>
-              <Text className="text-[#6c6c6c] text-base ">${minPrice}</Text>
+              <Text className="text-[#6c6c6c] text-base ">
+                {minPrice.toLocaleString("vi-VN", {
+                  style: "currency",
+                  currency: "VND",
+                })}
+              </Text>
             </View>
           </View>
         )}
         {price !== 0 && (
           <View className="flex-row ">
+            <Text className="text-base font-bold text-[#6c6c6c]">
+              Buy Now:{" "}
+            </Text>
             <Text className="text-gray-800 font-semibold text-base ">
-              ${price}
+              {price.toLocaleString("vi-VN", {
+                style: "currency",
+                currency: "VND",
+              })}
             </Text>
           </View>
         )}
+        {itemBid.isDeposit && (
+          <View className="flex-row ">
+            <Text className="text-base font-bold text-[#6c6c6c]">
+              Deposit:{" "}
+            </Text>
+            <Text className="text-gray-800 font-semibold text-base ">
+              {itemBid.isDeposit ? "Yes" : "No"}
+            </Text>
+          </View>
+        )}
+        <Text className="text-base text-gray-600">
+          Your max bid:{" "}
+          <Text className="font-semibold">
+            {itemBid?.yourMaxBidPrice?.toLocaleString("vi-VN", {
+              style: "currency",
+              currency: "VND",
+            }) ?? "Not yet"}
+          </Text>
+        </Text>
       </View>
     </TouchableOpacity>
   );

@@ -23,9 +23,9 @@ const HomeScreen = () => {
         if (response.isSuccess) {
           const now = new Date();
           const filteredAuctions = response.data
-            .filter(
-              (auction) => new Date(auction.endTime) > now // Ensure endTime is in the future
-            )
+            // .filter(
+            //   (auction) => new Date(auction.endTime) > now // Ensure endTime is in the future
+            // )
             .sort((a, b) => b.id - a.id); // Sort by id in descending order
 
           setAuctions(filteredAuctions);

@@ -315,7 +315,8 @@ const LotDetailScreen = () => {
             <Swiper
               showsPagination={true}
               autoplay={true}
-              style={{ height: "100%" }}>
+              style={{ height: "100%" }}
+            >
               {lotDetail?.jewelry?.imageJewelries?.map((img, index) => (
                 <Image
                   key={index}
@@ -388,7 +389,7 @@ const LotDetailScreen = () => {
         {isRegistered && (
           <View>
             {(typeBid === "Fixed_Price" || typeBid === "Public_Auction") && (
-              <TouchableOpacity className="py-3 mb-3 bg-blue-500 rounded-lg">
+              <TouchableOpacity className="py-3 mb-3 bg-blue-500 rounded-sm">
                 <Text className="font-semibold text-center text-white">
                   BUY IT NOW
                 </Text>
@@ -396,15 +397,17 @@ const LotDetailScreen = () => {
             )}
             <TouchableOpacity
               onPress={handlePressAutoBid}
-              className="mb-3 bg-blue-500 rounded-sm">
+              className="mb-3 bg-blue-500 rounded-sm"
+            >
               <Text className="py-3 font-semibold text-center text-white">
                 BID AUTOMATION
               </Text>
             </TouchableOpacity>
             {typeBid !== "Fixed_Price" && (
               <TouchableOpacity
-                className="py-3 bg-blue-500 rounded-lg"
-                onPress={() => setModalVisible(true)}>
+                className="py-3 bg-blue-500 mb-3 rounded-sm"
+                onPress={() => setModalVisible(true)}
+              >
                 <Text className="font-semibold text-center text-white">
                   PLACE BID
                 </Text>
@@ -412,8 +415,9 @@ const LotDetailScreen = () => {
             )}
 
             <TouchableOpacity
-              className="py-3 bg-blue-500 rounded-lg"
-              onPress={handleJoinToBid}>
+              className="py-3 bg-blue-500 rounded-sm"
+              onPress={handleJoinToBid}
+            >
               <Text className="font-semibold text-center text-white uppercase">
                 Join To Bid
               </Text>
@@ -423,8 +427,9 @@ const LotDetailScreen = () => {
 
         {!isRegistered && (
           <TouchableOpacity
-            className="py-3 mt-4 bg-blue-500 rounded-lg"
-            onPress={handleRegisterToBid}>
+            className="py-3 mt-4 bg-blue-500 rounded-sm"
+            onPress={handleRegisterToBid}
+          >
             <Text className="font-semibold text-center text-white uppercase">
               Register To Bid
             </Text>

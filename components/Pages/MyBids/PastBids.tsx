@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { View, Text, ScrollView, ActivityIndicator } from "react-native";
 import ItemPastBids from "./ItemPastBids";
-import { BidItem, getPastBidOfCustomer } from "@/api/bidApi";
+import { getPastBidOfCustomer } from "@/api/bidApi";
+import { DataCurentBidResponse } from "@/app/types/bid_type";
 interface PastBidsProps {
   customerId: number; // ID của khách hàng, có thể truyền qua props hoặc lấy từ context
 }
 
 const PastBids: React.FC<PastBidsProps> = ({ customerId }) => {
-  const [bidsData, setBidsData] = useState<BidItem[]>([]);
+  const [bidsData, setBidsData] = useState<DataCurentBidResponse[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -109,20 +110,23 @@ const PastBids: React.FC<PastBidsProps> = ({ customerId }) => {
       {bidsData.map((item) => (
         <ItemPastBids
           key={item.id}
-          id={item.id}
-          isWin={item.isWin ? item.isWin : false} // Điều chỉnh theo logic của bạn
-          title={item.title}
-          lotNumber={`Lot #${item.id}`} // Hoặc lấy từ dữ liệu API nếu có
+          id={item.lotId}
+          isWin={item.isWinner ? item.isWinner : false} // Điều chỉnh theo logic của bạn
+          title={item.lotDTO.title}
+          lotNumber={`Lot #${item.lotId}`} // Hoặc lấy từ dữ liệu API nếu có
           // description={item.lotType} // Điều chỉnh theo dữ liệu thực
-          soldPrice={item.finalPriceSold ? `$${item.finalPriceSold}` : "N/A"}
-          status={item.status}
-          typeBid={item.lotType} // Điều chỉnh theo dữ liệu thực
-          minPrice={item.startPrice || 0}
-          maxPrice={item.endPrice || 0} // chưa có trong api
-          image={item.imageLinkJewelry}
-          endTime={item.endTime} // Chuyển đổi thời gian kết thúc
-          startTime={item.startTime} // Chuyển đổi thời gian kết thúc
-          yourMaxBid={item.yourMaxBid ?? 0}
+          soldPrice={
+            item.lotDTO.finalPriceSold ? item.lotDTO.finalPriceSold : 0
+          }
+          status={item.lotDTO.status}
+          typeBid={item.lotDTO.lotType} // Điều chỉnh theo dữ liệu thực
+          minPrice={item.lotDTO.startPrice || 0}
+          maxPrice={item.lotDTO.endPrice || 0} // chưa có trong api
+          image={item.lotDTO.imageLinkJewelry}
+          endTime={item.lotDTO.endTime} // Chuyển đổi thời gian kết thúc
+          startTime={item.lotDTO.startTime} // Chuyển đổi thời gian kết thúc
+          yourMaxBid={item.yourMaxBidPrice ?? 0}
+          itemBid={item}
         />
       ))}
     </ScrollView>

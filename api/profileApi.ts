@@ -14,9 +14,9 @@ const API_URL = process.env.EXPO_PUBLIC_API_URL || "http://localhost:7251";
 
 // Get Profile
 export const getProfile = async (userId: number): Promise<ProfileResponse> => {
-  try {
-    console.log("Retrieving profile for user ID:", userId);
+  console.log("userIdgetProfile", userId);
 
+  try {
     const response = await axios.get<ProfileResponse>(
       `${API_URL}/api/Account/ViewProfile`,
       { params: { Id: userId } }

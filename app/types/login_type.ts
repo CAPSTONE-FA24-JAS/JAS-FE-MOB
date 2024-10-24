@@ -4,17 +4,17 @@ export interface UserAccount {
   address?: {};
   lastName?: string;
   firstName?: string;
-  phoneNumber?: string;
-  $id?: string;
+  // walletId?: number;
+
   id: number;
   email: string | null;
+  phoneNumber: string;
   gender: any;
   passwordHash: string;
   roleId: number;
   roleName: string;
   customerDTO: CustomerDTO;
   staffDTO?: any;
-  walletId: number;
 }
 
 export interface CustomerDTO {
@@ -30,22 +30,18 @@ export interface CustomerDTO {
   idExpirationDate: string;
   priceLimit: any;
   expireDate: any;
+  walletId: number;
   walletDTO: walletDTO;
-  accountDTO?: AccountDto;
+  accountDTO: any;
 }
 
 interface walletDTO {
   id: number;
-  balance: string;
+  balance: number;
   customerDTO: any;
 }
 
-export interface AccountDto {
-  $ref?: string;
-}
-
 export interface Data {
-  $id?: string;
   user: UserAccount;
   accessToken: string;
 }

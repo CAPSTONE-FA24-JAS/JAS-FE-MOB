@@ -1,6 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { getProfile, deleteAccount, updateProfile } from "@/api/profileApi";
 import { ProfileResponse, UserInfo } from "@/app/types/profilte_type";
+import { logout } from "./authSlice";
 
 // Thunks
 export const fetchProfile = createAsyncThunk(
@@ -57,8 +58,13 @@ const profileSlice = createSlice({
       })
       .addCase(removeAccount.fulfilled, (state) => {
         state.profile = null;
+      })
+      .addCase(logout, (state) => {
+        // Reset the profile state upon logout
+        state.profile = null;
+        state.isLoading = false;
+        state.error = null;
       });
-    // (Optionally add modifyProfile case handlers here)
   },
 });
 

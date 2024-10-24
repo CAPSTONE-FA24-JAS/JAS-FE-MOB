@@ -10,6 +10,39 @@ import {
 
 const API_URL = process.env.EXPO_PUBLIC_API_URL || "http://localhost:7251";
 
+// Function to check if the wallet password is correct
+export const checkPasswordWallet = async (
+  walletId: number,
+  password: string
+): Promise<boolean> => {
+  try {
+    console.log("Checking wallet password...");
+    console.log("Wallet ID:", walletId);
+    console.log("Password:", password);
+
+    const response = await axios.get(
+      `${API_URL}/api/Wallet/CheckPasswordWallet`,
+      {
+        params: { walletId, password },
+      }
+    );
+
+    if (response.data.isSuccess) {
+      console.log("Password is correct:", response.data.message);
+      showSuccessMessage("Password verified successfully.");
+      return true;
+    } else {
+      console.warn("Password verification failed:", response.data.message);
+      showErrorMessage(response.data.message || "Incorrect wallet password.");
+      return false;
+    }
+  } catch (error) {
+    console.error("Error checking wallet password:", error);
+    showErrorMessage("Unable to verify wallet password.");
+    throw error;
+  }
+};
+
 // Function to check wallet balance by wallet ID
 export const checkWalletBalance = async (
   walletId: number
@@ -38,14 +71,18 @@ export const checkWalletBalance = async (
   }
 };
 
-// Function to create a new wallet for a customer by customer ID
+// Function to create a new wallet for a customer with a password
 export const createWallet = async (
-  customerId: number
+  customerId: number,
+  password: string
 ): Promise<CreateWalletResponse | null> => {
   try {
     const response = await axios.post<CreateWalletResponse>(
       `${API_URL}/api/Wallet/CreateWallet`,
-      { customerId }
+      {
+        customerId,
+        password,
+      }
     );
 
     if (response.data.isSuccess) {

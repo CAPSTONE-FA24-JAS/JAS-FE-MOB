@@ -27,6 +27,7 @@ export const authSlice = createSlice({
       state,
       action: PayloadAction<{ token: string; userResponse: UserAccount }>
     ) => {
+      console.log("Login action dispatched with payload:", action.payload);
       state.isAuthenticated = true;
       state.token = action.payload.token;
       state.userResponse = action.payload.userResponse;
@@ -35,24 +36,23 @@ export const authSlice = createSlice({
       state.signUpResponse = action.payload;
     },
     logout: (state) => {
+      // Reset the entire state upon logout
       state.isAuthenticated = false;
       state.token = undefined;
       state.userResponse = undefined;
+      state.signUpResponse = undefined;
     },
   },
   extraReducers: (builder) => {
     builder.addCase(signup.fulfilled, (state, action) => {
       state.isPending = false;
-      console.log("data res", action.payload);
       state.signUpResponse = action.payload;
     });
     builder.addCase(signup.pending, (state) => {
       state.isPending = true;
-      console.log("pending");
     });
-    builder.addCase(signup.rejected, (state, action) => {
+    builder.addCase(signup.rejected, (state) => {
       state.isPending = false;
-      console.log("rejected", action.error.message);
     });
   },
 });

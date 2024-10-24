@@ -1,17 +1,25 @@
 import React, { useEffect, useState } from "react";
-import { View, ScrollView, Text, TouchableOpacity } from "react-native";
+import {
+  View,
+  ScrollView,
+  Text,
+  TouchableOpacity,
+  TextInput,
+  Modal,
+} from "react-native";
 import { Checkbox } from "react-native-paper";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import BalanceCard from "../Wallet/component/BalanceCard";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
-import { checkWalletBalance } from "@/api/walletApi";
+import { checkPasswordWallet, checkWalletBalance } from "@/api/walletApi";
 import {
   showErrorMessage,
   showSuccessMessage,
 } from "@/components/FlashMessageHelpers";
 import { LotDetail } from "@/app/types/lot_type";
 import { registerToBid } from "@/api/lotAPI";
+import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 
 type RootStackParamList = {
   [x: string]: any;
@@ -25,12 +33,19 @@ const RegisterToBid = () => {
   const navigation = useNavigation<RootStackParamList>();
   const [checkedTerms, setCheckedTerms] = useState(false);
   const [checkedAge, setCheckedAge] = useState(false);
-  const [balance, setBalance] = useState<string | null>(null); // Store balance here
+  const [balance, setBalance] = useState<number | null>(null); // Store balance here
+
+  const [password, setPassword] = useState<string>("");
+  const [passwordVisibility, setPasswordVisibility] = useState(true);
+  const [rightIcon, setRightIcon] = useState<"eye" | "eye-off">("eye");
+  const [isPasswordModalVisible, setIsPasswordModalVisible] = useState(false);
+  const [isDepositModalVisible, setIsDepositModalVisible] = useState(false);
+
   const userId = useSelector(
     (state: RootState) => state.auth.userResponse?.customerDTO?.id
   );
   const haveWallet = useSelector(
-    (state: RootState) => state.auth.userResponse?.customerDTO?.walletDTO?.id
+    (state: RootState) => state?.profile?.profile?.customerDTO?.walletId
   );
 
   console.log("accountIdNe", userId);
@@ -61,25 +76,64 @@ const RegisterToBid = () => {
     }
   };
 
-  // Hàm xử lý đăng ký đấu giá
+  const handlePasswordVisibility = () => {
+    setRightIcon(rightIcon === "eye" ? "eye-off" : "eye");
+    setPasswordVisibility(!passwordVisibility);
+  };
+
   const handleRegisterToBid = async () => {
     if (!userId) {
       showErrorMessage("User ID is not available.");
       return;
     }
 
-    if (balance && parseInt(balance) < lotDetail.deposit) {
+    if (balance && balance < lotDetail.deposit) {
       showErrorMessage("Insufficient balance.");
       return;
     }
 
+    setIsPasswordModalVisible(true); // Show the modal for password input
+  };
+
+  const handleConfirmPassword = async () => {
     try {
-      await registerToBid(lotDetail.deposit, userId, lotDetail.id);
-      showSuccessMessage("Register customer to lot successfully.");
-      navigation.navigate("RisingBidPage", { itemId: 49 }); // fix cứng ở đây
+      if (typeof haveWallet === "number" && userId) {
+        const isPasswordCorrect = await checkPasswordWallet(
+          haveWallet,
+          password
+        );
+        if (isPasswordCorrect) {
+          try {
+            await registerToBid(lotDetail.deposit, userId, lotDetail.id);
+            showSuccessMessage("Registered to bid successfully.");
+            setIsPasswordModalVisible(false);
+            navigation.navigate("RisingBidPage", { itemId: 49 });
+          } catch (error: any) {
+            const errorMessage = error.response?.data?.message || error.message;
+            if (
+              errorMessage ===
+              "Customer haven't bidlimt, please regiser new bidlimit before join to lot"
+            ) {
+              setIsPasswordModalVisible(false); // Close the password modal
+              setIsDepositModalVisible(true); // Show the deposit prompt modal
+            } else {
+              showErrorMessage(errorMessage || "Failed to register to bid.");
+            }
+          }
+        } else {
+          showErrorMessage("Incorrect wallet password, please try again.");
+        }
+      } else {
+        showErrorMessage("Wallet ID or userId is not available.");
+      }
     } catch (error) {
-      showErrorMessage("Failed to register to bid.");
+      showErrorMessage("Failed to check password.");
     }
+  };
+
+  const navigateToDeposit = () => {
+    setIsDepositModalVisible(false); // Close the deposit prompt modal
+    navigation.navigate("Deposit"); // Navigate to the Deposit screen
   };
 
   return (
@@ -127,8 +181,8 @@ const RegisterToBid = () => {
             New Balance
           </Text>
           <Text className="text-base w-[60%] text-gray-700 font-semibold">
-            {balance && parseInt(balance) > lotDetail.deposit
-              ? `${parseInt(balance) - lotDetail.deposit} VND`
+            {balance && balance > lotDetail.deposit
+              ? `${balance - lotDetail.deposit} VND`
               : "N/A Or Insufficient balance"}
           </Text>
         </View>
@@ -180,11 +234,95 @@ const RegisterToBid = () => {
       <TouchableOpacity
         className="py-3 bg-blue-500 rounded-sm"
         onPress={handleRegisterToBid}
-        disabled={!checkedTerms || !checkedAge}>
+        disabled={!checkedTerms || !checkedAge}
+      >
         <Text className="font-semibold text-center text-white">
           REGISTER TO BID
         </Text>
       </TouchableOpacity>
+
+      {/* Modal for password input */}
+      <Modal
+        animationType="fade"
+        transparent={true}
+        visible={isPasswordModalVisible}
+        onRequestClose={() => setIsPasswordModalVisible(false)}
+      >
+        <View className="items-center justify-center flex-1 bg-black/50">
+          <View className="items-center w-10/12 p-6 bg-white rounded-lg">
+            {/* Close icon at the top-right corner */}
+            <TouchableOpacity
+              className="absolute top-2 right-2"
+              onPress={() => setIsPasswordModalVisible(false)}
+            >
+              <MaterialCommunityIcons name="close" size={24} color="black" />
+            </TouchableOpacity>
+
+            <Text className="mb-4 text-lg font-semibold text-center uppercase">
+              Enter Wallet Password
+            </Text>
+
+            <View className="relative mx-4 mb-6 mt-4 border-[1px] w-full border-slate-300 p-2 rounded-lg">
+              <TextInput
+                placeholder="Password"
+                secureTextEntry={passwordVisibility}
+                value={password}
+                onChangeText={setPassword}
+                className="py-2 text-lg ml-2 text-slate-400"
+                style={{ paddingRight: 40 }}
+              />
+              <TouchableOpacity
+                onPress={handlePasswordVisibility}
+                className="absolute right-4 top-[40%] transform -translate-y-1/2"
+              >
+                <Feather name={rightIcon} size={24} color="black" />
+              </TouchableOpacity>
+            </View>
+
+            <TouchableOpacity
+              className="w-full bg-[#4765F9] rounded-md"
+              onPress={handleConfirmPassword}
+            >
+              <Text className="py-3 text-xl font-semibold text-center text-white uppercase">
+                Confirm
+              </Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
+      {/* Modal for Deposit Prompt */}
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={isDepositModalVisible}
+        onRequestClose={() => setIsDepositModalVisible(false)}
+      >
+        <View className="flex-1 justify-center items-center bg-black/50">
+          <View className="w-10/12 p-6 bg-white rounded-lg relative">
+            {/* Close icon at the top-right corner */}
+            <TouchableOpacity
+              className="absolute top-2 right-2"
+              onPress={() => setIsDepositModalVisible(false)}
+            >
+              <MaterialCommunityIcons name="close" size={24} color="black" />
+            </TouchableOpacity>
+
+            <Text className="mb-4 text-lg font-semibold text-center">
+              You need to deposit more money into the wallet to continue.
+            </Text>
+
+            {/* Deposit Button */}
+            <TouchableOpacity
+              className="w-full bg-blue-500 py-2 px-4 rounded-lg"
+              onPress={navigateToDeposit}
+            >
+              <Text className="text-white font-bold text-xl uppercase text-center">
+                Deposit
+              </Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
     </ScrollView>
   );
 };

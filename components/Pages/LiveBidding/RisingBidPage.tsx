@@ -82,6 +82,8 @@ const RisingBidPage: React.FC = () => {
 
   useEffect(() => {
     if (accountId && itemId) {
+      console.log("Joining chat room...", accountId, itemId);
+
       joinChatRoom(accountId, itemId);
     }
     return () => {

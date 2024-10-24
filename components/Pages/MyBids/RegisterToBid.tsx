@@ -76,7 +76,7 @@ const RegisterToBid = () => {
     try {
       await registerToBid(lotDetail.deposit, userId, lotDetail.id);
       showSuccessMessage("Register customer to lot successfully.");
-      navigation.navigate("RisingBidPage", { itemId: 41 }); // fix cứng ở đây
+      navigation.navigate("RisingBidPage", { itemId: 49 }); // fix cứng ở đây
     } catch (error) {
       showErrorMessage("Failed to register to bid.");
     }

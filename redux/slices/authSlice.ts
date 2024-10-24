@@ -27,8 +27,6 @@ export const authSlice = createSlice({
       state,
       action: PayloadAction<{ token: string; userResponse: UserAccount }>
     ) => {
-      console.log("login slice", action.payload.userResponse);
-
       state.isAuthenticated = true;
       state.token = action.payload.token;
       state.userResponse = action.payload.userResponse;

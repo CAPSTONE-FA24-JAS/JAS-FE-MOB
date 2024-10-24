@@ -4,52 +4,13 @@ import {
   showErrorMessage,
   showSuccessMessage,
 } from "@/components/FlashMessageHelpers";
-import { CurentBidResponse, DataCurentBid } from "@/app/types/bid_type";
+import {
+  CurentBidResponse,
+  DataCurentBid,
+  GetMyBidResponse,
+} from "@/app/types/bid_type";
 
 const API_URL = process.env.EXPO_PUBLIC_API_URL || "http://localhost:7251";
-
-// Type Definitions
-
-// export interface ApiResponse<T> {
-//   code: number;
-//   message: string;
-//   isSuccess: boolean;
-//   data: T;
-//   errorMessages: string[] | null;
-// }
-
-// export interface BidItem {
-//   id: number;
-//   title: string;
-//   startPrice: number | null;
-//   minPrice: number | null;
-//   currentPrice: number | null;
-//   finalPriceSold: number | null;
-//   status: string;
-//   bidIncrement: number | null;
-//   deposit: number;
-//   buyNowPrice: number | null;
-//   floorFeePercent: number;
-//   startTime: string; // ISO Date string
-//   endTime: string; // ISO Date string
-//   actualEndTime: string | null; // ISO Date string or null
-//   isExtend: boolean;
-//   haveFinancialProof: boolean;
-//   lotType: string;
-//   imageLinkJewelry: string;
-//   sellerId: number | null;
-//   staffId: number;
-//   jewelryId: number;
-//   auctionId: number;
-//   endPrice?: number; // chỉ dùng trong phương thức đầu giá ngược
-//   isWin?: boolean; // chỉ dùng trong Past & chưa có api
-//   yourMaxBid?: number; // chỉ dùng trong Past & chưa có api
-// }
-
-// interface PaginatedResponse {
-//   dataResponse: BidItem[];
-//   totalItemRepsone: number;
-// }
 
 export type GetBidsOfCustomerResponse = CurentBidResponse<DataCurentBid>;
 export type GetPastBidOfCustomerResponse = CurentBidResponse<DataCurentBid>;
@@ -128,6 +89,33 @@ export const getPastBidOfCustomer = async (
   } catch (error) {
     console.error("Error retrieving past bids of customer:", error);
     showErrorMessage("Unable to retrieve past bids of customer.");
+    throw error;
+  }
+};
+
+// Function to get my bid by customer lot ID
+export const getMyBidByCustomerLotId = async (
+  customerLotId: number
+): Promise<GetMyBidResponse | null> => {
+  try {
+    const response = await axios.get<GetMyBidResponse>(
+      `${API_URL}/api/CustomerLots/GetMyBidByCustomerLotId`,
+      {
+        params: { customerLotId },
+      }
+    );
+
+    if (response.data.isSuccess) {
+      console.log("Received bid details:", response.data);
+      return response.data;
+    } else {
+      throw new Error(
+        response.data.message || "Failed to retrieve bid details."
+      );
+    }
+  } catch (error) {
+    console.error("Error retrieving bid details:", error);
+    showErrorMessage("Unable to retrieve bid details.");
     throw error;
   }
 };

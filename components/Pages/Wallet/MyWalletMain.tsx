@@ -43,7 +43,9 @@ const MyWalletMain: React.FC = () => {
     (state: RootState) => state.auth.userResponse?.customerDTO?.id
   );
   const IdWallet = useSelector(
-    (state: RootState) => state?.profile?.profile?.customerDTO?.walletId
+    (state: RootState) =>
+      state?.profile?.profile?.customerDTO?.walletId ||
+      state.auth.userResponse?.customerDTO?.walletId
   );
 
   console.log("Wallet id:", JSON.stringify(IdWallet));

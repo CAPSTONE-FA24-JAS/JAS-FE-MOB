@@ -58,6 +58,7 @@ const ItemPastBids: React.FC<ItemPastBidsProps> = ({
   itemBid,
 }) => {
   const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
+
   const getStatusColor = (status: string) => {
     switch (status) {
       case "Ready":

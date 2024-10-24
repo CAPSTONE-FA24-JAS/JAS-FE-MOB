@@ -63,6 +63,7 @@ const DetailMyBid: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(true);
 
   console.log("itemDetailBid", itemDetailBid);
+  console.log("itemBid in Detail", itemBid);
 
   useEffect(() => {
     // Fetch bid details when the component is mounted
@@ -130,7 +131,7 @@ const DetailMyBid: React.FC = () => {
             phoneNumber: user.phoneNumber || "",
             firstName: user.firstName || "",
             lastName: user.lastName || "",
-            address: user.address || {},
+            address: user.address,
           }}
         />
       )}

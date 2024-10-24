@@ -12,12 +12,43 @@ import {
 const API_URL = process.env.EXPO_PUBLIC_API_URL || "http://localhost:7251";
 
 // Function to get invoices by status for a customer
+// export const getInvoicesByStatusForCustomer = async (
+//   customerId: number,
+//   status: number
+// ): Promise<InvoiceResponse<InvoicesByStatusResponse> | null> => {
+//   console.log("customerId", customerId, "status", status);
+
+//   try {
+//     const response = await axios.get<InvoiceResponse<InvoicesByStatusResponse>>(
+//       `${API_URL}/api/Invoices/getInvoicesByStatusForCustomer`,
+//       {
+//         params: {
+//           customerId,
+//           status,
+//         },
+//       }
+//     );
+
+//     if (response.data.isSuccess) {
+//       //   console.log("Received invoices by status:", response.data);
+//       return response.data;
+//     } else {
+//       // Trả về response khi isSuccess là false để xử lý sau này
+//       return response.data;
+//     }
+//   } catch (error) {
+//     console.error("Error retrieving invoices:", error);
+//     throw error; // Chỉ throw lỗi khi có ngoại lệ khác
+//   }
+// };
+
+// Function to get invoices by status for a customer
 export const getInvoicesByStatusForCustomer = async (
   customerId: number,
-  status: number,
-  pageIndex: number = 1,
-  pageSize: number = 10
+  status: number
 ): Promise<InvoiceResponse<InvoicesByStatusResponse> | null> => {
+  console.log("customerId", customerId, "status", status);
+
   try {
     const response = await axios.get<InvoiceResponse<InvoicesByStatusResponse>>(
       `${API_URL}/api/Invoices/getInvoicesByStatusForCustomer`,
@@ -25,22 +56,17 @@ export const getInvoicesByStatusForCustomer = async (
         params: {
           customerId,
           status,
-          pageIndex,
-          pageSize,
         },
+        // Cho phép tất cả các mã trạng thái HTTP được coi là hợp lệ
+        validateStatus: (status) => true,
       }
     );
 
-    if (response.data.isSuccess) {
-      console.log("Received invoices by status:", response.data);
-      return response.data;
-    } else {
-      throw new Error(response.data.message || "Failed to retrieve invoices.");
-    }
+    // Trả về dữ liệu phản hồi dù là thành công hay lỗi
+    return response.data;
   } catch (error) {
     console.error("Error retrieving invoices:", error);
-    showErrorMessage("Unable to retrieve invoices.");
-    throw error;
+    throw error; // Ném lỗi nếu có ngoại lệ khác
   }
 };
 

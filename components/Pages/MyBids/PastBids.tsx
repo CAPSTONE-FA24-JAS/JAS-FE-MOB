@@ -71,7 +71,7 @@ const PastBids: React.FC<PastBidsProps> = ({ customerId }) => {
           soldPrice={
             item.lotDTO.finalPriceSold ? item.lotDTO.finalPriceSold : 0
           }
-          status={item.lotDTO.status}
+          statusLot={item.lotDTO.status}
           typeBid={item.lotDTO.lotType} // Điều chỉnh theo dữ liệu thực
           minPrice={item.lotDTO.startPrice || 0}
           maxPrice={item.lotDTO.endPrice || 0} // chưa có trong api

@@ -1,5 +1,5 @@
-import React from "react";
-import { View, Text, SafeAreaView } from "react-native";
+import React, { useEffect, useState } from "react";
+import { View, Text, SafeAreaView, ActivityIndicator } from "react-native";
 import { RouteProp, useRoute } from "@react-navigation/native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import ItemBidCard from "./ItemBidCard";
@@ -9,7 +9,9 @@ import { RootState } from "@/redux/store";
 import TimeLineBid from "./TimeLineBid";
 import { useNavigation } from "expo-router";
 import { StackNavigationProp } from "@react-navigation/stack";
-import { DataCurentBidResponse } from "@/app/types/bid_type";
+import { DataCurentBidResponse, MyBidData } from "@/app/types/bid_type";
+import { getMyBidByCustomerLotId } from "@/api/bidApi";
+import { showErrorMessage } from "@/components/FlashMessageHelpers";
 
 type RootStackParamList = {
   DetailMyBid: {
@@ -57,6 +59,42 @@ const DetailMyBid: React.FC = () => {
 
   const statusColor = isWin ? "text-green-600" : "text-red-600";
 
+  const [itemDetailBid, setItemDetailBid] = useState<MyBidData | null>(null);
+  const [loading, setLoading] = useState<boolean>(true);
+
+  console.log("itemDetailBid", itemDetailBid);
+
+  useEffect(() => {
+    // Fetch bid details when the component is mounted
+    const fetchBidDetails = async () => {
+      try {
+        if (itemBid.id) {
+          const response = await getMyBidByCustomerLotId(itemBid.id);
+          if (response?.isSuccess) {
+            setItemDetailBid(response.data);
+          } else {
+            showErrorMessage(
+              response?.message || "Failed to load bid details."
+            );
+          }
+        }
+      } catch (error) {
+        showErrorMessage("Unable to retrieve bid details.");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchBidDetails();
+  }, [itemBid.id]);
+
+  if (loading) {
+    return (
+      <View className="flex-1 justify-center items-center">
+        <ActivityIndicator size="large" color="#0000ff" />
+      </View>
+    );
+  }
   const handleViewInvoice = () => {
     navigation.navigate("InvoiceDetail");
   };
@@ -83,6 +121,7 @@ const DetailMyBid: React.FC = () => {
         endTime={endTime}
         startTime={startTime}
         yourMaxBid={yourMaxBid ? yourMaxBid : 0}
+        itemDetailBid={itemDetailBid || ({} as MyBidData)}
       />
       {user && isWin && (
         <AddressInfo

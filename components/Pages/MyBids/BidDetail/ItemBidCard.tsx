@@ -1,3 +1,6 @@
+import { MyBidData } from "@/app/types/bid_type";
+import { StackNavigationProp } from "@react-navigation/stack";
+import { useNavigation } from "expo-router";
 import moment from "moment-timezone";
 import React from "react";
 import { View, Text, StyleSheet, Image, TouchableOpacity } from "react-native";
@@ -17,7 +20,23 @@ interface ItemBidCardProps {
   startTime: string;
   yourMaxBid: number;
   statusColor: string;
+  itemDetailBid: MyBidData;
 }
+
+type RootStackParamList = {
+  LotDetailScreen: {
+    id: number; //
+    name: string; // title
+    minPrice?: number; //
+    maxPrice?: number; //
+    price?: number; //
+    image: string; //
+    typeBid: string; //
+    status: string; //
+    startTime?: string; //
+    endTime?: string; //
+  };
+};
 
 const ItemBidCard: React.FC<ItemBidCardProps> = ({
   isWin,
@@ -34,37 +53,74 @@ const ItemBidCard: React.FC<ItemBidCardProps> = ({
   startTime,
   yourMaxBid,
   statusColor,
+  itemDetailBid,
 }) => {
+  const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
+  const goToAuctionDetail = () => {
+    navigation.navigate("LotDetailScreen", {
+      id,
+      name: title,
+      minPrice,
+      maxPrice,
+      price: itemDetailBid.lotDTO.buyNowPrice,
+      image,
+      typeBid,
+      status,
+      startTime,
+      endTime,
+    });
+  };
   const getStatusColor = (status: string) => {
     switch (status) {
-      case "Ready":
-        return "#FFA500";
-      case "Auctionning":
-        return "#7EBF9C";
-      case "Sold":
-        return "#4CAF50";
-      case "Canceled":
-        return "#FF0000";
-      case "Pausing":
-        return "#FFD700";
+      case "CreateInvoice":
+        return "#7EBF9C"; // Greenish color for "Create Invoice"
+      case "Paid":
+        return "#4CAF50"; // Green color for "Paid"
+      case "PendingPayment":
+        return "#FFA500"; // Orange color for "Pending Payment"
+      case "Delivering":
+        return "#00BFFF"; // Blue color for "Delivering"
+      case "Delivered":
+        return "#8BC34A"; // Light green color for "Delivered"
+      case "Rejected":
+        return "#FF0000"; // Red color for "Rejected"
+      case "Finished":
+        return "#8E44AD"; // Purple color for "Finished"
+      case "Refunded":
+        return "#FF69B4"; // Pink color for "Refunded"
+      case "Cancelled":
+        return "#B22222"; // Dark red color for "Cancelled"
+      case "Closed":
+        return "#A9A9A9"; // Gray color for "Closed"
       default:
-        return "#666666";
+        return "#666666"; // Default gray color for unknown status
     }
   };
+
   const formatStatus = (status: string) => {
     switch (status) {
-      case "Ready": // sai chính tả
-        return "New Lot ready";
-      case "Auctionning":
-        return "Auctionning";
-      case "Sold":
-        return "Sold";
-      case "Canceled":
-        return "Canceled";
-      case "Pausing":
-        return "Paused";
+      case "CreateInvoice":
+        return "Invoice Created";
+      case "Paid":
+        return "Paid";
+      case "PendingPayment":
+        return "Pending Payment";
+      case "Delivering":
+        return "Delivering";
+      case "Delivered":
+        return "Delivered";
+      case "Rejected":
+        return "Rejected";
+      case "Finished":
+        return "Finished";
+      case "Refunded":
+        return "Refunded";
+      case "Cancelled":
+        return "Cancelled";
+      case "Closed":
+        return "Closed";
       default:
-        return status;
+        return status; // Return the original status if not found
     }
   };
 
@@ -82,8 +138,52 @@ const ItemBidCard: React.FC<ItemBidCardProps> = ({
         return typeBid;
     }
   };
+
+  const getStatusLotColor = (status: string) => {
+    switch (status) {
+      case "Ready":
+        return "#FFA500";
+      case "Auctionning":
+        return "#7EBF9C";
+      case "Sold":
+        return "#4CAF50";
+      case "Canceled":
+        return "#FF0000";
+      case "Pausing":
+        return "#FFD700";
+      default:
+        return "#666666";
+    }
+  };
+  const formatStatusLot = (status: string) => {
+    switch (status) {
+      case "Ready": // sai chính tả
+        return "New Lot ready";
+      case "Auctionning":
+        return "Auctionning";
+      case "Sold":
+        return "Sold";
+      case "Canceled":
+        return "Canceled";
+      case "Pausing":
+        return "Paused";
+      default:
+        return status;
+    }
+  };
   return (
     <View className="p-4  bg-white my-2 mx-4 rounded-lg shadow">
+      <View className="flex-row mb-2 justify-between">
+        <Text
+          className="text-base text-center text-white px-2 rounded-md font-semibold  uppercase"
+          style={{ backgroundColor: getStatusColor(itemDetailBid.status) }}
+        >
+          {formatStatus(itemDetailBid.status)}
+        </Text>
+        <Text className={`  font-semibold py-1 px-2 uppercase text-center`}>
+          Bid Num #{itemDetailBid.id}
+        </Text>
+      </View>
       <View className="flex-row ">
         {image ? (
           <Image source={{ uri: image }} className="w-24 h-full mr-4 rounded" />
@@ -111,22 +211,56 @@ const ItemBidCard: React.FC<ItemBidCardProps> = ({
               >
                 {isWin ? "You Win" : "You Loose"}
               </Text>
-              {soldPrice && (
+              <Text className={`text-gray-600 font-semibold text-sm `}>
+                with
+              </Text>
+              <Text
+                className={`${statusColor} uppercase font-semibold text-sm `}
+              >
+                {isWin
+                  ? itemDetailBid?.lotDTO?.finalPriceSold?.toLocaleString(
+                      "vi-VN",
+                      {
+                        style: "currency",
+                        currency: "VND",
+                      }
+                    ) ?? "0 VND"
+                  : itemDetailBid?.yourMaxBidPrice?.toLocaleString("vi-VN", {
+                      style: "currency",
+                      currency: "VND",
+                    }) ?? "0 VND"}
+              </Text>
+              {/* {soldPrice && (
                 <Text className={`${statusColor} text-sm font-bold`}>
                   - {soldPrice}
                 </Text>
-              )}
+              )} */}
             </View>
+
             {minPrice !== 0 && maxPrice !== 0 && (
               <View className="">
                 <Text className=" text-base text-[#6c6c6c] ">
-                  Est: ${minPrice} - ${maxPrice}
+                  Est:{" "}
+                  {minPrice.toLocaleString("vi-VN", {
+                    style: "currency",
+                    currency: "VND",
+                  })}{" "}
+                  -{" "}
+                  {maxPrice.toLocaleString("vi-VN", {
+                    style: "currency",
+                    currency: "VND",
+                  })}
                 </Text>
                 <View className="flex-row gap-2 ">
                   <Text className="text-base font-bold text-[#6c6c6c] ">
                     Start Bid:
                   </Text>
-                  <Text className="text-[#6c6c6c] text-base ">${minPrice}</Text>
+                  <Text className="text-[#6c6c6c] text-base ">
+                    {minPrice.toLocaleString("vi-VN", {
+                      style: "currency",
+                      currency: "VND",
+                    })}
+                  </Text>
                 </View>
               </View>
             )}
@@ -134,12 +268,12 @@ const ItemBidCard: React.FC<ItemBidCardProps> = ({
           <View className="justify-between mt-4  flex-row">
             <Text
               className="text-base text-center font-semibold  uppercase"
-              style={{ color: getStatusColor(status) }}
+              style={{ color: getStatusLotColor(itemDetailBid.lotDTO.status) }}
             >
-              {formatStatus(status)}
+              {formatStatusLot(itemDetailBid.lotDTO.status)}
             </Text>
             <TouchableOpacity
-              // onPress={onViewDetails}
+              onPress={goToAuctionDetail}
               className="px-3  py-1 bg-gray-600 rounded"
             >
               <Text className="text-center text-white font-semibold">

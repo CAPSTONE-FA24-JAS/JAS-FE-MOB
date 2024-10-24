@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { View, Text, TouchableOpacity } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import ProfileCard from "@/components/Pages/MyProfile/ProfileCard";
-import { useNavigation } from "expo-router";
+import { router, useNavigation } from "expo-router";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/redux/store";
@@ -52,7 +52,7 @@ const MyAccount = () => {
   // Add logout handler
   const handleLogout = () => {
     dispatch(logout()); // Dispatch the logout action
-    navigation.navigate("login"); // Navigate to the Login screen
+    router.push("/login");
   };
 
   return (

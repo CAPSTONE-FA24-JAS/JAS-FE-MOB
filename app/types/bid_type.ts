@@ -51,3 +51,27 @@ export interface LotDto {
   auctionId: number;
   endPrice?: number;
 }
+
+// ================== GetMyBidByCustomerLotId ===================
+export interface GetMyBidResponse {
+  code: number;
+  message: string;
+  isSuccess: boolean;
+  data: MyBidData;
+  errorMessages: string[] | null;
+}
+
+export interface MyBidData {
+  historyStatusCustomerLots: any[];
+  id: number;
+  status: string;
+  isDeposit: boolean;
+  autoBidPrice: any;
+  priceLimit: any;
+  isWinner: any;
+  isRefunded: any;
+  isInvoiced: any;
+  lotId: number;
+  yourMaxBidPrice: any;
+  lotDTO: LotDto;
+}

@@ -4,14 +4,20 @@ import React from "react";
 import { View, Image, Text, TouchableOpacity } from "react-native";
 import moment from "moment-timezone";
 import { DataCurentBidResponse } from "@/app/types/bid_type";
+import {
+  InvoiceData,
+  InvoiceDetailResponse,
+  MyBidDTO,
+} from "@/app/types/invoice_type";
 
 interface ItemPastBidsProps {
+  invoiceId?: number;
   isWin: boolean;
   title: string;
   lotNumber: string;
   soldPrice: number;
   id: number;
-  status: string;
+  statusLot: string;
   typeBid: string;
   minPrice: number;
   maxPrice: number;
@@ -19,7 +25,9 @@ interface ItemPastBidsProps {
   endTime: string;
   startTime: string;
   yourMaxBid: number;
+  statusInvoice?: string;
   itemBid: DataCurentBidResponse;
+  itemInvoice?: InvoiceData;
 }
 
 type RootStackParamList = {
@@ -47,7 +55,7 @@ const ItemPastBids: React.FC<ItemPastBidsProps> = ({
   lotNumber,
   soldPrice,
   id,
-  status,
+  statusLot,
   typeBid,
   minPrice,
   maxPrice,
@@ -56,6 +64,10 @@ const ItemPastBids: React.FC<ItemPastBidsProps> = ({
   startTime,
   yourMaxBid,
   itemBid,
+
+  invoiceId,
+  statusInvoice,
+  itemInvoice,
 }) => {
   const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
 
@@ -106,25 +118,29 @@ const ItemPastBids: React.FC<ItemPastBidsProps> = ({
         return typeBid;
     }
   };
+  console.log("itemBid", itemBid);
 
   return (
     <TouchableOpacity
       onPress={() => {
+        if (!itemBid) {
+          return;
+        }
         navigation.navigate("DetailMyBid", {
           isWin,
           title,
           lotNumber,
           soldPrice,
           id,
-          status,
-          typeBid,
-          minPrice,
-          maxPrice,
+          status: statusLot,
+          typeBid: typeBid,
+          minPrice: minPrice,
+          maxPrice: minPrice,
           image,
-          endTime,
-          startTime,
+          endTime: endTime,
+          startTime: startTime,
           yourMaxBid,
-          itemBid,
+          itemBid: itemBid,
         });
       }}
       className="flex-row flex-1 gap-2 p-4 my-1 bg-white rounded-lg shadow-lg"
@@ -152,10 +168,10 @@ const ItemPastBids: React.FC<ItemPastBidsProps> = ({
       <View className="w-[60%]">
         <TouchableOpacity
           className={` rounded px-4 py-1 justify-center mr-4 flex-row items-center`}
-          style={{ backgroundColor: getStatusColor(status) }}
+          style={{ backgroundColor: getStatusColor(statusLot) }}
         >
           <Text className="text-base text-center font-semibold text-white uppercase">
-            {formatStatus(status)}
+            {formatStatus(statusLot)}
           </Text>
         </TouchableOpacity>
         <Text className=" text-sm  text-[#8f8f8f] ">
@@ -169,19 +185,19 @@ const ItemPastBids: React.FC<ItemPastBidsProps> = ({
         <View className="flex-row  w-[60%]">
           <Text className="text-base font-bold text-[#6c6c6c] ">Type: </Text>
           <Text className="text-[#6c6c6c] text-base ">
-            {formatTypeBid(typeBid)}
+            {formatTypeBid(typeBid || "")}
           </Text>
         </View>
         {minPrice !== 0 && maxPrice !== 0 && (
           <View className="">
             <Text className=" text-base text-[#6c6c6c] ">
               Est:{" "}
-              {minPrice.toLocaleString("vi-VN", {
+              {minPrice?.toLocaleString("vi-VN", {
                 style: "currency",
                 currency: "VND",
               })}{" "}
               -{" "}
-              {maxPrice.toLocaleString("vi-VN", {
+              {maxPrice?.toLocaleString("vi-VN", {
                 style: "currency",
                 currency: "VND",
               })}
@@ -191,7 +207,7 @@ const ItemPastBids: React.FC<ItemPastBidsProps> = ({
                 Start Bid:
               </Text>
               <Text className="text-[#6c6c6c] text-base ">
-                {minPrice.toLocaleString("vi-VN", {
+                {minPrice?.toLocaleString("vi-VN", {
                   style: "currency",
                   currency: "VND",
                 })}
@@ -221,7 +237,7 @@ const ItemPastBids: React.FC<ItemPastBidsProps> = ({
           <Text className="text-base text-gray-600">
             Have Invoice:{" "}
             <Text className="font-semibold">
-              {itemBid.isInvoiced ? "Yes" : "No"}
+              {itemBid?.isInvoiced ? "Yes" : "No"}
             </Text>
           </Text>
         )}

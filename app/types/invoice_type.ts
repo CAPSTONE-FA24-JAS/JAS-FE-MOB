@@ -1,5 +1,7 @@
 // invoice_type.ts
 
+import { DataCurentBidResponse } from "./bid_type";
+
 // Response structure for API calls
 export interface InvoiceResponse<T> {
   code: number;
@@ -22,7 +24,7 @@ export interface InvoiceData {
   paymentMethodId: number | null;
   addressToShipId: number | null;
   shipperId: number;
-  myBidDTO: MyBidDTO | null;
+  myBidDTO: DataCurentBidResponse | null;
 }
 
 export interface MyBidDTO {
@@ -62,6 +64,7 @@ export interface LotDto {
   staffId: number;
   jewelryId: number;
   auctionId: number;
+  endPrice?: number;
 }
 
 // Structure for detailed invoice

@@ -9,7 +9,7 @@ export interface WalletBalanceResponse {
 
 export interface DataBalance {
   id: number;
-  balance: string;
+  balance: number;
   customerDTO: any;
 }
 
@@ -18,7 +18,7 @@ export interface CreateWalletResponse {
   message: string;
   isSuccess: boolean;
   data: {
-    balance: string;
+    balance: number;
     customerDTO: any; // Replace `any` with the actual customer DTO type if available
   };
   errorMessages: string[] | null;

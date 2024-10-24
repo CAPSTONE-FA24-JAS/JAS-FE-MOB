@@ -29,15 +29,16 @@ export interface CustomerDto {
   citizenIdentificationCard: string;
   idIssuanceDate: string;
   idExpirationDate: string;
-  priceLimit: any;
-  expireDate: any;
-  walletDTO: walletDTO;
+  priceLimit: number;
+  expireDate: string;
+  walletId: number;
+  walletDTO: WalletDto;
   accountDTO: any;
 }
 
-export interface walletDTO {
+export interface WalletDto {
   id: number;
-  balance: string;
+  balance: number;
   customerDTO: any;
 }
 

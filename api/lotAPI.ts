@@ -68,6 +68,8 @@ export const registerToBid = async (
   customerId: number,
   lotId: number
 ): Promise<void> => {
+  console.log("Registering to bid...", currentPrice, customerId, lotId);
+
   try {
     const response = await apiClient.post(`${API_URL}/api/Lot/RegisterToBid`, {
       currentPrice,

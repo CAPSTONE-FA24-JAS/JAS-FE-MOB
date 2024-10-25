@@ -12,38 +12,34 @@ interface AddressInfoProps {
     phoneNumber: string;
     address: any;
   };
+  onChooseAddress: () => void; // New prop to trigger modal
 }
 // Define the types for navigation routes
 type RootStackParamList = {
   EditAddress: undefined;
 };
 
-const AddressInfo: React.FC<AddressInfoProps> = ({ user }) => {
-  const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
-  const handleEditAddress = () => {
-    navigation.navigate("EditAddress");
-  };
+const AddressInfo: React.FC<AddressInfoProps> = ({ user, onChooseAddress }) => {
   return (
-    <View className="p-4 mx-4 bg-white rounded-md  shadow-lg">
+    <View className="p-4 mx-4 bg-white rounded-md shadow-lg">
       <View className="flex-row justify-between">
         <Text className="text-xl font-bold mb-2 text-gray-900">
-          Adress Information
+          Address Information
         </Text>
-        <TouchableOpacity onPress={handleEditAddress}>
+        <TouchableOpacity onPress={onChooseAddress}>
           <MaterialCommunityIcons name="pencil" size={24} color="#848484" />
         </TouchableOpacity>
       </View>
       <View className="flex-row">
         <Text className="mr-2 text-lg font-medium text-gray-800">
-          {user.firstName} {user.lastName}
+          {user.lastName} {user.firstName}
         </Text>
         <Text className="text-lg font-medium text-gray-800 ">
           | {user.phoneNumber}
         </Text>
       </View>
       <Text className="text-base font-medium text-gray-600">
-        {user.address ||
-          "190/5, Linh Trung Street, Linh Trung Ward, Thu Duc City, Ho Chi Minh"}
+        {user.address || "No Address"}
       </Text>
     </View>
   );

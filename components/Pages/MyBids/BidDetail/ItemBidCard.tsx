@@ -176,9 +176,9 @@ const ItemBidCard: React.FC<ItemBidCardProps> = ({
       <View className="flex-row mb-2 justify-between">
         <Text
           className="text-base text-center text-white px-2 rounded-md font-semibold  uppercase"
-          style={{ backgroundColor: getStatusColor(itemDetailBid.status) }}
+          style={{ backgroundColor: getStatusColor(itemDetailBid?.status) }}
         >
-          {formatStatus(itemDetailBid.status)}
+          {formatStatus(itemDetailBid?.status)}
         </Text>
         <Text className={`  font-semibold py-1 px-2 uppercase text-center`}>
           Bid Num #{itemDetailBid.id}
@@ -268,9 +268,11 @@ const ItemBidCard: React.FC<ItemBidCardProps> = ({
           <View className="justify-between mt-4  flex-row">
             <Text
               className="text-base text-center font-semibold  uppercase"
-              style={{ color: getStatusLotColor(itemDetailBid.lotDTO.status) }}
+              style={{
+                color: getStatusLotColor(itemDetailBid?.lotDTO?.status),
+              }}
             >
-              {formatStatusLot(itemDetailBid.lotDTO.status)}
+              {formatStatusLot(itemDetailBid?.lotDTO?.status)}
             </Text>
             <TouchableOpacity
               onPress={goToAuctionDetail}

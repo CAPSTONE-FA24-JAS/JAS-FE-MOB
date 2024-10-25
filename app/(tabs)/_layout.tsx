@@ -38,7 +38,6 @@ import AutoBidSaveConfig from "@/components/Pages/AutoBidSaveConfig";
 import ConsignDetailTimeLine from "@/components/Pages/ConsignItemTimeLine";
 import RisingBidPage from "@/components/Pages/LiveBidding/RisingBidPage";
 import InvoiceList from "./invoice-list";
-import EditAddress from "@/components/Pages/Address/EditAddress";
 import DetailMyBid from "@/components/Pages/MyBids/BidDetail/DetailMyBid";
 // import InvoiceDetail from "@/components/Pages/Invoice/InvoiceDetailConfirm"; // Ensure this path is correct and the component is properly exported
 import InvoiceDetailConfirm from "@/components/Pages/Invoice/InvoiceDetailConfirm";
@@ -54,6 +53,7 @@ import MyWalletMain from "@/components/Pages/Wallet/MyWalletMain";
 import Deposit from "@/components/Pages/Wallet/Deposit";
 import Withdraw from "@/components/Pages/Wallet/Widthraw";
 import RegisterToBid from "@/components/Pages/MyBids/RegisterToBid";
+import EditAddress from "@/components/Pages/Address/EditAddress.";
 
 // Declare Drawer and Stack Navigators
 const Drawer = createDrawerNavigator();

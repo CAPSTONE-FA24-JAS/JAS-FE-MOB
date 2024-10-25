@@ -107,7 +107,7 @@ const RegisterToBid = () => {
             await registerToBid(lotDetail.deposit, userId, lotDetail.id);
             showSuccessMessage("Registered to bid successfully.");
             setIsPasswordModalVisible(false);
-            navigation.navigate("RisingBidPage", { itemId: 56 }); /// lot id
+            navigation.navigate("RisingBidPage", { itemId: lotDetail.id }); /// lot id
           } catch (error: any) {
             const errorMessage = error.response?.data?.message || error.message;
             if (

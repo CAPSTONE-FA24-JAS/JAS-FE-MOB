@@ -46,6 +46,7 @@ type RootStackParamList = {
     startTime: string;
     yourMaxBid: number;
     itemBid: DataCurentBidResponse;
+    invoiceId: number;
   };
 };
 
@@ -141,6 +142,7 @@ const ItemPastBids: React.FC<ItemPastBidsProps> = ({
           startTime: startTime,
           yourMaxBid,
           itemBid: itemBid,
+          invoiceId: invoiceId ?? 0,
         });
       }}
       className="flex-row flex-1 gap-2 p-4 my-1 bg-white rounded-lg shadow-lg"

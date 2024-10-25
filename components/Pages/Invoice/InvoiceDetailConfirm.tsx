@@ -12,74 +12,54 @@ import { Checkbox, RadioButton } from "react-native-paper";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { useNavigation } from "expo-router";
 import { StackNavigationProp } from "@react-navigation/stack";
+import { AddressListData } from "@/app/types/address_type";
+import { MyBidData } from "@/app/types/bid_type";
+import { RouteProp, useRoute } from "@react-navigation/native";
+import { useSelector } from "react-redux";
+import { RootState } from "@/redux/store";
 
 const StyledView = styled(View);
 const StyledText = styled(Text);
 const StyledTextInput = styled(TextInput);
 const StyledTouchableOpacity = styled(TouchableOpacity);
 
-// Define the types for navigation routes
 type RootStackParamList = {
+  InvoiceDetailConfirm: {
+    addressData: AddressListData;
+    itemDetailBid: MyBidData;
+    invoiceId: number;
+    yourMaxBid: number;
+  };
   EditAddress: undefined;
-  Payment: undefined;
+  Payment: { totalPrice: number; invoiceId: number };
 };
 
 const InvoiceDetailConfirm: React.FC = () => {
   const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
+  const route =
+    useRoute<RouteProp<RootStackParamList, "InvoiceDetailConfirm">>();
+  const user = useSelector((state: RootState) => state.auth.userResponse);
 
-  const [fullName, setFullName] = useState<string>("Nguyễn Văn A");
-  const [phoneNumber, setPhoneNumber] = useState<string>("0912345678");
-  const [email, setEmail] = useState<string>("abc123@gmail.com");
-  const [address, setAddress] = useState<string>(
-    "Lô E2a-7, Đường D1, Đ. D1, Long Thạnh Mỹ, Thành Phố Thủ Đức, Hồ Chí Minh"
-  );
-  const [note, setNote] = useState<string>("");
+  // Get the passed parameters from the route
+  const { addressData, itemDetailBid, invoiceId, yourMaxBid } = route.params;
 
-  // State for handling the modal and checkbox
+  console.log("itemDetailBid IN InvoiceDetailConfirm:", itemDetailBid);
+
   const [isChecked, setIsChecked] = useState<boolean>(false);
-  const [isModalVisible, setModalVisible] = useState<boolean>(false);
-  const [selectedAddress, setSelectedAddress] = useState<string>("1"); // Track selected address by id
+  // Calculate the base price
+  const basePrice =
+    itemDetailBid?.yourMaxBidPrice ||
+    itemDetailBid?.lotDTO?.finalPriceSold ||
+    yourMaxBid ||
+    0;
 
-  // Mock data for the address list
-  const addressData = [
-    {
-      id: "1",
-      address:
-        "Lô E2a-7, Đường D1, Đ. D1, Long Thạnh Mỹ, Thành Phố Thủ Đức, Hồ Chí Minh",
-      isDefault: true,
-    },
-    {
-      id: "2",
-      address: "Số 12, Đường ABC, Quận 7, Thành Phố Hồ Chí Minh",
-      isDefault: false,
-    },
-    {
-      id: "3",
-      address: "Số 5, Đường DEF, Quận 3, Thành Phố Hồ Chí Minh",
-      isDefault: false,
-    },
-  ];
-
-  const handleChooseAddress = () => {
-    setModalVisible(true); // Show the modal
-  };
-
-  const handleConfirmAddress = () => {
-    // Get the selected address from addressData and update the input field
-    const selected = addressData.find((item) => item.id === selectedAddress);
-    if (selected) {
-      setAddress(selected.address);
-    }
-    setModalVisible(false); // Close the modal
-  };
-
+  // Calculate the total price
+  const totalPrice = basePrice + basePrice * 0.08;
   const handleConfirm = () => {
-    navigation.navigate("Payment");
-  };
-
-  const handleEditAddress = () => {
-    setModalVisible(false); // Close the modal
-    navigation.navigate("EditAddress");
+    navigation.navigate("Payment", {
+      totalPrice,
+      invoiceId,
+    });
   };
 
   return (
@@ -89,56 +69,43 @@ const InvoiceDetailConfirm: React.FC = () => {
         <StyledText className="text-lg font-bold mb-2">
           CUSTOMER INFORMATION
         </StyledText>
+        <StyledView className="border-t  border-gray-300 py-3 mb-3">
+          <View className="flex-row justify-between">
+            <StyledText className="text-base mb-1 font-semibold text-gray-600">
+              Full Name
+            </StyledText>
+            <Text className="text-base text-right font-semibold">
+              {user?.customerDTO.lastName} {user?.customerDTO.firstName}
+            </Text>
+          </View>
 
-        <StyledText className="text-base mb-1">Full Name</StyledText>
-        <StyledTextInput
-          className="border border-gray-300 p-2 rounded mb-3"
-          value={fullName}
-          editable={true}
-          onChangeText={setFullName}
-        />
+          <View className="flex-row justify-between">
+            <StyledText className="text-base mb-1 font-semibold text-gray-600">
+              Phone Number
+            </StyledText>
+            <Text className="text-base text-right font-semibold">
+              {user?.phoneNumber}
+            </Text>
+          </View>
 
-        <StyledText className="text-base mb-1">Phone Number</StyledText>
-        <StyledTextInput
-          className="border border-gray-300 p-2 rounded mb-3"
-          value={phoneNumber}
-          editable={true}
-          onChangeText={setPhoneNumber}
-          keyboardType="phone-pad"
-        />
+          <View className="flex-row justify-between">
+            <StyledText className="text-base mb-1 font-semibold text-gray-600">
+              Email
+            </StyledText>
+            <Text className="text-base text-right font-semibold">
+              {user?.email}
+            </Text>
+          </View>
 
-        <StyledText className="text-base mb-1">Email</StyledText>
-        <StyledTextInput
-          className="border border-gray-300 p-2 rounded mb-3"
-          value={email}
-          editable={true}
-          onChangeText={setEmail}
-          keyboardType="email-address"
-        />
-
-        <StyledText className="text-base mb-1">Address</StyledText>
-        <StyledView className="flex-row justify-between items-center mb-3">
-          <StyledTextInput
-            className="border border-gray-300 p-2 rounded flex-1"
-            value={address}
-            editable={false}
-            numberOfLines={1}
-          />
-          <StyledTouchableOpacity
-            onPress={handleChooseAddress}
-            className="bg-gray-600 px-3 py-2 ml-2 rounded"
-          >
-            <StyledText className="text-white text-center">Choose</StyledText>
-          </StyledTouchableOpacity>
+          <View className="flex-row justify-between">
+            <StyledText className="text-base mb-1 font-semibold text-gray-600">
+              Address
+            </StyledText>
+            <Text className="text-base text-right w-[70%] font-semibold">
+              {addressData?.addressLine}
+            </Text>
+          </View>
         </StyledView>
-
-        <StyledText className="text-base mb-1">Note</StyledText>
-        <StyledTextInput
-          className="border border-gray-300 p-2 rounded mb-3"
-          value={note}
-          onChangeText={setNote}
-          placeholder="Write note..."
-        />
 
         {/* Order Information */}
         <StyledText className="text-lg font-bold mt-4 mb-2">
@@ -147,56 +114,90 @@ const InvoiceDetailConfirm: React.FC = () => {
         <StyledView className="border-t border-b border-gray-300 py-3 mb-3">
           <StyledView className="flex-row justify-between mb-1">
             <StyledText className="text-base font-medium text-gray-600">
-              Order Code
+              Invoice Code
             </StyledText>
             <StyledText className="text-base font-medium text-gray-600">
-              #99999
+              #{invoiceId}
             </StyledText>
           </StyledView>
           <StyledView className="flex-row justify-between mb-1">
             <StyledText className="text-base font-medium text-gray-600">
-              Auction
+              Lot Code
             </StyledText>
             <StyledText className="text-base font-medium text-gray-600">
-              Lot 101
+              #{itemDetailBid.lotId}
             </StyledText>
           </StyledView>
+          <StyledView className="flex-row justify-between mb-1">
+            <StyledText className="text-base font-medium text-gray-600">
+              Customer Lot Code
+            </StyledText>
+            <StyledText className="text-base font-medium text-gray-600">
+              #{itemDetailBid.id}
+            </StyledText>
+          </StyledView>
+
           <StyledView className="flex-row justify-between mb-1">
             <StyledText className="text-base font-medium text-gray-600">
               Name production
             </StyledText>
             <StyledText className="text-base w-1/2 text-right font-medium text-gray-600">
-              Tiffany & Co. Soleste Tanzanite And Diamond Earrings
+              {itemDetailBid.lotDTO.title}
             </StyledText>
           </StyledView>
           <StyledView className="flex-row justify-between mb-1">
             <StyledText className="text-base font-medium text-gray-600">
-              Loại hàng
+              Type of production
             </StyledText>
             <StyledText className="text-base font-medium text-gray-600">
-              Diamond Necklace
-            </StyledText>
-          </StyledView>
-          <StyledView className="flex-row justify-between mb-1">
-            <StyledText className="text-base font-medium text-gray-600">
-              Giá đấu
-            </StyledText>
-            <StyledText className="text-base font-medium text-gray-600">
-              32.000.000 VND
+              Chưa cập nhật
             </StyledText>
           </StyledView>
           <StyledView className="flex-row justify-between mb-1">
             <StyledText className="text-base font-medium text-gray-600">
-              Fee 10%
+              Bid Price
             </StyledText>
             <StyledText className="text-base font-medium text-gray-600">
-              3.200.000 VND
+              {(
+                itemDetailBid?.yourMaxBidPrice ||
+                itemDetailBid?.lotDTO?.finalPriceSold ||
+                yourMaxBid
+              )?.toLocaleString("vi-VN", {
+                style: "currency",
+                currency: "VND",
+              }) || "0 VND"}
+            </StyledText>
+          </StyledView>
+          <StyledView className="flex-row justify-between mb-1">
+            <StyledText className="text-base font-medium text-gray-600">
+              Fee VAT 8%
+            </StyledText>
+            <StyledText className="text-base font-medium text-gray-600">
+              {(
+                (itemDetailBid?.yourMaxBidPrice ||
+                  itemDetailBid?.lotDTO?.finalPriceSold ||
+                  yourMaxBid) * 0.08
+              ).toLocaleString("vi-VN", {
+                style: "currency",
+                currency: "VND",
+              }) || "0 VND"}
             </StyledText>
           </StyledView>
           <StyledView className="flex-row justify-between mt-3">
             <StyledText className="text-lg font-bold">Total</StyledText>
             <StyledText className="text-lg font-bold">
-              35.200.000 VND
+              {(
+                (itemDetailBid?.yourMaxBidPrice ||
+                  itemDetailBid?.lotDTO?.finalPriceSold ||
+                  yourMaxBid) +
+                (itemDetailBid?.yourMaxBidPrice ||
+                  itemDetailBid?.lotDTO?.finalPriceSold ||
+                  yourMaxBid) *
+                  0.08
+              ).toLocaleString("vi-VN", {
+                style: "currency",
+                currency: "VND",
+              }) || "0 VND"}
             </StyledText>
           </StyledView>
         </StyledView>
@@ -225,69 +226,6 @@ const InvoiceDetailConfirm: React.FC = () => {
           </StyledText>
         </StyledTouchableOpacity>
       </ScrollView>
-      {/* Address Selection Modal */}
-      <Modal visible={isModalVisible} transparent={true} animationType="slide">
-        <StyledView className="flex-1 justify-center items-center bg-black/50">
-          <StyledView className="bg-white w-4/5 p-5 rounded-lg">
-            <View className="flex-row justify-between">
-              <StyledText className="text-lg font-bold mb-4">
-                Choose Address
-              </StyledText>
-              <TouchableOpacity onPress={handleEditAddress}>
-                <MaterialCommunityIcons
-                  name="pencil"
-                  size={24}
-                  color="#848484"
-                />
-              </TouchableOpacity>
-            </View>
-
-            <RadioButton.Group
-              onValueChange={(newValue) => setSelectedAddress(newValue)}
-              value={selectedAddress}
-            >
-              {addressData.map((item) => (
-                <StyledTouchableOpacity
-                  key={item.id}
-                  className="border border-gray-300  p-3 rounded mb-2"
-                  onPress={() => setSelectedAddress(item.id)}
-                >
-                  <StyledView className="flex-row w-[90%] items-center">
-                    <RadioButton value={item.id} />
-                    <View className="ml-2">
-                      {item.isDefault && (
-                        <Text className="text-red-500 font-semibold">
-                          Mặc định{" "}
-                        </Text>
-                      )}
-                      <StyledText className="">{item.address}</StyledText>
-                    </View>
-                  </StyledView>
-                </StyledTouchableOpacity>
-              ))}
-            </RadioButton.Group>
-
-            <StyledView className="flex-row justify-between mt-4">
-              <StyledTouchableOpacity
-                className="bg-red-500 p-2 rounded w-[45%]"
-                onPress={() => setModalVisible(false)}
-              >
-                <StyledText className="text-white font-semibold  text-center">
-                  Cancel
-                </StyledText>
-              </StyledTouchableOpacity>
-              <StyledTouchableOpacity
-                className="bg-blue-500 p-2 rounded w-[45%]"
-                onPress={handleConfirmAddress}
-              >
-                <StyledText className="text-white font-semibold text-center">
-                  Save
-                </StyledText>
-              </StyledTouchableOpacity>
-            </StyledView>
-          </StyledView>
-        </StyledView>
-      </Modal>
     </StyledView>
   );
 };

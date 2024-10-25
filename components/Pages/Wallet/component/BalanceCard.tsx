@@ -12,7 +12,7 @@ import {
 import { fetchProfile } from "@/redux/slices/profileSlice";
 
 const BalanceCard: React.FC = () => {
-  const [balance, setBalance] = useState<string | null>(null);
+  const [balance, setBalance] = useState<number | null>(null);
   const [isBalanceVisible, setIsBalanceVisible] = useState<boolean>(false);
 
   const dispatch: AppDispatch = useDispatch();

@@ -102,6 +102,8 @@ export const paymentInvoiceByVnPay = async (
   invoiceId: number,
   amount: number
 ): Promise<InvoiceResponse<string> | null> => {
+  console.log("log paymentInvoiceByVnPay", invoiceId, amount);
+
   try {
     const response = await axios.post<InvoiceResponse<string>>(
       `${API_URL}/api/Invoices/paymentInvoiceByVnPay`,
@@ -121,6 +123,40 @@ export const paymentInvoiceByVnPay = async (
   } catch (error) {
     console.error("Error initiating payment:", error);
     showErrorMessage("Unable to initiate payment.");
+    throw error;
+  }
+};
+
+// Function to initiate payment of an invoice by wallet
+export const paymentInvoiceByWallet = async (
+  walletId: number,
+  amount: number,
+  invoiceId: number
+): Promise<InvoiceResponse<null> | null> => {
+  console.log(walletId, amount, invoiceId);
+
+  try {
+    const response = await axios.post<InvoiceResponse<null>>(
+      `${API_URL}/api/Invoices/paymentInvoiceByWallet`,
+      {
+        walletId,
+        amount,
+        invoiceId,
+      }
+    );
+
+    if (response.data.isSuccess) {
+      console.log("Payment by wallet successful:", response.data);
+      showSuccessMessage("Payment by wallet was successful.");
+      return response.data;
+    } else {
+      throw new Error(
+        response.data.message || "Failed to pay invoice by wallet."
+      );
+    }
+  } catch (error) {
+    console.error("Error paying invoice by wallet:", error);
+    showErrorMessage("Unable to pay invoice by wallet.");
     throw error;
   }
 };

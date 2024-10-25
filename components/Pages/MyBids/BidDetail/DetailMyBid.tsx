@@ -38,9 +38,15 @@ type RootStackParamList = {
     startTime: string;
     yourMaxBid?: number;
     itemBid: DataCurentBidResponse;
+    invoiceId?: number;
   };
   InvoiceDetail: undefined;
-  InvoiceDetailConfirm: undefined;
+  InvoiceDetailConfirm: {
+    addressData: AddressListData;
+    itemDetailBid: MyBidData;
+    invoiceId: number;
+    yourMaxBid: number;
+  };
 };
 
 const DetailMyBid: React.FC = () => {
@@ -61,6 +67,7 @@ const DetailMyBid: React.FC = () => {
     startTime,
     yourMaxBid,
     itemBid,
+    invoiceId,
   } = route.params;
 
   const user = useSelector((state: RootState) => state.auth.userResponse);
@@ -152,7 +159,16 @@ const DetailMyBid: React.FC = () => {
   };
 
   const handleConfirmInvoice = () => {
-    navigation.navigate("InvoiceDetailConfirm");
+    if (defaultAddress && itemDetailBid && invoiceId) {
+      navigation.navigate("InvoiceDetailConfirm", {
+        addressData: defaultAddress,
+        itemDetailBid: itemDetailBid,
+        invoiceId: invoiceId,
+        yourMaxBid: yourMaxBid ?? 0,
+      });
+    } else {
+      showErrorMessage("No default address selected.");
+    }
   };
 
   return (

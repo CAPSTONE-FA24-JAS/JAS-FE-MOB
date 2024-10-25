@@ -218,14 +218,15 @@ const ItemBidCard: React.FC<ItemBidCardProps> = ({
                 className={`${statusColor} uppercase font-semibold text-sm `}
               >
                 {isWin
-                  ? itemDetailBid?.lotDTO?.finalPriceSold?.toLocaleString(
-                      "vi-VN",
-                      {
-                        style: "currency",
-                        currency: "VND",
-                      }
-                    ) ?? "0 VND"
-                  : itemDetailBid?.yourMaxBidPrice?.toLocaleString("vi-VN", {
+                  ? (
+                      itemDetailBid?.lotDTO?.finalPriceSold || yourMaxBid
+                    ).toLocaleString("vi-VN", {
+                      style: "currency",
+                      currency: "VND",
+                    }) ?? "0 VND"
+                  : (
+                      itemDetailBid?.yourMaxBidPrice || yourMaxBid
+                    ).toLocaleString("vi-VN", {
                       style: "currency",
                       currency: "VND",
                     }) ?? "0 VND"}

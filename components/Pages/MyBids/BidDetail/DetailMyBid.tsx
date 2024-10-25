@@ -191,14 +191,16 @@ const DetailMyBid: React.FC = () => {
         yourMaxBid={yourMaxBid ? yourMaxBid : 0}
         itemDetailBid={itemDetailBid || ({} as MyBidData)}
       />
-      {user && isWin && userId && defaultAddress && (
+      {user && isWin && userId && (
         <AddressInfo
           user={{
             ...user,
             phoneNumber: user.phoneNumber || "",
             firstName: user.customerDTO.firstName || "",
             lastName: user.customerDTO.lastName || "",
-            address: defaultAddress.addressLine,
+            address:
+              defaultAddress?.addressLine ??
+              "Don't have default address to ship",
           }}
           onChooseAddress={handleChooseAddress} // Pass the function to trigger the modal
         />

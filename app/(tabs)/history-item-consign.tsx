@@ -90,15 +90,17 @@ const HistoryItemConsign: React.FC = () => {
   const statusTextMap = [
     "Requested",
     "Assigned",
-    "Requested Preliminary",
+    // "Requested Preliminary", // ẩn
     "Preliminary",
     "Approved Preliminary",
     "Recived Jewelry",
-    "Final Valuated",
+    // "Final Valuated", // ẩn
     "Manager Approved",
     "Authorized",
     "Rejected Preliminary",
   ];
+  // Corresponding status indices to match statusTextMap
+  const statusIndices = [0, 1, 3, 4, 5, 7, 8, 9];
 
   return (
     <View className="flex-1 bg-gray-100">
@@ -118,7 +120,7 @@ const HistoryItemConsign: React.FC = () => {
               <Text className="font-bold text-white uppercase">ALL</Text>
             </TouchableOpacity>
 
-            {[...Array(10).keys()].map((status, index) => (
+            {statusIndices.map((status, index) => (
               <TouchableOpacity
                 key={status}
                 className={`px-4 py-2 mr-2 ${
@@ -127,7 +129,7 @@ const HistoryItemConsign: React.FC = () => {
                 onPress={() => setSelectedStatus(status)}
               >
                 <Text className="font-bold text-white uppercase">
-                  {index + 1}. {statusTextMap[status]}
+                  {index + 1}. {statusTextMap[index]}
                 </Text>
               </TouchableOpacity>
             ))}

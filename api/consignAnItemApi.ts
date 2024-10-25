@@ -151,22 +151,27 @@ export const updateStatusForValuation = async (id: number, status: number) => {
   }
 };
 
-//  ra timeline
+// Function to fetch detailed history for a specific valuation
 export const getDetailHistoryValuation = async (
-  id: number
+  valuationId: number
 ): Promise<TimeLineConsignment[]> => {
   try {
     const response = await apiClient.get<Response<TimeLineConsignment[]>>(
-      `/api/Valuations/getDetailHistoryValuation?valuationId=${id}`
+      `/api/Valuations/getDetailHistoryValuation?valuationId=${valuationId}`
     );
-    console.log("id", id);
+    console.log("valuationId", valuationId);
 
-    // console.log("responsegetDetailHistoryValuation", response);
-
-    return response.data.data;
+    if (response.data.isSuccess) {
+      showSuccessMessage("Fetched valuation history successfully.");
+      return response.data.data;
+    } else {
+      throw new Error(
+        response.data.message || "Failed to fetch valuation history."
+      );
+    }
   } catch (error) {
-    console.error("Lỗi khi lấy chi tiết lịch sử định giá:", error);
-    showErrorMessage("Không thể lấy chi tiết lịch sử định giá.");
+    console.error("Error fetching valuation history:", error);
+    showErrorMessage("Unable to fetch valuation history.");
     return [];
   }
 };

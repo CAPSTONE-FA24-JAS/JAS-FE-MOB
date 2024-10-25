@@ -18,6 +18,7 @@ import { StackNavigationProp } from "@react-navigation/stack";
 import { useNavigation } from "expo-router";
 import { get } from "react-native/Libraries/TurboModule/TurboModuleRegistry";
 import FinalValuationDetailsModal from "../Modal/FinalValuationDetailsModal";
+import moment from "moment-timezone";
 
 // Define the types for navigation routes
 type RootStackParamList = {
@@ -236,7 +237,7 @@ const ConsignDetailTimeLine: React.FC = () => {
             </Text>
             <View className="flex-row w-full justify-between">
               {/* Nút "View Pre Valuation" nếu item.status là "Preliminary Valued" */}
-              {item.status === "RequestedPreliminary" ? (
+              {item.status === "Preliminary" ? (
                 <TouchableOpacity
                   className="mt-2  w-full bg-green-500 p-2 rounded"
                   onPress={handleViewPreValuation} // Hàm này vẫn cần để gọi modal và set dữ liệu
@@ -287,7 +288,7 @@ const ConsignDetailTimeLine: React.FC = () => {
                   </View>
                   <View className="flex-1">
                     <Text className="text-sm text-gray-500">
-                      {event.creationDate}
+                      {moment(event.creationDate).format("HH:mm A, DD/MM/YYYY")}
                     </Text>
                     <Text className="font-bold">{event.statusName}</Text>
                     {event.statusName == "ManagerApproved" && ( // chưa biết cái nào hiển thị tài liệu nên để đây
@@ -321,7 +322,7 @@ const ConsignDetailTimeLine: React.FC = () => {
         )}
       </View>
 
-      {item.status === "RequestedPreliminary" && valuationData && (
+      {item.status === "Preliminary" && valuationData && (
         <PreValuationDetailsModal
           isVisible={modalVisible}
           onClose={() => setModalVisible(false)}

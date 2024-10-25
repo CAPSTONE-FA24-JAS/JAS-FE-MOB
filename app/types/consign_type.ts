@@ -61,7 +61,7 @@ export interface AccountDtoSeller {
 
 export interface TimeLineConsignment {
   statusName: string;
-  valuationId: 30;
+  valuationId: number;
   creationDate: string;
 }
 

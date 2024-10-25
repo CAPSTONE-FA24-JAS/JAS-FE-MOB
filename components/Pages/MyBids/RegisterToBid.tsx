@@ -107,7 +107,7 @@ const RegisterToBid = () => {
             await registerToBid(lotDetail.deposit, userId, lotDetail.id);
             showSuccessMessage("Registered to bid successfully.");
             setIsPasswordModalVisible(false);
-            navigation.navigate("RisingBidPage", { itemId: 49 });
+            navigation.navigate("RisingBidPage", { itemId: 56 }); /// lot id
           } catch (error: any) {
             const errorMessage = error.response?.data?.message || error.message;
             if (
@@ -234,8 +234,7 @@ const RegisterToBid = () => {
       <TouchableOpacity
         className="py-3 bg-blue-500 rounded-sm"
         onPress={handleRegisterToBid}
-        disabled={!checkedTerms || !checkedAge}
-      >
+        disabled={!checkedTerms || !checkedAge}>
         <Text className="font-semibold text-center text-white">
           REGISTER TO BID
         </Text>
@@ -246,15 +245,13 @@ const RegisterToBid = () => {
         animationType="fade"
         transparent={true}
         visible={isPasswordModalVisible}
-        onRequestClose={() => setIsPasswordModalVisible(false)}
-      >
+        onRequestClose={() => setIsPasswordModalVisible(false)}>
         <View className="items-center justify-center flex-1 bg-black/50">
           <View className="items-center w-10/12 p-6 bg-white rounded-lg">
             {/* Close icon at the top-right corner */}
             <TouchableOpacity
               className="absolute top-2 right-2"
-              onPress={() => setIsPasswordModalVisible(false)}
-            >
+              onPress={() => setIsPasswordModalVisible(false)}>
               <MaterialCommunityIcons name="close" size={24} color="black" />
             </TouchableOpacity>
 
@@ -268,21 +265,19 @@ const RegisterToBid = () => {
                 secureTextEntry={passwordVisibility}
                 value={password}
                 onChangeText={setPassword}
-                className="py-2 text-lg ml-2 text-slate-400"
+                className="py-2 ml-2 text-lg text-slate-400"
                 style={{ paddingRight: 40 }}
               />
               <TouchableOpacity
                 onPress={handlePasswordVisibility}
-                className="absolute right-4 top-[40%] transform -translate-y-1/2"
-              >
+                className="absolute right-4 top-[40%] transform -translate-y-1/2">
                 <Feather name={rightIcon} size={24} color="black" />
               </TouchableOpacity>
             </View>
 
             <TouchableOpacity
               className="w-full bg-[#4765F9] rounded-md"
-              onPress={handleConfirmPassword}
-            >
+              onPress={handleConfirmPassword}>
               <Text className="py-3 text-xl font-semibold text-center text-white uppercase">
                 Confirm
               </Text>
@@ -295,15 +290,13 @@ const RegisterToBid = () => {
         animationType="slide"
         transparent={true}
         visible={isDepositModalVisible}
-        onRequestClose={() => setIsDepositModalVisible(false)}
-      >
-        <View className="flex-1 justify-center items-center bg-black/50">
-          <View className="w-10/12 p-6 bg-white rounded-lg relative">
+        onRequestClose={() => setIsDepositModalVisible(false)}>
+        <View className="items-center justify-center flex-1 bg-black/50">
+          <View className="relative w-10/12 p-6 bg-white rounded-lg">
             {/* Close icon at the top-right corner */}
             <TouchableOpacity
               className="absolute top-2 right-2"
-              onPress={() => setIsDepositModalVisible(false)}
-            >
+              onPress={() => setIsDepositModalVisible(false)}>
               <MaterialCommunityIcons name="close" size={24} color="black" />
             </TouchableOpacity>
 
@@ -313,10 +306,9 @@ const RegisterToBid = () => {
 
             {/* Deposit Button */}
             <TouchableOpacity
-              className="w-full bg-blue-500 py-2 px-4 rounded-lg"
-              onPress={navigateToDeposit}
-            >
-              <Text className="text-white font-bold text-xl uppercase text-center">
+              className="w-full px-4 py-2 bg-blue-500 rounded-lg"
+              onPress={navigateToDeposit}>
+              <Text className="text-xl font-bold text-center text-white uppercase">
                 Deposit
               </Text>
             </TouchableOpacity>

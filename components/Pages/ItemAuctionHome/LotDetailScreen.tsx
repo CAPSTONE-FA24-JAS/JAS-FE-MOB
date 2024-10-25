@@ -298,7 +298,7 @@ const LotDetailScreen = () => {
 
   const handleJoinToBid = () => {
     if (lotDetail) {
-      navigation.navigate("RisingBidPage", { itemId: 49 });
+      navigation.navigate("RisingBidPage", { itemId: 56 }); /// lot id
     }
   };
 

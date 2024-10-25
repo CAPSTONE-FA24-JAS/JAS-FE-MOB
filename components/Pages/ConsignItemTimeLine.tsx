@@ -60,16 +60,16 @@ const ConsignDetailTimeLine: React.FC = () => {
   const [modalVisible, setModalVisible] = useState(false);
   const [valuationData, setValuationData] = useState<any | null>(null);
   const [isFinalModalVisible, setFinalModalVisible] = useState(false);
-  // console.log("valuationDataNe", valuationData);
+  console.log("timelineAK", timeline);
 
   useEffect(() => {
-    fetchTimelineData("30"); //hard tamj id ddeer test UI
+    fetchTimelineData(item?.id); //hard tamj id ddeer test UI
   }, [item]);
 
   const toggleExpanded = () => setExpanded(!expanded);
 
-  const fetchTimelineData = async (itemId: string) => {
-    getDetailHistoryValuation(Number(itemId)).then((response) => {
+  const fetchTimelineData = async (itemId: any) => {
+    getDetailHistoryValuation(itemId).then((response) => {
       console.log("timeline", response);
       if (!response) {
         setTimeline([]);
@@ -85,20 +85,28 @@ const ConsignDetailTimeLine: React.FC = () => {
   const handleViewPreValuation = () => {
     // Sử dụng dữ liệu trực tiếp từ item để hiển thị trong modal
     const valuationDetails = {
-      id: item.id,
-      status: item.status,
-      images: item.imageValuations,
-      name: item.name,
-      pricingTime: item.pricingTime,
-      estimatedCost: "chưa có",
-      width: item.width,
-      height: item.height,
-      depth: item.depth,
-      description: item.description,
+      id: item?.id,
+      status: item?.status,
+      images: item?.imageValuations,
+      name: item?.name,
+      pricingTime: item?.pricingTime,
+      estimatedCost: `${(item?.estimatePriceMin || 0).toLocaleString("vi-VN", {
+        style: "currency",
+        currency: "VND",
+      })} - ${(item?.estimatePriceMax || 0).toLocaleString("vi-VN", {
+        style: "currency",
+        currency: "VND",
+      })}`,
+      width: item?.width,
+      height: item?.height,
+      depth: item?.depth,
+      description: item?.description,
       note: "Preliminary pricing is considered based on the images and dimensions you provide.",
-      owner: item.seller.lastName + " " + item.seller.firstName,
-      artist: "fv",
-      category: "àg",
+      owner: item?.seller?.lastName + " " + item?.seller.firstName,
+      artist: item?.appraiser?.lastName + " " + item?.appraiser?.firstName,
+      category: item?.jewelry?.category?.name || "N/A",
+
+      creationDate: item?.creationDate,
     };
     console.log("valuationDetails", valuationDetails);
 
@@ -110,33 +118,33 @@ const ConsignDetailTimeLine: React.FC = () => {
   const getStatusColor = (status: string) => {
     switch (status) {
       case "Requested":
-        return "text-blue-500";
+        return "bg-blue-500";
       case "Assigned":
-        return "text-indigo-500";
+        return "bg-indigo-500";
       case "RequestedPreliminary":
-        return "text-yellow-500";
+        return "bg-yellow-500";
       case "Preliminary":
-        return "text-brown-500";
+        return "bg-brown-500";
       case "ApprovedPreliminary":
-        return "text-green-500";
+        return "bg-green-500";
       case "RecivedJewelry":
-        return "text-purple-500";
+        return "bg-purple-500";
       case "FinalValuated":
-        return "text-orange-500";
+        return "bg-orange-500";
       case "ManagerApproved":
-        return "text-green-700";
+        return "bg-green-700";
       case "Authorized":
-        return "text-blue-500";
+        return "bg-blue-500";
       case "RejectedPreliminary":
-        return "text-red-500";
+        return "bg-red-500";
       default:
-        return "text-gray-500";
+        return "bg-gray-500";
     }
   };
 
   const handleApprove = async () => {
     try {
-      await updateStatusForValuation(item.id, 3);
+      await updateStatusForValuation(item?.id, 3);
       // Update the item status locally
       setItem((prevItem) => ({
         ...prevItem,
@@ -150,7 +158,7 @@ const ConsignDetailTimeLine: React.FC = () => {
 
   const handleReject = async () => {
     try {
-      await updateStatusForValuation(item.id, 9);
+      await updateStatusForValuation(item?.id, 9);
       // Update the item status locally
       setItem((prevItem) => ({
         ...prevItem,
@@ -168,27 +176,38 @@ const ConsignDetailTimeLine: React.FC = () => {
   const handleViewFinalValuation = () => {
     // Sử dụng dữ liệu trực tiếp từ item để hiển thị trong modal
     const finalValuationDetails = {
-      id: item.id,
-      sellerId: item.seller.id,
-      status: item.status,
-      images: item.imageValuations.map((item) => item.imageLink),
-      name: item.name,
-      pricingTime: item.pricingTime,
-      estimatedCost: "Api chưa có",
-      width: item.width,
-      height: item.height,
-      depth: item.depth,
-      description: item.description,
+      id: item?.id,
+      sellerId: item?.seller.id,
+      status: item?.status,
+      images: item?.imageValuations.map((item) => item?.imageLink),
+      name: item?.name,
+      pricingTime: item?.pricingTime,
+      estimatedCost: `${(item?.estimatePriceMin || 0).toLocaleString("vi-VN", {
+        style: "currency",
+        currency: "VND",
+      })} - ${(item?.estimatePriceMax || 0).toLocaleString("vi-VN", {
+        style: "currency",
+        currency: "VND",
+      })}`,
+      width: item?.width,
+      height: item?.height,
+      depth: item?.depth,
+      description: item?.description,
       note: "If the customer accepts the above valuation, please sign the document attached below.",
-      owner: item.seller.lastName + " " + item.seller.firstName,
-      artist: "API chưa có",
-      category: "API chưa có",
-      address: item.seller.address,
-      CCCD: item.seller.citizenIdentificationCard,
-      idIssuanceDate: item.seller.idIssuanceDate,
-      idExpirationDate: item.seller.idExpirationDate,
+      owner: item?.seller.lastName + " " + item?.seller.firstName,
+      artist: item?.jewelry.artist.name,
+      category: item?.jewelry.category.name,
+      address: item?.seller.address,
+      CCCD: item?.seller.citizenIdentificationCard,
+      idIssuanceDate: item?.seller.idIssuanceDate,
+      idExpirationDate: item?.seller.idExpirationDate,
       country: "Viet Nam",
-      email: item.seller.accountDTO.email,
+      email: item?.seller.accountDTO.email,
+
+      descriptionCharacteristicDetails: item?.jewelry.keyCharacteristicDetails,
+      documentLink: item?.valuationDocuments[0].documentLink,
+      mainDiamonds: item?.jewelry.mainDiamonds,
+      creationDate: item?.creationDate,
     };
 
     // Đặt dữ liệu vào state và mở modal
@@ -203,10 +222,10 @@ const ConsignDetailTimeLine: React.FC = () => {
       <View className="p-4">
         {/* Hiển thị thông tin item */}
         <View className="flex-row items-center mb-4">
-          {item.imageValuations[0].imageLink &&
-          item.imageValuations[0].imageLink ? (
+          {item?.imageValuations[0].imageLink &&
+          item?.imageValuations[0].imageLink ? (
             <Image
-              source={{ uri: item.imageValuations[0].imageLink }}
+              source={{ uri: item?.imageValuations[0].imageLink }}
               className="w-32 h-32 mr-4 rounded"
             />
           ) : (
@@ -216,28 +235,43 @@ const ConsignDetailTimeLine: React.FC = () => {
             />
           )}
           <View className="w-[60%]">
+            <Text
+              className={`uppercase ${getStatusColor(
+                item?.status
+              )} px-2 py-1 rounded-md text-white text-center mb-2 text-base font-semibold uppercase`}
+            >
+              {statusTextMap[item?.status as ConsignStatus]}
+            </Text>
             <View className="flex-row items-center justify-between ">
-              <Text className="text-xl font-bold w-[230px]">{item.name}</Text>
-              <Text className="text-gray-600">#{item.id}</Text>
+              <Text className="text-xl font-bold w-[230px]">{item?.name}</Text>
+              <Text className="text-gray-600">#{item?.id}</Text>
             </View>
-            {item.pricingTime ? (
-              <Text className="mt-1 text-lg font-semibold">chưa có price</Text>
+            {item?.estimatePriceMin && item?.estimatePriceMin ? (
+              <Text className="mt-2 text-lg font-semibold">
+                {(item?.estimatePriceMin || 0).toLocaleString("vi-VN", {
+                  style: "currency",
+                  currency: "VND",
+                })}{" "}
+                -{" "}
+                {(item?.estimatePriceMax || 0).toLocaleString("vi-VN", {
+                  style: "currency",
+                  currency: "VND",
+                })}
+              </Text>
             ) : (
               <Text className="mt-1 text-base font-semibold text-gray-500">
                 Price not available
               </Text>
             )}
+            {item?.jewelry?.category?.name && (
+              <Text className="text-base text-gray-500">
+                {item?.jewelry?.category?.name}
+              </Text>
+            )}
 
-            <Text
-              className={`uppercase ${getStatusColor(
-                item.status
-              )} font-semibold uppercase`}
-            >
-              {statusTextMap[item.status as ConsignStatus]}
-            </Text>
             <View className="flex-row w-full justify-between">
-              {/* Nút "View Pre Valuation" nếu item.status là "Preliminary Valued" */}
-              {item.status === "Preliminary" ? (
+              {/* Nút "View Pre Valuation" nếu item?.status là "Preliminary Valued" */}
+              {item?.status === "Preliminary" ? (
                 <TouchableOpacity
                   className="mt-2  w-full bg-green-500 p-2 rounded"
                   onPress={handleViewPreValuation} // Hàm này vẫn cần để gọi modal và set dữ liệu
@@ -246,7 +280,7 @@ const ConsignDetailTimeLine: React.FC = () => {
                     View Pre Valuation
                   </Text>
                 </TouchableOpacity>
-              ) : item.status === "ManagerApproved" ? (
+              ) : item?.status === "ManagerApproved" ? (
                 <TouchableOpacity
                   className="mt-2  w-full bg-blue-500 p-2 rounded"
                   onPress={handleViewFinalValuation}
@@ -256,12 +290,12 @@ const ConsignDetailTimeLine: React.FC = () => {
                   </Text>
                 </TouchableOpacity>
               ) : null}
-              <TouchableOpacity
+              {/* <TouchableOpacity
                 className="mt-2  w-full bg-gray-500 p-2 rounded"
                 onPress={handleViewDetail} // Hàm này vẫn cần để gọi modal và set dữ liệu
               >
                 <Text className="font-bold text-center text-white">View</Text>
-              </TouchableOpacity>
+              </TouchableOpacity> */}
             </View>
           </View>
         </View>
@@ -269,34 +303,63 @@ const ConsignDetailTimeLine: React.FC = () => {
         {/* Tạo list ảnh hàng ngang nhỏ, ấn vào thì show modal ảnh phỏng lớn */}
         <View>
           <ImageGallery
-            images={item.imageValuations.map((img) => img.imageLink)}
+            images={item?.imageValuations?.map((img) => img.imageLink)}
           />
         </View>
 
         <View className="mt-4">
           {timeline &&
-            timeline.length > 0 &&
+            timeline?.length > 0 &&
             timeline
-              .slice(0, expanded ? timeline.length : 1)
+              .sort(
+                (a, b) =>
+                  new Date(a.creationDate).getTime() -
+                  new Date(b.creationDate).getTime()
+              )
+              .slice(0, expanded ? timeline.length : 4)
               .map((event, index) => (
                 <View key={index} className="flex-row mb-4">
                   <View className="items-center mr-4">
                     <View className="w-3 h-3 bg-blue-500 rounded-full" />
-                    {index !== (expanded ? timeline.length - 1 : 0) && (
+                    {index !== (expanded ? timeline.length - 1 : 3) && (
                       <View className="w-0.5 h-[80px] bg-gray-300 mt-1" />
                     )}
                   </View>
                   <View className="flex-1">
                     <Text className="text-sm text-gray-500">
-                      {moment(event.creationDate).format("HH:mm A, DD/MM/YYYY")}
+                      {moment(event?.creationDate).format(
+                        "HH:mm A, DD/MM/YYYY"
+                      )}
                     </Text>
-                    <Text className="font-bold">{event.statusName}</Text>
-                    {event.statusName == "ManagerApproved" && ( // chưa biết cái nào hiển thị tài liệu nên để đây
+                    <Text className="font-bold">{event?.statusName}</Text>
+                    {event?.statusName == "ManagerApproved" && ( // chưa biết cái nào hiển thị tài liệu nên để đây
                       <TouchableOpacity
                         className="p-2 mt-1 bg-gray-200 rounded w-[50px]"
-                        onPress={handlePowerOfAttorney}
+                        // onPress={handlePowerOfAttorney}
                       >
                         <Text className="text-gray-700">Print</Text>
+                        {/* đoạn này đang kh biết tải hẳn luôn ha là mở modal */}
+                      </TouchableOpacity>
+                    )}
+                    {event?.statusName == "Preliminary" && ( // chưa biết cái nào hiển thị tài liệu nên để đây
+                      <TouchableOpacity
+                        className="p-2 mt-1 bg-gray-200 rounded w-[140px] "
+                        onPress={handleViewPreValuation}
+                      >
+                        <Text className="text-gray-700 text-center font-semibold">
+                          View Preliminary
+                        </Text>
+                        {/* đoạn này đang kh biết tải hẳn luôn ha là mở modal */}
+                      </TouchableOpacity>
+                    )}
+                    {event?.statusName == "FinalValuated" && ( // chưa biết cái nào hiển thị tài liệu nên để đây
+                      <TouchableOpacity
+                        className="p-2 mt-1 bg-gray-200 rounded w-[140px] "
+                        onPress={handleViewFinalValuation}
+                      >
+                        <Text className="text-gray-700 text-center font-semibold">
+                          View Final Valuated
+                        </Text>
                         {/* đoạn này đang kh biết tải hẳn luôn ha là mở modal */}
                       </TouchableOpacity>
                     )}
@@ -305,7 +368,7 @@ const ConsignDetailTimeLine: React.FC = () => {
               ))}
         </View>
 
-        {timeline.length > 1 && (
+        {timeline.length > 4 && (
           <TouchableOpacity
             onPress={toggleExpanded}
             className="flex-row items-center justify-center p-2 mt-2 bg-gray-100 rounded"
@@ -322,7 +385,7 @@ const ConsignDetailTimeLine: React.FC = () => {
         )}
       </View>
 
-      {item.status === "Preliminary" && valuationData && (
+      {valuationData && (
         <PreValuationDetailsModal
           isVisible={modalVisible}
           onClose={() => setModalVisible(false)}
@@ -331,7 +394,7 @@ const ConsignDetailTimeLine: React.FC = () => {
           onReject={handleReject}
         />
       )}
-      {item.status === "ManagerApproved" && (
+      {
         <FinalValuationDetailsModal
           isVisible={isFinalModalVisible}
           onClose={() => setFinalModalVisible(false)}
@@ -342,7 +405,7 @@ const ConsignDetailTimeLine: React.FC = () => {
           }}
           onReject={handleReject}
         />
-      )}
+      }
     </ScrollView>
   );
 };

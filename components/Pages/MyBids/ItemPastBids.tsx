@@ -140,7 +140,7 @@ const ItemPastBids: React.FC<ItemPastBidsProps> = ({
           image,
           endTime: endTime,
           startTime: startTime,
-          yourMaxBid,
+          yourMaxBid: yourMaxBid,
           itemBid: itemBid,
           invoiceId: invoiceId ?? 0,
         });

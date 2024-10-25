@@ -1,4 +1,5 @@
 import { MaterialCommunityIcons } from "@expo/vector-icons";
+import moment from "moment-timezone";
 import React from "react";
 import {
   Modal,
@@ -27,6 +28,8 @@ interface PreValuationDetailsModalProps {
     description: string;
     estimatedCost: number;
     note: string;
+    status: string;
+    creationDate: string;
   };
 }
 
@@ -71,26 +74,32 @@ const PreValuationDetailsModal: React.FC<PreValuationDetailsModalProps> = ({
             </View>
 
             {/* Item details */}
+            <Text className="mb-2 text-sm font-semibold text-gray-600">
+              {moment(details?.creationDate).format("HH:mm A, DD/MM/YYYY")}
+            </Text>
             <Text className="mb-2 text-2xl font-bold">{details?.name}</Text>
 
-            {/* <View className="flex-row gap-2 my-2">
+            <View className="flex-row gap-2 my-2">
               <Text className="text-lg font-bold text-gray-700 ">Owner:</Text>
               <Text className="text-lg font-semibold text-blue-500">
                 {" "}
-                {details.owner}
+                {details?.owner}
               </Text>
             </View>
 
             <View className="flex-row gap-2 mb-2">
               <Text className="text-lg font-bold text-gray-700 ">Artist:</Text>
-              <Text className="text-lg text-gray-800"> {details.artist}</Text>
-            </View> */}
-            {/* <View className="flex-row gap-2 mb-2">
+              <Text className="text-lg text-gray-800"> {details?.artist}</Text>
+            </View>
+            <View className="flex-row gap-2 mb-2">
               <Text className="text-lg font-bold text-gray-700 ">
                 Category:
               </Text>
-              <Text className="text-lg text-gray-800"> {details.category}</Text>
-            </View> */}
+              <Text className="text-lg text-gray-800">
+                {" "}
+                {details?.category}
+              </Text>
+            </View>
 
             <View className="ml-4">
               <View className="flex-row items-start gap-2">
@@ -99,7 +108,7 @@ const PreValuationDetailsModal: React.FC<PreValuationDetailsModalProps> = ({
                 <Text className="text-lg font-bold text-gray-700 ">Width:</Text>
                 <Text className="text-lg text-gray-800">
                   {" "}
-                  {details.width} cm
+                  {details?.width} cm
                 </Text>
               </View>
               <View className="flex-row items-start gap-2">
@@ -109,7 +118,7 @@ const PreValuationDetailsModal: React.FC<PreValuationDetailsModalProps> = ({
                 </Text>
                 <Text className="text-lg text-gray-800">
                   {" "}
-                  {details.height} cm
+                  {details?.height} cm
                 </Text>
               </View>
               <View className="flex-row items-start gap-2">
@@ -117,7 +126,7 @@ const PreValuationDetailsModal: React.FC<PreValuationDetailsModalProps> = ({
                 <Text className="text-lg font-bold text-gray-700 ">Depth:</Text>
                 <Text className="text-lg text-gray-800">
                   {" "}
-                  {details.depth} cm
+                  {details?.depth} cm
                 </Text>
               </View>
             </View>
@@ -127,7 +136,7 @@ const PreValuationDetailsModal: React.FC<PreValuationDetailsModalProps> = ({
               </Text>
               <Text className="text-lg text-gray-800 w-[70%] ">
                 {" "}
-                {details.description}
+                {details?.description}
               </Text>
             </View>
 
@@ -135,10 +144,10 @@ const PreValuationDetailsModal: React.FC<PreValuationDetailsModalProps> = ({
               <Text className="text-xl font-bold text-gray-900 w-[70%]">
                 Total estimated retail replacement cost:
               </Text>
-              {details.estimatedCost ? (
-                <Text className="text-2xl text-[#D80000] font-bold">
+              {details?.estimatedCost ? (
+                <Text className="text-2xl w-[120px] text-[#D80000] font-bold">
                   {" "}
-                  ${details.estimatedCost}
+                  {details?.estimatedCost}
                 </Text>
               ) : (
                 <Text className="text-2xl text-[#D80000] font-bold"> $0</Text>
@@ -146,25 +155,25 @@ const PreValuationDetailsModal: React.FC<PreValuationDetailsModalProps> = ({
             </View>
 
             <Text className="text-lg mb-4 text-[#D80000] font-bold">
-              Note: {details.note}
+              Note: {details?.note}
             </Text>
           </ScrollView>
-
-          {/* Action Buttons */}
-          <View className="flex-row justify-around mt-4">
-            <TouchableOpacity
-              className="px-8 py-3 bg-red-500 rounded-lg"
-              onPress={onReject}
-            >
-              <Text className="font-bold text-white">REJECT</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              className="px-8 py-3 bg-green-500 rounded-lg"
-              onPress={onApprove}
-            >
-              <Text className="font-bold text-white">APPROVE</Text>
-            </TouchableOpacity>
-          </View>
+          {details?.status === "Preliminary" && (
+            <View className="flex-row justify-around mt-4">
+              <TouchableOpacity
+                className="px-8 py-3 bg-red-500 rounded-lg"
+                onPress={onReject}
+              >
+                <Text className="font-bold text-white">REJECT</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                className="px-8 py-3 bg-green-500 rounded-lg"
+                onPress={onApprove}
+              >
+                <Text className="font-bold text-white">APPROVE</Text>
+              </TouchableOpacity>
+            </View>
+          )}
         </View>
       </View>
     </Modal>

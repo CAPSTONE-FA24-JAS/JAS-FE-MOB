@@ -47,6 +47,7 @@ type RootStackParamList = {
     invoiceId: number;
     yourMaxBid: number;
   };
+  InvoiceList: undefined;
 };
 
 const DetailMyBid: React.FC = () => {
@@ -90,7 +91,7 @@ const DetailMyBid: React.FC = () => {
     useState<boolean>(false);
 
   // console.log("itemDetailBid", itemDetailBid);
-  // console.log("itemBid in Detail", itemBid);
+  console.log("yourMaxBid in Detail", yourMaxBid);
   console.log("defaultAddress", defaultAddress);
 
   // Fetch bid details and addresses when the component is mounted
@@ -188,7 +189,7 @@ const DetailMyBid: React.FC = () => {
         image={image}
         endTime={endTime}
         startTime={startTime}
-        yourMaxBid={yourMaxBid ? yourMaxBid : 0}
+        yourMaxBid={yourMaxBid || 0}
         itemDetailBid={itemDetailBid || ({} as MyBidData)}
       />
       {user && isWin && userId && (
@@ -206,25 +207,42 @@ const DetailMyBid: React.FC = () => {
         />
       )}
       <TimeLineBid />
-      {/* {status === "pending" ? ( */}
-      <TouchableOpacity
-        className="bg-blue-500 p-3 mx-4 rounded mt-4"
-        onPress={handleConfirmInvoice}
-      >
-        <Text className="text-white text-center font-semibold uppercase text-base">
-          Confirm Invoice
-        </Text>
-      </TouchableOpacity>
-      {/* ) : ( */}
-      <TouchableOpacity
-        className="bg-blue-500 p-3  mx-4 rounded my-4"
-        onPress={handleViewInvoice}
-      >
-        <Text className="text-white text-center font-semibold uppercase text-base">
-          View Invoice
-        </Text>
-      </TouchableOpacity>
-      {/* )} */}
+      {invoiceId ? (
+        <View>
+          {/* {status === "pending" ? ( */}
+          <TouchableOpacity
+            className="bg-blue-500 p-3 mx-4 rounded mt-4"
+            onPress={handleConfirmInvoice}
+          >
+            <Text className="text-white text-center font-semibold uppercase text-base">
+              Confirm Invoice
+            </Text>
+          </TouchableOpacity>
+          {/* ) : ( */}
+          <TouchableOpacity
+            className="bg-blue-500 p-3  mx-4 rounded my-4"
+            onPress={handleViewInvoice}
+          >
+            <Text className="text-white text-center font-semibold uppercase text-base">
+              View Invoice
+            </Text>
+          </TouchableOpacity>
+          {/* )} */}
+        </View>
+      ) : !invoiceId && isWin ? (
+        <View className=" flex-row mb-6 mx-auto">
+          <Text className="text-center text-gray-500 ">You need to go to</Text>
+          <TouchableOpacity>
+            <Text
+              className="text-center text-blue-500 font-semibold ml-2 "
+              onPress={() => navigation.navigate("InvoiceList")}
+            >
+              Invoice List
+            </Text>
+          </TouchableOpacity>
+          <Text className="text-center text-gray-500 ml-2">to continue.</Text>
+        </View>
+      ) : null}
 
       {/* Render EditAddress as a modal */}
       <Modal

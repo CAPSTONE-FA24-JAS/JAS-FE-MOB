@@ -93,10 +93,10 @@ const HistoryItemConsign: React.FC = () => {
     // "Requested Preliminary", // ẩn
     "Preliminary",
     "Approved Preliminary",
-    "Recived Jewelry",
+    "Recived Jewelry", // hiện biên bản xác nhận
     // "Final Valuated", // ẩn
     "Manager Approved",
-    "Authorized",
+    "Authorized", // cho coi giấy uỷ quyền
     "Rejected Preliminary",
   ];
   // Corresponding status indices to match statusTextMap

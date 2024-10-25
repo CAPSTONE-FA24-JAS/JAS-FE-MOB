@@ -1,6 +1,8 @@
+import { KeyCharacteristicDetail, MainDiamond } from "@/app/types/consign_type";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { useNavigation } from "expo-router";
+import moment from "moment-timezone";
 import React, { useState } from "react";
 import {
   Modal,
@@ -29,7 +31,7 @@ interface FinalValuationDetailsModalProps {
     height: string;
     depth: string;
     description: string;
-    estimatedCost: number;
+    estimatedCost: string;
     note: string;
     address: string;
     CCCD: string;
@@ -38,6 +40,11 @@ interface FinalValuationDetailsModalProps {
     country: string;
     sellerId: number;
     email: string;
+    descriptionCharacteristicDetails: KeyCharacteristicDetail[];
+    documentLink: string;
+    mainDiamonds: MainDiamond[];
+    creationDate: string;
+    status: string;
   };
 }
 
@@ -124,32 +131,36 @@ const FinalValuationDetailsModal: React.FC<FinalValuationDetailsModalProps> = ({
           </Text>
 
           {/* Large Image with next/previous controls */}
-          <View className="relative items-center mb-4">
-            <Image
-              source={{ uri: details?.images[currentImage] }}
-              className="w-full h-64 rounded-lg"
-              resizeMode="cover"
-            />
-            <TouchableOpacity
-              className="absolute left-0 p-4"
-              onPress={handlePreviousImage}
-            >
-              <Text className="text-2xl text-white">{"<"}</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              className="absolute right-0 p-4"
-              onPress={handleNextImage}
-            >
-              <Text className="text-2xl text-white">{">"}</Text>
-            </TouchableOpacity>
-          </View>
+          <ScrollView className="max-h-[80%] ml-2">
+            <View className="relative items-center mb-4">
+              <Image
+                source={{ uri: details?.images[currentImage] }}
+                className="w-full h-96 rounded-lg"
+                resizeMode="cover"
+              />
+              <TouchableOpacity
+                className="absolute left-0 p-4"
+                onPress={handlePreviousImage}
+              >
+                <Text className="text-2xl text-white">{"<"}</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                className="absolute right-0 p-4"
+                onPress={handleNextImage}
+              >
+                <Text className="text-2xl text-white">{">"}</Text>
+              </TouchableOpacity>
+            </View>
 
-          {/* Thumbnail List */}
-          <View className="mb-4">{renderThumbnails()}</View>
+            {/* Thumbnail List */}
+            <View className="mb-4">{renderThumbnails()}</View>
 
-          {/* Scrollable Content for item details */}
-          <Text className="mb-2 text-2xl font-bold">{details?.name}</Text>
-          <ScrollView className="max-h-[60%] ml-2">
+            {/* Scrollable Content for item details */}
+            {/* Item details */}
+            <Text className="mb-2 text-sm font-semibold text-gray-600">
+              {moment(details?.creationDate).format("HH:mm A, DD/MM/YYYY")}
+            </Text>
+            <Text className="mb-2 text-2xl font-bold">{details?.name}</Text>
             <View className="flex-row gap-2 my-2">
               <Text className="text-lg font-bold text-gray-700 ">Owner:</Text>
               <Text className="text-lg font-semibold text-blue-500">
@@ -214,15 +225,33 @@ const FinalValuationDetailsModal: React.FC<FinalValuationDetailsModalProps> = ({
                 {details?.description}
               </Text>
             </View>
+            <View className="ml-4">
+              {details?.descriptionCharacteristicDetails?.map((item, index) => (
+                <View key={index} className="flex-row items-start gap-2">
+                  <Text className="text-lg text-gray-800">•</Text>
+
+                  <Text className="text-lg font-bold text-gray-700 ">
+                    {item.keyCharacteristic.name}:
+                  </Text>
+                  <Text className="text-lg text-gray-800">
+                    {item.description}
+                  </Text>
+                </View>
+              ))}
+            </View>
 
             <View className="flex-row justify-between w-[90%] my-5">
               <Text className="text-xl font-bold text-gray-900 w-[70%]">
                 Total estimated retail replacement cost:
               </Text>
-              <Text className="text-2xl text-[#D80000] font-bold">
-                {" "}
-                ${details?.estimatedCost}
-              </Text>
+              {details?.estimatedCost ? (
+                <Text className="text-2xl w-[120px] text-[#D80000] font-bold">
+                  {" "}
+                  {details?.estimatedCost}
+                </Text>
+              ) : (
+                <Text className="text-2xl text-[#D80000] font-bold"> $0</Text>
+              )}
             </View>
 
             <Text className="text-lg mb-4 text-[#D80000] font-bold">
@@ -234,7 +263,11 @@ const FinalValuationDetailsModal: React.FC<FinalValuationDetailsModalProps> = ({
               Authorization Letter:
             </Text>
             <TouchableOpacity
-              onPress={handlePowerOfAttorney}
+              onPress={
+                details?.documentLink
+                  ? () => Linking.openURL(details?.documentLink)
+                  : () => {}
+              }
               className="flex-row items-center gap-2"
             >
               <MaterialCommunityIcons
@@ -250,20 +283,22 @@ const FinalValuationDetailsModal: React.FC<FinalValuationDetailsModalProps> = ({
           </ScrollView>
 
           {/* Action Buttons */}
-          <View className="flex-row justify-around mt-4">
-            <TouchableOpacity
-              className="px-8 py-3 bg-red-500 rounded-lg"
-              onPress={onReject}
-            >
-              <Text className="text-base font-bold text-white">REJECT</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              className="px-8 py-3 bg-green-500 rounded-lg"
-              onPress={handlePowerOfAttorney}
-            >
-              <Text className="text-base font-bold text-white">APPROVE</Text>
-            </TouchableOpacity>
-          </View>
+          {details?.status === "ManagerApproved" && (
+            <View className="flex-row justify-around mt-4">
+              <TouchableOpacity
+                className="px-8 py-3 bg-red-500 rounded-lg"
+                onPress={onReject}
+              >
+                <Text className="text-base font-bold text-white">REJECT</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                className="px-8 py-3 bg-green-500 rounded-lg"
+                onPress={handlePowerOfAttorney}
+              >
+                <Text className="text-base font-bold text-white">APPROVE</Text>
+              </TouchableOpacity>
+            </View>
+          )}
         </View>
       </View>
     </Modal>

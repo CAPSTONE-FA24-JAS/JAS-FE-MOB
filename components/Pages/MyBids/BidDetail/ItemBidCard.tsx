@@ -219,13 +219,13 @@ const ItemBidCard: React.FC<ItemBidCardProps> = ({
               >
                 {isWin
                   ? (
-                      itemDetailBid?.lotDTO?.finalPriceSold || yourMaxBid
+                      itemDetailBid.lotDTO.finalPriceSold || yourMaxBid
                     ).toLocaleString("vi-VN", {
                       style: "currency",
                       currency: "VND",
                     }) ?? "0 VND"
                   : (
-                      itemDetailBid?.yourMaxBidPrice || yourMaxBid
+                      itemDetailBid.yourMaxBidPrice || yourMaxBid
                     ).toLocaleString("vi-VN", {
                       style: "currency",
                       currency: "VND",
@@ -270,10 +270,10 @@ const ItemBidCard: React.FC<ItemBidCardProps> = ({
             <Text
               className="text-base text-center font-semibold  uppercase"
               style={{
-                color: getStatusLotColor(itemDetailBid?.lotDTO?.status),
+                color: getStatusLotColor(itemDetailBid.lotDTO.status),
               }}
             >
-              {formatStatusLot(itemDetailBid?.lotDTO?.status)}
+              {formatStatusLot(itemDetailBid.lotDTO.status)}
             </Text>
             <TouchableOpacity
               onPress={goToAuctionDetail}

@@ -43,6 +43,26 @@ export function useBidding(): UseBiddingResult {
       console.log(`${user}: ${message}`);
     });
 
+    // Xử lý sự kiện cập nhật giá cao nhất
+    connection.on("SendTopPrice", (price: number, bidTime: string) => {
+      console.log(`Top price updated: ${price} at ${bidTime}`);
+      setHighestPrice(price);
+    });
+
+    // Xử lý sự kiện cập nhật thời gian kết thúc
+    connection.on("SendEndTimeLot", (lotId: number, newEndTime: string) => {
+      console.log(`End time updated for lot ${lotId}: ${newEndTime}`);
+      setEndTime(newEndTime);
+    });
+
+    //get all history bid
+    connection.on("SendHistoryBiddingOfLot", (bids: Message[]) => {
+      console.log(`All bids`, bids);
+      if (bids) {
+        setMessages(bids);
+      }
+    });
+
     // Xử lý sự kiện khi có người đặt giá
     connection.on(
       "SendBiddingPrice",
@@ -58,25 +78,13 @@ export function useBidding(): UseBiddingResult {
         ]);
       }
     );
-
-    // Xử lý sự kiện cập nhật giá cao nhất
-    connection.on("SendTopPrice", (price: number, bidTime: string) => {
-      console.log(`Top price updated: ${price} at ${bidTime}`);
-      setHighestPrice(price);
-    });
-
-    // Xử lý sự kiện cập nhật thời gian kết thúc
-    connection.on("SendEndTimeLot", (lotId: number, newEndTime: string) => {
-      console.log(`End time updated for lot ${lotId}: ${newEndTime}`);
-      setEndTime(newEndTime);
-    });
-
-    //get all history bid
-
-    connection.on("SendHistoryBiddingOfLot", (bids: Message[]) => {
-      console.log(`All bids`, bids);
-      setMessages(bids);
-    });
+    connection.on(
+      "AuctionEndedWithWinner",
+      (message: string, customerId: string, price: number) => {
+        /// check lại res trên sv
+        console.log(`${message} customerID ${customerId} at price ${price}`);
+      }
+    );
   }, []);
 
   const joinChatRoom = useCallback(

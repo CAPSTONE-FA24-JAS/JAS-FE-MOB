@@ -109,11 +109,13 @@ const RisingBidPage: React.FC = () => {
   }, [itemId]);
 
   // Convert messages to bid format
-  const bids = messages.map((message) => ({
-    amount: parseInt(String(message.currentPrice)),
-    customerId: parseInt(String(message.customerId)),
-    time: message.bidTime,
-  }));
+  const bids = messages
+    ? messages.map((message) => ({
+        amount: parseInt(String(message.currentPrice)),
+        customerId: parseInt(String(message.customerId)),
+        time: message.bidTime,
+      }))
+    : [];
 
   const mainContent = [
     {

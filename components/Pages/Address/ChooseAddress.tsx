@@ -69,10 +69,13 @@ const ChooseAddress: React.FC<ChooseAddressProps> = ({
           <StyledText className="text-lg uppercase font-bold mb-4">
             Select Address
           </StyledText>
-          <TouchableOpacity onPress={onEditAddress}>
-            <MaterialCommunityIcons name="pencil" size={24} color="#848484" />
-          </TouchableOpacity>
+          {addresses.length !== 0 && (
+            <TouchableOpacity onPress={onEditAddress}>
+              <MaterialCommunityIcons name="pencil" size={24} color="#848484" />
+            </TouchableOpacity>
+          )}
         </View>
+
         <ScrollView className="mb-4 ">
           {addresses.map((address) => (
             <View className="flex-row items-center mb-4" key={address.id}>
@@ -103,6 +106,12 @@ const ChooseAddress: React.FC<ChooseAddressProps> = ({
             </View>
           ))}
         </ScrollView>
+        {addresses.length === 0 && (
+          <Text className="text-center mb-6 text-gray-500">
+            No have list address to ship
+          </Text>
+        )}
+
         <View className="flex-row justify-between">
           <StyledTouchableOpacity
             className="bg-red-500 p-3 rounded w-[45%]"
@@ -110,13 +119,24 @@ const ChooseAddress: React.FC<ChooseAddressProps> = ({
           >
             <StyledText className="text-white text-center">Cancel</StyledText>
           </StyledTouchableOpacity>
-          <StyledTouchableOpacity
-            className="bg-blue-500 p-3 rounded w-[45%]"
-            onPress={handleSave}
-            disabled={!localSelectedAddress} // Disable if no address is selected
-          >
-            <StyledText className="text-white text-center">Save</StyledText>
-          </StyledTouchableOpacity>
+          {addresses.length === 0 ? (
+            <TouchableOpacity
+              className="bg-blue-500 w-1/2 mx-auto p-2 rounded-md"
+              onPress={onEditAddress}
+            >
+              <Text className="text-center text-white font-semibold">
+                + Add new address
+              </Text>
+            </TouchableOpacity>
+          ) : (
+            <StyledTouchableOpacity
+              className="bg-blue-500 p-3 rounded w-[45%]"
+              onPress={handleSave}
+              disabled={!localSelectedAddress} // Disable if no address is selected
+            >
+              <StyledText className="text-white text-center">Save</StyledText>
+            </StyledTouchableOpacity>
+          )}
         </View>
       </StyledView>
     </View>

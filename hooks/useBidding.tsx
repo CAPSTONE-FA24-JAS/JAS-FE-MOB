@@ -26,6 +26,7 @@ interface UseBiddingResult {
   ) => Promise<void>;
   sendBid: (price: number) => Promise<void>;
   disconnect: () => Promise<void>;
+  isEndAuction: boolean;
 }
 
 export function useBidding(): UseBiddingResult {
@@ -34,6 +35,7 @@ export function useBidding(): UseBiddingResult {
   const [messages, setMessages] = useState<Message[]>([]);
   const [endTime, setEndTime] = useState<string>("");
   const [error, setError] = useState<string | null>(null);
+  const [isEndAuction, setIsEndAuction] = useState<boolean>(false);
 
   const connectionRef = useRef<HubConnection | null>(null);
 
@@ -78,10 +80,12 @@ export function useBidding(): UseBiddingResult {
         ]);
       }
     );
+
+    // khi end auction
     connection.on(
       "AuctionEndedWithWinner",
       (message: string, customerId: string, price: number) => {
-        /// check lại res trên sv
+        setIsEndAuction(true);
         console.log(`${message} customerID ${customerId} at price ${price}`);
       }
     );
@@ -217,5 +221,6 @@ export function useBidding(): UseBiddingResult {
     joinChatRoom,
     sendBid,
     disconnect,
+    isEndAuction,
   };
 }

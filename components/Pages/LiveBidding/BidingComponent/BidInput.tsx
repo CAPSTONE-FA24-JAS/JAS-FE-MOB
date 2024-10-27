@@ -22,7 +22,9 @@ const BidInput: React.FC<BidInputProps> = ({
   item,
   onPlaceBid,
 }) => {
-  const [bidValue, setBidValue] = useState<number>(() => highestBid);
+  const [bidValue, setBidValue] = useState<number>(
+    () => highestBid + (item.bidIncrement ?? 100)
+  );
   const [step, setStep] = useState<number>(() => item.bidIncrement ?? 100);
   const [error, setError] = useState<string | null>(null);
   const priceLimit = useSelector(
@@ -30,6 +32,9 @@ const BidInput: React.FC<BidInputProps> = ({
   );
 
   const validateBid = (value: number) => {
+    if (value === 0) {
+      return "Bid must be higher than 0";
+    }
     if (value < highestBid) {
       return `Bid must be higher than ${highestBid.toLocaleString()}`;
     }
@@ -40,6 +45,10 @@ const BidInput: React.FC<BidInputProps> = ({
       return `Bid must be lower than your price limit (${priceLimit?.toLocaleString()})`;
     }
     return null;
+  };
+
+  const validateBidLimit = (value: number) => {
+    return true;
   };
 
   const handleSubmitBid = () => {

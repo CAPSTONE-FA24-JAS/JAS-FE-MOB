@@ -16,7 +16,6 @@ import {
 } from "@/api/consignAnItemApi";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { useNavigation } from "expo-router";
-import { get } from "react-native/Libraries/TurboModule/TurboModuleRegistry";
 import FinalValuationDetailsModal from "../Modal/FinalValuationDetailsModal";
 import moment from "moment-timezone";
 
@@ -63,7 +62,7 @@ const ConsignDetailTimeLine: React.FC = () => {
   console.log("timelineAK", timeline);
 
   useEffect(() => {
-    fetchTimelineData(item?.id); //hard tamj id ddeer test UI
+    fetchTimelineData(item?.id);
   }, [item]);
 
   const toggleExpanded = () => setExpanded(!expanded);
@@ -288,12 +287,6 @@ const ConsignDetailTimeLine: React.FC = () => {
                   </Text>
                 </TouchableOpacity>
               ) : null}
-              {/* <TouchableOpacity
-                className="w-full p-2 mt-2 bg-gray-500 rounded"
-                onPress={handleViewDetail} // Hàm này vẫn cần để gọi modal và set dữ liệu
-              >
-                <Text className="font-bold text-center text-white">View</Text>
-              </TouchableOpacity> */}
             </View>
           </View>
         </View>

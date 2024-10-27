@@ -1,12 +1,13 @@
 export interface FinancialProof {
   id: number;
-  file: string;
+  file: string | null;
   priceLimit: number;
   customerId: number;
-  customerName: number;
-  reason?: string;
-  accountName: string;
+  staffId: number | null;
+  staffName: string;
+  customerName: string;
+  reason: string;
   startDate: string;
   expireDate: string;
-  status: "Pending" | "Approve" | "Reject"; // chưa biết tất cả trạng thái nên để v nhé
+  status: string;
 }

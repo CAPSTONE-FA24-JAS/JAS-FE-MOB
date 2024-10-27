@@ -11,11 +11,11 @@ export const getListFinancialProof = async (
     console.log("Bắt đầu gọi API GetListFinancialProof...", userId);
     console.log(
       "API_URL:",
-      `${API_URL}/api/BidLimit/ViewAllBidLimitByAccount?customerId=${userId}`
+      `${API_URL}/api/BidLimit/ViewAllBidLimitByCustomer?customerId=${userId}`
     );
 
     const response = await apiClient.get<Response<FinancialProof>>(
-      `${API_URL}/api/BidLimit/ViewAllBidLimitByAccount?customerId=${userId}`
+      `${API_URL}/api/BidLimit/ViewAllBidLimitByCustomer?customerId=${userId}`
     );
 
     if (response.data.isSuccess) {

@@ -144,7 +144,7 @@ const ConsignDetailTimeLine: React.FC = () => {
 
   const handleApprove = async () => {
     try {
-      await updateStatusForValuation(item?.id, 3);
+      await updateStatusForValuation(item?.id, 4);
       // Update the item status locally
       setItem((prevItem) => ({
         ...prevItem,
@@ -238,8 +238,7 @@ const ConsignDetailTimeLine: React.FC = () => {
             <Text
               className={`uppercase ${getStatusColor(
                 item?.status
-              )} px-2 py-1 rounded-md text-white text-center mb-2 text-base font-semibold uppercase`}
-            >
+              )} px-2 py-1 rounded-md text-white text-center mb-2 text-base font-semibold uppercase`}>
               {statusTextMap[item?.status as ConsignStatus]}
             </Text>
             <View className="flex-row items-center justify-between ">
@@ -269,11 +268,11 @@ const ConsignDetailTimeLine: React.FC = () => {
               </Text>
             )}
 
-            <View className="flex-row w-full justify-between">
+            <View className="flex-row justify-between w-full">
               {/* Nút "View Pre Valuation" nếu item?.status là "Preliminary Valued" */}
               {item?.status === "Preliminary" ? (
                 <TouchableOpacity
-                  className="mt-2  w-full bg-green-500 p-2 rounded"
+                  className="w-full p-2 mt-2 bg-green-500 rounded"
                   onPress={handleViewPreValuation} // Hàm này vẫn cần để gọi modal và set dữ liệu
                 >
                   <Text className="font-bold text-center text-white">
@@ -282,16 +281,15 @@ const ConsignDetailTimeLine: React.FC = () => {
                 </TouchableOpacity>
               ) : item?.status === "ManagerApproved" ? (
                 <TouchableOpacity
-                  className="mt-2  w-full bg-blue-500 p-2 rounded"
-                  onPress={handleViewFinalValuation}
-                >
+                  className="w-full p-2 mt-2 bg-blue-500 rounded"
+                  onPress={handleViewFinalValuation}>
                   <Text className="font-bold text-center text-white">
                     Show Final Valuation Modal
                   </Text>
                 </TouchableOpacity>
               ) : null}
               {/* <TouchableOpacity
-                className="mt-2  w-full bg-gray-500 p-2 rounded"
+                className="w-full p-2 mt-2 bg-gray-500 rounded"
                 onPress={handleViewDetail} // Hàm này vẫn cần để gọi modal và set dữ liệu
               >
                 <Text className="font-bold text-center text-white">View</Text>
@@ -344,9 +342,8 @@ const ConsignDetailTimeLine: React.FC = () => {
                     {event?.statusName == "Preliminary" && ( // chưa biết cái nào hiển thị tài liệu nên để đây
                       <TouchableOpacity
                         className="p-2 mt-1 bg-gray-200 rounded w-[140px] "
-                        onPress={handleViewPreValuation}
-                      >
-                        <Text className="text-gray-700 text-center font-semibold">
+                        onPress={handleViewPreValuation}>
+                        <Text className="font-semibold text-center text-gray-700">
                           View Preliminary
                         </Text>
                         {/* đoạn này đang kh biết tải hẳn luôn ha là mở modal */}
@@ -355,9 +352,8 @@ const ConsignDetailTimeLine: React.FC = () => {
                     {event?.statusName == "FinalValuated" && ( // chưa biết cái nào hiển thị tài liệu nên để đây
                       <TouchableOpacity
                         className="p-2 mt-1 bg-gray-200 rounded w-[140px] "
-                        onPress={handleViewFinalValuation}
-                      >
-                        <Text className="text-gray-700 text-center font-semibold">
+                        onPress={handleViewFinalValuation}>
+                        <Text className="font-semibold text-center text-gray-700">
                           View Final Valuated
                         </Text>
                         {/* đoạn này đang kh biết tải hẳn luôn ha là mở modal */}
@@ -371,8 +367,7 @@ const ConsignDetailTimeLine: React.FC = () => {
         {timeline.length > 4 && (
           <TouchableOpacity
             onPress={toggleExpanded}
-            className="flex-row items-center justify-center p-2 mt-2 bg-gray-100 rounded"
-          >
+            className="flex-row items-center justify-center p-2 mt-2 bg-gray-100 rounded">
             <Text className="mr-2">
               {expanded ? "Thu gọn" : "Xem toàn bộ lịch sử"}
             </Text>

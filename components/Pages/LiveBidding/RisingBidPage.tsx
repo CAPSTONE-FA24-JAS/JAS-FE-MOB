@@ -180,10 +180,17 @@ const RisingBidPage: React.FC = () => {
         keyExtractor={(item) => item.key}
         ListFooterComponent={() => <View style={{ height: 100 }} />}
       />
-      <View className="absolute bottom-0 left-0 right-0 bg-white shadow-lg">
-        <BidInput highestBid={highestPrice} item={item} onPlaceBid={sendBid} />
-        <NavigationButtons />
-      </View>
+      {isConnected && (
+        <View className="absolute bottom-0 left-0 right-0 bg-white shadow-lg">
+          <BidInput
+            highestBid={highestPrice}
+            item={item}
+            onPlaceBid={sendBid}
+          />
+          <NavigationButtons />
+        </View>
+      )}
+
       {!isConnected && (
         <View className="absolute top-0 left-0 right-0 p-2 bg-red-500">
           <Text className="text-center text-white">Reconnecting...</Text>

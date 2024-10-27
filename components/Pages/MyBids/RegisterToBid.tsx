@@ -8,7 +8,7 @@ import {
   Modal,
 } from "react-native";
 import { Checkbox } from "react-native-paper";
-import { useNavigation, useRoute } from "@react-navigation/native";
+import { useRoute } from "@react-navigation/native";
 import BalanceCard from "../Wallet/component/BalanceCard";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
@@ -20,6 +20,7 @@ import {
 import { LotDetail } from "@/app/types/lot_type";
 import { registerToBid } from "@/api/lotAPI";
 import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
+import { useNavigation } from "expo-router";
 
 type RootStackParamList = {
   [x: string]: any;
@@ -107,7 +108,7 @@ const RegisterToBid = () => {
             await registerToBid(lotDetail.deposit, userId, lotDetail.id);
             showSuccessMessage("Registered to bid successfully.");
             setIsPasswordModalVisible(false);
-            navigation.navigate("RisingBidPage", { itemId: lotDetail.id }); /// lot id
+            navigation.replace("RisingBidPage", { itemId: lotDetail.id }); /// lot id
           } catch (error: any) {
             const errorMessage = error.response?.data?.message || error.message;
             if (

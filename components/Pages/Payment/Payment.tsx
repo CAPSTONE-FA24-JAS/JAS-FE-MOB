@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   ScrollView,
   ActivityIndicator,
+  Modal,
 } from "react-native";
 import { RadioButton, Appbar, Card, Avatar } from "react-native-paper";
 import Icon from "react-native-vector-icons/MaterialIcons"; // Import Material Icons
@@ -23,18 +24,28 @@ import {
   paymentInvoiceByWallet,
 } from "@/api/invoiceApi";
 import { Linking } from "react-native";
+import { MyBidData } from "@/app/types/bid_type";
 
 // Define the types for navigation routes
 type RootStackParamList = {
-  PaymentUpload: undefined;
+  PaymentUpload: {
+    invoiceId: number;
+    itemDetailBid: MyBidData;
+    yourMaxBid: number;
+  };
   PaymentSuccess: undefined;
-  Payment: { totalPrice: number; invoiceId: number };
+  Payment: {
+    totalPrice: number;
+    invoiceId: number;
+    itemDetailBid: MyBidData;
+    yourMaxBid: number;
+  };
 };
 
 const Payment: React.FC = () => {
   const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
   const route = useRoute<RouteProp<RootStackParamList, "Payment">>();
-  const { totalPrice, invoiceId } = route.params;
+  const { totalPrice, invoiceId, itemDetailBid, yourMaxBid } = route.params;
 
   const walletId = useSelector(
     (state: RootState) => state.profile.profile?.customerDTO?.walletDTO?.id
@@ -42,6 +53,8 @@ const Payment: React.FC = () => {
   const [selectedPayment, setSelectedPayment] = useState<string>("wallet");
   const [isBalanceVisible, setIsBalanceVisible] = useState<boolean>(false); // State to handle balance visibility
   const [isProcessing, setIsProcessing] = useState<boolean>(false); // State to handle processing
+  const [isPaymentModalVisible, setIsPaymentModalVisible] =
+    useState<boolean>(false); // State for modal visibility
 
   console.log("Slected Payment:", selectedPayment);
 
@@ -101,6 +114,7 @@ const Payment: React.FC = () => {
             if (supported) {
               // Mở URL trong trình duyệt
               await Linking.openURL(paymentUrl);
+              setIsPaymentModalVisible(true); // Show modal after opening URL
             } else {
               showErrorMessage("Failed to open payment URL.");
             }
@@ -186,6 +200,46 @@ const Payment: React.FC = () => {
           </RadioButton.Group>
         </View>
       </ScrollView>
+
+      {/* Modal for Payment Confirmation */}
+      <Modal
+        visible={isPaymentModalVisible}
+        transparent={true}
+        animationType="slide"
+      >
+        <View className="flex-1 justify-center items-center bg-black/50 bg-opacity-50">
+          <View className="w-4/5 p-4 bg-white rounded-lg">
+            <Text className="text-lg font-bold text-center mb-4">
+              If you have successfully completed the payment, please take a
+              screenshot of the transfer bill and upload the payment photo to
+              complete!
+            </Text>
+            <TouchableOpacity
+              className="p-3 rounded bg-green-500 mb-2"
+              onPress={() => {
+                setIsPaymentModalVisible(false);
+                navigation.navigate("PaymentUpload", {
+                  invoiceId,
+                  itemDetailBid,
+                  yourMaxBid,
+                });
+              }}
+            >
+              <Text className="text-white text-base text-center font-semibold">
+                I have successfully paid
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              className="p-3 rounded bg-gray-500 "
+              onPress={() => setIsPaymentModalVisible(false)}
+            >
+              <Text className="text-white text-base  text-center  font-semibold">
+                Oops, I haven't paid yet
+              </Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
 
       {/* Payment Button at the bottom */}
       <View className="absolute bottom-0 w-full p-4 bg-white">

@@ -96,11 +96,11 @@ const ChooseAddress: React.FC<ChooseAddressProps> = ({
                     : "border-gray-400"
                 } border-2 rounded-md px-3 py-2 w-[86%]`}
               >
-                {address.isDefault === true && (
+                {address.isDefault === true ? (
                   <Text className="text-red-700 mb-2 font-semibold">
                     Mặc định
                   </Text>
-                )}
+                ) : null}
                 <Text className="text-gray-700">{address.addressLine}</Text>
               </TouchableOpacity>
             </View>

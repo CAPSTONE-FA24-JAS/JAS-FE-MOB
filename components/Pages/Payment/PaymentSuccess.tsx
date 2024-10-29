@@ -3,14 +3,37 @@ import { View, Text, TouchableOpacity } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons"; // Sử dụng icon checkmark
 import { useNavigation } from "expo-router";
 import { StackNavigationProp } from "@react-navigation/stack";
+import { MyBidData } from "@/app/types/bid_type";
+import { RouteProp, useRoute } from "@react-navigation/native";
+import { RootState } from "@/redux/store";
+import { useSelector } from "react-redux";
 // Define the types for navigation routes
 type RootStackParamList = {
   HomePage: undefined;
   Account: { screen: "InvoiceList" };
+  PaymentSuccess: {
+    invoiceId: number;
+    itemDetailBid: MyBidData;
+    yourMaxBid: number;
+  };
 };
 
+type PaymentSuccessRouteProp = RouteProp<RootStackParamList, "PaymentSuccess">;
+type PaymentSuccessNavigationProp = StackNavigationProp<
+  RootStackParamList,
+  "PaymentSuccess"
+>;
+
 const PaymentSuccess: React.FC = () => {
-  const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
+  const navigation = useNavigation<PaymentSuccessNavigationProp>();
+  const route = useRoute<PaymentSuccessRouteProp>();
+  const user = useSelector((state: RootState) => state.auth.userResponse);
+  const { invoiceId, itemDetailBid, yourMaxBid } = route.params;
+
+  console.log("====================================");
+  console.log("route.params", invoiceId, "itemDetailBid", itemDetailBid);
+  console.log("====================================");
+
   const handleHome = () => {
     navigation.navigate("HomePage");
   };
@@ -18,6 +41,16 @@ const PaymentSuccess: React.FC = () => {
     // Navigate to 'InvoiceList' through 'Account' stack
     navigation.navigate("Account", { screen: "InvoiceList" as const });
   };
+
+  const basePrice =
+    itemDetailBid?.yourMaxBidPrice ||
+    itemDetailBid?.lotDTO?.finalPriceSold ||
+    yourMaxBid ||
+    0;
+
+  // Calculate the total price
+  const totalPrice = basePrice + basePrice * 0.08;
+
   return (
     <View className="flex-1 bg-white pt-20 ">
       {/* Payment Success Title */}
@@ -38,16 +71,34 @@ const PaymentSuccess: React.FC = () => {
 
         <View className="flex-row justify-between mb-3 ">
           <Text className="text-base font-semibold text-gray-600">
-            Order Code
+            Invoice Code
           </Text>
-          <Text className="text-base font-bold text-black">#99999</Text>
+          <Text className="text-base font-bold text-black">#{invoiceId}</Text>
         </View>
-
+        <View className="flex-row justify-between mb-3 ">
+          <Text className="text-base font-semibold text-gray-600">
+            Lot Code
+          </Text>
+          <Text className="text-base font-bold text-black">
+            {" "}
+            #{itemDetailBid.lotId}
+          </Text>
+        </View>
         <View className="flex-row justify-between mb-3">
           <Text className="text-base font-semibold text-gray-600">
             Customer
           </Text>
-          <Text className="text-base font-bold text-black">John Smith</Text>
+          <Text className="text-base font-bold text-black">
+            {user?.customerDTO.lastName} {user?.customerDTO.firstName}
+          </Text>
+        </View>
+        <View className="flex-row justify-between mb-3">
+          <Text className="text-base font-semibold text-gray-600">
+            Phone Number
+          </Text>
+          <Text className="text-base font-bold text-black">
+            {user?.phoneNumber}
+          </Text>
         </View>
 
         <View className="flex-row justify-between mb-3">
@@ -55,22 +106,27 @@ const PaymentSuccess: React.FC = () => {
             Name Product
           </Text>
           <Text className="text-base font-bold text-black text-right w-[70%]">
-            Tiffany & Co. Soleste Tanzanite And Diamond Earrings
+            {itemDetailBid.lotDTO.title}
           </Text>
         </View>
 
         <View className="flex-row justify-between mb-3">
-          <Text className="text-base font-semibold text-gray-600">Product</Text>
-          <Text className="text-base font-bold text-black">
-            Diamond Necklace
+          <Text className="text-base font-semibold text-gray-600">
+            Type of production
           </Text>
+          <Text className="text-base font-bold text-black">Chưa cập nhật</Text>
         </View>
 
         <View className="h-px bg-gray-400 my-5" />
 
         <View className="flex-row justify-between">
           <Text className="text-base font-semibold text-gray-600">Total</Text>
-          <Text className="text-lg font-bold text-black">35.200.000 VND</Text>
+          <Text className="text-lg font-bold text-black">
+            {totalPrice.toLocaleString("vi-VN", {
+              style: "currency",
+              currency: "VND",
+            }) || "0 VND"}
+          </Text>
         </View>
       </View>
 

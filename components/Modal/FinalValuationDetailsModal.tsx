@@ -257,29 +257,29 @@ const FinalValuationDetailsModal: React.FC<FinalValuationDetailsModalProps> = ({
             <Text className="text-lg mb-4 text-[#D80000] font-bold">
               Note: {details?.note}
             </Text>
-
-            {/* Authorization Letter */}
             <Text className="mb-2 text-xl font-bold">
               Authorization Letter:
             </Text>
-            <TouchableOpacity
-              onPress={
-                details?.documentLink
-                  ? () => Linking.openURL(details?.documentLink)
-                  : () => {}
-              }
-              className="flex-row items-center gap-2"
-            >
-              <MaterialCommunityIcons
-                name="paperclip"
-                size={24}
-                color="#3B82F6"
-              />
+            {details?.documentLink && (
+              <TouchableOpacity
+                onPress={
+                  details?.documentLink
+                    ? () => Linking.openURL(details?.documentLink)
+                    : () => {}
+                }
+                className="flex-row items-center gap-2"
+              >
+                <MaterialCommunityIcons
+                  name="paperclip"
+                  size={24}
+                  color="#3B82F6"
+                />
 
-              <Text className="text-lg font-bold text-blue-500 underline">
-                View Authorization Letter
-              </Text>
-            </TouchableOpacity>
+                <Text className="text-lg font-bold text-blue-500 underline">
+                  View Authorization Letter
+                </Text>
+              </TouchableOpacity>
+            )}
           </ScrollView>
 
           {/* Action Buttons */}

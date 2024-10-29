@@ -5,6 +5,7 @@ import {
   SafeAreaView,
   ActivityIndicator,
   Modal,
+  Image,
 } from "react-native";
 import { RouteProp, useRoute } from "@react-navigation/native";
 import { TouchableOpacity } from "react-native-gesture-handler";
@@ -21,6 +22,13 @@ import { showErrorMessage } from "@/components/FlashMessageHelpers";
 import { AddressListData } from "@/app/types/address_type";
 import { getAddressesByCustomerId } from "@/api/addressApi";
 import ChooseAddress from "../../Address/ChooseAddress";
+import {
+  HistoryCustomerLot,
+  InvoiceDetailResponse,
+  StatusInvoiceDto,
+} from "@/app/types/invoice_type";
+import { getDetailInvoice } from "@/api/invoiceApi";
+import ImageGallery from "@/components/ImageGallery";
 
 type RootStackParamList = {
   DetailMyBid: {
@@ -40,7 +48,13 @@ type RootStackParamList = {
     itemBid: DataCurentBidResponse;
     invoiceId?: number;
   };
-  InvoiceDetail: undefined;
+  InvoiceDetail: {
+    addressData: AddressListData;
+    itemDetailBid: MyBidData;
+    invoiceId: number;
+    yourMaxBid: number;
+    imagePayment: string;
+  };
   InvoiceDetailConfirm: {
     addressData: AddressListData;
     itemDetailBid: MyBidData;
@@ -89,7 +103,21 @@ const DetailMyBid: React.FC = () => {
   const [addresses, setAddresses] = useState<AddressListData[]>([]); // Add addresses state
   const [isChooseModalVisible, setChooseModalVisible] =
     useState<boolean>(false);
+  const [invoiceDetails, setInvoiceDetails] =
+    useState<InvoiceDetailResponse | null>(null);
+  const [historyCustomerLots, setHistoryCustomerLots] = useState<
+    HistoryCustomerLot[]
+  >([]);
 
+  // Helper function to get the latest "Delivered" status
+  const getDeliveredStatus = (statusInvoiceDTOs: StatusInvoiceDto[]) => {
+    return statusInvoiceDTOs
+      .filter((status) => status.status === "Delivered")
+      .sort(
+        (a, b) =>
+          new Date(b.currentDate).getTime() - new Date(a.currentDate).getTime()
+      )[0];
+  };
   // console.log("itemDetailBid", itemDetailBid);
   console.log("yourMaxBid in Detail", yourMaxBid);
   console.log("defaultAddress", defaultAddress);
@@ -107,7 +135,7 @@ const DetailMyBid: React.FC = () => {
       }
       if (userId) {
         const addressResponse = await getAddressesByCustomerId(userId);
-        console.log("addressResponse", addressResponse);
+        // console.log("addressResponse", addressResponse);
 
         if (addressResponse?.isSuccess) {
           setAddresses(addressResponse.data); // Set addresses state
@@ -123,6 +151,23 @@ const DetailMyBid: React.FC = () => {
           );
         }
       }
+      // Fetch invoice details if invoiceId and isWin are present
+      if (invoiceId && isWin) {
+        const invoiceResponse = await getDetailInvoice(invoiceId);
+        if (invoiceResponse?.isSuccess) {
+          setInvoiceDetails(invoiceResponse.data);
+          // Set historyCustomerLots from the fetched invoice details
+          if (invoiceResponse.data.myBidDTO) {
+            setHistoryCustomerLots(
+              invoiceResponse.data.myBidDTO.historyCustomerLots
+            );
+          }
+        } else {
+          showErrorMessage(
+            invoiceResponse?.message || "Failed to load invoice details."
+          );
+        }
+      }
     } catch (error) {
       showErrorMessage("Unable to retrieve bid details.");
     } finally {
@@ -134,7 +179,7 @@ const DetailMyBid: React.FC = () => {
     useCallback(() => {
       setLoading(true); // Show loading spinner
       fetchBidDetails();
-    }, [itemBid.id, userId])
+    }, [itemBid.id, userId, invoiceId, isWin])
   );
 
   // Function to open the EditAddress modal
@@ -156,7 +201,17 @@ const DetailMyBid: React.FC = () => {
     );
   }
   const handleViewInvoice = () => {
-    navigation.navigate("InvoiceDetail");
+    if (defaultAddress && itemDetailBid && invoiceId) {
+      navigation.navigate("InvoiceDetail", {
+        addressData: defaultAddress,
+        itemDetailBid: itemDetailBid,
+        invoiceId: invoiceId,
+        yourMaxBid: yourMaxBid ?? 0,
+        imagePayment:
+          invoiceDetails?.linkBillTransaction ||
+          "https://thongkehaiphong.gov.vn/uploads/no-image.jpg",
+      });
+    }
   };
 
   const handleConfirmInvoice = () => {
@@ -192,42 +247,78 @@ const DetailMyBid: React.FC = () => {
         yourMaxBid={yourMaxBid || 0}
         itemDetailBid={itemDetailBid || ({} as MyBidData)}
       />
-      {user && isWin && userId && (
+      {invoiceDetails && invoiceDetails.linkBillTransaction && (
+        <View className="my-2 bg-green-600 p-2 ">
+          <Text className="text-lg font-semibold text-white  text-center">
+            You have successfully paid for this invoice.
+          </Text>
+        </View>
+      )}
+      {invoiceDetails && (
+        <View className="mx-4 mt-4">
+          <Text className="font-semibold text-lg text-gray-600 mb-2">
+            Delivered Image:{" "}
+            <Text className="font-bold text-gray-800">
+              (Shipper ID: {invoiceDetails.shipperId})
+            </Text>
+          </Text>
+          {getDeliveredStatus(invoiceDetails.statusInvoiceDTOs) ? (
+            <ImageGallery
+              images={invoiceDetails.statusInvoiceDTOs.map(
+                (status) => status.imageLink
+              )}
+            />
+          ) : (
+            <Text className="text-gray-500">No delivered image available.</Text>
+          )}
+        </View>
+      )}
+
+      {user &&
+      isWin &&
+      invoiceId &&
+      itemDetailBid &&
+      itemDetailBid.status === "CreateInvoice" ? (
         <AddressInfo
           user={{
             ...user,
-            phoneNumber: user.phoneNumber || "",
-            firstName: user.customerDTO.firstName || "",
-            lastName: user.customerDTO.lastName || "",
+            phoneNumber: user?.phoneNumber || "",
+            firstName: user?.customerDTO.firstName || "",
+            lastName: user?.customerDTO.lastName || "",
             address:
-              defaultAddress?.addressLine ??
+              defaultAddress?.addressLine ||
               "Don't have default address to ship",
           }}
           onChooseAddress={handleChooseAddress} // Pass the function to trigger the modal
         />
+      ) : null}
+
+      {/* New Section for Delivered Image and Shipper Info */}
+      {historyCustomerLots?.length > 0 && (
+        <TimeLineBid historyCustomerLots={historyCustomerLots} />
       )}
-      <TimeLineBid />
+
       {invoiceId ? (
         <View>
-          {/* {status === "pending" ? ( */}
-          <TouchableOpacity
-            className="bg-blue-500 p-3 mx-4 rounded mt-4"
-            onPress={handleConfirmInvoice}
-          >
-            <Text className="text-white text-center font-semibold uppercase text-base">
-              Confirm Invoice
-            </Text>
-          </TouchableOpacity>
-          {/* ) : ( */}
-          <TouchableOpacity
-            className="bg-blue-500 p-3  mx-4 rounded my-4"
-            onPress={handleViewInvoice}
-          >
-            <Text className="text-white text-center font-semibold uppercase text-base">
-              View Invoice
-            </Text>
-          </TouchableOpacity>
-          {/* )} */}
+          {itemDetailBid?.status === "CreateInvoice" ? (
+            <TouchableOpacity
+              className="bg-blue-500 p-3 mx-4 rounded mt-4"
+              onPress={handleConfirmInvoice}
+            >
+              <Text className="text-white text-center font-semibold uppercase text-base">
+                Confirm Invoice
+              </Text>
+            </TouchableOpacity>
+          ) : (
+            <TouchableOpacity
+              className="bg-blue-500 p-3  mx-4 rounded my-4"
+              onPress={handleViewInvoice}
+            >
+              <Text className="text-white text-center font-semibold uppercase text-base">
+                View Invoice
+              </Text>
+            </TouchableOpacity>
+          )}
         </View>
       ) : !invoiceId && isWin ? (
         <View className=" flex-row mb-6 mx-auto">
@@ -244,7 +335,6 @@ const DetailMyBid: React.FC = () => {
         </View>
       ) : null}
 
-      {/* Render EditAddress as a modal */}
       <Modal
         animationType="slide"
         transparent={true}

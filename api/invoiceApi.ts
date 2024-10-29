@@ -11,36 +11,54 @@ import {
 
 const API_URL = process.env.EXPO_PUBLIC_API_URL || "http://localhost:7251";
 
-// Function to get invoices by status for a customer
-// export const getInvoicesByStatusForCustomer = async (
-//   customerId: number,
-//   status: number
-// ): Promise<InvoiceResponse<InvoicesByStatusResponse> | null> => {
-//   console.log("customerId", customerId, "status", status);
+// Function to upload a bill for an invoice
+export const uploadBillForInvoice = async (
+  invoiceId: number,
+  fileBill: { uri: string; name: string; type: string }
+): Promise<InvoiceResponse<null> | null> => {
+  try {
+    const formData = new FormData();
+    const fileBlob = {
+      uri: fileBill.uri,
+      type: fileBill.type || "image/jpeg",
+      name: fileBill.name || "payment_bill.jpg",
+    };
 
-//   try {
-//     const response = await axios.get<InvoiceResponse<InvoicesByStatusResponse>>(
-//       `${API_URL}/api/Invoices/getInvoicesByStatusForCustomer`,
-//       {
-//         params: {
-//           customerId,
-//           status,
-//         },
-//       }
-//     );
+    formData.append("FileBill", fileBlob as any);
 
-//     if (response.data.isSuccess) {
-//       //   console.log("Received invoices by status:", response.data);
-//       return response.data;
-//     } else {
-//       // Trả về response khi isSuccess là false để xử lý sau này
-//       return response.data;
-//     }
-//   } catch (error) {
-//     console.error("Error retrieving invoices:", error);
-//     throw error; // Chỉ throw lỗi khi có ngoại lệ khác
-//   }
-// };
+    console.log("dataUpload", {
+      invoiceId: invoiceId,
+      FileBill: fileBill.uri,
+    });
+
+    const response = await fetch(
+      `${API_URL}/api/Invoices/UploadBillForInvoice?InvoiceId=${invoiceId}`,
+      {
+        method: "PATCH", // Change to "POST" if the backend expects it
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+        body: formData,
+      }
+    );
+
+    const responseData = await response.json();
+
+    if (response.ok && responseData.isSuccess) {
+      console.log("Upload file bill transaction successfully:", responseData);
+      showSuccessMessage("File bill uploaded successfully.");
+      return responseData;
+    } else {
+      throw new Error(
+        responseData.message || "Failed to upload the file bill."
+      );
+    }
+  } catch (error) {
+    console.error("Error uploading file bill:", error);
+    showErrorMessage("Unable to upload file bill.");
+    throw error;
+  }
+};
 
 // Function to get invoices by status for a customer
 export const getInvoicesByStatusForCustomer = async (

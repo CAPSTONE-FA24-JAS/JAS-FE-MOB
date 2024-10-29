@@ -110,7 +110,7 @@ export const getHistoryConsign = async (
         return null; // Return null or handle it appropriately
       }
 
-      console.log("Lịch sử ký gửi:", response.data);
+      // console.log("Lịch sử ký gửi:", response.data);
       showSuccessMessage(response.data.message || "Đã lấy lịch sử");
       return response.data.data;
     } else {

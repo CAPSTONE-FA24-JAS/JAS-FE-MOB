@@ -31,7 +31,12 @@ type RootStackParamList = {
     yourMaxBid: number;
   };
   EditAddress: undefined;
-  Payment: { totalPrice: number; invoiceId: number };
+  Payment: {
+    totalPrice: number;
+    invoiceId: number;
+    itemDetailBid: MyBidData;
+    yourMaxBid: number;
+  };
 };
 
 const InvoiceDetailConfirm: React.FC = () => {
@@ -59,6 +64,8 @@ const InvoiceDetailConfirm: React.FC = () => {
     navigation.navigate("Payment", {
       totalPrice,
       invoiceId,
+      itemDetailBid,
+      yourMaxBid,
     });
   };
 

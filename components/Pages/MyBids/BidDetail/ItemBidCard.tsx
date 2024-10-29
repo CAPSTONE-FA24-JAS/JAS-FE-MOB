@@ -172,7 +172,7 @@ const ItemBidCard: React.FC<ItemBidCardProps> = ({
     }
   };
   return (
-    <View className="p-4  bg-white my-2 mx-4 rounded-lg shadow">
+    <View className="p-4  bg-white border-2 border-gray-200 my-2 mx-4 rounded-lg shadow">
       <View className="flex-row mb-2 justify-between">
         <Text
           className="text-base text-center text-white px-2 rounded-md font-semibold  uppercase"
@@ -201,9 +201,9 @@ const ItemBidCard: React.FC<ItemBidCardProps> = ({
               {moment(endTime).format(" DD/MM/YYYY")}
             </Text>
             {/* <Text className="text-xs text-gray-600 ">12:00, 20/12/2024</Text> */}
-            <Text className="text-gray-600">{lotNumber}</Text>
+            <Text className="text-gray-600">{lotNumber ?? "0"}</Text>
           </View>
-          <Text className="text-lg font-semibold ">{title}</Text>
+          <Text className="text-lg font-semibold ">{title ?? "N/A"}</Text>
           <View>
             <View className="flex flex-row items-center gap-2 ">
               <Text
@@ -273,7 +273,7 @@ const ItemBidCard: React.FC<ItemBidCardProps> = ({
                 color: getStatusLotColor(itemDetailBid.lotDTO.status),
               }}
             >
-              {formatStatusLot(itemDetailBid.lotDTO.status)}
+              {formatStatusLot(itemDetailBid.lotDTO.status ?? "N/A")}
             </Text>
             <TouchableOpacity
               onPress={goToAuctionDetail}

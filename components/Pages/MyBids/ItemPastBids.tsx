@@ -28,6 +28,7 @@ interface ItemPastBidsProps {
   statusInvoice?: string;
   itemBid: DataCurentBidResponse;
   itemInvoice?: InvoiceData;
+  statusTabs: number;
 }
 
 type RootStackParamList = {
@@ -69,6 +70,7 @@ const ItemPastBids: React.FC<ItemPastBidsProps> = ({
   invoiceId,
   statusInvoice,
   itemInvoice,
+  statusTabs,
 }) => {
   const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
 
@@ -100,6 +102,53 @@ const ItemPastBids: React.FC<ItemPastBidsProps> = ({
         return "Canceled";
       case "Pausing":
         return "Paused";
+      default:
+        return status;
+    }
+  };
+
+  const getStatusColorInvoice = (status: string) => {
+    switch (status) {
+      case "Paid":
+        return "#FFA500";
+      case "PendingPayment":
+        return "#7EBF9C";
+      case "Delivering":
+        return "#4CAF50";
+      case "Delivered":
+        return "#FF0000";
+      case "Rejected":
+        return "#FFD700";
+      case "Finished":
+        return "#FFD700";
+      case "Refunded":
+        return "#FFD700";
+      case "Cancelled":
+        return "#FFD700";
+      default:
+        return "#666666";
+    }
+  };
+  const formatStatusInvoice = (status: string) => {
+    switch (status) {
+      case "Paid": // sai chính tả
+        return "Paid";
+      case "PendingPayment":
+        return "Pending Payment";
+      case "Delivering":
+        return "Delivering";
+      case "Delivered":
+        return "Delivered";
+      case "Rejected":
+        return "Rejected";
+      case "Finished":
+        return "Finished";
+      case "Rejected":
+        return "Rejected";
+      case "Refunded":
+        return "Refunded";
+      case "Cancelled":
+        return "Cancelled";
       default:
         return status;
     }
@@ -145,7 +194,7 @@ const ItemPastBids: React.FC<ItemPastBidsProps> = ({
           invoiceId: invoiceId ?? 0,
         });
       }}
-      className="flex-row flex-1 gap-2 p-4 my-1 bg-white rounded-lg shadow-lg"
+      className="flex-row flex-1 gap-2 border-2 border-gray-200 p-4 my-1 bg-white rounded-lg shadow-lg"
     >
       <View className="flex items-center w-[40%]">
         <Image
@@ -168,21 +217,42 @@ const ItemPastBids: React.FC<ItemPastBidsProps> = ({
       </View>
 
       <View className="w-[60%]">
-        <TouchableOpacity
-          className={` rounded px-4 py-1 justify-center mr-4 flex-row items-center`}
-          style={{ backgroundColor: getStatusColor(statusLot) }}
-        >
-          <Text className="text-base text-center font-semibold text-white uppercase">
-            {formatStatus(statusLot)}
-          </Text>
-        </TouchableOpacity>
+        {invoiceId ? (
+          <TouchableOpacity
+            className={` rounded px-4 py-1 justify-center mr-4 flex-row items-center`}
+            style={{
+              backgroundColor: getStatusColorInvoice(
+                itemInvoice?.status ?? "N/A"
+              ),
+            }}
+          >
+            <Text className="text-base text-center font-semibold text-white uppercase">
+              {formatStatusInvoice(itemInvoice?.status ?? "N/A")}
+            </Text>
+          </TouchableOpacity>
+        ) : (
+          <TouchableOpacity
+            className={` rounded px-4 py-1 justify-center mr-4 flex-row items-center`}
+            style={{ backgroundColor: getStatusColor(statusLot) }}
+          >
+            <Text className="text-base text-center font-semibold text-white uppercase">
+              {formatStatus(statusLot)}
+            </Text>
+          </TouchableOpacity>
+        )}
         <Text className=" text-sm  text-[#8f8f8f] ">
           {moment(startTime).format(" DD/MM/YYYY")} -
           {moment(endTime).format(" DD/MM/YYYY")}
         </Text>
-        <Text className="text-base font-semibold text-gray-600">
-          {lotNumber}
-        </Text>
+        {invoiceId ? (
+          <Text className="text-base font-semibold text-gray-600">
+            Invoice #{invoiceId} - {lotNumber}
+          </Text>
+        ) : (
+          <Text className="text-base font-semibold text-gray-600">
+            {lotNumber}
+          </Text>
+        )}
         <Text className="text-xl font-bold">{title}</Text>
         <View className="flex-row  w-[60%]">
           <Text className="text-base font-bold text-[#6c6c6c] ">Type: </Text>
@@ -235,12 +305,10 @@ const ItemPastBids: React.FC<ItemPastBidsProps> = ({
             })}
           </Text>
         </Text>
-        {isWin && (
+        {invoiceId && (
           <Text className="text-base text-gray-600">
             Have Invoice:{" "}
-            <Text className="font-semibold">
-              {itemBid?.isInvoiced ? "Yes" : "No"}
-            </Text>
+            <Text className="font-semibold">{invoiceId ? "Yes" : "No"}</Text>
           </Text>
         )}
       </View>

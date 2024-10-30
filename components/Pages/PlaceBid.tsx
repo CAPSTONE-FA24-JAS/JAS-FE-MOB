@@ -36,7 +36,12 @@ const PlaceBid = () => {
   };
 
   const handlePlaceBid = () => {
-    console.log(`Placed bid of $${bidAmount} for Lot #${lotId}`);
+    console.log(
+      `Placed bid of ${bidAmount.toLocaleString("vi-VN", {
+        style: "currency",
+        currency: "VND",
+      })} for Lot #${lotId}`
+    );
     navigation.goBack();
   };
 
@@ -51,7 +56,16 @@ const PlaceBid = () => {
           <Text className="text-lg font-bold text-gray-800">Lot #{lotId}</Text>
           <Text className="text-base text-gray-600">{lotName}</Text>
           <Text className="text-sm text-gray-500">
-            Est: US${estimatedPrice.min} - US${estimatedPrice.max}
+            Est:{" "}
+            {estimatedPrice.min.toLocaleString("vi-VN", {
+              style: "currency",
+              currency: "VND",
+            })}{" "}
+            -{" "}
+            {estimatedPrice.max.toLocaleString("vi-VN", {
+              style: "currency",
+              currency: "VND",
+            })}
           </Text>
         </View>
       </View>
@@ -61,15 +75,22 @@ const PlaceBid = () => {
         <View className="flex-row items-center w-full">
           <TouchableOpacity
             onPress={handleDecrease}
-            className="px-4 py-3 bg-gray-200 rounded-l">
+            className="px-4 py-3 bg-gray-200 rounded-l"
+          >
             <Text className="text-xl font-bold">-</Text>
           </TouchableOpacity>
           <View className="w-4/5 px-4 py-3 bg-gray-100">
-            <Text className="text-lg font-bold">${bidAmount}</Text>
+            <Text className="text-lg font-bold">
+              {bidAmount.toLocaleString("vi-VN", {
+                style: "currency",
+                currency: "VND",
+              })}
+            </Text>
           </View>
           <TouchableOpacity
             onPress={handleIncrease}
-            className="px-4 py-3 bg-gray-200 rounded-r">
+            className="px-4 py-3 bg-gray-200 rounded-r"
+          >
             <Text className="text-xl font-bold">+</Text>
           </TouchableOpacity>
         </View>
@@ -77,7 +98,8 @@ const PlaceBid = () => {
 
       <TouchableOpacity
         onPress={handlePlaceBid}
-        className="absolute bottom-0 left-0 right-0 py-3 bg-blue-500 rounded-sm">
+        className="absolute bottom-0 left-0 right-0 py-3 bg-blue-500 rounded-sm"
+      >
         <Text className="text-lg font-semibold text-center text-white">
           PLACE BID
         </Text>

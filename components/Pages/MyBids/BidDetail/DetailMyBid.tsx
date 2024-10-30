@@ -228,7 +228,7 @@ const DetailMyBid: React.FC = () => {
   };
 
   return (
-    <View className="flex-1 bg-white">
+    <View className="flex-1 pb-4 bg-white">
       <ItemBidCard
         key={id}
         id={id}
@@ -254,7 +254,7 @@ const DetailMyBid: React.FC = () => {
           </Text>
         </View>
       )}
-      {invoiceDetails && (
+      {invoiceDetails && invoiceDetails.statusInvoiceDTOs && (
         <View className="mx-4 mt-4">
           <Text className="font-semibold text-lg text-gray-600 mb-2">
             Delivered Image:{" "}

@@ -147,13 +147,27 @@ const ItemLots: React.FC<ItemLotsProps> = ({
           {minPrice && maxPrice && (
             <View className="ml-4">
               <Text className=" text-base text-[#6c6c6c] ">
-                Est: ${minPrice} - ${maxPrice}
+                Est:{" "}
+                {minPrice.toLocaleString("vi-VN", {
+                  style: "currency",
+                  currency: "VND",
+                })}{" "}
+                - $
+                {maxPrice.toLocaleString("vi-VN", {
+                  style: "currency",
+                  currency: "VND",
+                })}
               </Text>
               <View className="flex-row gap-2 ">
                 <Text className="text-base font-bold text-[#6c6c6c] ">
                   Start Bid:
                 </Text>
-                <Text className="text-[#6c6c6c] text-base ">${minPrice}</Text>
+                <Text className="text-[#6c6c6c] text-base ">
+                  {minPrice.toLocaleString("vi-VN", {
+                    style: "currency",
+                    currency: "VND",
+                  })}
+                </Text>
               </View>
             </View>
           )}
@@ -161,7 +175,10 @@ const ItemLots: React.FC<ItemLotsProps> = ({
           {price && (
             <View className="flex-row ">
               <Text className="text-gray-800 font-semibold text-base ">
-                ${price}
+                {price.toLocaleString("vi-VN", {
+                  style: "currency",
+                  currency: "VND",
+                })}
               </Text>
             </View>
           )}

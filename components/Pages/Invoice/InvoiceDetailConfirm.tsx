@@ -17,6 +17,9 @@ import { MyBidData } from "@/app/types/bid_type";
 import { RouteProp, useRoute } from "@react-navigation/native";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
+import { checkPasswordWallet } from "@/api/walletApi";
+import { showErrorMessage } from "@/components/FlashMessageHelpers";
+import PasswordModal from "../Payment/CheckPasswordModal";
 
 const StyledView = styled(View);
 const StyledText = styled(Text);
@@ -36,6 +39,7 @@ type RootStackParamList = {
     invoiceId: number;
     itemDetailBid: MyBidData;
     yourMaxBid: number;
+    typePage: string;
   };
 };
 
@@ -44,13 +48,22 @@ const InvoiceDetailConfirm: React.FC = () => {
   const route =
     useRoute<RouteProp<RootStackParamList, "InvoiceDetailConfirm">>();
   const user = useSelector((state: RootState) => state.auth.userResponse);
-
+  const haveWallet = useSelector(
+    (state: RootState) => state?.profile?.profile?.customerDTO?.walletId
+  );
+  console.log("====================================");
+  console.log("haveWallet IN InvoiceDetailConfirm:", haveWallet);
+  console.log("====================================");
   // Get the passed parameters from the route
   const { addressData, itemDetailBid, invoiceId, yourMaxBid } = route.params;
 
   console.log("itemDetailBid IN InvoiceDetailConfirm:", itemDetailBid);
 
   const [isChecked, setIsChecked] = useState<boolean>(false);
+  const [passwordModalVisible, setPasswordModalVisible] =
+    useState<boolean>(false);
+  const [password, setPassword] = useState<string>("");
+
   // Calculate the base price
   const basePrice =
     itemDetailBid?.yourMaxBidPrice ||
@@ -60,12 +73,44 @@ const InvoiceDetailConfirm: React.FC = () => {
 
   // Calculate the total price
   const totalPrice = basePrice + basePrice * 0.08;
+  // Handle password confirmation
+  const handlePasswordConfirm = async (enteredPassword: string) => {
+    setPassword(enteredPassword);
+    try {
+      if (typeof haveWallet === "number" && haveWallet) {
+        const isPasswordCorrect = await checkPasswordWallet(
+          haveWallet,
+          password
+        );
+
+        if (isPasswordCorrect) {
+          setPasswordModalVisible(false); // Close password modal
+          // Navigate to Payment screen
+          navigation.navigate("Payment", {
+            totalPrice,
+            invoiceId,
+            itemDetailBid,
+            yourMaxBid,
+            typePage: "InvoiceDetailConfirm",
+          });
+        } else {
+          showErrorMessage("Incorrect wallet password, please try again.");
+        }
+      } else {
+        showErrorMessage("Wallet ID or password is not available.");
+      }
+    } catch (error) {
+      showErrorMessage("Failed to verify password.");
+    }
+  };
+
   const handleConfirm = () => {
     navigation.navigate("Payment", {
       totalPrice,
       invoiceId,
       itemDetailBid,
       yourMaxBid,
+      typePage: "InvoiceDetailConfirm",
     });
   };
 
@@ -225,7 +270,7 @@ const InvoiceDetailConfirm: React.FC = () => {
         {/* Confirm Button */}
         <StyledTouchableOpacity
           disabled={!isChecked}
-          onPress={handleConfirm}
+          onPress={() => setPasswordModalVisible(true)} // Show password modal
           className={`p-3 rounded ${isChecked ? "bg-blue-500" : "bg-gray-300"}`}
         >
           <StyledText className="text-white text-center font-bold">
@@ -233,6 +278,13 @@ const InvoiceDetailConfirm: React.FC = () => {
           </StyledText>
         </StyledTouchableOpacity>
       </ScrollView>
+      {/* Password Confirmation Modal */}
+      <PasswordModal
+        isVisible={passwordModalVisible}
+        onClose={() => setPasswordModalVisible(false)}
+        onConfirm={handlePasswordConfirm}
+        amount={totalPrice}
+      />
     </StyledView>
   );
 };

@@ -8,12 +8,73 @@ import {
   CurentBidResponse,
   DataCurentBid,
   GetMyBidResponse,
+  PlaceBidResponse,
 } from "@/app/types/bid_type";
 
 const API_URL = process.env.EXPO_PUBLIC_API_URL || "http://localhost:7251";
 
 export type GetBidsOfCustomerResponse = CurentBidResponse<DataCurentBid>;
 export type GetPastBidOfCustomerResponse = CurentBidResponse<DataCurentBid>;
+
+// New function to place a bid
+export const placeBidFixedPriceAndSecret = async (
+  currentPrice: number,
+  customerId: number,
+  lotId: number
+): Promise<PlaceBidResponse | null> => {
+  try {
+    const response = await axios.post<PlaceBidResponse>(
+      `${API_URL}/api/BidPrices/PlaceBidFixedPriceAndSercet`,
+      {
+        currentPrice,
+        customerId,
+        lotId,
+      }
+    );
+
+    if (response.data.isSuccess) {
+      showSuccessMessage(response.data.message || "Bid placed successfully!");
+      return response.data;
+    } else {
+      // Handle specific error message
+      if (
+        response.data.message === "The customer is not register into the lot"
+      ) {
+        showErrorMessage(
+          "You are not registered for this lot. Please register first."
+        );
+      } else {
+        showErrorMessage(response.data.message || "Failed to place bid.");
+      }
+      return null;
+    }
+  } catch (error) {
+    // Check if the error is an AxiosError
+    if (axios.isAxiosError(error)) {
+      // Extract error response data if available
+      const errorResponse = error.response?.data;
+
+      // Handle specific error message
+      if (
+        errorResponse?.message === "The customer is not register into the lot"
+      ) {
+        showErrorMessage(
+          "You are not registered for this lot. Please register first."
+        );
+      } else {
+        // Handle other errors from Axios response
+        showErrorMessage(
+          errorResponse?.message || "Request failed with status code 400."
+        );
+      }
+    } else {
+      // Handle general errors
+      console.error("Error placing bid:", error);
+      showErrorMessage("Unable to place bid. Please try again.");
+    }
+    return null;
+  }
+};
 
 // Function to get bids of a customer
 export const getBidsOfCustomer = async (

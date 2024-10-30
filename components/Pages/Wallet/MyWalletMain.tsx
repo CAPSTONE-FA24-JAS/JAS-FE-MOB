@@ -52,30 +52,6 @@ const MyWalletMain: React.FC = () => {
   console.log("Account ID:", accountId);
   console.log("User ID:", userId);
 
-  //  useEffect(() => {
-  //   const fetchData = async () => {
-  //     if (haveWallet) {
-  //       await getWalletBalance(haveWallet);
-  //     }
-  //   };
-
-  //   fetchData();
-  // }, [haveWallet]);
-
-  // const getWalletBalance = async (walletId: number) => {
-  //   try {
-  //     const response = await checkWalletBalance(walletId);
-  //     if (response && response.isSuccess) {
-  //       setBalance(response.data.balance);
-  //       showSuccessMessage("Wallet balance retrieved successfully.");
-  //     } else {
-  //       setBalance(null); // Set null if response fails
-  //     }
-  //   } catch (error) {
-  //     showErrorMessage("Failed to retrieve wallet balance.");
-  //   }
-  // };
-
   const handlePasswordVisibility = () => {
     setRightIcon(rightIcon === "eye" ? "eye-off" : "eye");
     setPasswordVisibility(!passwordVisibility);

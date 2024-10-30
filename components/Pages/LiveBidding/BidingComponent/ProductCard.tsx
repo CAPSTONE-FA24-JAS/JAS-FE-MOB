@@ -32,11 +32,19 @@ const ProductCard: React.FC<ProductCardProps> = ({
         <Text className="mt-2 text-lg font-bold">Lot {id}</Text>
         {typeBid === "Public_Auction" ? (
           <Text className="mr-2 text-sm font-medium text-gray-400 mt-">
-            Start Price: ${minPrice}
+            Start Price:{" "}
+            {(minPrice ?? 0).toLocaleString("vi-VN", {
+              style: "currency",
+              currency: "VND",
+            })}
           </Text>
         ) : (
           <Text className="mr-2 text-lg font-medium text-gray-700 mt-">
-            Original Price: ${maxPrice}
+            Original Price: $
+            {(maxPrice ?? 0).toLocaleString("vi-VN", {
+              style: "currency",
+              currency: "VND",
+            })}
           </Text>
         )}
       </View>
@@ -54,7 +62,10 @@ const ProductCard: React.FC<ProductCardProps> = ({
               color="#EF0E25"
             />
             <Text className="font-bold text-3xl text-[#EF0E25]">
-              ${minPrice}
+              {(minPrice ?? 0).toLocaleString("vi-VN", {
+                style: "currency",
+                currency: "VND",
+              })}
             </Text>
             <Text className="font-medium text-lg text-[#EF0E25]">(-20%)</Text>
           </View>

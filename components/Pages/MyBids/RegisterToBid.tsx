@@ -21,6 +21,7 @@ import { LotDetail } from "@/app/types/lot_type";
 import { registerToBid } from "@/api/lotAPI";
 import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 import { useNavigation } from "expo-router";
+import PasswordModal from "../Payment/CheckPasswordModal";
 
 type RootStackParamList = {
   [x: string]: any;
@@ -37,8 +38,6 @@ const RegisterToBid = () => {
   const [balance, setBalance] = useState<number | null>(null); // Store balance here
 
   const [password, setPassword] = useState<string>("");
-  const [passwordVisibility, setPasswordVisibility] = useState(true);
-  const [rightIcon, setRightIcon] = useState<"eye" | "eye-off">("eye");
   const [isPasswordModalVisible, setIsPasswordModalVisible] = useState(false);
   const [isDepositModalVisible, setIsDepositModalVisible] = useState(false);
 
@@ -77,11 +76,6 @@ const RegisterToBid = () => {
     }
   };
 
-  const handlePasswordVisibility = () => {
-    setRightIcon(rightIcon === "eye" ? "eye-off" : "eye");
-    setPasswordVisibility(!passwordVisibility);
-  };
-
   const handleRegisterToBid = async () => {
     if (!userId) {
       showErrorMessage("User ID is not available.");
@@ -96,9 +90,10 @@ const RegisterToBid = () => {
     setIsPasswordModalVisible(true); // Show the modal for password input
   };
 
-  const handleConfirmPassword = async () => {
+  const handleConfirmPassword = async (enteredPassword: string) => {
+    setPassword(enteredPassword);
     try {
-      if (typeof haveWallet === "number" && userId) {
+      if (typeof haveWallet === "number" && userId && password) {
         const isPasswordCorrect = await checkPasswordWallet(
           haveWallet,
           password
@@ -235,69 +230,34 @@ const RegisterToBid = () => {
       <TouchableOpacity
         className="py-3 bg-blue-500 rounded-sm"
         onPress={handleRegisterToBid}
-        disabled={!checkedTerms || !checkedAge}>
+        disabled={!checkedTerms || !checkedAge}
+      >
         <Text className="font-semibold text-center text-white">
           REGISTER TO BID
         </Text>
       </TouchableOpacity>
 
-      {/* Modal for password input */}
-      <Modal
-        animationType="fade"
-        transparent={true}
-        visible={isPasswordModalVisible}
-        onRequestClose={() => setIsPasswordModalVisible(false)}>
-        <View className="items-center justify-center flex-1 bg-black/50">
-          <View className="items-center w-10/12 p-6 bg-white rounded-lg">
-            {/* Close icon at the top-right corner */}
-            <TouchableOpacity
-              className="absolute top-2 right-2"
-              onPress={() => setIsPasswordModalVisible(false)}>
-              <MaterialCommunityIcons name="close" size={24} color="black" />
-            </TouchableOpacity>
-
-            <Text className="mb-4 text-lg font-semibold text-center uppercase">
-              Enter Wallet Password
-            </Text>
-
-            <View className="relative mx-4 mb-6 mt-4 border-[1px] w-full border-slate-300 p-2 rounded-lg">
-              <TextInput
-                placeholder="Password"
-                secureTextEntry={passwordVisibility}
-                value={password}
-                onChangeText={setPassword}
-                className="py-2 ml-2 text-lg text-slate-400"
-                style={{ paddingRight: 40 }}
-              />
-              <TouchableOpacity
-                onPress={handlePasswordVisibility}
-                className="absolute right-4 top-[40%] transform -translate-y-1/2">
-                <Feather name={rightIcon} size={24} color="black" />
-              </TouchableOpacity>
-            </View>
-
-            <TouchableOpacity
-              className="w-full bg-[#4765F9] rounded-md"
-              onPress={handleConfirmPassword}>
-              <Text className="py-3 text-xl font-semibold text-center text-white uppercase">
-                Confirm
-              </Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-      </Modal>
+      {/* Use the PasswordModal here */}
+      <PasswordModal
+        isVisible={isPasswordModalVisible}
+        onClose={() => setIsPasswordModalVisible(false)}
+        onConfirm={handleConfirmPassword}
+        amount={lotDetail.deposit}
+      />
       {/* Modal for Deposit Prompt */}
       <Modal
         animationType="slide"
         transparent={true}
         visible={isDepositModalVisible}
-        onRequestClose={() => setIsDepositModalVisible(false)}>
+        onRequestClose={() => setIsDepositModalVisible(false)}
+      >
         <View className="items-center justify-center flex-1 bg-black/50">
           <View className="relative w-10/12 p-6 bg-white rounded-lg">
             {/* Close icon at the top-right corner */}
             <TouchableOpacity
               className="absolute top-2 right-2"
-              onPress={() => setIsDepositModalVisible(false)}>
+              onPress={() => setIsDepositModalVisible(false)}
+            >
               <MaterialCommunityIcons name="close" size={24} color="black" />
             </TouchableOpacity>
 
@@ -308,7 +268,8 @@ const RegisterToBid = () => {
             {/* Deposit Button */}
             <TouchableOpacity
               className="w-full px-4 py-2 bg-blue-500 rounded-lg"
-              onPress={navigateToDeposit}>
+              onPress={navigateToDeposit}
+            >
               <Text className="text-xl font-bold text-center text-white uppercase">
                 Deposit
               </Text>

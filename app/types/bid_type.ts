@@ -75,3 +75,13 @@ export interface MyBidData {
   yourMaxBidPrice: any;
   lotDTO: LotDto;
 }
+
+// ================== BUY BID TYPE 1,2 ===================
+// Type for Place Bid Response
+export type PlaceBidResponse = {
+  code: number;
+  message: string;
+  isSuccess: boolean;
+  data: null;
+  errorMessages: string[] | null;
+};

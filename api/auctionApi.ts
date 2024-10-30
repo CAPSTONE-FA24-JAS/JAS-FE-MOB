@@ -46,7 +46,7 @@ export const getAuctionsByStatus = async (
     );
 
     if (response.data.isSuccess) {
-      console.log("Received auctions by status:", response.data);
+      // console.log("Received auctions by status:", response.data);
 
       // Optionally, you can display a success message
       // showSuccessMessage(response.data.message);

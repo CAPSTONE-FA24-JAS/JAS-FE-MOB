@@ -19,18 +19,22 @@ const HomeScreen = () => {
   useEffect(() => {
     const fetchAuctions = async () => {
       try {
-        const response = await getAuctionsByStatus(2);
-        if (response.isSuccess) {
+        const [status1Response, status2Response] = await Promise.all([
+          getAuctionsByStatus(3),
+          getAuctionsByStatus(2),
+        ]);
+        if (status1Response.isSuccess && status2Response.isSuccess) {
           const now = new Date();
-          const filteredAuctions = response.data
-            // .filter(
-            //   (auction) => new Date(auction.endTime) > now // Ensure endTime is in the future
-            // )
+          const combinedAuctions = [
+            ...status1Response.data,
+            ...status2Response.data,
+          ]
+            // .filter((auction) => new Date(auction.endTime) > now) // Ensure endTime is in the future
             .sort((a, b) => b.id - a.id); // Sort by id in descending order
 
-          setAuctions(filteredAuctions);
+          setAuctions(combinedAuctions);
         } else {
-          setError(response.message || "Failed to load auctions.");
+          setError("Failed to load auctions.");
         }
       } catch (err) {
         setError("Failed to load auctions.");
@@ -60,16 +64,20 @@ const HomeScreen = () => {
           onPress={() => {
             setLoading(true);
             setError(null);
-            // Retry fetching auctions
-            getAuctionsByStatus(2)
-              .then((response) => {
-                if (response.isSuccess) {
-                  const filteredAuctions = response.data.filter(
-                    (auction) => new Date(auction.endTime) > new Date()
-                  );
-                  setAuctions(filteredAuctions);
+            // Retry fetching auctions with statuses '1' and '2'
+            Promise.all([getAuctionsByStatus(3), getAuctionsByStatus(2)])
+              .then(([status1Response, status2Response]) => {
+                if (status1Response.isSuccess && status2Response.isSuccess) {
+                  const combinedAuctions = [
+                    ...status1Response.data,
+                    ...status2Response.data,
+                  ]
+                    // .filter((auction) => new Date(auction.endTime) > new Date())
+                    .sort((a, b) => b.id - a.id);
+
+                  setAuctions(combinedAuctions);
                 } else {
-                  setError(response.message || "Failed to load auctions.");
+                  setError("Failed to load auctions.");
                 }
               })
               .catch(() => {

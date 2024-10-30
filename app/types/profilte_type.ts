@@ -39,6 +39,7 @@ export interface CustomerDto {
 export interface WalletDto {
   id: number;
   balance: number;
+  availableBalance: number;
   customerDTO: any;
 }
 

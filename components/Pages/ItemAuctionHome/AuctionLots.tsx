@@ -68,8 +68,8 @@ const AuctionLots: React.FC<AuctionLotsProps> = ({ dataAuction }) => {
       ) : (
         // Render the list of items when loading is complete
         <View className="flex flex-row flex-wrap justify-around listLots">
-          {items.length > 0 ? (
-            items.map((item) => (
+          {items?.length > 0 ? (
+            items?.map((item) => (
               <ItemLots
                 key={item.id}
                 id={item.id}

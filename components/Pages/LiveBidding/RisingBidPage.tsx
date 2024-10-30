@@ -16,8 +16,8 @@ import CountDownTimer from "./BidingComponent/CountDownTimer";
 import ProductCard from "./BidingComponent/ProductCard";
 import BidsList from "./BidingComponent/BidsList";
 import BidInput from "./BidingComponent/BidInput";
-import NavigationButtons from "./BidingComponent/NavigationButtons";
 import { useBidding } from "@/hooks/useBidding";
+import AuctionResultModal from "@/components/Modal/AuctionResultModal";
 
 type RisingBidPageParams = {
   RisingBidPage: {
@@ -31,6 +31,7 @@ const RisingBidPage: React.FC = () => {
   const accountId = useSelector(
     (state: RootState) => state.auth.userResponse?.id
   );
+
   const customerId = useSelector(
     (state: RootState) => state.auth.userResponse?.customerDTO.id
   );
@@ -78,18 +79,12 @@ const RisingBidPage: React.FC = () => {
     joinChatRoom,
     sendBid,
     disconnect,
+    isEndAuction,
+    winnerCustomer,
+    winnerPrice,
+    sendBidMethod4,
+    reducePrice,
   } = useBidding();
-
-  useEffect(() => {
-    if (accountId && itemId) {
-      console.log("Joining chat room...", accountId, itemId);
-
-      joinChatRoom(accountId, itemId);
-    }
-    return () => {
-      disconnect();
-    };
-  }, [accountId, itemId, joinChatRoom]);
 
   useEffect(() => {
     const fetchLotDetail = async () => {
@@ -107,6 +102,36 @@ const RisingBidPage: React.FC = () => {
 
     fetchLotDetail();
   }, [itemId]);
+
+  useEffect(() => {
+    if (accountId && itemId && item.lotType) {
+      console.log("Joining chat room...", accountId, itemId);
+
+      joinChatRoom(accountId, itemId, item.lotType);
+    }
+    return () => {
+      disconnect();
+    };
+  }, [accountId, itemId, joinChatRoom, item.lotType, disconnect]);
+
+  const onClose = () => {
+    console.log("Close modal");
+  };
+
+  // useEffect(() => {
+  //   if (!isConnected) {
+  //     const interval = setInterval(() => {
+  //       if (!isConnected) {
+  //         console.log("Attempting to reconnect...");
+  //         if (accountId && itemId) {
+  //           joinChatRoom(accountId, itemId);
+  //         }
+  //       }
+  //     }, 5000);
+
+  //     return () => clearInterval(interval);
+  //   }
+  // }, [isConnected, accountId, itemId, joinChatRoom]);
 
   // Convert messages to bid format
   const bids = messages
@@ -154,7 +179,14 @@ const RisingBidPage: React.FC = () => {
     },
     {
       key: "bids",
-      component: <BidsList bids={bids} item={item} currentCusId={customerId} />,
+      component: (
+        <BidsList
+          bids={bids}
+          item={item}
+          currentCusId={customerId}
+          reducePrice={reducePrice}
+        />
+      ),
     },
   ];
 
@@ -172,22 +204,26 @@ const RisingBidPage: React.FC = () => {
 
   return (
     <View className="flex-1 bg-white">
-      <FlatList
-        data={mainContent}
-        renderItem={({ item }) => (
-          <View className="mb-2">{item.component}</View>
-        )}
-        keyExtractor={(item) => item.key}
-        ListFooterComponent={() => <View style={{ height: 100 }} />}
-      />
+      {isConnected && (
+        <FlatList
+          data={mainContent}
+          renderItem={({ item }) => (
+            <View className="mb-2">{item.component}</View>
+          )}
+          keyExtractor={(item) => item.key}
+          ListFooterComponent={() => <View style={{ height: 100 }} />}
+        />
+      )}
+
       {isConnected && (
         <View className="absolute bottom-0 left-0 right-0 bg-white shadow-lg">
           <BidInput
+            isEndAuction={isEndAuction}
             highestBid={highestPrice}
             item={item}
             onPlaceBid={sendBid}
+            onPlaceBidMethod4={sendBidMethod4}
           />
-          <NavigationButtons />
         </View>
       )}
 
@@ -196,6 +232,14 @@ const RisingBidPage: React.FC = () => {
           <Text className="text-center text-white">Reconnecting...</Text>
         </View>
       )}
+
+      <AuctionResultModal
+        visible={isEndAuction}
+        currentUser={customerId?.toString() || ""}
+        userWinner={winnerCustomer}
+        winningPrice={winnerPrice}
+        onClose={onClose}
+      />
     </View>
   );
 };

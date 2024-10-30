@@ -13,9 +13,15 @@ interface BidsListProps {
   item: LotDetail;
   bids: Bid[];
   currentCusId?: number; // Add this prop to identify current user's bids
+  reducePrice?: number;
 }
 
-const BidsList: React.FC<BidsListProps> = ({ item, bids, currentCusId }) => {
+const BidsList: React.FC<BidsListProps> = ({
+  item,
+  bids,
+  currentCusId,
+  reducePrice,
+}) => {
   // Sort bids by time, newest first
   const sortedBids = useMemo(() => {
     return [...bids].sort((a, b) => {
@@ -37,6 +43,9 @@ const BidsList: React.FC<BidsListProps> = ({ item, bids, currentCusId }) => {
       hour12: false,
     });
   };
+
+  console.log("lottypesss", item.lotType);
+  console.log("bids reduce", reducePrice);
 
   if (item.lotType === "Public_Auction") {
     return (
@@ -77,53 +86,27 @@ const BidsList: React.FC<BidsListProps> = ({ item, bids, currentCusId }) => {
     );
   }
 
-  if (item.lotType === "Secret_Auction") {
-    const firstBid = sortedBids[0];
-    const isWinnerCurrentUser = firstBid?.customerId === currentCusId;
-
+  if (item.lotType === "Auction_Price_GraduallyReduced") {
+    const percentReduce =
+      item.startPrice && reducePrice
+        ? (((item.startPrice - reducePrice) / item.startPrice) * 100).toFixed(2)
+        : 0;
     return (
       <View className="p-4">
-        <View
-          className={`flex-row justify-between p-4 rounded-md border ${
-            isWinnerCurrentUser
-              ? "bg-blue-100 border-blue-300"
-              : "bg-red-100 border-gray-300"
-          }`}>
-          <View>
-            <Text className="text-gray-500">{formatTime(firstBid?.time)}</Text>
-            <Text className="text-lg font-bold">{firstBid?.customerId}</Text>
-            {isWinnerCurrentUser && (
-              <Text className="text-xs text-blue-600">Your winning bid</Text>
-            )}
-          </View>
-          <View className="flex-row items-center">
+        <View className="flex-row items-center justify-around p-3 py-6 bg-white border border-gray-300 rounded-md">
+          <Text className="text-lg">Current Price:</Text>
+          <Text className="text-xl text-gray-600">{reducePrice}</Text>
+          <View className="flex items-center">
+            <Text className="text-lg text-center text-red-700 ">
+              {percentReduce}%
+            </Text>
             <MaterialCommunityIcons
-              name="arrow-down-bold-box-outline"
-              size={24}
-              color={isWinnerCurrentUser ? "#3B82F6" : "#EF0E25"}
+              name="arrow-down-bold"
+              size={32}
+              color="#dc2626"
             />
-            <Text
-              className={`mr-2 text-lg font-semibold ${
-                isWinnerCurrentUser ? "text-blue-600" : "text-[#EF0E25]"
-              }`}>
-              ${firstBid?.amount.toLocaleString()}
-            </Text>
-            <Text
-              className={`font-medium text-sm ${
-                isWinnerCurrentUser ? "text-blue-600" : "text-[#EF0E25]"
-              }`}>
-              (-10%)
-            </Text>
           </View>
         </View>
-        <Text
-          className={`mt-2 text-sm text-center ${
-            isWinnerCurrentUser ? "text-blue-500" : "text-green-500"
-          }`}>
-          {isWinnerCurrentUser
-            ? "Congratulations! You won the auction!"
-            : `Congratulations! ${firstBid?.customerId} won the auction!`}
-        </Text>
       </View>
     );
   }

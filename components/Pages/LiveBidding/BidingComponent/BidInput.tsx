@@ -10,17 +10,24 @@ import { Picker } from "@react-native-picker/picker";
 import { LotDetail } from "@/app/types/lot_type";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
+import { red } from "react-native-reanimated/lib/typescript/reanimated2/Colors";
 
 interface BidInputProps {
+  isEndAuction: boolean;
   highestBid: number;
   item: LotDetail;
   onPlaceBid: (price: number) => Promise<void>;
+  onPlaceBidMethod4: (price: number) => Promise<void>;
+  reducePrice?: number;
 }
 
 const BidInput: React.FC<BidInputProps> = ({
+  isEndAuction,
   highestBid,
   item,
   onPlaceBid,
+  onPlaceBidMethod4,
+  reducePrice,
 }) => {
   const [bidValue, setBidValue] = useState<number>(
     () => highestBid + (item.bidIncrement ?? 100)
@@ -59,6 +66,13 @@ const BidInput: React.FC<BidInputProps> = ({
     }
     setError(null);
     onPlaceBid(bidValue);
+  };
+
+  const handleSubmitBidMethod4 = (price: number) => {
+    console.log("Method 4");
+
+    setError(null);
+    onPlaceBidMethod4(price);
   };
 
   const handleBidChange = (newValue: string) => {
@@ -140,6 +154,7 @@ const BidInput: React.FC<BidInputProps> = ({
           </View>
 
           <TouchableOpacity
+            disabled={isEndAuction}
             onPress={handleSubmitBid}
             className="w-[20%] flex items-center justify-center h-12 bg-blue-500 rounded-md">
             <Text className="text-sm font-semibold text-white">BIDDING</Text>
@@ -153,19 +168,27 @@ const BidInput: React.FC<BidInputProps> = ({
     );
   }
 
-  if (item.lotType === "Secret_Auction") {
+  if (item.lotType === "Auction_Price_GraduallyReduced") {
     return (
-      <View className="w-full p-2">
-        <View className="flex-row items-center justify-between">
-          <TextInput
-            value={bidValue.toLocaleString()}
-            editable={false}
-            className="w-[65%] h-12 px-4 text-xl font-semibold text-center border border-gray-300 rounded-md bg-gray-50"
-          />
+      <View className="w-full p-3">
+        <View className="flex items-center justify-between">
           <TouchableOpacity
-            onPress={handleSubmitBid}
-            className="w-[30%] flex items-center justify-center h-12 bg-blue-500 rounded-md">
-            <Text className="text-xl font-semibold text-white">Place Bid</Text>
+            disabled={isEndAuction || item.status === "Sold"}
+            onPress={
+              reducePrice
+                ? () => handleSubmitBidMethod4(reducePrice)
+                : () => {
+                    console.log("Method 4");
+                  }
+            }
+            className={
+              isEndAuction || item.status === "Sold"
+                ? "w-[50%] flex items-center justify-center h-12 bg-gray-500 rounded-md"
+                : "w-[50%] flex items-center justify-center h-12 bg-blue-500 rounded-md"
+            }>
+            <Text className="text-xl font-semibold text-white">
+              {isEndAuction || item.status === "Sold" ? "SOLD" : "BUY NOW"}
+            </Text>
           </TouchableOpacity>
         </View>
       </View>

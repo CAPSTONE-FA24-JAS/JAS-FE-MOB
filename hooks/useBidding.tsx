@@ -22,11 +22,16 @@ interface UseBiddingResult {
   error: string | null;
   joinChatRoom: (
     accountId: string | number,
-    lotId: string | number
+    lotId: string | number,
+    methodBid: string
   ) => Promise<void>;
   sendBid: (price: number) => Promise<void>;
+  sendBidMethod4: (price: number) => Promise<void>;
   disconnect: () => Promise<void>;
   isEndAuction: boolean;
+  winnerCustomer: string;
+  winnerPrice: string;
+  reducePrice: number;
 }
 
 export function useBidding(): UseBiddingResult {
@@ -36,8 +41,40 @@ export function useBidding(): UseBiddingResult {
   const [endTime, setEndTime] = useState<string>("");
   const [error, setError] = useState<string | null>(null);
   const [isEndAuction, setIsEndAuction] = useState<boolean>(false);
+  const [winnerCustomer, setWinnerCustomer] = useState<string>("");
+  const [winnerPrice, setWinnerPrice] = useState<string>("");
+  const [reducePrice, setReducePrice] = useState<number>(0);
 
   const connectionRef = useRef<HubConnection | null>(null);
+
+  const setupSignalRMethod4 = useCallback((connection: HubConnection) => {
+    connection.on("JoinLot", (user: string, message: string) => {
+      console.log(`${user}: ${message}`);
+    });
+
+    ///ket thuc lot dau gia
+    connection.on("SendBiddingPriceforReducedBidding", (price: number) => {
+      console.log(`Current price updated: ${price}`);
+      setIsEndAuction(true);
+      setReducePrice(parseInt(price.toString()));
+    });
+
+    connection.on(
+      "SendCurrentPriceForReduceBidding",
+      (currentPrice: number, dateNow: string) => {
+        console.log(`currentPrice ${currentPrice} at ${dateNow}`);
+        setReducePrice(() => currentPrice);
+      }
+    );
+
+    connection.on(
+      "ReducePriceBidding",
+      (mess: string, currentPrice: number, time: string) => {
+        console.log(`currentPrice ${currentPrice} at ${time}`);
+        setReducePrice(() => currentPrice);
+      }
+    );
+  }, []);
 
   const setupSignalRHandlers = useCallback((connection: HubConnection) => {
     // Xử lý sự kiện khi có người tham gia phòng đấu giá
@@ -110,7 +147,11 @@ export function useBidding(): UseBiddingResult {
   }, []);
 
   const joinChatRoom = useCallback(
-    async (accountId: string | number, lotId: string | number) => {
+    async (
+      accountId: string | number,
+      lotId: string | number,
+      methodBid: string
+    ) => {
       try {
         if (connectionRef.current) {
           await connectionRef.current.stop();
@@ -122,7 +163,15 @@ export function useBidding(): UseBiddingResult {
           .configureLogging(LogLevel.Information)
           .build();
 
-        setupSignalRHandlers(connection);
+        if (methodBid === "Public_Auction") {
+          console.log("methodBid", methodBid);
+
+          setupSignalRHandlers(connection); //method 3
+        } else {
+          console.log("methodBid", methodBid);
+
+          setupSignalRMethod4(connection);
+        }
 
         // Xử lý các sự kiện kết nối
         connection.onclose(() => {
@@ -204,6 +253,36 @@ export function useBidding(): UseBiddingResult {
     }
   }, []);
 
+  const sendBidMethod4 = useCallback(async (price: number) => {
+    if (!connectionRef.current?.connectionId) {
+      setError("No active connection");
+      return;
+    }
+
+    const body = {
+      currentPrice: price,
+      bidTime: new Date().toISOString(),
+      connectionId: connectionRef.current.connectionId,
+    };
+    console.log("body method 4", body);
+
+    try {
+      const response = await axios.post(
+        `${API_BASE_URL}/api/BidPrices/PlaceBidForReduceBidding/place-bid-reduceBidding`,
+        body
+      );
+
+      if (!response.data.isSuccess) {
+        throw new Error(response.data.message);
+      }
+    } catch (err) {
+      const errorMessage =
+        err instanceof Error ? err.message : "Failed to place bid method4";
+      setError(errorMessage);
+      console.error("Error placing bid:", err);
+    }
+  }, []);
+
   const disconnect = useCallback(async () => {
     if (connectionRef.current) {
       try {
@@ -238,7 +317,11 @@ export function useBidding(): UseBiddingResult {
     error,
     joinChatRoom,
     sendBid,
+    sendBidMethod4,
     disconnect,
     isEndAuction,
+    winnerCustomer,
+    winnerPrice,
+    reducePrice,
   };
 }

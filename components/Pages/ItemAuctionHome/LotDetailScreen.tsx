@@ -480,9 +480,7 @@ const LotDetailScreen = () => {
       <View className="flex-1">
         <ScrollView>
           <View className="py-2 bg-red-600">
-            <Text className="text-center text-white">
-              Bid 13th 2min 56s Left
-            </Text>
+            <Text className="text-center text-white">Bid 13th 2m56s Left</Text>
           </View>
           <View className="h-64">
             <Swiper

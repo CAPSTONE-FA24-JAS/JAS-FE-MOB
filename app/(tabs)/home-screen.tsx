@@ -19,7 +19,7 @@ const HomeScreen = () => {
   useEffect(() => {
     const fetchAuctions = async () => {
       try {
-        const response = await getAuctionsByStatus(2);
+        const response = await getAuctionsByStatus(3);
         if (response.isSuccess) {
           const now = new Date();
           const filteredAuctions = response.data
@@ -44,7 +44,7 @@ const HomeScreen = () => {
 
   if (loading) {
     return (
-      <View className="flex-1 justify-center items-center">
+      <View className="items-center justify-center flex-1">
         <ActivityIndicator size="large" color="#0000ff" />
         <Text className="mt-2">Loading auctions...</Text>
       </View>
@@ -53,10 +53,10 @@ const HomeScreen = () => {
 
   if (error) {
     return (
-      <View className="flex-1 justify-center items-center">
+      <View className="items-center justify-center flex-1">
         <Text className="text-red-500">{error}</Text>
         <TouchableOpacity
-          className="mt-4 px-4 py-2 bg-blue-500 rounded"
+          className="px-4 py-2 mt-4 bg-blue-500 rounded"
           onPress={() => {
             setLoading(true);
             setError(null);
@@ -76,8 +76,7 @@ const HomeScreen = () => {
                 setError("Failed to load auctions.");
               })
               .finally(() => setLoading(false));
-          }}
-        >
+          }}>
           <Text className="text-white">Retry</Text>
         </TouchableOpacity>
       </View>

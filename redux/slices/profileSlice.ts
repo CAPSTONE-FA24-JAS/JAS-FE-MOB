@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { getProfile, deleteAccount, updateProfile } from "@/api/profileApi";
-import { ProfileResponse, UserInfo } from "@/app/types/profilte_type";
+import { UserInfo } from "@/app/types/profilte_type";
 import { logout } from "./authSlice";
 
 // Thunks

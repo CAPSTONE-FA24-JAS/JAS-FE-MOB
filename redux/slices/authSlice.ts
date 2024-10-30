@@ -1,9 +1,7 @@
 // redux/slices/authSlice.ts
-
 import { UserAccount } from "@/app/types/login_type";
 import { DataSignUpResponse } from "@/app/types/signup_type";
 import { createSlice, isPending, PayloadAction } from "@reduxjs/toolkit";
-import { FulfilledAction, PendingAction, RejectedAction } from "../reduxType";
 import { signup } from "../actions/authAction";
 
 interface AuthState {

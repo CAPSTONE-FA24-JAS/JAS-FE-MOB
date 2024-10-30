@@ -44,19 +44,13 @@ const ProductCard: React.FC<ProductCardProps> = ({
       {typeBid === "Auction_Price_GraduallyReduced" && (
         <View className="w-full p-2 mt-2 bg-gray-100 rounded-md">
           <Text className="text-xl font-semibold text-center text-gray-800">
-            Lot {id} - Current Bid
+            Lot {id} - OPENING PRICE
           </Text>
 
           <View className="flex-row items-center justify-center gap-2 mt-2">
-            <MaterialCommunityIcons
-              name="arrow-down-bold-box-outline"
-              size={35}
-              color="#EF0E25"
-            />
             <Text className="font-bold text-3xl text-[#EF0E25]">
               ${minPrice}
             </Text>
-            <Text className="font-medium text-lg text-[#EF0E25]">(-20%)</Text>
           </View>
         </View>
       )}

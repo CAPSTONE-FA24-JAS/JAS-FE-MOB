@@ -1,145 +1,199 @@
+// ViewInvoiceDetail.tsx
 import React from "react";
-import { View, Text, ScrollView, TouchableOpacity } from "react-native";
+import {
+  View,
+  Text,
+  ScrollView,
+  TouchableOpacity,
+  StyleSheet,
+} from "react-native";
 import { styled } from "nativewind";
-import { useNavigation } from "expo-router";
+import { useNavigation, useRoute, RouteProp } from "@react-navigation/native";
+import { StackNavigationProp } from "@react-navigation/stack";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { AddressListData } from "@/app/types/address_type";
+import { MyBidData } from "@/app/types/bid_type";
+import { useSelector } from "react-redux";
+import { RootState } from "@/redux/store";
+import ImageGallery from "@/components/ImageGallery";
+import ImageGalleryOne from "@/components/ImageGalleryOne";
+
+type RootStackParamList = {
+  InvoiceDetail: {
+    addressData: AddressListData;
+    itemDetailBid: MyBidData;
+    invoiceId: number;
+    yourMaxBid: number;
+    imagePayment: string;
+  };
+};
 
 const StyledView = styled(View);
 const StyledText = styled(Text);
 const StyledTouchableOpacity = styled(TouchableOpacity);
 
-// Define the types for navigation routes
-type RootStackParamList = {
-  EditAddress: undefined;
-};
-
 const ViewInvoiceDetail: React.FC = () => {
-  const navigation = useNavigation(); // Navigation hook for handling back
+  const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
+  const route = useRoute<RouteProp<RootStackParamList, "InvoiceDetail">>();
+  const user = useSelector((state: RootState) => state.auth.userResponse);
 
-  // Mock data
-  const fullName = "Nguyễn Văn A";
-  const phoneNumber = "0912345678";
-  const email = "abc123@gmail.com";
-  const address =
-    "Lô E2a-7, Đường D1, Đ. D1, Long Thạnh Mỹ, Thành Phố Thủ Đức, Hồ Chí Minh";
-  const note = "";
-  const orderCode = "#99999";
-  const auction = "Lot 101";
-  const itemName = "Tiffany & Co. Soleste Tanzanite And Diamond Earrings";
-  const itemType = "Diamond Necklace";
-  const bidPrice = "32.000.000 VND";
-  const fee = "3.200.000 VND";
-  const totalPrice = "35.200.000 VND";
+  // Destructure the passed parameters
+  const { addressData, itemDetailBid, invoiceId, yourMaxBid, imagePayment } =
+    route.params;
+
+  // Calculate the base price and total price
+  const basePrice =
+    itemDetailBid?.yourMaxBidPrice ||
+    itemDetailBid?.lotDTO?.finalPriceSold ||
+    yourMaxBid ||
+    0;
+
+  const fee = basePrice * 0.08; // 8% VAT
+  const totalPrice = basePrice + fee;
 
   // Handle back button
   const handleBack = () => {
-    navigation.goBack(); // Navigate back to the previous screen
+    navigation.goBack();
   };
 
   return (
     <StyledView className="flex-1 bg-white p-4">
       <ScrollView>
         {/* Customer Information */}
+
         <StyledText className="text-lg font-bold mb-2">
           CUSTOMER INFORMATION
         </StyledText>
 
-        <StyledText className="text-base font-medium mb-1">
-          Full Name
-        </StyledText>
-        <StyledText className="text-base mb-3 text-gray-600">
-          {fullName}
-        </StyledText>
+        <StyledView className="border-t border-gray-300 py-3 mb-3">
+          <View className="flex-row justify-between mb-1">
+            <StyledText className="text-base font-medium text-gray-600">
+              Full Name
+            </StyledText>
+            <StyledText className="text-base font-medium text-gray-600">
+              {user?.customerDTO.lastName} {user?.customerDTO.firstName}
+            </StyledText>
+          </View>
 
-        <StyledText className="text-base font-medium mb-1">
-          Phone Number
-        </StyledText>
-        <StyledText className="text-base mb-3 text-gray-600">
-          {phoneNumber}
-        </StyledText>
+          <View className="flex-row justify-between mb-1">
+            <StyledText className="text-base font-medium text-gray-600">
+              Phone Number
+            </StyledText>
+            <StyledText className="text-base font-medium text-gray-600">
+              {user?.phoneNumber}
+            </StyledText>
+          </View>
 
-        <StyledText className="text-base font-medium mb-1">Email</StyledText>
-        <StyledText className="text-base mb-3 text-gray-600">
-          {email}
-        </StyledText>
+          <View className="flex-row justify-between mb-1">
+            <StyledText className="text-base font-medium text-gray-600">
+              Email
+            </StyledText>
+            <StyledText className="text-base font-medium text-gray-600">
+              {user?.email}
+            </StyledText>
+          </View>
 
-        <StyledText className="text-base font-medium mb-1">Address</StyledText>
-        <StyledText className="text-base mb-3 text-gray-600">
-          {address}
-        </StyledText>
-
-        <StyledText className="text-base font-medium mb-1">Note</StyledText>
-        <StyledText className="text-base mb-3 text-gray-600">
-          {note ? note : "No additional notes"}
-        </StyledText>
+          <View className="flex-row justify-between">
+            <StyledText className="text-base font-medium text-gray-600">
+              Address
+            </StyledText>
+            <StyledText className="text-base font-medium text-gray-600 w-[70%] text-right">
+              {addressData?.addressLine || "No Address"}
+            </StyledText>
+          </View>
+        </StyledView>
 
         {/* Order Information */}
         <StyledText className="text-lg font-bold mt-4 mb-2">
           ORDER INFORMATION
         </StyledText>
-
-        <StyledView className="border-t border-b border-gray-300 py-3 mb-3">
+        <StyledView className="border-t  border-gray-300 py-3 mb-3">
           <StyledView className="flex-row justify-between mb-1">
             <StyledText className="text-base font-medium text-gray-600">
-              Order Code
+              Invoice Code
             </StyledText>
             <StyledText className="text-base font-medium text-gray-600">
-              {orderCode}
+              #{invoiceId}
+            </StyledText>
+          </StyledView>
+          <StyledView className="flex-row justify-between mb-1">
+            <StyledText className="text-base font-medium text-gray-600">
+              Lot Code
+            </StyledText>
+            <StyledText className="text-base font-medium text-gray-600">
+              #{itemDetailBid.lotId}
+            </StyledText>
+          </StyledView>
+          <StyledView className="flex-row justify-between mb-1">
+            <StyledText className="text-base font-medium text-gray-600">
+              Customer Lot Code
+            </StyledText>
+            <StyledText className="text-base font-medium text-gray-600">
+              #{itemDetailBid.id}
             </StyledText>
           </StyledView>
 
           <StyledView className="flex-row justify-between mb-1">
             <StyledText className="text-base font-medium text-gray-600">
-              Auction
-            </StyledText>
-            <StyledText className="text-base font-medium text-gray-600">
-              {auction}
-            </StyledText>
-          </StyledView>
-
-          <StyledView className="flex-row justify-between mb-1">
-            <StyledText className="text-base font-medium text-gray-600">
-              Name production
+              Name Production
             </StyledText>
             <StyledText className="text-base w-1/2 text-right font-medium text-gray-600">
-              {itemName}
+              {itemDetailBid.lotDTO.title}
             </StyledText>
           </StyledView>
-
           <StyledView className="flex-row justify-between mb-1">
             <StyledText className="text-base font-medium text-gray-600">
-              Loại hàng
+              Type of Production
             </StyledText>
             <StyledText className="text-base font-medium text-gray-600">
-              {itemType}
+              {itemDetailBid.lotDTO.lotType || "Not Updated"}
             </StyledText>
           </StyledView>
-
           <StyledView className="flex-row justify-between mb-1">
             <StyledText className="text-base font-medium text-gray-600">
-              Giá đấu
+              Bid Price
             </StyledText>
             <StyledText className="text-base font-medium text-gray-600">
-              {bidPrice}
+              {basePrice.toLocaleString("vi-VN", {
+                style: "currency",
+                currency: "VND",
+              })}
             </StyledText>
           </StyledView>
-
           <StyledView className="flex-row justify-between mb-1">
             <StyledText className="text-base font-medium text-gray-600">
-              Fee 10%
+              Fee VAT 8%
             </StyledText>
             <StyledText className="text-base font-medium text-gray-600">
-              {fee}
+              {fee.toLocaleString("vi-VN", {
+                style: "currency",
+                currency: "VND",
+              })}
             </StyledText>
           </StyledView>
-
           <StyledView className="flex-row justify-between mt-3">
             <StyledText className="text-lg font-bold">Total</StyledText>
-            <StyledText className="text-lg font-bold">{totalPrice}</StyledText>
+            <StyledText className="text-lg font-bold">
+              {totalPrice.toLocaleString("vi-VN", {
+                style: "currency",
+                currency: "VND",
+              })}
+            </StyledText>
           </StyledView>
         </StyledView>
+
+        {imagePayment && (
+          <View className="mt-2 mb-4">
+            <StyledText className="text-lg uppercase font-bold mb-2">
+              Bill Payment Image
+            </StyledText>
+            <View className="border-t border-gray-300">
+              <ImageGalleryOne image={imagePayment} />
+            </View>
+          </View>
+        )}
+        {/* Payment Section */}
         <StyledView className="flex-row justify-center mt-3">
-          <StyledText className="text-lg font-bold"></StyledText>
           <StyledText className="text-xl font-bold text-green-500">
             PAYMENT
           </StyledText>

@@ -19,6 +19,15 @@ import moment from "moment-timezone";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
 import { useFocusEffect } from "expo-router";
+import {
+  showErrorMessage,
+  showSuccessMessage,
+} from "@/components/FlashMessageHelpers";
+import { checkPasswordWallet } from "@/api/walletApi";
+import { placeBidFixedPriceAndSecret } from "@/api/bidApi";
+import PasswordModal from "../Payment/CheckPasswordModal";
+import ConfirmBuyNowModal from "./ModalLot/ConfirmBuyNowModal";
+import SecretAuctionBidModal from "./ModalLot/SecretAuctionBidModal";
 
 // Define the navigation param list type
 type RootStackParamList = {
@@ -56,26 +65,50 @@ const LotDetailScreen = () => {
   const userId = useSelector(
     (state: RootState) => state.auth.userResponse?.customerDTO?.id
   );
+  const haveWallet = useSelector(
+    (state: RootState) => state?.profile?.profile?.customerDTO?.walletId
+  );
   const route = useRoute();
-  const { id, name, minPrice, maxPrice, price, image, typeBid } =
-    route.params as RouteParams;
+  const { id, name, minPrice, maxPrice, price, image, typeBid } = route.params
+    ? (route.params as RouteParams)
+    : {};
 
   const [lotDetail, setLotDetail] = useState<LotDetail | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [modalVisible, setModalVisible] = useState<boolean>(false);
-  const [isRegistered, setIsRegistered] = useState<boolean>(false); // Thêm trạng thái isRegistered
   const [checkingRegistration, setCheckingRegistration] =
     useState<boolean>(true); // Trạng thái kiểm tra đăng ký
+  const [passwordModalVisible, setPasswordModalVisible] =
+    useState<boolean>(false);
+  const [isRegistered, setIsRegistered] = useState<boolean>(false);
+  const [password, setPassword] = useState<string>("");
+  const [confirmBuyNowVisible, setConfirmBuyNowVisible] = useState(false);
+  const [secretAuctionBidVisible, setSecretAuctionBidVisible] = useState(false);
+
+  // Fetch lot details when the component mounts
+  useEffect(() => {
+    fetchLotDetail();
+  }, [id]);
+
+  console.log("====================================");
+  console.log("haveWallet", haveWallet);
+  console.log("====================================");
 
   // Hàm fetchLotDetail
   const fetchLotDetail = async () => {
     try {
-      const data = await getLotDetailById(id);
-      if (data?.isSuccess) {
-        setLotDetail(data.data);
+      if (id !== undefined) {
+        const data = await getLotDetailById(id);
+
+        if (data?.isSuccess) {
+          setLotDetail(data?.data);
+        } else {
+          setError(data?.message || "Không thể tải dữ liệu.");
+        }
       } else {
-        setError(data?.message || "Không thể tải dữ liệu.");
+        setError("Invalid lot ID.");
+        setLoading(false);
       }
     } catch (err) {
       setError("Đã xảy ra lỗi khi tải dữ liệu.");
@@ -88,7 +121,7 @@ const LotDetailScreen = () => {
   const fetchRegistrationStatus = useCallback(async () => {
     try {
       setCheckingRegistration(true); // Reset trạng thái kiểm tra
-      if (userId !== undefined) {
+      if (userId !== undefined && id !== undefined) {
         const registered = await checkCustomerInLot(userId, id);
         setIsRegistered(registered);
       } else {
@@ -100,11 +133,6 @@ const LotDetailScreen = () => {
       setCheckingRegistration(false);
     }
   }, [userId, id]);
-
-  // Sử dụng useEffect để fetch lot detail khi component mount
-  useEffect(() => {
-    fetchLotDetail();
-  }, [id]);
 
   // Sử dụng useFocusEffect để gọi lại fetchRegistrationStatus khi màn hình được focus
   useFocusEffect(
@@ -121,6 +149,118 @@ const LotDetailScreen = () => {
     maxPrice: maxPrice || 0,
     price: price || 0,
     typeBid,
+  };
+
+  // const handleBuyNow = () => {
+  //   // Check if user is logged in and lot details are available
+  //   if (
+  //     userId &&
+  //     lotDetail &&
+  //     typeBid === "Fixed_Price"&&
+  //     lotDetail.buyNowPrice &&
+  //     lotDetail.deposit !== undefined
+  //   ) {
+  //     setPasswordModalVisible(true); // Show the password modal
+  //   } else if(typeBid === "Secret_Auction" && lotDetail && lotDetail.startPrice && lotDetail.deposit !== undefined){
+  //     setPasswordModalVisible(true); // Show the password modal
+  //   } else {
+  //     showErrorMessage("Unable to process 'Buy It Now'.");
+  //     setPasswordModalVisible(true); // Show the password modal
+  //   }
+
+  // };
+
+  const handleBuyNow = () => {
+    setConfirmBuyNowVisible(true); // Show confirmation modal
+  };
+
+  const handleConfirmBuyNow = async () => {
+    setConfirmBuyNowVisible(false); // Close the modal first
+    try {
+      if (userId && lotDetail?.buyNowPrice && lotDetail?.id) {
+        await placeBidFixedPriceAndSecret(
+          lotDetail.buyNowPrice - lotDetail.deposit,
+          userId,
+          lotDetail.id
+        );
+        showSuccessMessage("Bid placed successfully!");
+        fetchLotDetail(); // Reload the lot details
+      } else {
+        showErrorMessage("Failed to place bid.");
+      }
+    } catch (error) {
+      showErrorMessage("An error occurred while placing the bid.");
+    }
+  };
+
+  const handleSecretAuctionBid = () => {
+    setSecretAuctionBidVisible(true); // Show bid input modal
+  };
+
+  const handleSubmitBidType12 = async (bidAmount: number) => {
+    try {
+      if (userId && lotDetail?.startPrice && lotDetail?.id) {
+        await placeBidFixedPriceAndSecret(bidAmount, userId, lotDetail.id);
+        showSuccessMessage("Bid placed successfully!");
+      } else {
+        showErrorMessage("Failed to place bid.");
+      }
+    } catch (error) {
+      showErrorMessage("An error occurred while placing the bid.");
+    } finally {
+      setSecretAuctionBidVisible(false);
+    }
+  };
+
+  const handleConfirmPassword = async (enteredPassword: string) => {
+    setPassword(enteredPassword);
+    try {
+      if (haveWallet) {
+        // Use enteredPassword directly for verification
+        const isPasswordCorrect = await checkPasswordWallet(
+          haveWallet,
+          enteredPassword
+        );
+
+        if (isPasswordCorrect) {
+          await handlePlaceBid(); // Call place bid function
+          setPassword(""); // Reset the password state
+        } else {
+          showErrorMessage("Incorrect wallet password, please try again.");
+        }
+      } else {
+        showErrorMessage("Wallet ID is not available.");
+      }
+    } catch (error) {
+      showErrorMessage("Failed to verify password.");
+    }
+  };
+
+  const handlePlaceBid = async () => {
+    if (!lotDetail || !userId) return;
+
+    const currentPrice = lotDetail.buyNowPrice
+      ? lotDetail.buyNowPrice - lotDetail.deposit
+      : 0; // Calculate bid price
+    const lotId = lotDetail.id;
+
+    try {
+      const response = await placeBidFixedPriceAndSecret(
+        currentPrice,
+        userId,
+        lotId
+      );
+
+      if (response?.isSuccess) {
+        showSuccessMessage("Bid placed successfully!");
+        setPasswordModalVisible(false); // Close the password modal
+        fetchLotDetail(); // Reload the lot details
+      } else {
+        console.log("Bid placement failed.");
+      }
+    } catch (error) {
+      showErrorMessage("Failed to place bid.");
+    }
   };
 
   const handleSubmitBid = (bid: any) => {
@@ -164,7 +304,11 @@ const LotDetailScreen = () => {
             <View className="flex-row gap-2 ">
               <Text className="text-base font-bold text-[#6c6c6c] ">Est:</Text>
               <Text className="text-[#6c6c6c] text-base ">
-                ${lotDetail?.startPrice || 0} - Increasing
+                {(lotDetail?.startPrice || 0).toLocaleString("vi-VN", {
+                  style: "currency",
+                  currency: "VND",
+                })}{" "}
+                - Increasing
               </Text>
             </View>
           </View>
@@ -177,7 +321,10 @@ const LotDetailScreen = () => {
                 Max Price:
               </Text>
               <Text className="text-[#6c6c6c] text-base ">
-                ${lotDetail?.startPrice || 0}
+                {(lotDetail?.startPrice || 0).toLocaleString("vi-VN", {
+                  style: "currency",
+                  currency: "VND",
+                })}
               </Text>
             </View>
 
@@ -187,7 +334,10 @@ const LotDetailScreen = () => {
                   Bid Increment:
                 </Text>
                 <Text className="text-[#6c6c6c] text-base ">
-                  ${lotDetail.bidIncrement}
+                  {lotDetail?.bidIncrement.toLocaleString("vi-VN", {
+                    style: "currency",
+                    currency: "VND",
+                  })}
                 </Text>
               </View>
             )}
@@ -205,29 +355,41 @@ const LotDetailScreen = () => {
           <View className="flex-row ">
             <Text className="font-bold text-lg text-[#6c6c6c] ">Price:</Text>
             <Text className="text-[#6c6c6c] ml-2 text-lg ">
-              ${lotDetail.buyNowPrice || 0}
+              {(lotDetail?.buyNowPrice || 0).toLocaleString("vi-VN", {
+                style: "currency",
+                currency: "VND",
+              })}
             </Text>
           </View>
         );
       case "Secret_Auction":
         return (
           <View className="flex-row ">
-            <Text className="font-bold text-lg text-[#6c6c6c] ">Price:</Text>
+            <Text className="font-bold text-lg text-[#6c6c6c] ">
+              Min price:
+            </Text>
             <Text className="text-[#6c6c6c] ml-2 text-lg ">
-              ${lotDetail.startPrice || 0}
+              {(lotDetail?.startPrice || 0).toLocaleString("vi-VN", {
+                style: "currency",
+                currency: "VND",
+              })}
             </Text>
           </View>
         );
       case "Public_Auction":
         return (
           <>
-            {lotDetail.buyNowPrice && (
+            {lotDetail?.buyNowPrice && (
               <View className="flex-row ">
                 <Text className="font-bold text-lg text-[#6c6c6c] ">
                   Buy Now Price:
                 </Text>
                 <Text className="text-[#6c6c6c] ml-2 text-lg ">
-                  ${lotDetail.buyNowPrice}
+                  $
+                  {lotDetail?.buyNowPrice.toLocaleString("vi-VN", {
+                    style: "currency",
+                    currency: "VND",
+                  })}
                 </Text>
               </View>
             )}
@@ -255,7 +417,10 @@ const LotDetailScreen = () => {
               Start Bid:
             </Text>
             <Text className="text-[#6c6c6c] text-base ">
-              ${lotDetail.startPrice || 0}
+              {(lotDetail?.startPrice || 0).toLocaleString("vi-VN", {
+                style: "currency",
+                currency: "VND",
+              })}
             </Text>
           </View>
         );
@@ -266,7 +431,10 @@ const LotDetailScreen = () => {
               Start Bid:
             </Text>
             <Text className="text-[#6c6c6c] text-base ">
-              ${lotDetail.startPrice || 0}
+              {(lotDetail?.startPrice || 0).toLocaleString("vi-VN", {
+                style: "currency",
+                currency: "VND",
+              })}
             </Text>
           </View>
         );
@@ -298,9 +466,14 @@ const LotDetailScreen = () => {
 
   const handleJoinToBid = () => {
     if (lotDetail) {
-      navigation.navigate("RisingBidPage", { itemId: lotDetail.id }); /// lot id
+      navigation.navigate("RisingBidPage", { itemId: lotDetail?.id }); /// lot id
     }
   };
+
+  const paymentAmountFixed =
+    (lotDetail?.buyNowPrice ?? 0) - (lotDetail?.deposit ?? 0);
+  const paymentAmountSecret =
+    (lotDetail?.startPrice ?? 0) - (lotDetail?.deposit ?? 0);
 
   return (
     <SafeAreaView className="flex-1 bg-white">
@@ -313,15 +486,24 @@ const LotDetailScreen = () => {
             <Swiper
               showsPagination={true}
               autoplay={true}
-              style={{ height: "100%" }}>
-              {lotDetail?.jewelry?.imageJewelries?.map((img, index) => (
-                <Image
-                  key={index}
-                  source={{ uri: img.imageLink }}
-                  className="w-full py-10 h-[200px]"
-                  resizeMode="contain"
-                />
-              ))}
+              style={{ height: "100%" }}
+            >
+              {lotDetail?.jewelry?.imageJewelries?.length ?? 0 > 0 ? (
+                lotDetail?.jewelry?.imageJewelries.map((img, index) =>
+                  img?.imageLink ? (
+                    <Image
+                      key={index}
+                      source={{ uri: img.imageLink }}
+                      className="w-full py-10 h-[200px]"
+                      resizeMode="contain"
+                    />
+                  ) : null
+                )
+              ) : (
+                <View className="items-center justify-center">
+                  <Text>No images available</Text>
+                </View>
+              )}
             </Swiper>
           </View>
           <View className="flex-row p-4 justify-evenly">
@@ -335,16 +517,16 @@ const LotDetailScreen = () => {
               <View className="flex-row gap-2 mb-2">
                 <Text className="text-base text-gray-500">
                   {lotDetail?.startTime
-                    ? moment(lotDetail.startTime).format("HH:mm A, DD/MM/YYYY")
+                    ? moment(lotDetail?.startTime).format("HH:mm A, DD/MM/YYYY")
                     : "N/A"}{" "}
                   -{" "}
                   {lotDetail?.endTime
-                    ? moment(lotDetail.endTime).format("HH:mm A, DD/MM/YYYY")
+                    ? moment(lotDetail?.endTime).format("HH:mm A, DD/MM/YYYY")
                     : "N/A"}
                 </Text>
               </View>
               <Text className="text-base font-bold text-gray-500 ">
-                Lot #{id} - Type {formatTypeBid(typeBid)}
+                Lot #{id} - Type {typeBid ? formatTypeBid(typeBid) : "N/A"}
               </Text>
 
               <Text className="mb-2 text-xl font-bold text-black ">
@@ -385,16 +567,26 @@ const LotDetailScreen = () => {
       <View className="absolute bottom-0 left-0 right-0 px-4 py-2 bg-white">
         {isRegistered && (
           <View>
-            {(typeBid === "Fixed_Price" || typeBid === "Public_Auction") && (
-              <TouchableOpacity className="py-3 mb-3 bg-blue-500 rounded-sm">
-                <Text className="font-semibold text-center text-white">
-                  BUY IT NOW
+            {(typeBid === "Fixed_Price" || typeBid === "Secret_Auction") && (
+              <TouchableOpacity
+                className="mb-3 py-3  bg-blue-500 rounded-sm"
+                onPress={
+                  typeBid === "Fixed_Price"
+                    ? handleBuyNow
+                    : handleSecretAuctionBid
+                }
+              >
+                <Text className="font-semibold text-center text-white uppercase">
+                  {typeBid === "Fixed_Price"
+                    ? "BUY IT NOW"
+                    : "BUY SECRET AUCTION"}
                 </Text>
               </TouchableOpacity>
             )}
             <TouchableOpacity
               onPress={handlePressAutoBid}
-              className="mb-3 bg-blue-500 rounded-sm">
+              className="mb-3 bg-blue-500 rounded-sm"
+            >
               <Text className="py-3 font-semibold text-center text-white">
                 BID AUTOMATION
               </Text>
@@ -402,42 +594,92 @@ const LotDetailScreen = () => {
             {typeBid !== "Fixed_Price" && (
               <TouchableOpacity
                 className="py-3 mb-3 bg-blue-500 rounded-sm"
-                onPress={() => setModalVisible(true)}>
+                onPress={() => setModalVisible(true)}
+              >
                 <Text className="font-semibold text-center text-white">
                   PLACE BID
                 </Text>
               </TouchableOpacity>
             )}
-
-            <TouchableOpacity
-              className="py-3 bg-blue-500 rounded-sm"
-              onPress={handleJoinToBid}>
-              <Text className="font-semibold text-center text-white uppercase">
-                Join To Bid
-              </Text>
-            </TouchableOpacity>
+            {typeBid !== "Fixed_Price" && (
+              <TouchableOpacity
+                className="py-3 bg-blue-500 rounded-sm"
+                onPress={handleJoinToBid}
+              >
+                <Text className="font-semibold text-center text-white uppercase">
+                  Join To Bid
+                </Text>
+              </TouchableOpacity>
+            )}
           </View>
         )}
 
         {!isRegistered && (
           <TouchableOpacity
             className="py-3 mt-4 bg-blue-500 rounded-sm"
-            onPress={handleRegisterToBid}>
+            onPress={handleRegisterToBid}
+          >
             <Text className="font-semibold text-center text-white uppercase">
               Register To Bid
             </Text>
           </TouchableOpacity>
         )}
 
-        <PlaceBidModal
-          visible={modalVisible}
-          onClose={() => setModalVisible(false)}
-          item={item}
-          minPrice={item.minPrice}
-          maxPrice={item.maxPrice}
-          onSubmitBid={handleSubmitBid}
-        />
+        {item.id !== undefined &&
+          item.image !== undefined &&
+          item.name !== undefined &&
+          item.typeBid !== undefined && (
+            <PlaceBidModal
+              visible={modalVisible}
+              onClose={() => setModalVisible(false)}
+              item={{
+                id: item.id,
+                image: item.image,
+                name: item.name,
+                typeBid: item.typeBid,
+              }}
+              minPrice={item.minPrice}
+              maxPrice={item.maxPrice}
+              onSubmitBid={handleSubmitBid}
+            />
+          )}
       </View>
+      {/* Password Modal for 'Buy It Now' */}
+      {typeBid === "Fixed_Price" ? (
+        <PasswordModal
+          isVisible={passwordModalVisible}
+          onClose={() => setPasswordModalVisible(false)}
+          onConfirm={handleConfirmPassword}
+          amount={paymentAmountFixed || 0} // Pass the amount prop here
+        />
+      ) : typeBid === "Secret_Auction" ? (
+        <PasswordModal
+          isVisible={passwordModalVisible}
+          onClose={() => setPasswordModalVisible(false)}
+          onConfirm={handleConfirmPassword}
+          amount={paymentAmountSecret || 0} // Pass the amount prop here
+        />
+      ) : null}
+
+      {/* Modals */}
+      <ConfirmBuyNowModal
+        isVisible={confirmBuyNowVisible}
+        onClose={() => setConfirmBuyNowVisible(false)}
+        onConfirm={handleConfirmBuyNow}
+        price={lotDetail?.buyNowPrice ?? 0}
+        lotId={lotDetail?.id ?? 0}
+      />
+      {lotDetail &&
+        lotDetail.startPrice &&
+        lotDetail.deposit !== undefined &&
+        typeBid === "Secret_Auction" && (
+          <SecretAuctionBidModal
+            isVisible={secretAuctionBidVisible}
+            onClose={() => setSecretAuctionBidVisible(false)}
+            minPrice={lotDetail.startPrice}
+            onSubmit={handleSubmitBidType12}
+          />
+        )}
     </SafeAreaView>
   );
 };

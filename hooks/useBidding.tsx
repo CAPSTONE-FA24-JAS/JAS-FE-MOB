@@ -84,7 +84,12 @@ export function useBidding(): UseBiddingResult {
 
     // Xử lý sự kiện cập nhật giá cao nhất
     connection.on("SendTopPrice", (price: number, bidTime: string) => {
-      console.log(`Top price updated: ${price} at ${bidTime}`);
+      console.log(
+        `Top price updated: ${price.toLocaleString("vi-VN", {
+          style: "currency",
+          currency: "VND",
+        })} at ${bidTime}`
+      );
       setHighestPrice(price);
     });
 
@@ -106,7 +111,12 @@ export function useBidding(): UseBiddingResult {
     connection.on(
       "SendBiddingPrice",
       (customerId: string, price: number, bidTime: string) => {
-        console.log(`New bid from ${customerId}: ${price} at ${bidTime}`);
+        console.log(
+          `New bid from ${customerId}: ${price.toLocaleString("vi-VN", {
+            style: "currency",
+            currency: "VND",
+          })} at ${bidTime}`
+        );
         setMessages((prev) => [
           ...prev,
           {
@@ -123,9 +133,15 @@ export function useBidding(): UseBiddingResult {
       "AuctionEndedWithWinner",
       (message: string, customerId: string, price: number) => {
         setIsEndAuction(true);
-        setWinnerCustomer(customerId);
-        setWinnerPrice(price.toString());
-        console.log(`${message} customerID ${customerId} at price ${price}`);
+        console.log(
+          `${message} customerID ${customerId} at price ${price.toLocaleString(
+            "vi-VN",
+            {
+              style: "currency",
+              currency: "VND",
+            }
+          )}`
+        );
       }
     );
   }, []);

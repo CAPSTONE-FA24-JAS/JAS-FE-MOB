@@ -115,7 +115,8 @@ const AutoBidSaveConfig: React.FC = () => {
       </View>
       <TouchableOpacity
         onPress={() => setModalVisible(true)}
-        className="items-end p-2 mb-4 rounded-lg">
+        className="items-end p-2 mb-4 rounded-lg"
+      >
         <Text className="text-sm font-semibold text-center text-blue-500 underline">
           Config
         </Text>
@@ -130,7 +131,8 @@ const AutoBidSaveConfig: React.FC = () => {
         <View className="flex-row items-center mb-4">
           <TouchableOpacity
             onPress={() => handleDecrement(setMaxPrice)}
-            className="p-2 bg-gray-200 rounded-l-lg">
+            className="p-2 bg-gray-200 rounded-l-lg"
+          >
             <Text className="text-2xl">-</Text>
           </TouchableOpacity>
           <TextInput
@@ -141,7 +143,8 @@ const AutoBidSaveConfig: React.FC = () => {
           />
           <TouchableOpacity
             onPress={() => handleIncrement(setMaxPrice)}
-            className="p-2 bg-gray-200 rounded-r-lg">
+            className="p-2 bg-gray-200 rounded-r-lg"
+          >
             <Text className="text-2xl">+</Text>
           </TouchableOpacity>
         </View>
@@ -149,7 +152,8 @@ const AutoBidSaveConfig: React.FC = () => {
         <View className="flex-row items-center mb-4">
           <TouchableOpacity
             onPress={() => handleDecrement(setStartingPrice)}
-            className="p-2 bg-gray-200 rounded-l-lg">
+            className="p-2 bg-gray-200 rounded-l-lg"
+          >
             <Text className="text-2xl">-</Text>
           </TouchableOpacity>
           <TextInput
@@ -160,7 +164,8 @@ const AutoBidSaveConfig: React.FC = () => {
           />
           <TouchableOpacity
             onPress={() => handleIncrement(setStartingPrice)}
-            className="p-2 bg-gray-200 rounded-r-lg">
+            className="p-2 bg-gray-200 rounded-r-lg"
+          >
             <Text className="text-2xl">+</Text>
           </TouchableOpacity>
         </View>
@@ -172,7 +177,8 @@ const AutoBidSaveConfig: React.FC = () => {
                 Math.max(1, parseInt(prev) - 1).toString()
               )
             }
-            className="p-2 bg-gray-200 rounded-l-lg">
+            className="p-2 bg-gray-200 rounded-l-lg"
+          >
             <Text className="text-2xl">-</Text>
           </TouchableOpacity>
           <TextInput
@@ -185,7 +191,8 @@ const AutoBidSaveConfig: React.FC = () => {
             onPress={() =>
               setNextBidTime((prev) => (parseInt(prev) + 1).toString())
             }
-            className="p-2 bg-gray-200 rounded-r-lg">
+            className="p-2 bg-gray-200 rounded-r-lg"
+          >
             <Text className="text-2xl">+</Text>
           </TouchableOpacity>
         </View>
@@ -198,7 +205,8 @@ const AutoBidSaveConfig: React.FC = () => {
 
       <TouchableOpacity
         onPress={handleSubmit}
-        className="absolute bottom-0 left-0 right-0 py-3 bg-blue-500">
+        className="absolute bottom-0 left-0 right-0 py-3 bg-blue-500"
+      >
         <Text className="text-lg font-bold text-center text-white">
           SUBMIT AUTOMATION BID
         </Text>
@@ -208,7 +216,8 @@ const AutoBidSaveConfig: React.FC = () => {
         animationType="fade"
         transparent={true}
         visible={modalVisible}
-        onRequestClose={() => setModalVisible(false)}>
+        onRequestClose={() => setModalVisible(false)}
+      >
         <View className="items-center justify-center flex-1 bg-black/50">
           <View className="bg-white p-6 rounded-2xl w-11/12 max-h-[80%]">
             <Text className="mb-4 text-xl font-bold">Saved Configurations</Text>
@@ -228,8 +237,9 @@ const AutoBidSaveConfig: React.FC = () => {
               {savedConfigs.map((config) => (
                 <View
                   key={config.id}
-                  className="flex-row py-2 border-b border-gray-200">
-                  <Text className="flex-1 text-center">${config.maxPrice}</Text>
+                  className="flex-row py-2 border-b border-gray-200"
+                >
+                  <Text className="flex-1 text-center">{config.maxPrice}</Text>
                   <Text className="flex-1 text-center">
                     ${config.startingPrice}
                   </Text>
@@ -240,7 +250,8 @@ const AutoBidSaveConfig: React.FC = () => {
                     className={`items-center justify-center px-5 rounded-lg w-fit ${
                       config.status ? "bg-green-500" : "bg-red-500"
                     }`}
-                    onPress={() => applyConfig(config)}>
+                    onPress={() => applyConfig(config)}
+                  >
                     <Text className="font-semibold text-white">
                       {config.status ? "On" : "Off"}
                     </Text>
@@ -250,7 +261,8 @@ const AutoBidSaveConfig: React.FC = () => {
             </ScrollView>
             <TouchableOpacity
               onPress={() => setModalVisible(false)}
-              className="p-2 mt-4 bg-gray-500 rounded-lg">
+              className="p-2 mt-4 bg-gray-500 rounded-lg"
+            >
               <Text className="font-semibold text-center text-white">
                 Close
               </Text>

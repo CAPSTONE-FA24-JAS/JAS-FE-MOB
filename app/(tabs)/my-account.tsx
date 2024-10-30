@@ -9,6 +9,9 @@ import { AppDispatch, RootState } from "@/redux/store";
 import { ProfileResponse, UserInfo } from "../types/profilte_type";
 import { getProfile } from "@/api/profileApi";
 import { logout } from "@/redux/slices/authSlice";
+import { showErrorMessage } from "@/components/FlashMessageHelpers";
+import { checkPasswordWallet } from "@/api/walletApi";
+import PasswordModal from "@/components/Pages/Payment/CheckPasswordModal";
 
 type RootStackParamList = {
   ChangePassword: undefined;
@@ -21,9 +24,16 @@ type RootStackParamList = {
 
 const MyAccount = () => {
   const [userInfo, setUserInfo] = useState<UserInfo | null>(null);
+  const [passwordModalVisible, setPasswordModalVisible] =
+    useState<boolean>(false);
+  const [password, setPassword] = useState<string>("");
   const userId = useSelector((state: RootState) => state.auth.userResponse?.id); // Lấy userId từ Redux
+  const haveWallet = useSelector(
+    (state: RootState) => state?.profile?.profile?.customerDTO?.walletId
+  );
   const dispatch = useDispatch<AppDispatch>();
   const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
+  console.log("haveWalletMyprofile", haveWallet);
 
   useEffect(() => {
     const fetchUserProfile = async () => {
@@ -42,10 +52,37 @@ const MyAccount = () => {
 
   const handleNavigation = (screen: keyof RootStackParamList) => {
     if (screen === "AccountInfo" && userInfo) {
-      // Pass data to AccountInfo screen
       navigation.navigate(screen, { userData: userInfo });
+    } else if (screen === "MyWallet") {
+      setPasswordModalVisible(true); // Show password modal before navigating to MyWallet
     } else {
       navigation.navigate(screen);
+    }
+  };
+
+  // Handle password confirmation
+  const handlePasswordConfirm = async (enteredPassword: string) => {
+    try {
+      if (haveWallet && typeof haveWallet === "number") {
+        // Use enteredPassword directly for verification
+        const isPasswordCorrect = await checkPasswordWallet(
+          haveWallet,
+          enteredPassword
+        );
+
+        if (isPasswordCorrect) {
+          setPasswordModalVisible(false); // Close password modal
+          setPassword(""); // Reset the password state
+          navigation.navigate("MyWallet"); // Navigate to MyWallet screen
+        } else {
+          showErrorMessage("Incorrect wallet password, please try again.");
+        }
+      } else {
+        navigation.navigate("MyWallet");
+        // showErrorMessage("Wallet ID is not available.");
+      }
+    } catch (error) {
+      showErrorMessage("Failed to verify password.");
     }
   };
 
@@ -178,6 +215,12 @@ const MyAccount = () => {
           <Text className="ml-4 text-lg">Log Out</Text>
         </TouchableOpacity>
       </View>
+      {/* Password Confirmation Modal */}
+      <PasswordModal
+        isVisible={passwordModalVisible}
+        onClose={() => setPasswordModalVisible(false)}
+        onConfirm={handlePasswordConfirm}
+      />
     </View>
   );
 };

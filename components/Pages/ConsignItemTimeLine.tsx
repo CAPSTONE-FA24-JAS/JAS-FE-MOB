@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, Image, ScrollView } from "react-native";
+import { View, Text, Image, ScrollView, Linking } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { ChevronDown, ChevronUp } from "lucide-react-native";
 import { useRoute } from "@react-navigation/native";
@@ -59,7 +59,7 @@ const ConsignDetailTimeLine: React.FC = () => {
   const [modalVisible, setModalVisible] = useState(false);
   const [valuationData, setValuationData] = useState<any | null>(null);
   const [isFinalModalVisible, setFinalModalVisible] = useState(false);
-  console.log("timelineAK", timeline);
+  // console.log("timelineAK", timeline);
 
   useEffect(() => {
     fetchTimelineData(item?.id);
@@ -69,7 +69,7 @@ const ConsignDetailTimeLine: React.FC = () => {
 
   const fetchTimelineData = async (itemId: any) => {
     getDetailHistoryValuation(itemId).then((response) => {
-      console.log("timeline", response);
+      // console.log("timeline", response);
       if (!response) {
         setTimeline([]);
       }
@@ -176,9 +176,9 @@ const ConsignDetailTimeLine: React.FC = () => {
     // Sử dụng dữ liệu trực tiếp từ item để hiển thị trong modal
     const finalValuationDetails = {
       id: item?.id,
-      sellerId: item?.seller.id,
+      sellerId: item?.seller?.id,
       status: item?.status,
-      images: item?.imageValuations.map((item) => item?.imageLink),
+      images: item?.imageValuations?.map((item) => item?.imageLink),
       name: item?.name,
       pricingTime: item?.pricingTime,
       estimatedCost: `${(item?.estimatePriceMin || 0).toLocaleString("vi-VN", {
@@ -194,18 +194,20 @@ const ConsignDetailTimeLine: React.FC = () => {
       description: item?.description,
       note: "If the customer accepts the above valuation, please sign the document attached below.",
       owner: item?.seller.lastName + " " + item?.seller.firstName,
-      artist: item?.jewelry.artist.name,
-      category: item?.jewelry.category.name,
-      address: item?.seller.address,
-      CCCD: item?.seller.citizenIdentificationCard,
-      idIssuanceDate: item?.seller.idIssuanceDate,
-      idExpirationDate: item?.seller.idExpirationDate,
+      artist: item?.jewelry?.artist?.name ?? "N/A",
+      category: item?.jewelry?.category?.name,
+      address: item?.seller?.address,
+      CCCD: item?.seller?.citizenIdentificationCard,
+      idIssuanceDate: item?.seller?.idIssuanceDate,
+      idExpirationDate: item?.seller?.idExpirationDate,
       country: "Viet Nam",
-      email: item?.seller.accountDTO.email,
+      email: item?.seller?.accountDTO?.email,
 
-      descriptionCharacteristicDetails: item?.jewelry.keyCharacteristicDetails,
-      documentLink: item?.valuationDocuments[0].documentLink,
-      mainDiamonds: item?.jewelry.mainDiamonds,
+      descriptionCharacteristicDetails: item?.jewelry?.keyCharacteristicDetails,
+      documentLink: item?.valuationDocuments?.filter(
+        (i) => i.valuationDocumentType === "Authorized"
+      )[0]?.documentLink,
+      mainDiamonds: item?.jewelry?.mainDiamonds,
       creationDate: item?.creationDate,
     };
 
@@ -323,15 +325,29 @@ const ConsignDetailTimeLine: React.FC = () => {
                       )}
                     </Text>
                     <Text className="font-bold">{event?.statusName}</Text>
-                    {event?.statusName == "ManagerApproved" && ( // chưa biết cái nào hiển thị tài liệu nên để đây
-                      <TouchableOpacity
-                        className="p-2 mt-1 bg-gray-200 rounded w-[50px]"
-                        // onPress={handlePowerOfAttorney}
-                      >
-                        <Text className="text-gray-700">Print</Text>
-                        {/* đoạn này đang kh biết tải hẳn luôn ha là mở modal */}
-                      </TouchableOpacity>
-                    )}
+                    {event?.statusName == "ManagerApproved" &&
+                      item?.valuationDocuments && ( // chưa biết cái nào hiển thị tài liệu nên để đây
+                        <TouchableOpacity
+                          className="p-2 mt-1 bg-gray-200 rounded w-[180px]"
+                          // onPress={handlePowerOfAttorney}
+                          onPress={
+                            item?.valuationDocuments
+                              ? () =>
+                                  Linking.openURL(
+                                    item?.valuationDocuments.filter(
+                                      (i) =>
+                                        i.valuationDocumentType === "Reciept"
+                                    )[0]?.documentLink
+                                  )
+                              : () => {}
+                          }
+                        >
+                          <Text className="text-gray-700 font-semibold">
+                            Download delivery receipt
+                          </Text>
+                          {/* đoạn này đang kh biết tải hẳn luôn ha là mở modal */}
+                        </TouchableOpacity>
+                      )}
                     {event?.statusName == "Preliminary" && ( // chưa biết cái nào hiển thị tài liệu nên để đây
                       <TouchableOpacity
                         className="p-2 mt-1 bg-gray-200 rounded w-[140px] "

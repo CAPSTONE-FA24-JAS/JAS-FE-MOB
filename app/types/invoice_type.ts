@@ -31,14 +31,20 @@ export interface MyBidDTO {
   id: number;
   status: string;
   isDeposit: boolean;
-  autoBidPrice: number | null;
-  priceLimit: number | null;
-  isWinner: boolean | null;
-  isRefunded: boolean | null;
-  isInvoiced: boolean | null;
+  autoBidPrice: any;
+  priceLimit: any;
+  isWinner: any;
+  isRefunded: any;
+  isInvoiced: any;
+  yourMaxBidPrice: any;
   lotId: number;
-  yourMaxBidPrice: number | null;
   lotDTO: LotDto;
+  historyCustomerLots: HistoryCustomerLot[];
+}
+export interface HistoryCustomerLot {
+  currentTime: string;
+  status: string;
+  customerLotId: number;
 }
 
 export interface LotDto {
@@ -73,18 +79,29 @@ export interface InvoiceDetailResponse {
   winnerName: string;
   winnerPhone: string;
   winnerEmail: string;
-  lotNumber: number | null;
+  lotNumber: any;
   lotId: number;
   productId: number;
   productName: string;
-  tax: number | null;
-  note: string | null;
-  addressToShip: string | null;
+  tax: any;
+  note: any;
+  addressToShip: any;
+  statusInvoiceDTOs: StatusInvoiceDto[];
   id: number;
   status: string;
   totalPrice: number;
-  paymentMethodId: number | null;
-  addressToShipId: number | null;
+  paymentMethodId: any;
+  addressToShipId: any;
+  linkBillTransaction: string;
   shipperId: number;
+  creationDate: string;
   myBidDTO: MyBidDTO | null;
+}
+
+export interface StatusInvoiceDto {
+  id: number;
+  status: string;
+  imageLink: string;
+  currentDate: string;
+  invoiceId: number;
 }

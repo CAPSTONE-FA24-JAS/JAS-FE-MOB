@@ -147,6 +147,7 @@ const InvoiceList: React.FC = () => {
       itemBid={item.myBidDTO ?? ({} as DataCurentBidResponse)}
       startTime={item.myBidDTO?.lotDTO.startTime || ""}
       endTime={item.myBidDTO?.lotDTO.endTime || ""}
+      statusTabs={selectedStatus}
     />
   );
 

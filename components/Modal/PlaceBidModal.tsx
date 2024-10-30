@@ -89,13 +89,21 @@ const PlaceBidModal: React.FC<PlaceBidModalProps> = ({
               {/* Estimation visibility */}
               {item.typeBid === "Public_Auction" && (
                 <Text className="text-base text-gray-500">
-                  Start price: ${minPrice}
+                  Start price:{" "}
+                  {minPrice.toLocaleString("vi-VN", {
+                    style: "currency",
+                    currency: "VND",
+                  })}
                 </Text>
               )}
 
               {item.typeBid === "Auction_Price_GraduallyReduced" && (
                 <Text className="text-base text-gray-500">
-                  Max Price: ${maxPrice}
+                  Max Price:{" "}
+                  {maxPrice.toLocaleString("vi-VN", {
+                    style: "currency",
+                    currency: "VND",
+                  })}
                 </Text>
               )}
             </View>

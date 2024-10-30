@@ -10,7 +10,7 @@ interface AddressInfoProps {
     firstName: string;
     lastName: string;
     phoneNumber: string;
-    address: any;
+    address: string;
   };
   onChooseAddress: () => void; // New prop to trigger modal
 }
@@ -32,15 +32,18 @@ const AddressInfo: React.FC<AddressInfoProps> = ({ user, onChooseAddress }) => {
       </View>
       <View className="flex-row">
         <Text className="mr-2 text-lg font-medium text-gray-800">
-          {user.lastName} {user.firstName}
+          {user.lastName ?? ""} {user.firstName ?? ""}
         </Text>
-        <Text className="text-lg font-medium text-gray-800 ">
-          | {user.phoneNumber}
+        <Text className="text-lg font-medium text-gray-800">|</Text>
+        <Text className="ml-2 text-lg font-medium text-gray-800">
+          {user.phoneNumber ?? "No Phone Number"}
         </Text>
       </View>
-      <Text className="text-base font-medium text-gray-600">
-        {user.address || "No Address"}
-      </Text>
+      <View>
+        <Text className="text-base font-medium text-gray-600">
+          {user.address || "No Address"}
+        </Text>
+      </View>
     </View>
   );
 };

@@ -19,15 +19,22 @@ const HomeScreen = () => {
   useEffect(() => {
     const fetchAuctions = async () => {
       try {
-        const [status1Response, status2Response] = await Promise.all([
-          getAuctionsByStatus(3),
-          getAuctionsByStatus(2),
-        ]);
-        if (status1Response.isSuccess && status2Response.isSuccess) {
+        const [status1Response, status2Response, status3Response] =
+          await Promise.all([
+            getAuctionsByStatus(3),
+            getAuctionsByStatus(2),
+            getAuctionsByStatus(1),
+          ]);
+        if (
+          status1Response.isSuccess &&
+          status2Response.isSuccess &&
+          status3Response.isSuccess
+        ) {
           const now = new Date();
           const combinedAuctions = [
             ...status1Response.data,
             ...status2Response.data,
+            ...status3Response.data,
           ]
             // .filter((auction) => new Date(auction.endTime) > now) // Ensure endTime is in the future
             .sort((a, b) => b.id - a.id); // Sort by id in descending order
@@ -65,12 +72,21 @@ const HomeScreen = () => {
             setLoading(true);
             setError(null);
             // Retry fetching auctions with statuses '1' and '2'
-            Promise.all([getAuctionsByStatus(3), getAuctionsByStatus(2)])
-              .then(([status1Response, status2Response]) => {
-                if (status1Response.isSuccess && status2Response.isSuccess) {
+            Promise.all([
+              getAuctionsByStatus(3),
+              getAuctionsByStatus(2),
+              getAuctionsByStatus(1),
+            ])
+              .then(([status1Response, status2Response, status3Response]) => {
+                if (
+                  status1Response.isSuccess &&
+                  status2Response.isSuccess &&
+                  status3Response.isSuccess
+                ) {
                   const combinedAuctions = [
                     ...status1Response.data,
                     ...status2Response.data,
+                    ...status3Response.data,
                   ]
                     // .filter((auction) => new Date(auction.endTime) > new Date())
                     .sort((a, b) => b.id - a.id);
@@ -84,7 +100,8 @@ const HomeScreen = () => {
                 setError("Failed to load auctions.");
               })
               .finally(() => setLoading(false));
-          }}>
+          }}
+        >
           <Text className="text-white">Retry</Text>
         </TouchableOpacity>
       </View>

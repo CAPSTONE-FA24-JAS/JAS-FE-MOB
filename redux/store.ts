@@ -9,7 +9,7 @@ const store = configureStore({
     profile: profileReducer, // Add profile reducer to store
   },
 });
-store.dispatch(logout());
+// store.dispatch(logout());
 
 export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;

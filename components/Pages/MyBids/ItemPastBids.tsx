@@ -109,6 +109,8 @@ const ItemPastBids: React.FC<ItemPastBidsProps> = ({
 
   const getStatusColorInvoice = (status: string) => {
     switch (status) {
+      case "CreateInvoice":
+        return "#FFA500";
       case "Paid":
         return "#FFA500";
       case "PendingPayment":
@@ -131,6 +133,8 @@ const ItemPastBids: React.FC<ItemPastBidsProps> = ({
   };
   const formatStatusInvoice = (status: string) => {
     switch (status) {
+      case "CreateInvoice": // sai chính tả
+        return "Create Invoice";
       case "Paid": // sai chính tả
         return "Paid";
       case "PendingPayment":

@@ -6,22 +6,40 @@ import { logout } from "./authSlice";
 // Thunks
 export const fetchProfile = createAsyncThunk(
   "profile/fetchProfile",
-  async (userId: number) => {
-    return await getProfile(userId);
+  async (userId: number, { rejectWithValue }) => {
+    try {
+      const response = await getProfile(userId);
+      return response.data;
+    } catch (error: any) {
+      return rejectWithValue(error.message || "Failed to fetch profile");
+    }
   }
 );
 
 export const removeAccount = createAsyncThunk(
   "profile/removeAccount",
-  async (userId: number) => {
-    return await deleteAccount(userId);
+  async (userId: number, { rejectWithValue }) => {
+    try {
+      const response = await deleteAccount(userId);
+      return response.data;
+    } catch (error: any) {
+      return rejectWithValue(error.message || "Failed to delete account");
+    }
   }
 );
 
 export const modifyProfile = createAsyncThunk(
   "profile/modifyProfile",
-  async ({ userId, profileData }: { userId: number; profileData: any }) => {
-    return await updateProfile(userId, profileData);
+  async (
+    { userId, profileData }: { userId: number; profileData: any },
+    { rejectWithValue }
+  ) => {
+    try {
+      const response = await updateProfile(userId, profileData);
+      return response.data;
+    } catch (error: any) {
+      return rejectWithValue(error.message || "Failed to update profile");
+    }
   }
 );
 
@@ -50,11 +68,11 @@ const profileSlice = createSlice({
       })
       .addCase(fetchProfile.fulfilled, (state, action) => {
         state.isLoading = false;
-        state.profile = action.payload.data;
+        state.profile = action.payload;
       })
       .addCase(fetchProfile.rejected, (state, action) => {
         state.isLoading = false;
-        state.error = action.error.message ?? null;
+        state.error = action.payload as string;
       })
       .addCase(removeAccount.fulfilled, (state) => {
         state.profile = null;

@@ -15,6 +15,8 @@ export const checkPasswordWallet = async (
   walletId: number,
   password: string
 ): Promise<boolean> => {
+  console.log("checking wallet password:", walletId, password);
+
   try {
     console.log("Checking wallet password...");
     console.log("Wallet ID:", walletId);

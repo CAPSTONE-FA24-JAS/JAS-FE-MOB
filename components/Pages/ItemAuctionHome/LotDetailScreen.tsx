@@ -215,7 +215,7 @@ const LotDetailScreen = () => {
   const handleConfirmPassword = async (enteredPassword: string) => {
     setPassword(enteredPassword);
     try {
-      if (haveWallet) {
+      if (haveWallet && enteredPassword) {
         // Use enteredPassword directly for verification
         const isPasswordCorrect = await checkPasswordWallet(
           haveWallet,
@@ -229,7 +229,7 @@ const LotDetailScreen = () => {
           showErrorMessage("Incorrect wallet password, please try again.");
         }
       } else {
-        showErrorMessage("Wallet ID is not available.");
+        showErrorMessage("Wallet ID or password is not available.");
       }
     } catch (error) {
       showErrorMessage("Failed to verify password.");

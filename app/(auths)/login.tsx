@@ -12,8 +12,8 @@ import {
   TouchableOpacity,
   Image,
 } from "react-native";
-import { useDispatch } from "react-redux";
-import { AppDispatch } from "@/redux/store";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "@/redux/store";
 import { LoginApi } from "@/api/authApi";
 import { Feather } from "@expo/vector-icons";
 import beachImage from "../../assets/bg-jas/header_login.png";
@@ -25,6 +25,7 @@ import {
 } from "@/components/FlashMessageHelpers";
 import { Checkbox } from "react-native-paper";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { fetchProfile } from "@/redux/slices/profileSlice";
 
 const Login: React.FC = () => {
   const [username, setUsername] = useState("");
@@ -37,15 +38,24 @@ const Login: React.FC = () => {
 
   const router = useRouter();
 
+  // Selectors to get user data from the Redux store
+  const userResponse = useSelector(
+    (state: RootState) => state.auth.userResponse
+  );
+  const isAuthenticated = useSelector(
+    (state: RootState) => state.auth.isAuthenticated
+  );
+
   const handleLogin = async () => {
     if (!username || !password) {
       showErrorMessage("Please fill in all fields");
       return;
     }
     try {
-      await LoginApi(username, password, dispatch);
+      const userData = await LoginApi(username, password, dispatch);
       setIsLoginSuccessful(true);
       showSuccessMessage("Login successful! Redirecting...");
+
       if (rememberMe) {
         // Save credentials
         await AsyncStorage.setItem("rememberedEmail", username);
@@ -55,6 +65,15 @@ const Login: React.FC = () => {
         await AsyncStorage.removeItem("rememberedEmail");
         await AsyncStorage.removeItem("rememberedPassword");
       }
+      // Dispatch fetchProfile with the userId
+      if (userData && userData.id) {
+        // Ensure userData and id exist
+        await dispatch(fetchProfile(userData.id));
+        console.log("Profile fetched successfully.");
+      } else {
+        console.warn("User data or ID is missing.");
+      }
+
       router.replace("/home-screen");
       console.log("Login successful, navigating to home..."); // Debug log
     } catch (error) {

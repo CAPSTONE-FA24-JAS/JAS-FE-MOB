@@ -69,10 +69,10 @@ const BidInput: React.FC<BidInputProps> = ({
   };
 
   const handleSubmitBidMethod4 = (price: number) => {
-    console.log("Method 4");
+    console.log("Method 4", price);
 
     setError(null);
-    onPlaceBidMethod4(price);
+    onPlaceBidMethod4(11000);
   };
 
   const handleBidChange = (newValue: string) => {
@@ -174,13 +174,7 @@ const BidInput: React.FC<BidInputProps> = ({
         <View className="flex items-center justify-between">
           <TouchableOpacity
             disabled={isEndAuction || item.status === "Sold"}
-            onPress={
-              reducePrice
-                ? () => handleSubmitBidMethod4(reducePrice)
-                : () => {
-                    console.log("Method 4");
-                  }
-            }
+            onPress={() => handleSubmitBidMethod4(reducePrice ?? 0)}
             className={
               isEndAuction || item.status === "Sold"
                 ? "w-[50%] flex items-center justify-center h-12 bg-gray-500 rounded-md"

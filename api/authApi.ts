@@ -17,9 +17,10 @@ export const LoginApi = async (
   email: string,
   password: string,
   dispatch: AppDispatch
-): Promise<void> => {
+): Promise<Data["user"] | null> => {
+  // Adjusted return type
   try {
-    console.log("Bắt đầu đăng nhập...", email, password);
+    console.log("Starting login...", email, password);
 
     const response = await axios.post<Response<Data>>(
       `${API_URL}/api/Authentication/Login`,
@@ -31,7 +32,7 @@ export const LoginApi = async (
 
     const { data } = response.data;
     console.log("====================================");
-    console.log("dataNe", JSON.stringify(data));
+    console.log("Login Data:", JSON.stringify(data));
     console.log("====================================");
 
     dispatch(
@@ -40,12 +41,14 @@ export const LoginApi = async (
         userResponse: { ...data.user },
       })
     );
-    console.log("Đăng nhập thành công.");
+    console.log("Login successful.");
+
+    return data.user; // Return user data
   } catch (error) {
     if (axios.isAxiosError(error)) {
-      console.error("Axios error:", error.toJSON()); // Thêm log chi tiết về lỗi Axios
+      console.error("Axios error:", error.toJSON());
     } else {
-      console.error("Lỗi đăng nhập:", error);
+      console.error("Login error:", error);
     }
     throw error;
   }

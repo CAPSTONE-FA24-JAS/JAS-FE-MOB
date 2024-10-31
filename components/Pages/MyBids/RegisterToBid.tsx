@@ -93,12 +93,13 @@ const RegisterToBid = () => {
   const handleConfirmPassword = async (enteredPassword: string) => {
     setPassword(enteredPassword);
     try {
-      if (typeof haveWallet === "number" && userId && password) {
+      console.log("passwordNHAAA", password);
+      if (haveWallet && enteredPassword) {
         const isPasswordCorrect = await checkPasswordWallet(
           haveWallet,
-          password
+          enteredPassword
         );
-        if (isPasswordCorrect) {
+        if (isPasswordCorrect && userId) {
           try {
             await registerToBid(lotDetail.deposit, userId, lotDetail.id);
             showSuccessMessage("Registered to bid successfully.");

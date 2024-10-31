@@ -51,13 +51,28 @@ export function useBidding(): UseBiddingResult {
     connection.on("JoinLot", (user: string, message: string) => {
       console.log(`${user}: ${message}`);
     });
+    //await _hubContext.Clients.Group(lotGroupName).SendAsync("SendBiddingPriceforReducedBidding", "Phiên đã kết thúc!", customerId, request.CurrentPrice, request.BidTime);
 
     ///ket thuc lot dau gia
-    connection.on("SendBiddingPriceforReducedBidding", (price: number) => {
-      console.log(`Current price updated: ${price}`);
-      setIsEndAuction(true);
-      setReducePrice(parseInt(price.toString()));
+    connection.on(
+      "SendBiddingPriceforReducedBidding",
+      (msg: string, cusid: string, currentPrice: string, time: string) => {
+        console.log(
+          `Current price updated: ${msg} at ${time} by ${cusid} with price ${currentPrice}`
+        );
+        setWinnerCustomer(cusid);
+        setWinnerPrice(currentPrice);
+        setIsEndAuction(true);
+        setReducePrice(Number(currentPrice));
+      }
+    );
+
+    connection.on("SendEndTimeLot", (lotId: number, newEndTime: string) => {
+      console.log(`End time updated for lot ${lotId}: ${newEndTime}`);
+      setEndTime(newEndTime);
     });
+
+    //await _hubContext.Clients.Group(lotGroupName).SendAsync("SendCurrentPriceForReduceBidding", lot.CurrentPrice);
 
     connection.on(
       "SendCurrentPriceForReduceBidding",
@@ -70,7 +85,7 @@ export function useBidding(): UseBiddingResult {
     connection.on(
       "ReducePriceBidding",
       (mess: string, currentPrice: number, time: string) => {
-        console.log(`currentPrice ${currentPrice} at ${time}`);
+        console.log(`${mess} currentPrice ${currentPrice} at ${time}`);
         setReducePrice(() => currentPrice);
       }
     );
@@ -133,6 +148,8 @@ export function useBidding(): UseBiddingResult {
       "AuctionEndedWithWinner",
       (message: string, customerId: string, price: number) => {
         setIsEndAuction(true);
+        setWinnerCustomer(customerId);
+        setWinnerPrice(price.toString());
         console.log(
           `${message} customerID ${customerId} at price ${price.toLocaleString(
             "vi-VN",
@@ -249,7 +266,7 @@ export function useBidding(): UseBiddingResult {
       const errorMessage =
         err instanceof Error ? err.message : "Failed to place bid";
       setError(errorMessage);
-      console.error("Error placing bid:", err);
+      console.error("Error placing bid method 3:", err);
     }
   }, []);
 

@@ -28,6 +28,7 @@ type RisingBidPageParams = {
 const RisingBidPage: React.FC = () => {
   const route = useRoute<RouteProp<RisingBidPageParams, "RisingBidPage">>();
   const { itemId } = route.params ?? {};
+
   const accountId = useSelector(
     (state: RootState) => state.auth.userResponse?.id
   );

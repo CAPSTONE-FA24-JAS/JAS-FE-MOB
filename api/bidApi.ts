@@ -154,6 +154,64 @@ export const getPastBidOfCustomer = async (
   }
 };
 
+export const buyNowMethod3 = async (
+  customerId: number,
+  lotId: number
+): Promise<PlaceBidResponse | null> => {
+  try {
+    const response = await axios.post<PlaceBidResponse>(
+      `${API_URL}/api/BidPrices/PlaceBuyNow/place-buy-now`,
+      {
+        customerId,
+        lotId,
+      }
+    );
+
+    if (response.data.isSuccess) {
+      showSuccessMessage(response.data.message || "Bid placed successfully!");
+      return response.data;
+    } else {
+      // Handle specific error message
+      if (
+        response.data.message === "The customer is not register into the lot"
+      ) {
+        showErrorMessage(
+          "You are not registered for this lot. Please register first."
+        );
+      } else {
+        showErrorMessage(response.data.message || "Failed to Buy now bid.");
+      }
+
+      return null;
+    }
+  } catch (error) {
+    // Check if the error is an AxiosError
+    if (axios.isAxiosError(error)) {
+      // Extract error response data if available
+      const errorResponse = error.response?.data;
+
+      // Handle specific error message
+      if (
+        errorResponse?.message === "The customer is not register into the lot"
+      ) {
+        showErrorMessage(
+          "You are not registered for this lot. Please register first."
+        );
+      } else {
+        // Handle other errors from Axios response
+        showErrorMessage(
+          errorResponse?.message || "Request failed with status code 400."
+        );
+      }
+    } else {
+      // Handle general errors
+      console.error("Error placing bid:", error);
+      showErrorMessage("Unable to place bid. Please try again.");
+    }
+    return null;
+  }
+};
+
 // Function to get my bid by customer lot ID
 export const getMyBidByCustomerLotId = async (
   customerLotId: number

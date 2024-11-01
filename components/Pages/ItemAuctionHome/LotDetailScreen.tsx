@@ -24,7 +24,7 @@ import {
   showSuccessMessage,
 } from "@/components/FlashMessageHelpers";
 import { checkPasswordWallet } from "@/api/walletApi";
-import { placeBidFixedPriceAndSecret } from "@/api/bidApi";
+import { buyNowMethod3, placeBidFixedPriceAndSecret } from "@/api/bidApi";
 import PasswordModal from "../Payment/CheckPasswordModal";
 import ConfirmBuyNowModal from "./ModalLot/ConfirmBuyNowModal";
 import SecretAuctionBidModal from "./ModalLot/SecretAuctionBidModal";
@@ -64,6 +64,10 @@ const LotDetailScreen = () => {
   // Sử dụng useAppSelector để lấy userId từ Redux store
   const userId = useSelector(
     (state: RootState) => state.auth.userResponse?.customerDTO?.id
+  );
+
+  const customerId = useSelector(
+    (state: RootState) => state.auth.userResponse?.id
   );
   const haveWallet = useSelector(
     (state: RootState) => state?.profile?.profile?.customerDTO?.walletId
@@ -177,12 +181,8 @@ const LotDetailScreen = () => {
   const handleConfirmBuyNow = async () => {
     setConfirmBuyNowVisible(false); // Close the modal first
     try {
-      if (userId && lotDetail?.buyNowPrice && lotDetail?.id) {
-        await placeBidFixedPriceAndSecret(
-          lotDetail.buyNowPrice - lotDetail.deposit,
-          userId,
-          lotDetail.id
-        );
+      if (customerId && lotDetail?.id) {
+        await buyNowMethod3(customerId, lotDetail.id);
         showSuccessMessage("Bid placed successfully!");
         fetchLotDetail(); // Reload the lot details
       } else {
@@ -486,8 +486,7 @@ const LotDetailScreen = () => {
             <Swiper
               showsPagination={true}
               autoplay={true}
-              style={{ height: "100%" }}
-            >
+              style={{ height: "100%" }}>
               {lotDetail?.jewelry?.imageJewelries?.length ?? 0 > 0 ? (
                 lotDetail?.jewelry?.imageJewelries.map((img, index) =>
                   img?.imageLink ? (
@@ -569,13 +568,12 @@ const LotDetailScreen = () => {
           <View>
             {(typeBid === "Fixed_Price" || typeBid === "Secret_Auction") && (
               <TouchableOpacity
-                className="mb-3 py-3  bg-blue-500 rounded-sm"
+                className="py-3 mb-3 bg-blue-500 rounded-sm"
                 onPress={
                   typeBid === "Fixed_Price"
                     ? handleBuyNow
                     : handleSecretAuctionBid
-                }
-              >
+                }>
                 <Text className="font-semibold text-center text-white uppercase">
                   {typeBid === "Fixed_Price"
                     ? "BUY IT NOW"
@@ -585,8 +583,7 @@ const LotDetailScreen = () => {
             )}
             <TouchableOpacity
               onPress={handlePressAutoBid}
-              className="mb-3 bg-blue-500 rounded-sm"
-            >
+              className="mb-3 bg-blue-500 rounded-sm">
               <Text className="py-3 font-semibold text-center text-white">
                 BID AUTOMATION
               </Text>
@@ -594,8 +591,7 @@ const LotDetailScreen = () => {
             {typeBid !== "Fixed_Price" && (
               <TouchableOpacity
                 className="py-3 mb-3 bg-blue-500 rounded-sm"
-                onPress={() => setModalVisible(true)}
-              >
+                onPress={() => setModalVisible(true)}>
                 <Text className="font-semibold text-center text-white">
                   PLACE BID
                 </Text>
@@ -604,8 +600,7 @@ const LotDetailScreen = () => {
             {typeBid !== "Fixed_Price" && (
               <TouchableOpacity
                 className="py-3 bg-blue-500 rounded-sm"
-                onPress={handleJoinToBid}
-              >
+                onPress={handleJoinToBid}>
                 <Text className="font-semibold text-center text-white uppercase">
                   Join To Bid
                 </Text>
@@ -617,8 +612,7 @@ const LotDetailScreen = () => {
         {!isRegistered && (
           <TouchableOpacity
             className="py-3 mt-4 bg-blue-500 rounded-sm"
-            onPress={handleRegisterToBid}
-          >
+            onPress={handleRegisterToBid}>
             <Text className="font-semibold text-center text-white uppercase">
               Register To Bid
             </Text>

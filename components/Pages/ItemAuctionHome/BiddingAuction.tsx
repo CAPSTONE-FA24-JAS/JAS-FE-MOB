@@ -5,7 +5,7 @@ import AuctionLots from "./AuctionLots";
 import { useRoute } from "@react-navigation/native";
 import { AuctionData } from "@/app/types/auction_type";
 import { viewAuctionById } from "@/api/auctionApi";
-import { ActivityIndicator, View } from "react-native";
+import { ActivityIndicator, View, Text } from "react-native";
 
 const BiddingAuction = () => {
   const route = useRoute();
@@ -15,6 +15,7 @@ const BiddingAuction = () => {
     null
   );
   const [loading, setLoading] = useState<boolean>(true);
+  const [timeLeft, setTimeLeft] = useState<string>("");
 
   const [index, setIndex] = React.useState(0);
   const [isSwiperActive, setIsSwiperActive] = useState<boolean>(false);
@@ -35,9 +36,46 @@ const BiddingAuction = () => {
     fetchAuctionDetails();
   }, [auctionId]);
 
+  // Calculate time left
+  useEffect(() => {
+    if (!auctionDetails?.endTime) return;
+
+    const calculateTimeLeft = () => {
+      const now = new Date().getTime();
+      const endTime = new Date(auctionDetails.endTime).getTime();
+      const difference = endTime - now;
+
+      if (difference > 0) {
+        const days = Math.floor(difference / (1000 * 60 * 60 * 24));
+        const hours = Math.floor(
+          (difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
+        );
+        const minutes = Math.floor(
+          (difference % (1000 * 60 * 60)) / (1000 * 60)
+        );
+        const seconds = Math.floor((difference % (1000 * 60)) / 1000);
+
+        let timeString = "";
+        if (days > 0) timeString += `${days}d `;
+        if (hours > 0) timeString += `${hours}h `;
+        if (minutes > 0) timeString += `${minutes}m `;
+        timeString += `${seconds}s Left`;
+
+        setTimeLeft(timeString);
+      } else {
+        setTimeLeft("Auction ended");
+      }
+    };
+
+    calculateTimeLeft();
+    const timer = setInterval(calculateTimeLeft, 1000);
+
+    return () => clearInterval(timer);
+  }, [auctionDetails?.endTime]);
+
   if (loading) {
     return (
-      <View className="flex-1 justify-center items-center">
+      <View className="items-center justify-center flex-1">
         <ActivityIndicator size="large" color="#0000ff" />
       </View>
     );
@@ -45,6 +83,13 @@ const BiddingAuction = () => {
 
   return (
     <>
+      <View className="py-2 bg-red-600">
+        <Text className="text-center text-white">
+          {auctionDetails?.status === "Live" ? "Bid" : "Upcoming After"}
+          {timeLeft}
+        </Text>
+      </View>
+
       <Tab
         dense
         value={index}
@@ -57,8 +102,7 @@ const BiddingAuction = () => {
           backgroundColor: "transparent",
           alignSelf: "center",
           width: "50%",
-        }}
-      >
+        }}>
         <Tab.Item
           title="AUCTION"
           titleStyle={(active) => ({
@@ -103,8 +147,7 @@ const BiddingAuction = () => {
         value={index}
         onChange={setIndex}
         animationType="spring"
-        disableSwipe={isSwiperActive}
-      >
+        disableSwipe={isSwiperActive}>
         <TabView.Item style={{ width: "100%" }}>
           {auctionDetails && (
             <AuctionDetailScreen

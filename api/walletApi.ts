@@ -5,6 +5,7 @@ import {
 } from "@/components/FlashMessageHelpers";
 import {
   CreateWalletResponse,
+  TransactionResponse,
   WalletBalanceResponse,
 } from "@/app/types/wallet_type";
 
@@ -124,6 +125,38 @@ export const depositWallet = async (
   } catch (error) {
     console.error("Error topping up wallet:", error);
     showErrorMessage("Unable to top up wallet.");
+    throw error;
+  }
+};
+
+// Function to get transactions by customer ID
+export const getTransactionsByCustomer = async (
+  customerId: number
+): Promise<TransactionResponse | null> => {
+  try {
+    console.log("Fetching transactions for customer ID:", customerId);
+
+    const response = await axios.get<TransactionResponse>(
+      `${API_URL}/api/Transaction/ViewTransactionsByCustomer`,
+      {
+        params: { customerId },
+      }
+    );
+
+    if (response.data.isSuccess) {
+      console.log("Transactions retrieved successfully:", response.data.data);
+      showSuccessMessage(
+        response.data.message || "Transactions retrieved successfully."
+      );
+      return response.data;
+    } else {
+      throw new Error(
+        response.data.message || "Failed to retrieve transactions."
+      );
+    }
+  } catch (error) {
+    console.error("Error fetching transactions:", error);
+    showErrorMessage("Unable to retrieve transactions.");
     throw error;
   }
 };

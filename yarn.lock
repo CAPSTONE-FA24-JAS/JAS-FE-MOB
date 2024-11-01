@@ -4079,6 +4079,11 @@ expo-linking@*, expo-linking@~6.3.1:
     expo-constants "~16.0.0"
     invariant "^2.2.4"
 
+expo-media-library@^16.0.5:
+  version "16.0.5"
+  resolved "https://registry.npmjs.org/expo-media-library/-/expo-media-library-16.0.5.tgz"
+  integrity sha512-O9RUqBWgJVRF0mO6EiLSBFyfb5wR1/ZqovbT43V0TAo5sgcjrHRs+0NID/U6BWDRuiFeX2AU516JgNDutNUFSw==
+
 expo-modules-autolinking@>=0.8.1, expo-modules-autolinking@1.11.1:
   version "1.11.1"
   resolved "https://registry.npmjs.org/expo-modules-autolinking/-/expo-modules-autolinking-1.11.1.tgz"

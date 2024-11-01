@@ -226,12 +226,12 @@ const ItemPastBids: React.FC<ItemPastBidsProps> = ({
             className={` rounded px-4 py-1 justify-center mr-4 flex-row items-center`}
             style={{
               backgroundColor: getStatusColorInvoice(
-                itemInvoice?.status ?? "N/A"
+                statusInvoice ?? "N/A"
               ),
             }}
           >
             <Text className="text-base text-center font-semibold text-white uppercase">
-              {formatStatusInvoice(itemInvoice?.status ?? "N/A")}
+              {formatStatusInvoice(statusInvoice ?? "N/A")}
             </Text>
           </TouchableOpacity>
         ) : (

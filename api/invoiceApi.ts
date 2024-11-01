@@ -8,6 +8,7 @@ import {
   InvoicesByStatusResponse,
   InvoiceDetailResponse,
 } from "@/app/types/invoice_type";
+import { Alert } from "react-native";
 
 const API_URL = process.env.EXPO_PUBLIC_API_URL || "http://localhost:7251";
 
@@ -168,13 +169,37 @@ export const paymentInvoiceByWallet = async (
       showSuccessMessage("Payment by wallet was successful.");
       return response.data;
     } else {
-      throw new Error(
-        response.data.message || "Failed to pay invoice by wallet."
+      // Hiển thị Alert với thông điệp lỗi từ phản hồi
+      Alert.alert(
+        "Lỗi Thanh Toán",
+        response.data.message || "Failed to pay invoice by wallet.",
+        [{ text: "OK" }],
+        { cancelable: false }
+      );
+      return null; // Bạn có thể trả về null hoặc xử lý theo cách khác
+    }
+  } catch (error: any) {
+    console.error("Error paying invoice by wallet:", error);
+
+    // Kiểm tra xem lỗi có phải là lỗi Axios và có phản hồi không
+    if (axios.isAxiosError(error) && error.response) {
+      const serverMessage = error.response.data.message;
+      Alert.alert(
+        "Lỗi Thanh Toán",
+        serverMessage || "Unable to pay invoice by wallet.",
+        [{ text: "OK" }],
+        { cancelable: false }
+      );
+    } else {
+      // Lỗi không phải từ máy chủ hoặc không có phản hồi
+      Alert.alert(
+        "Lỗi Thanh Toán",
+        "Unable to pay invoice by wallet.",
+        [{ text: "OK" }],
+        { cancelable: false }
       );
     }
-  } catch (error) {
-    console.error("Error paying invoice by wallet:", error);
-    showErrorMessage("Unable to pay invoice by wallet.");
-    throw error;
+
+    throw error; // Tiếp tục ném lỗi nếu bạn muốn xử lý ở nơi gọi hàm này
   }
 };

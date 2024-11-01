@@ -1,5 +1,6 @@
 import { StackNavigationProp } from "@react-navigation/stack";
 import { useNavigation } from "expo-router";
+import { Asset } from "expo-asset";
 import React, { useState } from "react";
 import {
   View,
@@ -8,6 +9,7 @@ import {
   ScrollView,
   ActivityIndicator,
   Modal,
+  Image,
 } from "react-native";
 import { RadioButton, Appbar, Card, Avatar } from "react-native-paper";
 import Icon from "react-native-vector-icons/MaterialIcons"; // Import Material Icons
@@ -25,6 +27,10 @@ import {
 } from "@/api/invoiceApi";
 import { Linking } from "react-native";
 import { MyBidData } from "@/app/types/bid_type";
+import * as FileSystem from "expo-file-system"; // Import Expo FileSystem
+import * as MediaLibrary from "expo-media-library"; // Import Expo MediaLibrary for saving images
+import { checkPasswordWallet } from "@/api/walletApi";
+import PasswordModal from "./CheckPasswordModal";
 
 // Define the types for navigation routes
 type RootStackParamList = {
@@ -33,7 +39,11 @@ type RootStackParamList = {
     itemDetailBid: MyBidData;
     yourMaxBid: number;
   };
-  PaymentSuccess: undefined;
+  PaymentSuccess: {
+    invoiceId?: number;
+    itemDetailBid: MyBidData;
+    yourMaxBid: number;
+  };
   Payment: {
     totalPrice: number;
     invoiceId: number;
@@ -42,60 +52,72 @@ type RootStackParamList = {
   };
 };
 
+const downloadImage = async () => {
+  try {
+    const { status } = await MediaLibrary.requestPermissionsAsync();
+    if (status !== "granted") {
+      alert("Permission to access media library is required!");
+      return;
+    }
+
+    // Resolve the URI of the image asset
+    const asset = Asset.fromModule(require("../../../assets/icons/qr.jpg"));
+    await asset.downloadAsync(); // Ensure the asset is downloaded
+
+    const localUri = FileSystem.documentDirectory + "qr-image.jpg";
+
+    // Copy the asset file to the device's writable directory
+    await FileSystem.copyAsync({
+      from: asset.localUri || asset.uri,
+      to: localUri,
+    });
+
+    // Save the copied image to the media library
+    await MediaLibrary.createAssetAsync(localUri);
+    alert("Image downloaded successfully!");
+  } catch (error) {
+    console.error("Download error:", error);
+    alert("Failed to download image.");
+  }
+};
+
+// Đường dẫn đến hình ảnh QR trong thư mục dự án
+const qrImagePath = require("../../../assets/icons/qr.jpg");
+
 const Payment: React.FC = () => {
   const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
   const route = useRoute<RouteProp<RootStackParamList, "Payment">>();
   const { totalPrice, invoiceId, itemDetailBid, yourMaxBid } = route.params;
-
+  const [passwordModalVisible, setPasswordModalVisible] =
+    useState<boolean>(false);
+  const [password, setPassword] = useState<string>("");
   const walletId = useSelector(
     (state: RootState) => state.profile.profile?.customerDTO?.walletDTO?.id
   );
   const [selectedPayment, setSelectedPayment] = useState<string>("wallet");
   const [isBalanceVisible, setIsBalanceVisible] = useState<boolean>(false); // State to handle balance visibility
   const [isProcessing, setIsProcessing] = useState<boolean>(false); // State to handle processing
-  const [isPaymentModalVisible, setIsPaymentModalVisible] =
-    useState<boolean>(false); // State for modal visibility
+  // const [isPaymentModalVisible, setIsPaymentModalVisible] =
+  //   useState<boolean>(false); // State for modal visibility
+
+  const [isQRModalVisible, setIsQRModalVisible] = useState<boolean>(false);
 
   console.log("Slected Payment:", selectedPayment);
 
+  const handleDownloadQR = () => {
+    // Vì ảnh QR là ảnh cục bộ, chúng ta không cần download từ URL
+    alert("Downloading local QR image is not supported directly.");
+  };
+
   const handlePayment = async () => {
-    if (selectedPayment === "wallet") {
-      // Ensure walletId exists
-      if (!walletId) {
-        showErrorMessage("Wallet not found.");
-        return;
-      }
-
-      setIsProcessing(true);
-
-      try {
-        console.log(
-          "Payment initiated by wallet:",
-          walletId,
-          totalPrice,
-          invoiceId
-        );
-
-        const response = await paymentInvoiceByWallet(
-          walletId,
-          totalPrice,
-          invoiceId
-        );
-        console.log("Payment response:", response);
-
-        if (response?.isSuccess) {
-          showSuccessMessage(response.message || "Payment successful.");
-          navigation.navigate("PaymentSuccess");
-        } else {
-          showErrorMessage(response?.message || "Payment failed.");
-        }
-      } catch (error) {
-        showErrorMessage("An error occurred during payment.");
-        console.error("Payment Error:", error);
-      } finally {
-        setIsProcessing(false);
-      }
+    if (selectedPayment === "qr") {
+      // Show QR modal
+      setIsQRModalVisible(true);
+    } else if (selectedPayment === "wallet") {
+      // Show password modal
+      setPasswordModalVisible(true);
     } else if (selectedPayment === "vnpay") {
+      // Existing VNPAY logic
       setIsProcessing(true);
 
       try {
@@ -106,24 +128,19 @@ const Payment: React.FC = () => {
             response.message || "Payment initiated successfully."
           );
 
-          const paymentUrl = response.data; // Lấy URL từ phản hồi
+          const paymentUrl = response.data;
 
           if (paymentUrl) {
-            // Kiểm tra xem URL có hợp lệ không
             const supported = await Linking.canOpenURL(paymentUrl);
             if (supported) {
-              // Mở URL trong trình duyệt
               await Linking.openURL(paymentUrl);
-              setIsPaymentModalVisible(true); // Show modal after opening URL
+              // setIsPaymentModalVisible(true);
             } else {
               showErrorMessage("Failed to open payment URL.");
             }
           } else {
             showErrorMessage("Invalid payment URL.");
           }
-
-          // Có thể điều hướng đến một màn hình khác sau khi mở URL nếu cần
-          // Ví dụ: navigation.navigate("PaymentUpload");
         } else {
           showErrorMessage(
             response?.message || "Failed to initiate VNPAY payment."
@@ -138,10 +155,63 @@ const Payment: React.FC = () => {
     }
   };
 
+  const handlePasswordConfirm = async (enteredPassword: string) => {
+    setPassword(enteredPassword);
+    try {
+      if (walletId && enteredPassword) {
+        const isPasswordCorrect = await checkPasswordWallet(
+          walletId,
+          enteredPassword
+        );
+
+        if (isPasswordCorrect) {
+          setPasswordModalVisible(false); // Close password modal
+          // Proceed with wallet payment
+          setIsProcessing(true);
+
+          try {
+            const response = await paymentInvoiceByWallet(
+              walletId,
+              totalPrice,
+              invoiceId
+            );
+
+            if (response?.isSuccess) {
+              showSuccessMessage(response.message || "Payment successful.");
+              navigation.navigate("PaymentSuccess", {
+                invoiceId: invoiceId,
+                itemDetailBid: itemDetailBid,
+                yourMaxBid: yourMaxBid,
+              });
+            } else {
+              showErrorMessage(response?.message || "Payment failed.");
+            }
+          } catch (error) {
+            showErrorMessage("An error occurred during payment.");
+            console.error("Payment Error:", error);
+          } finally {
+            setIsProcessing(false);
+          }
+        } else {
+          showErrorMessage("Incorrect wallet password, please try again.");
+        }
+      } else {
+        showErrorMessage("Wallet ID or password is not available.");
+      }
+    } catch (error) {
+      showErrorMessage("Failed to verify password.");
+      console.error("Password Verification Error:", error);
+    }
+  };
+
   return (
     <View className="flex-1 bg-gray-100">
       <ScrollView className="flex-1">
         <View className="p-4">
+          <Text className="font-bold uppercase my-2 text-lg text-gray-600"> Price need pay: {totalPrice?.toLocaleString("vi-VN", {
+                style: "currency",
+                currency: "VND",
+              })}</Text>
           {/* Balance */}
           <BalanceCard />
 
@@ -178,7 +248,7 @@ const Payment: React.FC = () => {
             </Text>
             <Text className="text-red-500  font-semibold mb-4">
               Note: Sau khi thanh toán gián tiếp thành công, bạn cần chụp màn
-              hình bill chuyển khoản và upload lên lại app JAS.
+              hình bill chuyển khoản và upload lên lại app JAS. nha
             </Text>
 
             {/* VNPAY Payment */}
@@ -197,12 +267,29 @@ const Payment: React.FC = () => {
                 <RadioButton value="vnpay" />
               </TouchableOpacity>
             </Card>
+
+            {/* Thêm Card QR PAYMENT */}
+            <Card className="mb-4 bg-white">
+              <TouchableOpacity className="flex-row justify-between items-center p-4">
+                <View className="flex-row items-center">
+                  <Avatar.Image
+                    source={require("../../../assets/icons/qr.jpg")}
+                    size={40}
+                  />
+                  <View className="ml-3">
+                    <Text className="text-lg font-semibold">QR PAYMENT</Text>
+                    <Text>Thanh toán QR PAYMENT</Text>
+                  </View>
+                </View>
+                <RadioButton value="qr" />
+              </TouchableOpacity>
+            </Card>
           </RadioButton.Group>
         </View>
       </ScrollView>
 
       {/* Modal for Payment Confirmation */}
-      <Modal
+      {/* <Modal
         visible={isPaymentModalVisible}
         transparent={true}
         animationType="slide"
@@ -239,7 +326,71 @@ const Payment: React.FC = () => {
             </TouchableOpacity>
           </View>
         </View>
+      </Modal> */}
+
+      {/* Modal QR */}
+      <Modal
+        visible={isQRModalVisible}
+        transparent={true}
+        animationType="slide"
+      >
+        <View className="flex-1 justify-center items-center bg-black/50">
+          <View className="w-[80%] p-4 bg-white rounded-lg">
+            <Text className="font-bold text-xl text-gray-800 text-center uppercase">
+              QR PAYMENT WITH{" "}
+              {totalPrice.toLocaleString("vi-VN", {
+                style: "currency",
+                currency: "VND",
+              })}
+            </Text>
+            <Image
+              source={qrImagePath}
+              style={{ width: "100%", height: 400 }}
+              resizeMode="contain"
+            />
+            <TouchableOpacity
+              className="p-3 rounded mt-2 bg-blue-500 my-2"
+              onPress={() => downloadImage()}
+            >
+              <Text className="text-white text-center font-semibold">
+                Download Image
+              </Text>
+            </TouchableOpacity>
+            <View className="flex-row justify-between items-center">
+              <TouchableOpacity
+                className="p-3 w-[48%] rounded bg-gray-500"
+                onPress={() => setIsQRModalVisible(false)}
+              >
+                <Text className="text-white text-center uppercase font-semibold">
+                  Cancel
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                className="p-3 w-[48%] rounded bg-green-500 my-2"
+                onPress={() => {
+                  setIsQRModalVisible(false);
+                  navigation.navigate("PaymentUpload", {
+                    invoiceId,
+                    itemDetailBid,
+                    yourMaxBid,
+                  });
+                }}
+              >
+                <Text className="text-white text-center uppercase font-semibold">
+                  I have paid
+                </Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
       </Modal>
+
+      <PasswordModal
+        isVisible={passwordModalVisible}
+        onClose={() => setPasswordModalVisible(false)}
+        onConfirm={handlePasswordConfirm}
+        amount={totalPrice}
+      />
 
       {/* Payment Button at the bottom */}
       <View className="absolute bottom-0 w-full p-4 bg-white">

@@ -63,7 +63,7 @@ const MyAccount = () => {
   // Handle password confirmation
   const handlePasswordConfirm = async (enteredPassword: string) => {
     try {
-      if (haveWallet && typeof haveWallet === "number") {
+      if (haveWallet && enteredPassword) {
         // Use enteredPassword directly for verification
         const isPasswordCorrect = await checkPasswordWallet(
           haveWallet,

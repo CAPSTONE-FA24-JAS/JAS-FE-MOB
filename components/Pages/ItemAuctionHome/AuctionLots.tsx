@@ -1,6 +1,7 @@
 import { getLotsByAuctionId } from "@/api/lotAPI";
 import { AuctionData } from "@/app/types/auction_type";
 import { Lot } from "@/app/types/lot_type";
+import CountdownTimerBid from "@/components/CountDown/CountdownTimer";
 import ItemLots from "@/components/ItemLots";
 import React, { useEffect, useState } from "react";
 import {
@@ -41,9 +42,10 @@ const AuctionLots: React.FC<AuctionLotsProps> = ({ dataAuction }) => {
 
   return (
     <ScrollView className="bg-white">
-      <View className="bg-red-600">
-        <Text className="text-center text-white">Bid 13th 2min 56s Left</Text>
-      </View>
+      <CountdownTimerBid
+        startTime={dataAuction?.startTime || null}
+        endTime={dataAuction?.endTime || null}
+      />
 
       {/* Search and filter section */}
       <View className="flex flex-row justify-around py-3 searchbar">

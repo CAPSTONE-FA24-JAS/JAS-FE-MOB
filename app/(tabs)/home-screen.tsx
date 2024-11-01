@@ -9,47 +9,50 @@ import {
 import ItemAuctionHomePage from "@/components/Pages/ItemAuctionHome/ItemAuctionHomePage";
 import { AuctionsData } from "../types/auction_type";
 import { getAuctionsByStatus, viewAuctions } from "@/api/auctionApi";
+import { MaterialIcons } from "@expo/vector-icons";
 
 const HomeScreen = () => {
   const [auctions, setAuctions] = useState<AuctionsData[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
-  // Fetch auctions with status 'Living' on component mount
-  useEffect(() => {
-    const fetchAuctions = async () => {
-      try {
-        const [status1Response, status2Response, status3Response] =
-          await Promise.all([
-            getAuctionsByStatus(3),
-            getAuctionsByStatus(2),
-            getAuctionsByStatus(1),
-          ]);
-        if (
-          status1Response.isSuccess &&
-          status2Response.isSuccess &&
-          status3Response.isSuccess
-        ) {
-          const now = new Date();
-          const combinedAuctions = [
-            ...status1Response.data,
-            ...status2Response.data,
-            ...status3Response.data,
-          ]
-            // .filter((auction) => new Date(auction.endTime) > now) // Ensure endTime is in the future
-            .sort((a, b) => b.id - a.id); // Sort by id in descending order
+  const fetchAuctions = async () => {
+    try {
+      setLoading(true);
+      const [status1Response, status2Response, status3Response] =
+        await Promise.all([
+          getAuctionsByStatus(3),
+          getAuctionsByStatus(2),
+          getAuctionsByStatus(1),
+        ]);
 
-          setAuctions(combinedAuctions);
-        } else {
-          setError("Failed to load auctions.");
-        }
-      } catch (err) {
+      if (
+        status1Response.isSuccess &&
+        status2Response.isSuccess &&
+        status3Response.isSuccess
+      ) {
+        const now = new Date();
+        const combinedAuctions = [
+          ...status1Response.data,
+          ...status2Response.data,
+          ...status3Response.data,
+        ]
+          // .filter((auction) => new Date(auction.endTime) > now)
+          .sort((a, b) => b.id - a.id);
+
+        setAuctions(combinedAuctions);
+      } else {
         setError("Failed to load auctions.");
-      } finally {
-        setLoading(false);
       }
-    };
+    } catch (err) {
+      setError("Failed to load auctions.");
+    } finally {
+      setLoading(false);
+    }
+  };
 
+  // Fetch auctions on component mount
+  useEffect(() => {
     fetchAuctions();
   }, []);
 
@@ -112,6 +115,16 @@ const HomeScreen = () => {
 
   return (
     <View className="flex-1 bg-white">
+      {/* Reload Button */}
+      <View className="p-4 flex-row justify-end items-center">
+        <TouchableOpacity
+          onPress={fetchAuctions}
+          className="flex-row items-center px-2 py-1 bg-gray-300 rounded"
+        >
+          <MaterialIcons name="refresh" size={24} color="black" />
+          <Text className="ml-2 text-gray-700 font-semibold">Reload</Text>
+        </TouchableOpacity>
+      </View>
       <FlatList
         data={auctions}
         keyExtractor={(item) => item.id.toString()}

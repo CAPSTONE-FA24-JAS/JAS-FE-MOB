@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   TextInput,
   Modal,
+  Alert,
 } from "react-native";
 import { Checkbox } from "react-native-paper";
 import { useRoute } from "@react-navigation/native";
@@ -22,6 +23,7 @@ import { registerToBid } from "@/api/lotAPI";
 import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 import { useNavigation } from "expo-router";
 import PasswordModal from "../Payment/CheckPasswordModal";
+import { ApiError } from "@/api/utils/ApiError";
 
 type RootStackParamList = {
   [x: string]: any;
@@ -100,21 +102,27 @@ const RegisterToBid = () => {
           enteredPassword
         );
         if (isPasswordCorrect && userId) {
+          setIsPasswordModalVisible(false); // Close the password modal
           try {
             await registerToBid(lotDetail.deposit, userId, lotDetail.id);
             showSuccessMessage("Registered to bid successfully.");
-            setIsPasswordModalVisible(false);
-            navigation.replace("RisingBidPage", { itemId: lotDetail.id }); /// lot id
+            navigation.replace("RisingBidPage", { itemId: lotDetail.id }); // lot id
           } catch (error: any) {
-            const errorMessage = error.response?.data?.message || error.message;
-            if (
-              errorMessage ===
-              "Customer haven't bidlimt, please regiser new bidlimit before join to lot"
-            ) {
-              setIsPasswordModalVisible(false); // Close the password modal
-              setIsDepositModalVisible(true); // Show the deposit prompt modal
+            if (error instanceof ApiError) {
+              if (error.code === 400) {
+                // Show React Native Alert for 400 errors
+                Alert.alert("Error", error.message);
+              } else if (
+                error.message ===
+                "Customer haven't bidlimt, please register new bidlimit before join to lot"
+              ) {
+                setIsDepositModalVisible(true); // Show the deposit prompt modal
+              } else {
+                showErrorMessage(error.message || "Failed to register to bid.");
+              }
             } else {
-              showErrorMessage(errorMessage || "Failed to register to bid.");
+              // Handle other types of errors
+              showErrorMessage("An unexpected error occurred.");
             }
           }
         } else {

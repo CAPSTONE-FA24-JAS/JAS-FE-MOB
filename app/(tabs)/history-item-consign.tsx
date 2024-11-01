@@ -150,7 +150,7 @@ const HistoryItemConsign: React.FC = () => {
               <Text className="text-lg text-center">Không có ký gửi nào</Text>
             ) : (
               <FlatList
-                className="h-[70vh]"
+                className="h-[85%]"
                 data={searchedItems} // Hiển thị searchedItems
                 renderItem={({ item }) => (
                   <ConsignItem
@@ -172,11 +172,11 @@ const HistoryItemConsign: React.FC = () => {
               />
             )}
 
-            {items.length > 10 && (
+            {/* {items.length > 10 && (
               <TouchableOpacity className="w-full p-3 mt-4 bg-gray-800 rounded">
                 <Text className="text-center text-white">XEM THÊM</Text>
               </TouchableOpacity>
-            )}
+            )} */}
           </View>
         )}
       </View>

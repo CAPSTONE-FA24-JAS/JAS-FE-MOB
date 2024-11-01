@@ -327,7 +327,7 @@ const ConsignDetailTimeLine: React.FC = () => {
                       )}
                     </Text>
                     <Text className="font-bold">{event?.statusName}</Text>
-                    {event?.statusName == "ManagerApproved" &&
+                    {event?.statusName == "RecivedJewelry" &&
                       item?.valuationDocuments && ( // chưa biết cái nào hiển thị tài liệu nên để đây
                         <TouchableOpacity
                           className="p-2 mt-1 bg-gray-200 rounded w-[180px]"

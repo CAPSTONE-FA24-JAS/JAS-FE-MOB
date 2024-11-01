@@ -12,7 +12,7 @@ type RootStackParamList = {
   HomePage: undefined;
   Account: { screen: "InvoiceList" };
   PaymentSuccess: {
-    invoiceId: number;
+    invoiceId?: number;
     itemDetailBid: MyBidData;
     yourMaxBid: number;
   };
@@ -73,7 +73,7 @@ const PaymentSuccess: React.FC = () => {
           <Text className="text-base font-semibold text-gray-600">
             Invoice Code
           </Text>
-          <Text className="text-base font-bold text-black">#{invoiceId}</Text>
+          <Text className="text-base font-bold text-black">#{invoiceId ||1}</Text>
         </View>
         <View className="flex-row justify-between mb-3 ">
           <Text className="text-base font-semibold text-gray-600">

@@ -270,7 +270,7 @@ const InvoiceDetailConfirm: React.FC = () => {
         {/* Confirm Button */}
         <StyledTouchableOpacity
           disabled={!isChecked}
-          onPress={() => setPasswordModalVisible(true)} // Show password modal
+          onPress={handleConfirm} // Show password modal
           className={`p-3 rounded ${isChecked ? "bg-blue-500" : "bg-gray-300"}`}
         >
           <StyledText className="text-white text-center font-bold">

@@ -77,10 +77,10 @@ const InvoiceDetailConfirm: React.FC = () => {
   const handlePasswordConfirm = async (enteredPassword: string) => {
     setPassword(enteredPassword);
     try {
-      if (haveWallet) {
+      if (haveWallet && enteredPassword) {
         const isPasswordCorrect = await checkPasswordWallet(
           haveWallet,
-          password
+          enteredPassword
         );
 
         if (isPasswordCorrect) {

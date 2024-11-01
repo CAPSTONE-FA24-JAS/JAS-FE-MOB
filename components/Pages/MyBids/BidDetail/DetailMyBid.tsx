@@ -247,13 +247,16 @@ const DetailMyBid: React.FC = () => {
         yourMaxBid={yourMaxBid || 0}
         itemDetailBid={itemDetailBid || ({} as MyBidData)}
       />
-      {invoiceDetails && invoiceDetails.linkBillTransaction && (
-        <View className="my-2 bg-green-600 p-2 ">
-          <Text className="text-lg font-semibold text-white  text-center">
-            You have successfully paid for this invoice.
-          </Text>
-        </View>
-      )}
+      {invoiceDetails &&
+        invoiceDetails.linkBillTransaction &&
+        invoiceDetails.status !== "PendingPayment" &&
+        invoiceDetails.status !== "CreateInvoice" && (
+          <View className="my-2 bg-green-600 p-2 ">
+            <Text className="text-lg font-semibold text-white  text-center">
+              You have successfully paid for this invoice.
+            </Text>
+          </View>
+        )}
       {invoiceDetails && invoiceDetails.statusInvoiceDTOs && (
         <View className="mx-4 mt-4">
           <Text className="font-semibold text-lg text-gray-600 mb-2">

@@ -51,7 +51,7 @@ const BidInput: React.FC<BidInputProps> = ({
     if (value === 0) {
       return "Bid must be higher than 0";
     }
-    if (value < highestBid) {
+    if (value <= highestBid) {
       return `Bid must be higher than ${highestBid.toLocaleString()}`;
     }
     if (value % (item.bidIncrement ?? 100) !== 0) {

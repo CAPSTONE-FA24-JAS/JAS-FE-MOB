@@ -567,60 +567,66 @@ const LotDetailScreen = () => {
         </ScrollView>
       </View>
       <View className="absolute bottom-0 left-0 right-0 px-4 py-2 bg-white">
-        {isRegistered && (
-          <View>
-            {(typeBid === "Fixed_Price" || typeBid === "Secret_Auction") && (
+        {isRegistered &&
+          !(lotDetail?.status === "Passed") &&
+          !(lotDetail?.status === "Sold") && (
+            <View>
+              {(typeBid === "Fixed_Price" || typeBid === "Secret_Auction") && (
+                <TouchableOpacity
+                  className="py-3 mb-3 bg-blue-500 rounded-sm"
+                  onPress={
+                    typeBid === "Fixed_Price"
+                      ? handleBuyNow
+                      : handleSecretAuctionBid
+                  }>
+                  <Text className="font-semibold text-center text-white uppercase">
+                    {typeBid === "Fixed_Price"
+                      ? "BUY FIXED BID"
+                      : "BUY SECRET BID"}
+                  </Text>
+                </TouchableOpacity>
+              )}
               <TouchableOpacity
-                className="py-3 mb-3 bg-blue-500 rounded-sm"
-                onPress={
-                  typeBid === "Fixed_Price"
-                    ? handleBuyNow
-                    : handleSecretAuctionBid
-                }>
-                <Text className="font-semibold text-center text-white uppercase">
-                  {typeBid === "Fixed_Price"
-                    ? "BUY FIXED BID"
-                    : "BUY SECRET BID"}
+                onPress={handlePressAutoBid}
+                className="mb-3 bg-blue-500 rounded-sm">
+                <Text className="py-3 font-semibold text-center text-white">
+                  BID AUTOMATION
                 </Text>
               </TouchableOpacity>
-            )}
+              {typeBid !== "Fixed_Price" && (
+                <TouchableOpacity
+                  className="py-3 mb-3 bg-blue-500 rounded-sm"
+                  onPress={() => setModalVisible(true)}>
+                  <Text className="font-semibold text-center text-white">
+                    PLACE BID
+                  </Text>
+                </TouchableOpacity>
+              )}
+              {!(lotDetail?.status === "Passed") &&
+                !(lotDetail?.status === "Sold") &&
+                typeBid !== "Fixed_Price" && (
+                  <TouchableOpacity
+                    className="py-3 bg-blue-500 rounded-sm"
+                    onPress={handleJoinToBid}>
+                    <Text className="font-semibold text-center text-white uppercase">
+                      Join To Bid
+                    </Text>
+                  </TouchableOpacity>
+                )}
+            </View>
+          )}
+
+        {!isRegistered &&
+          !(lotDetail?.status === "Passed") &&
+          !(lotDetail?.status === "Sold") && (
             <TouchableOpacity
-              onPress={handlePressAutoBid}
-              className="mb-3 bg-blue-500 rounded-sm">
-              <Text className="py-3 font-semibold text-center text-white">
-                BID AUTOMATION
+              className="py-3 mt-4 bg-blue-500 rounded-sm"
+              onPress={handleRegisterToBid}>
+              <Text className="font-semibold text-center text-white uppercase">
+                Register To Bid
               </Text>
             </TouchableOpacity>
-            {typeBid !== "Fixed_Price" && (
-              <TouchableOpacity
-                className="py-3 mb-3 bg-blue-500 rounded-sm"
-                onPress={() => setModalVisible(true)}>
-                <Text className="font-semibold text-center text-white">
-                  PLACE BID
-                </Text>
-              </TouchableOpacity>
-            )}
-            {typeBid !== "Fixed_Price" && (
-              <TouchableOpacity
-                className="py-3 bg-blue-500 rounded-sm"
-                onPress={handleJoinToBid}>
-                <Text className="font-semibold text-center text-white uppercase">
-                  Join To Bid
-                </Text>
-              </TouchableOpacity>
-            )}
-          </View>
-        )}
-
-        {!isRegistered && (
-          <TouchableOpacity
-            className="py-3 mt-4 bg-blue-500 rounded-sm"
-            onPress={handleRegisterToBid}>
-            <Text className="font-semibold text-center text-white uppercase">
-              Register To Bid
-            </Text>
-          </TouchableOpacity>
-        )}
+          )}
 
         {item.id !== undefined &&
           item.image !== undefined &&

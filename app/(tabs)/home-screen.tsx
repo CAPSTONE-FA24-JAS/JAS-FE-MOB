@@ -103,8 +103,7 @@ const HomeScreen = () => {
                 setError("Failed to load auctions.");
               })
               .finally(() => setLoading(false));
-          }}
-        >
+          }}>
           <Text className="text-white">Retry</Text>
         </TouchableOpacity>
       </View>
@@ -116,13 +115,12 @@ const HomeScreen = () => {
   return (
     <View className="flex-1 bg-white">
       {/* Reload Button */}
-      <View className="p-4 flex-row justify-end items-center">
+      <View className="flex-row items-center justify-end p-4">
         <TouchableOpacity
           onPress={fetchAuctions}
-          className="flex-row items-center px-2 py-1 bg-gray-300 rounded"
-        >
+          className="flex-row items-center px-2 py-1 bg-gray-300 rounded">
           <MaterialIcons name="refresh" size={24} color="black" />
-          <Text className="ml-2 text-gray-700 font-semibold">Reload</Text>
+          <Text className="ml-2 font-semibold text-gray-700">Reload</Text>
         </TouchableOpacity>
       </View>
       <FlatList

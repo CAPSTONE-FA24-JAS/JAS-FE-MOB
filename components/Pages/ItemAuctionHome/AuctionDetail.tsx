@@ -1,4 +1,6 @@
 import { AuctionData } from "@/app/types/auction_type";
+import CountdownTimerBid from "@/components/CountDown/CountdownTimer";
+import moment from "moment-timezone";
 import React, { useEffect, useState } from "react";
 import { View, Text, Image, ScrollView, TouchableOpacity } from "react-native";
 import Swiper from "react-native-swiper";
@@ -50,25 +52,10 @@ const AuctionDetailScreen: React.FC<AuctionDetailScreenProps> = ({
 
   return (
     <ScrollView className="bg-white">
-      {dataAuction?.status === "Live" ? (
-        <View className="py-2 bg-red-600">
-          <Text className="font-semibold text-center text-white">
-            Bid {countdown} Left
-          </Text>
-        </View>
-      ) : dataAuction?.status === "UpComing" ? (
-        <View className="py-2 bg-yellow-600">
-          <Text className="font-semibold text-center text-white">
-            Upcoming After {countdown}
-          </Text>
-        </View>
-      ) : (
-        <View className="py-2 bg-gray-600">
-          <Text className="font-semibold text-center text-white">
-            END BIDING
-          </Text>
-        </View>
-      )}
+      <CountdownTimerBid
+        startTime={dataAuction?.startTime || null}
+        endTime={dataAuction?.endTime || null}
+      />
 
       <View className="h-64">
         <Swiper
@@ -77,7 +64,8 @@ const AuctionDetailScreen: React.FC<AuctionDetailScreenProps> = ({
           onIndexChanged={() => setIsSwiperActive(false)}
           onTouchStart={() => setIsSwiperActive(true)}
           onTouchEnd={() => setIsSwiperActive(false)}
-          style={{ height: "100%" }}>
+          style={{ height: "100%" }}
+        >
           {/* Thay thế các hình ảnh tĩnh bằng ảnh từ API */}
           {dataAuction?.imageLink ? (
             <View>
@@ -106,15 +94,10 @@ const AuctionDetailScreen: React.FC<AuctionDetailScreenProps> = ({
         <Text className="mb-2 text-xl font-bold">
           {dataAuction?.name || "Unnamed Auction"}
         </Text>
-        <Text className="text-gray-600 ">Live Bidding Begins: </Text>
-        <Text className="mb-4 font-semibold text-gray-600">
-          {new Date(dataAuction?.startTime).toLocaleString("en-US", {
-            timeZone: "GMT",
-          })}{" "}
-          -{" "}
-          {new Date(dataAuction?.endTime).toLocaleString("en-US", {
-            timeZone: "GMT",
-          })}
+        <Text className=" text-gray-600">Live Bidding Begins: </Text>
+        <Text className="mb-4 text-gray-600 font-semibold">
+          {moment(dataAuction?.startTime).format("HH:mm A, DD/MM/YYYY")}-{" "}
+          {moment(dataAuction?.endTime).format("HH:mm A, DD/MM/YYYY")}
         </Text>
         <Text className="mb-4 text-gray-600">Viet Nam</Text>
         <TouchableOpacity className="py-3 mb-3 bg-blue-500 rounded-sm">

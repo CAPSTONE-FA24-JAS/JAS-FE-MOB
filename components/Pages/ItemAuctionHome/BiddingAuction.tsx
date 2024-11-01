@@ -83,12 +83,12 @@ const BiddingAuction = () => {
 
   return (
     <>
-      <View className="py-2 bg-red-600">
+      {/* <View className="py-2 bg-red-600">
         <Text className="text-center text-white">
           {auctionDetails?.status === "Live" ? "Bid" : "Upcoming After"}
           {timeLeft}
         </Text>
-      </View>
+      </View> */}
 
       <Tab
         dense
@@ -102,7 +102,8 @@ const BiddingAuction = () => {
           backgroundColor: "transparent",
           alignSelf: "center",
           width: "50%",
-        }}>
+        }}
+      >
         <Tab.Item
           title="AUCTION"
           titleStyle={(active) => ({
@@ -147,7 +148,8 @@ const BiddingAuction = () => {
         value={index}
         onChange={setIndex}
         animationType="spring"
-        disableSwipe={isSwiperActive}>
+        disableSwipe={isSwiperActive}
+      >
         <TabView.Item style={{ width: "100%" }}>
           {auctionDetails && (
             <AuctionDetailScreen

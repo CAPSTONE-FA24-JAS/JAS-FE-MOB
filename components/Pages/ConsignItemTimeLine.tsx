@@ -239,7 +239,8 @@ const ConsignDetailTimeLine: React.FC = () => {
             <Text
               className={`uppercase ${getStatusColor(
                 item?.status
-              )} px-2 py-1 rounded-md text-white text-center mb-2 text-base font-semibold uppercase`}>
+              )} px-2 py-1 rounded-md text-white text-center mb-2 text-base font-semibold uppercase`}
+            >
               {statusTextMap[item?.status as ConsignStatus]}
             </Text>
             <View className="flex-row items-center justify-between ">
@@ -283,7 +284,8 @@ const ConsignDetailTimeLine: React.FC = () => {
               ) : item?.status === "ManagerApproved" ? (
                 <TouchableOpacity
                   className="w-full p-2 mt-2 bg-blue-500 rounded"
-                  onPress={handleViewFinalValuation}>
+                  onPress={handleViewFinalValuation}
+                >
                   <Text className="font-bold text-center text-white">
                     Show Final Valuation Modal
                   </Text>
@@ -351,7 +353,8 @@ const ConsignDetailTimeLine: React.FC = () => {
                     {event?.statusName == "Preliminary" && ( // chưa biết cái nào hiển thị tài liệu nên để đây
                       <TouchableOpacity
                         className="p-2 mt-1 bg-gray-200 rounded w-[140px] "
-                        onPress={handleViewPreValuation}>
+                        onPress={handleViewPreValuation}
+                      >
                         <Text className="font-semibold text-center text-gray-700">
                           View Preliminary
                         </Text>
@@ -361,7 +364,8 @@ const ConsignDetailTimeLine: React.FC = () => {
                     {event?.statusName == "FinalValuated" && ( // chưa biết cái nào hiển thị tài liệu nên để đây
                       <TouchableOpacity
                         className="p-2 mt-1 bg-gray-200 rounded w-[140px] "
-                        onPress={handleViewFinalValuation}>
+                        onPress={handleViewFinalValuation}
+                      >
                         <Text className="font-semibold text-center text-gray-700">
                           View Final Valuated
                         </Text>
@@ -376,7 +380,8 @@ const ConsignDetailTimeLine: React.FC = () => {
         {timeline.length > 4 && (
           <TouchableOpacity
             onPress={toggleExpanded}
-            className="flex-row items-center justify-center p-2 mt-2 bg-gray-100 rounded">
+            className="flex-row items-center justify-center p-2 mt-2 bg-gray-100 rounded"
+          >
             <Text className="mr-2">
               {expanded ? "Thu gọn" : "Xem toàn bộ lịch sử"}
             </Text>

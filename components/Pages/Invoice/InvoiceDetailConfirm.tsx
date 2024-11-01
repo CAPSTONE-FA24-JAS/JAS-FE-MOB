@@ -77,7 +77,7 @@ const InvoiceDetailConfirm: React.FC = () => {
   const handlePasswordConfirm = async (enteredPassword: string) => {
     setPassword(enteredPassword);
     try {
-      if (typeof haveWallet === "number" && haveWallet) {
+      if (haveWallet) {
         const isPasswordCorrect = await checkPasswordWallet(
           haveWallet,
           password

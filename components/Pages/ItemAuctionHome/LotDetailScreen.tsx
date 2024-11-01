@@ -28,6 +28,7 @@ import { buyNowMethod3, placeBidFixedPriceAndSecret } from "@/api/bidApi";
 import PasswordModal from "../Payment/CheckPasswordModal";
 import ConfirmBuyNowModal from "./ModalLot/ConfirmBuyNowModal";
 import SecretAuctionBidModal from "./ModalLot/SecretAuctionBidModal";
+import CountdownTimerBid from "@/components/CountDown/CountdownTimer";
 
 // Define the navigation param list type
 type RootStackParamList = {
@@ -479,9 +480,11 @@ const LotDetailScreen = () => {
     <SafeAreaView className="flex-1 bg-white">
       <View className="flex-1">
         <ScrollView>
-          <View className="py-2 bg-red-600">
-            <Text className="text-center text-white">Bid 13th 2m56s Left</Text>
-          </View>
+          {/* Countdown Timer */}
+          <CountdownTimerBid
+            startTime={lotDetail?.startTime || null}
+            endTime={lotDetail?.endTime || null}
+          />
           <View className="h-64">
             <Swiper
               showsPagination={true}
@@ -576,8 +579,8 @@ const LotDetailScreen = () => {
                 }>
                 <Text className="font-semibold text-center text-white uppercase">
                   {typeBid === "Fixed_Price"
-                    ? "BUY IT NOW"
-                    : "BUY SECRET AUCTION"}
+                    ? "BUY FIXED BID"
+                    : "BUY SECRET BID"}
                 </Text>
               </TouchableOpacity>
             )}

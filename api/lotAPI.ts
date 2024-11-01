@@ -5,6 +5,7 @@ import {
 } from "@/components/FlashMessageHelpers";
 import apiClient from "./config";
 import { ListLotResponse, LotDetailResponse } from "@/app/types/lot_type";
+import { ApiError, ApiResponse } from "./utils/ApiError";
 
 const API_URL = process.env.EXPO_PUBLIC_API_URL || "http://localhost:7251";
 
@@ -71,26 +72,40 @@ export const registerToBid = async (
   console.log("Registering to bid...", currentPrice, customerId, lotId);
 
   try {
-    const response = await apiClient.post(`${API_URL}/api/Lot/RegisterToBid`, {
-      currentPrice,
-      customerId,
-      lotId,
-    });
-
+    const response = await axios.post<ApiResponse>(
+      `${API_URL}/api/Lot/RegisterToBid`,
+      {
+        currentPrice,
+        customerId,
+        lotId,
+      }
+    );
     if (response.data.isSuccess) {
       console.log("Register to bid success:", response.data);
       showSuccessMessage(
         response.data.message || "Register customer to lot successfully."
       );
     } else {
-      throw new Error(
-        response.data.message || "Failed to register customer to lot."
-      );
+      // Throw ApiError with specific code and message from the API
+      const { code, message } = response.data;
+      throw new Error(message || "Failed to register to bid.");
     }
-  } catch (error) {
+  } catch (error: any) {
     console.error("Error registering to bid:", error);
-    showErrorMessage("Unable to register customer to lot.");
-    throw error;
+    if (error.response && error.response.data) {
+      const { code, message } = error.response.data;
+      throw new ApiError(
+        code || 500,
+        message || "Unable to register customer to lot."
+      );
+    } else if (error instanceof ApiError) {
+      // Re-throw ApiError instances
+      throw error;
+    } else {
+      // For other types of errors (e.g., network errors)
+      showErrorMessage("Unable to register customer to lot.");
+      throw new ApiError(500, "Unable to register customer to lot.");
+    }
   }
 };
 

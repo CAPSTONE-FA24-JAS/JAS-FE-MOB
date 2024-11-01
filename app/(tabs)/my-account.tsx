@@ -54,7 +54,11 @@ const MyAccount = () => {
     if (screen === "AccountInfo" && userInfo) {
       navigation.navigate(screen, { userData: userInfo });
     } else if (screen === "MyWallet") {
-      setPasswordModalVisible(true); // Show password modal before navigating to MyWallet
+      if (haveWallet) {
+        setPasswordModalVisible(true); // Show password modal before navigating to MyWallet
+      } else {
+        navigation.navigate(screen);
+      }
     } else {
       navigation.navigate(screen);
     }

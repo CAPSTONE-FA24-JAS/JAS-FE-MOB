@@ -23,3 +23,20 @@ export interface CreateWalletResponse {
   };
   errorMessages: string[] | null;
 }
+
+// transactions
+
+export interface Transaction {
+  transactionType: string;
+  amount: number;
+  transactionTime: string;
+  status: string;
+}
+
+export interface TransactionResponse {
+  code: number;
+  message: string;
+  isSuccess: boolean;
+  data: Transaction[];
+  errorMessages: string[] | null;
+}

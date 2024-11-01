@@ -13,7 +13,7 @@ import LoadingOverlay from "@/components/LoadingOverlay";
 
 const Deposit: React.FC = () => {
   const [selectedPayment, setSelectedPayment] = useState<string>("vnpay");
-  const [amount, setAmount] = useState<number>(0); // Add amount state
+  const [amount, setAmount] = useState<number>(1000000); // Default amount set to 1000000
   const [loading, setLoading] = useState<boolean>(false); // Add loading state
 
   // Get wallet ID from Redux state
@@ -27,14 +27,13 @@ const Deposit: React.FC = () => {
       showErrorMessage("Wallet ID not found. Unable to proceed with deposit.");
       return;
     }
-    if (amount <= 0) {
-      showErrorMessage("Please enter a valid deposit amount.");
-      return;
-    }
+
+    // If amount is not set or less than or equal to 0, set it to the default value
+    const depositAmount = amount <= 0 ? 1000000 : amount;
 
     setLoading(true); // Start loading
     try {
-      const paymentLink = await depositWallet(walletId, amount);
+      const paymentLink = await depositWallet(walletId, depositAmount);
       if (paymentLink) {
         // Open the payment link in the browser
         Linking.openURL(paymentLink);

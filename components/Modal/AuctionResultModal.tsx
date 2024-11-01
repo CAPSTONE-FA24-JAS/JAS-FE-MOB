@@ -43,9 +43,9 @@ const AuctionResultModal: React.FC<AuctionResultModalProps> = ({
           {/* Info Section */}
           <View className="w-full p-4 mb-6 bg-gray-50 rounded-xl">
             <View className="flex-row items-center justify-between mb-2">
-              <View className="text-base font-medium text-gray-600">
+              <Text className="text-base font-medium text-gray-600">
                 Người thắng cuộc:
-              </View>
+              </Text>
               <Text className="text-base font-semibold text-blue-500">
                 {currentUser === userWinner ? "Bạn" : userWinner}
               </Text>

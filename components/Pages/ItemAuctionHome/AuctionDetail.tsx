@@ -51,20 +51,20 @@ const AuctionDetailScreen: React.FC<AuctionDetailScreenProps> = ({
   return (
     <ScrollView className="bg-white">
       {dataAuction?.status === "Live" ? (
-        <View className="bg-red-600 py-2">
-          <Text className="text-center text-white font-semibold">
+        <View className="py-2 bg-red-600">
+          <Text className="font-semibold text-center text-white">
             Bid {countdown} Left
           </Text>
         </View>
       ) : dataAuction?.status === "UpComing" ? (
-        <View className="bg-yellow-600 py-2">
-          <Text className="text-center text-white  font-semibold">
+        <View className="py-2 bg-yellow-600">
+          <Text className="font-semibold text-center text-white">
             Upcoming After {countdown}
           </Text>
         </View>
       ) : (
-        <View className="bg-gray-600 py-2">
-          <Text className="text-center text-white font-semibold">
+        <View className="py-2 bg-gray-600">
+          <Text className="font-semibold text-center text-white">
             END BIDING
           </Text>
         </View>
@@ -77,8 +77,7 @@ const AuctionDetailScreen: React.FC<AuctionDetailScreenProps> = ({
           onIndexChanged={() => setIsSwiperActive(false)}
           onTouchStart={() => setIsSwiperActive(true)}
           onTouchEnd={() => setIsSwiperActive(false)}
-          style={{ height: "100%" }}
-        >
+          style={{ height: "100%" }}>
           {/* Thay thế các hình ảnh tĩnh bằng ảnh từ API */}
           {dataAuction?.imageLink ? (
             <View>
@@ -107,8 +106,8 @@ const AuctionDetailScreen: React.FC<AuctionDetailScreenProps> = ({
         <Text className="mb-2 text-xl font-bold">
           {dataAuction?.name || "Unnamed Auction"}
         </Text>
-        <Text className=" text-gray-600">Live Bidding Begins: </Text>
-        <Text className="mb-4 text-gray-600 font-semibold">
+        <Text className="text-gray-600 ">Live Bidding Begins: </Text>
+        <Text className="mb-4 font-semibold text-gray-600">
           {new Date(dataAuction?.startTime).toLocaleString("en-US", {
             timeZone: "GMT",
           })}{" "}

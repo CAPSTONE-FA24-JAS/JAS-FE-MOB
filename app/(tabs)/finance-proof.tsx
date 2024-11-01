@@ -7,6 +7,7 @@ import { getListFinancialProof } from "@/api/financeProofApi";
 import { RootState } from "@/redux/store";
 import { FinancialProof } from "../types/finance_proof_type";
 import ItemFinanceProof from "@/components/ItemFinaceProof";
+import { parseDate } from "@/utils/utils";
 
 type RootStackParamList = {
   FinanceProof: undefined;
@@ -65,16 +66,23 @@ const FinanceProof = () => {
   console.log("financialProofData", financialProofData);
 
   return (
-    <View className="flex flex-col justify-center gap-10 p-2">
-      {/* {userResponse?.bidLimit ? (
-        <Text className="text-2xl font-bold ">
-          Your Approved Bidding Limit: {userResponse.bidLimit} VNĐ
-        </Text>
+    <View className="flex flex-col justify-center gap-5 p-2">
+      {userResponse?.customerDTO.priceLimit &&
+      userResponse.customerDTO.expireDate ? (
+        <View className="items-center p-2">
+          <Text className="text-2xl font-bold text-center">
+            Your Approved Bidding Limit: {userResponse?.customerDTO.priceLimit}
+          </Text>
+          <Text className="text-xl font-bold text-center">
+            Expire:
+            {parseDate(userResponse.customerDTO.expireDate, "dd/mm/yyyy")}
+          </Text>
+        </View>
       ) : (
         <Text className="text-2xl font-bold text-center ">
           You Have Not Been Approved For A Bidding Limit
         </Text>
-      )} */}
+      )}
 
       <TouchableOpacity
         className="self-start w-1/2 p-2 bg-blue-500 rounded-lg"
@@ -86,7 +94,7 @@ const FinanceProof = () => {
 
       {financialProofData ? (
         <SectionList
-          className="bg-transparent h-5/6"
+          className="bg-transparent h-3/4"
           sections={groupDataByMonth(financialProofData)}
           keyExtractor={(item) => item.id.toString()}
           renderItem={({ item }) => <ItemFinanceProof item={item} />}

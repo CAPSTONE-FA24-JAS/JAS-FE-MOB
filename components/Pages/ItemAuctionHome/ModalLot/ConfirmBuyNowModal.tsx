@@ -20,12 +20,12 @@ const ConfirmBuyNowModal: React.FC<ConfirmBuyNowModalProps> = ({
 }) => {
   return (
     <Modal visible={isVisible} transparent animationType="slide">
-      <View className="flex-1 justify-center items-center bg-black/50 bg-opacity-50">
-        <View className="bg-white p-6 rounded-lg w-90">
-          <Text className="text-lg font-bold text-blue-500 mb-4 uppercase ">
+      <View className="items-center justify-center flex-1 bg-opacity-50 bg-black/50">
+        <View className="p-6 bg-white rounded-lg w-90">
+          <Text className="mb-4 text-lg font-bold text-blue-500 uppercase ">
             Confirm Purchase
           </Text>
-          <Text className="text-base mb-6 font-semibold text-gray-600">
+          <Text className="mb-6 text-base font-semibold text-gray-600">
             Are you sure you want to buy lot #{lotId} for{" "}
             {price.toLocaleString("vi-VN", {
               style: "currency",
@@ -36,15 +36,13 @@ const ConfirmBuyNowModal: React.FC<ConfirmBuyNowModalProps> = ({
           <View className="flex-row justify-around">
             <TouchableOpacity
               onPress={onClose}
-              className="px-4 py-2 w-[45%] bg-gray-300 rounded"
-            >
-              <Text className="text-black  text-center font-semibold">No</Text>
+              className="px-4 py-2 w-[45%] bg-gray-300 rounded">
+              <Text className="font-semibold text-center text-black">No</Text>
             </TouchableOpacity>
             <TouchableOpacity
               onPress={onConfirm}
-              className="px-4 py-2 w-[45%] bg-blue-500 rounded"
-            >
-              <Text className="text-white text-center font-semibold">Yes</Text>
+              className="px-4 py-2 w-[45%] bg-blue-500 rounded">
+              <Text className="font-semibold text-center text-white">Yes</Text>
             </TouchableOpacity>
           </View>
         </View>

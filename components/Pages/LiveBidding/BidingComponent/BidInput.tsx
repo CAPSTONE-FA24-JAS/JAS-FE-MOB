@@ -10,7 +10,6 @@ import { Picker } from "@react-native-picker/picker";
 import { LotDetail } from "@/app/types/lot_type";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
-import { red } from "react-native-reanimated/lib/typescript/reanimated2/Colors";
 
 interface BidInputProps {
   isEndAuction: boolean;
@@ -34,11 +33,21 @@ const BidInput: React.FC<BidInputProps> = ({
   );
   const [step, setStep] = useState<number>(() => item.bidIncrement ?? 100);
   const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState<boolean>(false);
+
   const priceLimit = useSelector(
     (store: RootState) => store.auth.userResponse?.customerDTO.priceLimit
   );
 
+  const isFinancialProof = item.haveFinancialProof;
+  const priceLimitofCustomer = useSelector(
+    (state: RootState) => state.auth.userResponse?.customerDTO.priceLimit
+  );
+
   const validateBid = (value: number) => {
+    if (isFinancialProof && value > priceLimitofCustomer) {
+      return `Bid must be lower than your price limit (${priceLimitofCustomer?.toLocaleString()})`;
+    }
     if (value === 0) {
       return "Bid must be higher than 0";
     }
@@ -54,25 +63,30 @@ const BidInput: React.FC<BidInputProps> = ({
     return null;
   };
 
-  const validateBidLimit = (value: number) => {
-    return true;
-  };
-
-  const handleSubmitBid = () => {
+  const handleSubmitBid = async () => {
     const validationError = validateBid(bidValue);
     if (validationError) {
       setError(validationError);
       return;
     }
+    setLoading(true);
     setError(null);
-    onPlaceBid(bidValue);
+    await onPlaceBid(bidValue);
+    setLoading(false);
   };
 
-  const handleSubmitBidMethod4 = (price: number) => {
+  const handleSubmitBidMethod4 = async (price: number) => {
     console.log("Method 4", price);
-
+    if (price > priceLimitofCustomer) {
+      setError(
+        `Bid must be lower than your price limit (${priceLimitofCustomer?.toLocaleString()})`
+      );
+      return;
+    }
+    setLoading(true);
     setError(null);
-    onPlaceBidMethod4(11000);
+    await onPlaceBidMethod4(11000);
+    setLoading(false);
   };
 
   const handleBidChange = (newValue: string) => {
@@ -154,7 +168,7 @@ const BidInput: React.FC<BidInputProps> = ({
           </View>
 
           <TouchableOpacity
-            disabled={isEndAuction}
+            disabled={isEndAuction || item.status === "Sold" || loading}
             onPress={handleSubmitBid}
             className="w-[20%] flex items-center justify-center h-12 bg-blue-500 rounded-md">
             <Text className="text-sm font-semibold text-white">BIDDING</Text>
@@ -183,6 +197,9 @@ const BidInput: React.FC<BidInputProps> = ({
             <Text className="text-xl font-semibold text-white">
               {isEndAuction || item.status === "Sold" ? "SOLD" : "BUY NOW"}
             </Text>
+            {error && (
+              <Text className="mt-2 text-center text-red-500">{error}</Text>
+            )}
           </TouchableOpacity>
         </View>
       </View>

@@ -26,6 +26,7 @@ import {
 import { Checkbox } from "react-native-paper";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { fetchProfile } from "@/redux/slices/profileSlice";
+import LoadingOverlay from "@/components/LoadingOverlay";
 
 const Login: React.FC = () => {
   const [username, setUsername] = useState("");
@@ -35,6 +36,7 @@ const Login: React.FC = () => {
   const [passwordVisibility, setPasswordVisibility] = useState(true);
   const [isLoginSuccessful, setIsLoginSuccessful] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
+  const [Loading, setLoading] = useState(false);
 
   const router = useRouter();
 
@@ -52,9 +54,12 @@ const Login: React.FC = () => {
       return;
     }
     try {
+      setLoading(true);
+
       const userData = await LoginApi(username, password, dispatch);
       setIsLoginSuccessful(true);
       showSuccessMessage("Login successful! Redirecting...");
+      setLoading(false);
 
       if (rememberMe) {
         // Save credentials
@@ -77,9 +82,12 @@ const Login: React.FC = () => {
       router.replace("/home-screen");
       console.log("Login successful, navigating to home..."); // Debug log
     } catch (error) {
+
       showErrorMessage("Invalid username or password.");
       console.error("Login error:", error);
     }
+    setLoading(false);
+
   };
 
   useEffect(() => {
@@ -114,6 +122,8 @@ const Login: React.FC = () => {
 
   return (
     <ScrollView contentContainerStyle={{ flex: 1 }} className="bg-[#FFFFFF]">
+      {Loading && <LoadingOverlay visible={Loading} />}
+
       <View className="flex w-full h-full mx-auto my-auto bg-white">
         <View className="w-full h-full mx-auto my-auto">
           <Image

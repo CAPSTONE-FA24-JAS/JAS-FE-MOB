@@ -175,6 +175,7 @@ const RisingBidPage: React.FC = () => {
           typeBid={item.lotType}
           minPrice={item.startPrice ?? 0}
           maxPrice={item.finalPriceSold ?? 0}
+          stepBidIncrement={item.bidIncrement ?? 0}
         />
       ),
     },

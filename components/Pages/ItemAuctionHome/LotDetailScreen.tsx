@@ -538,6 +538,9 @@ const LotDetailScreen = () => {
     ? new Date() < new Date(lotDetail.endTime)
     : false;
 
+    console.log("isAuctionActive",isAuctionActive);
+    
+
   return (
     <SafeAreaView className="flex-1 bg-white">
       <View className="flex-1">
@@ -660,7 +663,7 @@ const LotDetailScreen = () => {
           </View>
         )}
 
-        {isRegistered && currentPriceCheck !== null &&
+        {isRegistered && 
           isAuctionActive &&
           !(lotDetail?.status === "Passed") &&
           !(lotDetail?.status === "Sold") && (

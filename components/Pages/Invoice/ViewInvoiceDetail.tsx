@@ -17,6 +17,7 @@ import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
 import ImageGallery from "@/components/ImageGallery";
 import ImageGalleryOne from "@/components/ImageGalleryOne";
+import { InvoiceDetailResponse } from "@/app/types/invoice_type";
 
 type RootStackParamList = {
   InvoiceDetail: {
@@ -25,6 +26,7 @@ type RootStackParamList = {
     invoiceId: number;
     yourMaxBid: number;
     imagePayment: string;
+    invoiceDetails: InvoiceDetailResponse;
   };
 };
 
@@ -38,18 +40,20 @@ const ViewInvoiceDetail: React.FC = () => {
   const user = useSelector((state: RootState) => state.auth.userResponse);
 
   // Destructure the passed parameters
-  const { addressData, itemDetailBid, invoiceId, yourMaxBid, imagePayment } =
-    route.params;
+  const {
+    addressData,
+    itemDetailBid,
+    invoiceId,
+    yourMaxBid,
+    imagePayment,
+    invoiceDetails,
+  } = route.params;
 
-  // Calculate the base price and total price
-  const basePrice =
-    itemDetailBid?.yourMaxBidPrice ||
-    itemDetailBid?.lotDTO?.finalPriceSold ||
-    yourMaxBid ||
-    0;
-
-  const fee = basePrice * 0.08; // 8% VAT
-  const totalPrice = basePrice + fee;
+  // Calculate the total price
+  const bidPrice = invoiceDetails?.price || 0;
+  const feePrice = invoiceDetails?.free || 0;
+  const feeShipping = invoiceDetails?.feeShip || 0;
+  const totalPrice = invoiceDetails?.totalPrice || 0;
 
   // Handle back button
   const handleBack = () => {
@@ -151,26 +155,38 @@ const ViewInvoiceDetail: React.FC = () => {
           </StyledView>
           <StyledView className="flex-row justify-between mb-1">
             <StyledText className="text-base font-medium text-gray-600">
-              Bid Price
+              Your Bid Price
             </StyledText>
             <StyledText className="text-base font-medium text-gray-600">
-              {basePrice.toLocaleString("vi-VN", {
+              {bidPrice.toLocaleString("vi-VN", {
                 style: "currency",
                 currency: "VND",
-              })}
+              }) || "0 VND"}
             </StyledText>
           </StyledView>
           <StyledView className="flex-row justify-between mb-1">
             <StyledText className="text-base font-medium text-gray-600">
-              Fee VAT 8%
+              Platform Fee
             </StyledText>
             <StyledText className="text-base font-medium text-gray-600">
-              {fee.toLocaleString("vi-VN", {
+              {feePrice.toLocaleString("vi-VN", {
                 style: "currency",
                 currency: "VND",
-              })}
+              }) || "0 VND"}
             </StyledText>
           </StyledView>
+          <StyledView className="flex-row justify-between mb-1">
+            <StyledText className="text-base font-medium text-gray-600">
+              Shipping Fee
+            </StyledText>
+            <StyledText className="text-base font-medium text-gray-600">
+              {feeShipping.toLocaleString("vi-VN", {
+                style: "currency",
+                currency: "VND",
+              }) || "0 VND"}
+            </StyledText>
+          </StyledView>
+
           <StyledView className="flex-row justify-between mt-3">
             <StyledText className="text-lg font-bold">Total</StyledText>
             <StyledText className="text-lg font-bold">

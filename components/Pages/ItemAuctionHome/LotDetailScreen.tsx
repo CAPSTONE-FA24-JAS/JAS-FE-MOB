@@ -14,7 +14,11 @@ import { useNavigation, useRoute } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "react-native-screens/lib/typescript/native-stack/types";
 import PlaceBidModal from "@/components/Modal/PlaceBidModal";
 import { LotDetail } from "@/app/types/lot_type";
-import { checkCustomerInLot, getLotDetailById } from "@/api/lotAPI";
+import {
+  checkCustomerHaveBidPrice,
+  checkCustomerInLot,
+  getLotDetailById,
+} from "@/api/lotAPI";
 import moment from "moment-timezone";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
@@ -40,10 +44,11 @@ type RootStackParamList = {
 
 // Define the BidFormRouteParams type
 export type BidFormRouteParams = {
-  lotId: number;
+  customerLotId: number;
   lotName: string;
   startBid: number;
-  estimatedPrice: { min: number; max: number };
+  estimatedPrice: { min: number };
+  lotDetail: LotDetail;
 };
 
 type RouteParams = {
@@ -90,60 +95,100 @@ const LotDetailScreen = () => {
   const [password, setPassword] = useState<string>("");
   const [confirmBuyNowVisible, setConfirmBuyNowVisible] = useState(false);
   const [secretAuctionBidVisible, setSecretAuctionBidVisible] = useState(false);
+  const [customerLotId, setCustomerLotId] = useState<number | null>(null);
+
+  // Existing declarations...
+  const [currentPriceCheck, setCurrentPriceCheck] = useState<number | null>(
+    null
+  );
+  const [bidTimeCheck, setBidTimeCheck] = useState<string | null>(null);
 
   // Fetch lot details when the component mounts
-  useEffect(() => {
-    fetchLotDetail();
-  }, [id]);
+  // useEffect(() => {
+  //   fetchLotDetail();
+  // }, [id]);
 
   console.log("====================================");
   console.log("haveWallet", haveWallet);
   console.log("====================================");
 
   // Hàm fetchLotDetail
-  const fetchLotDetail = async () => {
-    try {
-      if (id !== undefined) {
+  const fetchLotDetail = useCallback(async () => {
+    if (id) {
+      try {
+        setLoading(true);
         const data = await getLotDetailById(id);
-
         if (data?.isSuccess) {
-          setLotDetail(data?.data);
+          setLotDetail(data.data);
         } else {
-          setError(data?.message || "Không thể tải dữ liệu.");
+          setError(data?.message || "Failed to load data.");
         }
-      } else {
-        setError("Invalid lot ID.");
+      } catch {
+        setError("An error occurred while loading data.");
+      } finally {
         setLoading(false);
       }
-    } catch (err) {
-      setError("Đã xảy ra lỗi khi tải dữ liệu.");
-    } finally {
-      setLoading(false);
     }
-  };
+  }, [id]);
 
-  // Hàm fetchRegistrationStatus
+  // Fetch lot details on screen focus
+  // useFocusEffect(
+  //   useCallback(() => {
+  //     fetchLotDetail();
+  //   }, [fetchLotDetail])
+  // );
+
+  // Updated fetchRegistrationStatus function
   const fetchRegistrationStatus = useCallback(async () => {
     try {
-      setCheckingRegistration(true); // Reset trạng thái kiểm tra
+      setCheckingRegistration(true);
       if (userId !== undefined && id !== undefined) {
-        const registered = await checkCustomerInLot(userId, id);
-        setIsRegistered(registered);
+        // First, check if the user is registered for the lot
+        const registrationResponse = await checkCustomerInLot(userId, id);
+
+        if (registrationResponse) {
+          // If the user is registered, set customerLotId and isRegistered
+          setCustomerLotId(registrationResponse.customerLotId);
+          setIsRegistered(true);
+
+          // Next, check if they have bid on this lot
+          const bidResponse = await checkCustomerHaveBidPrice(userId, id);
+          if (bidResponse?.isSuccess && bidResponse.data) {
+            setCurrentPriceCheck(bidResponse.data.currentPrice);
+            setBidTimeCheck(bidResponse.data.bidTime);
+          } else {
+            setCurrentPriceCheck(null);
+            setBidTimeCheck(null);
+          }
+        } else {
+          // If the user is not registered, reset states
+          setIsRegistered(false);
+          setCustomerLotId(null);
+          setCurrentPriceCheck(null);
+          setBidTimeCheck(null);
+        }
       } else {
         setIsRegistered(false);
+        setCustomerLotId(null);
+        setCurrentPriceCheck(null);
+        setBidTimeCheck(null);
       }
     } catch (error) {
       setIsRegistered(false);
+      setCustomerLotId(null);
+      setCurrentPriceCheck(null);
+      setBidTimeCheck(null);
     } finally {
       setCheckingRegistration(false);
     }
   }, [userId, id]);
 
-  // Sử dụng useFocusEffect để gọi lại fetchRegistrationStatus khi màn hình được focus
+  // Use useFocusEffect to reload only when navigating back
   useFocusEffect(
     useCallback(() => {
+      fetchLotDetail();
       fetchRegistrationStatus();
-    }, [fetchRegistrationStatus])
+    }, [fetchLotDetail, fetchRegistrationStatus])
   );
 
   const item = {
@@ -272,7 +317,19 @@ const LotDetailScreen = () => {
   };
 
   const handlePressAutoBid = () => {
-    // navigation.navigate("AutoBidSaveConfig", data);
+    if (!lotDetail && customerLotId && lotDetail)
+      return showErrorMessage("Invalid lot ID or customerLotId or lotDetail.");
+    if (lotDetail) {
+      navigation.navigate("AutoBidSaveConfig", {
+        customerLotId: customerLotId ?? 0, // Tạm thời để id LOT
+        lotName: lotDetail.jewelry?.name ?? "",
+        startBid: lotDetail.startPrice ?? 0,
+        estimatedPrice: { min: lotDetail.startPrice ?? 0 },
+        lotDetail,
+      });
+    } else {
+      showErrorMessage("Lot details are not available.");
+    }
   };
 
   if (loading) {
@@ -476,10 +533,15 @@ const LotDetailScreen = () => {
   const paymentAmountSecret =
     (lotDetail?.startPrice ?? 0) - (lotDetail?.deposit ?? 0);
 
+  // Assuming lotDetail.endTime is in a format that can be parsed by new Date()
+  const isAuctionActive = lotDetail?.endTime
+    ? new Date() < new Date(lotDetail.endTime)
+    : false;
+
   return (
     <SafeAreaView className="flex-1 bg-white">
       <View className="flex-1">
-        <ScrollView>
+        <ScrollView className="mb-32">
           {/* Countdown Timer */}
           <CountdownTimerBid
             startTime={lotDetail?.startTime || null}
@@ -489,7 +551,8 @@ const LotDetailScreen = () => {
             <Swiper
               showsPagination={true}
               autoplay={true}
-              style={{ height: "100%" }}>
+              style={{ height: "100%" }}
+            >
               {lotDetail?.jewelry?.imageJewelries?.length ?? 0 > 0 ? (
                 lotDetail?.jewelry?.imageJewelries.map((img, index) =>
                   img?.imageLink ? (
@@ -513,6 +576,17 @@ const LotDetailScreen = () => {
             <Text className="font-bold text-gray-400">Follow</Text>
             <Text className="font-bold text-gray-400">Watch</Text>
           </View>
+          {lotDetail && lotDetail.finalPriceSold && (
+            <View className="py-2 bg-green-200 ">
+              <Text className="text-center font-bold uppercase text-green-700">
+                Final Price Sold:{" "}
+                {lotDetail?.finalPriceSold.toLocaleString("vi-VN", {
+                  style: "currency",
+                  currency: "VND",
+                })}
+              </Text>
+            </View>
+          )}
           <View className="p-4 space-y-2">
             <View>
               {/* Thời gian đấu giá */}
@@ -566,8 +640,24 @@ const LotDetailScreen = () => {
           <View className="h-32" />
         </ScrollView>
       </View>
-      <View className="absolute bottom-0 left-0 right-0 px-4 py-2 bg-white">
+      <View className="absolute bottom-0 bg-white left-0 right-0 px-4 py-2 ">
+        {currentPriceCheck !== null && bidTimeCheck !== null ? (
+          <Text className="text-sm text-center mb-2 font-semibold text-green-500">
+            You have placed a bid for this Lot with{" "}
+            {currentPriceCheck.toLocaleString("en-US", {
+              style: "currency",
+              currency: "USD",
+            })}{" "}
+            at {moment(bidTimeCheck).format("HH:mm A, MM/DD/YYYY")}.
+          </Text>
+        ) : (
+          <Text className="text-sm text-center mb-2 font-semibold text-red-500">
+            You haven't placed any bids for this lot!
+          </Text>
+        )}
+
         {isRegistered &&
+          isAuctionActive &&
           !(lotDetail?.status === "Passed") &&
           !(lotDetail?.status === "Sold") && (
             <View>
@@ -578,7 +668,8 @@ const LotDetailScreen = () => {
                     typeBid === "Fixed_Price"
                       ? handleBuyNow
                       : handleSecretAuctionBid
-                  }>
+                  }
+                >
                   <Text className="font-semibold text-center text-white uppercase">
                     {typeBid === "Fixed_Price"
                       ? "BUY FIXED BID"
@@ -586,28 +677,37 @@ const LotDetailScreen = () => {
                   </Text>
                 </TouchableOpacity>
               )}
-              <TouchableOpacity
-                onPress={handlePressAutoBid}
-                className="mb-3 bg-blue-500 rounded-sm">
-                <Text className="py-3 font-semibold text-center text-white">
-                  BID AUTOMATION
-                </Text>
-              </TouchableOpacity>
-              {typeBid !== "Fixed_Price" && (
+              {!(lotDetail?.status === "Passed") &&
+                !(lotDetail?.status === "Sold") &&
+                isAuctionActive &&
+                typeBid === "Public_Auction" && (
+                  <TouchableOpacity
+                    onPress={handlePressAutoBid}
+                    className="mb-3 bg-blue-500 rounded-sm"
+                  >
+                    <Text className="py-3 font-semibold text-center text-white">
+                      BID AUTOMATION
+                    </Text>
+                  </TouchableOpacity>
+                )}
+              {typeBid !== "Fixed_Price" && isAuctionActive && (
                 <TouchableOpacity
                   className="py-3 mb-3 bg-blue-500 rounded-sm"
-                  onPress={() => setModalVisible(true)}>
+                  onPress={() => setModalVisible(true)}
+                >
                   <Text className="font-semibold text-center text-white">
                     PLACE BID
                   </Text>
                 </TouchableOpacity>
               )}
               {!(lotDetail?.status === "Passed") &&
+                isAuctionActive &&
                 !(lotDetail?.status === "Sold") &&
                 typeBid !== "Fixed_Price" && (
                   <TouchableOpacity
                     className="py-3 bg-blue-500 rounded-sm"
-                    onPress={handleJoinToBid}>
+                    onPress={handleJoinToBid}
+                  >
                     <Text className="font-semibold text-center text-white uppercase">
                       Join To Bid
                     </Text>
@@ -618,10 +718,12 @@ const LotDetailScreen = () => {
 
         {!isRegistered &&
           !(lotDetail?.status === "Passed") &&
+          isAuctionActive &&
           !(lotDetail?.status === "Sold") && (
             <TouchableOpacity
               className="py-3 mt-4 bg-blue-500 rounded-sm"
-              onPress={handleRegisterToBid}>
+              onPress={handleRegisterToBid}
+            >
               <Text className="font-semibold text-center text-white uppercase">
                 Register To Bid
               </Text>

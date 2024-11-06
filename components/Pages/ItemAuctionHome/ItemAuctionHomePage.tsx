@@ -7,6 +7,7 @@ import { useNavigation } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { AuctionsData } from "@/app/types/auction_type";
 import { styled } from "nativewind"; // Import styled từ nativewind
+import moment from "moment-timezone";
 
 // Định nghĩa các loại cho navigation
 type RootStackParamList = {
@@ -51,29 +52,29 @@ const ItemAuctionHomePage: React.FC<ItemAuctionHomePageProps> = ({
       />
       {/* Lớp phủ gradient */}
       <StyledLinearGradient
-        colors={["transparent", "rgba(0,0,0,0.6)"]}
+        colors={["transparent", "rgba(0,0,0,0.7)"]}
         className="absolute left-0 right-0 bottom-0 h-36 rounded-lg"
       />
       {/* Nội dung văn bản */}
       <StyledView className="absolute bottom-5 left-4 right-4">
-        <StyledText className="text-white text-lg font-bold mb-1">
-          #{auction.id} | {auction?.name || "Unnamed Auction"} -{" "}
-          {auction?.status ? auction?.status : "Upcoming"}
+        <StyledText className="text-white text-lg font-bold">
+          {auction?.totalLot || 0} LOT
         </StyledText>
+        <View className="flex-row items-center">
+          <StyledText
+            numberOfLines={1} // Số dòng tối đa
+            ellipsizeMode="tail"
+            className="text-white max-w-[85%] text-xl font-bold mb-1"
+          >
+            #{auction.id} | {auction?.name || "Unnamed Auction"}{" "}
+          </StyledText>
+          <StyledText className="text-white text-xl font-bold mb-1">
+            - {auction?.status ? auction?.status : "Upcoming"}
+          </StyledText>
+        </View>
         <StyledText className="text-white text-sm font-bold mb-0.5">
-          Live bidding begins:
-        </StyledText>
-        <StyledText className="text-white text-sm font-bold mb-0.5">
-          {new Date(auction?.startTime).toLocaleString("en-US", {
-            timeZone: "GMT",
-          })}{" "}
-          -{" "}
-          {new Date(auction?.endTime).toLocaleString("en-US", {
-            timeZone: "GMT",
-          })}
-        </StyledText>
-        <StyledText className="text-white text-sm font-semibold">
-          Total lot {auction?.totalLot || 0}
+          {moment(auction?.startTime).format("HH:mm A, DD/MM/YYYY")} -{" "}
+          {moment(auction?.endTime).format("HH:mm A, DD/MM/YYYY")}
         </StyledText>
       </StyledView>
     </StyledTouchableOpacity>

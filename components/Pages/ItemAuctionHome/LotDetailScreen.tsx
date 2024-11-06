@@ -576,7 +576,7 @@ const LotDetailScreen = () => {
             <Text className="font-bold text-gray-400">Follow</Text>
             <Text className="font-bold text-gray-400">Watch</Text>
           </View>
-          {lotDetail && lotDetail.finalPriceSold && (
+          {/* {lotDetail && lotDetail.finalPriceSold && (
             <View className="py-2 bg-green-200 ">
               <Text className="text-center font-bold uppercase text-green-700">
                 Final Price Sold:{" "}
@@ -586,7 +586,7 @@ const LotDetailScreen = () => {
                 })}
               </Text>
             </View>
-          )}
+          )} */}
           <View className="p-4 space-y-2">
             <View>
               {/* Thời gian đấu giá */}
@@ -641,19 +641,23 @@ const LotDetailScreen = () => {
         </ScrollView>
       </View>
       <View className="absolute bottom-0 bg-white left-0 right-0 px-4 py-2 ">
-        {currentPriceCheck !== null && bidTimeCheck !== null ? (
-          <Text className="text-sm text-center mb-2 font-semibold text-green-500">
-            You have placed a bid for this Lot with{" "}
-            {currentPriceCheck.toLocaleString("en-US", {
-              style: "currency",
-              currency: "USD",
-            })}{" "}
-            at {moment(bidTimeCheck).format("HH:mm A, MM/DD/YYYY")}.
-          </Text>
-        ) : (
-          <Text className="text-sm text-center mb-2 font-semibold text-red-500">
-            You haven't placed any bids for this lot!
-          </Text>
+        {isRegistered && (
+          <View>
+            {currentPriceCheck !== null && bidTimeCheck !== null ? (
+              <Text className="text-sm text-center mb-2 font-semibold text-green-500">
+                You have placed a bid for this Lot with{" "}
+                {currentPriceCheck.toLocaleString("en-US", {
+                  style: "currency",
+                  currency: "USD",
+                })}{" "}
+                at {moment(bidTimeCheck).format("HH:mm A, MM/DD/YYYY")}.
+              </Text>
+            ) : (
+              <Text className="text-sm text-center mb-2 font-semibold text-red-500">
+                You haven't placed any bids for this lot!
+              </Text>
+            )}
+          </View>
         )}
 
         {isRegistered &&

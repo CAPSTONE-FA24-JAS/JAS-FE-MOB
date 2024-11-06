@@ -660,7 +660,7 @@ const LotDetailScreen = () => {
           </View>
         )}
 
-        {isRegistered &&
+        {isRegistered && currentPriceCheck !== null &&
           isAuctionActive &&
           !(lotDetail?.status === "Passed") &&
           !(lotDetail?.status === "Sold") && (

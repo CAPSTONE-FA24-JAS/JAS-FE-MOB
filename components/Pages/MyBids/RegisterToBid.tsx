@@ -20,7 +20,7 @@ import {
 } from "@/components/FlashMessageHelpers";
 import { LotDetail } from "@/app/types/lot_type";
 import { registerToBid } from "@/api/lotAPI";
-import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { useNavigation } from "expo-router";
 import PasswordModal from "../Payment/CheckPasswordModal";
 import { ApiError } from "@/api/utils/ApiError";
@@ -106,7 +106,12 @@ const RegisterToBid = () => {
           try {
             await registerToBid(lotDetail.deposit, userId, lotDetail.id);
             showSuccessMessage("Registered to bid successfully.");
-            navigation.replace("RisingBidPage", { itemId: lotDetail.id }); // lot id
+            if (lotDetail.status === "Auctioning") {
+              navigation.replace("RisingBidPage", { itemId: lotDetail.id }); // lot id
+            }
+            if (lotDetail.status !== "Auctioning") {
+              navigation.goBack();
+            }
           } catch (error: any) {
             if (error instanceof ApiError) {
               if (error.code === 400) {
@@ -239,8 +244,7 @@ const RegisterToBid = () => {
       <TouchableOpacity
         className="py-3 bg-blue-500 rounded-sm"
         onPress={handleRegisterToBid}
-        disabled={!checkedTerms || !checkedAge}
-      >
+        disabled={!checkedTerms || !checkedAge}>
         <Text className="font-semibold text-center text-white">
           REGISTER TO BID
         </Text>
@@ -258,15 +262,13 @@ const RegisterToBid = () => {
         animationType="slide"
         transparent={true}
         visible={isDepositModalVisible}
-        onRequestClose={() => setIsDepositModalVisible(false)}
-      >
+        onRequestClose={() => setIsDepositModalVisible(false)}>
         <View className="items-center justify-center flex-1 bg-black/50">
           <View className="relative w-10/12 p-6 bg-white rounded-lg">
             {/* Close icon at the top-right corner */}
             <TouchableOpacity
               className="absolute top-2 right-2"
-              onPress={() => setIsDepositModalVisible(false)}
-            >
+              onPress={() => setIsDepositModalVisible(false)}>
               <MaterialCommunityIcons name="close" size={24} color="black" />
             </TouchableOpacity>
 
@@ -277,8 +279,7 @@ const RegisterToBid = () => {
             {/* Deposit Button */}
             <TouchableOpacity
               className="w-full px-4 py-2 bg-blue-500 rounded-lg"
-              onPress={navigateToDeposit}
-            >
+              onPress={navigateToDeposit}>
               <Text className="text-xl font-bold text-center text-white uppercase">
                 Deposit
               </Text>

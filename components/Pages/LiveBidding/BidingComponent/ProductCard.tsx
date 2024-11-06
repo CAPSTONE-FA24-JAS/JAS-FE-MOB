@@ -11,6 +11,7 @@ interface ProductCardProps {
   minPrice?: number;
   typeBid: string;
   maxPrice?: number;
+  stepBidIncrement?: number;
 }
 
 const ProductCard: React.FC<ProductCardProps> = ({
@@ -20,6 +21,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
   minPrice,
   typeBid,
   maxPrice,
+  stepBidIncrement,
 }) => {
   return (
     <View className="px-4">
@@ -28,25 +30,18 @@ const ProductCard: React.FC<ProductCardProps> = ({
         className="w-full h-64 rounded-md shadow-md"
         resizeMode="contain"
       />
-      <View className="flex-row items-center justify-between">
+      <View className="flex-row items-center justify-between p-2">
         <Text className="mt-2 text-lg font-bold">Lot {id}</Text>
-        {typeBid === "Public_Auction" ? (
+        <View>
           <Text className="mr-2 text-sm font-medium text-gray-400 mt-">
-            Start Price:{" "}
-            {(minPrice ?? 0).toLocaleString("vi-VN", {
-              style: "currency",
-              currency: "VND",
-            })}
+            Est: {(minPrice ?? 0).toLocaleString()}$ -{" "}
+            {(maxPrice ?? 0).toLocaleString()}$
           </Text>
-        ) : (
-          <Text className="mr-2 text-lg font-medium text-gray-700 mt-">
-            Original Price: $
-            {(maxPrice ?? 0).toLocaleString("vi-VN", {
-              style: "currency",
-              currency: "VND",
-            })}
+          <Text className="mr-2 text-sm font-medium text-gray-400 mt-">
+            Bid Increment Step:
+            <Text className="text-blue-500">{stepBidIncrement}$</Text>
           </Text>
-        )}
+        </View>
       </View>
       <Text className="text-base font-semibold text-gray-700 ">{name}</Text>
       {typeBid === "Auction_Price_GraduallyReduced" && (

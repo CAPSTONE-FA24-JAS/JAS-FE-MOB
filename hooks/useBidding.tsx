@@ -72,12 +72,19 @@ export function useBidding(): UseBiddingResult {
       setEndTime(newEndTime);
     });
 
+    connection.on(
+      "CurrentPriceForReduceBiddingWhenStartLot",
+      (msg: string, currPrice: string, dateNow: string) => {
+        console.log(`${msg} currentPricessssdasdss ${currPrice} at ${dateNow}`);
+        setReducePrice(Number(currPrice));
+      }
+    );
     //await _hubContext.Clients.Group(lotGroupName).SendAsync("SendCurrentPriceForReduceBidding", lot.CurrentPrice);
 
     connection.on(
-      "SendCurrentPriceForReduceBidding",
+      "SendCurrentPriceForReduceBidding", // khi moi vao lot
       (currentPrice: number, dateNow: string) => {
-        console.log(`currentPrice ${currentPrice} at ${dateNow}`);
+        console.log(`currentPrice first ${currentPrice} at ${dateNow}`);
         setReducePrice(() => currentPrice);
       }
     );
@@ -252,6 +259,8 @@ export function useBidding(): UseBiddingResult {
       bidTime: new Date().toISOString(),
       connectionId: connectionRef.current.connectionId,
     };
+
+    console.log("body method 3", body);
 
     try {
       const response = await axios.post(

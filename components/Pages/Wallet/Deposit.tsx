@@ -51,17 +51,17 @@ const Deposit: React.FC = () => {
       {/* Loading Overlay */}
       <LoadingOverlay visible={loading} />
 
-      <ScrollView className="bg-white flex-1 p-2">
+      <ScrollView className="flex-1 p-2 bg-white">
         {/* Balance */}
         <BalanceCard />
         <DepositAmount setAmount={setAmount} />
         <View className="px-2">
           {/* Choose Payment Method */}
-          <Text className="text-lg font-semibold mb-2">
+          <Text className="mb-2 text-lg font-semibold">
             2. CHOOSE PAYMENT METHOD
           </Text>
 
-          <Text className="text-red-500 font-semibold mb-4">
+          <Text className="mb-4 font-semibold text-red-500">
             Note: After successful indirect payment, you need to take a
             screenshot of the transaction and upload it back to the JAS app.
           </Text>
@@ -70,8 +70,7 @@ const Deposit: React.FC = () => {
           <Card className="mb-4 bg-white">
             <TouchableOpacity
               onPress={() => setSelectedPayment("vnpay")}
-              className="flex-row justify-between items-center p-4"
-            >
+              className="flex-row items-center justify-between p-4">
               <View className="flex-row items-center">
                 <Avatar.Image
                   source={require("../../../assets/logo/VNpay_Logo.png")}
@@ -95,9 +94,8 @@ const Deposit: React.FC = () => {
       <View className="absolute bottom-0 w-full p-4 bg-white border-t border-gray-300">
         <TouchableOpacity
           onPress={handleDeposit}
-          className="bg-blue-500 py-3 rounded-lg"
-        >
-          <Text className="text-center text-white font-bold text-lg">
+          className="py-3 bg-blue-500 rounded-lg">
+          <Text className="text-lg font-bold text-center text-white">
             Deposit Now
           </Text>
         </TouchableOpacity>
@@ -114,7 +112,7 @@ export default Deposit;
   /* <Card className="mb-4 bg-white">
           <TouchableOpacity
             onPress={() => setSelectedPayment("momo")}
-            className="flex-row justify-between items-center p-4"
+            className="flex-row items-center justify-between p-4"
           >
             <View className="flex-row items-center">
               <Avatar.Image

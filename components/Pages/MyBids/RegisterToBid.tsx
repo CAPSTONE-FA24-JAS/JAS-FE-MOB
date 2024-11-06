@@ -107,8 +107,16 @@ const RegisterToBid = () => {
             await registerToBid(lotDetail.deposit, userId, lotDetail.id);
             showSuccessMessage("Registered to bid successfully.");
             if (lotDetail.status === "Auctioning") {
-              navigation.replace("RisingBidPage", { itemId: lotDetail.id }); // lot id
+              if (
+                lotDetail.lotType === "Public_Auction" ||
+                lotDetail.lotType === "Auction_Price_GraduallyReduced"
+              ) {
+                navigation.replace("RisingBidPage", { itemId: lotDetail.id }); // lot id
+              } else {
+                navigation.goBack();
+              }
             }
+
             if (lotDetail.status !== "Auctioning") {
               navigation.goBack();
             }

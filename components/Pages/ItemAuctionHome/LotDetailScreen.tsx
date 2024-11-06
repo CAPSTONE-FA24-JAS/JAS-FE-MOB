@@ -538,8 +538,7 @@ const LotDetailScreen = () => {
     ? new Date() < new Date(lotDetail.endTime)
     : false;
 
-    console.log("isAuctionActive",isAuctionActive);
-    
+  console.log("isAuctionActive", isAuctionActive);
 
   return (
     <SafeAreaView className="flex-1 bg-white">
@@ -554,8 +553,7 @@ const LotDetailScreen = () => {
             <Swiper
               showsPagination={true}
               autoplay={true}
-              style={{ height: "100%" }}
-            >
+              style={{ height: "100%" }}>
               {lotDetail?.jewelry?.imageJewelries?.length ?? 0 > 0 ? (
                 lotDetail?.jewelry?.imageJewelries.map((img, index) =>
                   img?.imageLink ? (
@@ -581,7 +579,7 @@ const LotDetailScreen = () => {
           </View>
           {/* {lotDetail && lotDetail.finalPriceSold && (
             <View className="py-2 bg-green-200 ">
-              <Text className="text-center font-bold uppercase text-green-700">
+              <Text className="font-bold text-center text-green-700 uppercase">
                 Final Price Sold:{" "}
                 {lotDetail?.finalPriceSold.toLocaleString("vi-VN", {
                   style: "currency",
@@ -643,11 +641,11 @@ const LotDetailScreen = () => {
           <View className="h-32" />
         </ScrollView>
       </View>
-      <View className="absolute bottom-0 bg-white left-0 right-0 px-4 py-2 ">
+      <View className="absolute bottom-0 left-0 right-0 px-4 py-2 bg-white ">
         {isRegistered && (
           <View>
             {currentPriceCheck !== null && bidTimeCheck !== null ? (
-              <Text className="text-sm text-center mb-2 font-semibold text-green-500">
+              <Text className="mb-2 text-sm font-semibold text-center text-green-500">
                 You have placed a bid for this Lot with{" "}
                 {currentPriceCheck.toLocaleString("en-US", {
                   style: "currency",
@@ -656,14 +654,14 @@ const LotDetailScreen = () => {
                 at {moment(bidTimeCheck).format("HH:mm A, MM/DD/YYYY")}.
               </Text>
             ) : (
-              <Text className="text-sm text-center mb-2 font-semibold text-red-500">
+              <Text className="mb-2 text-sm font-semibold text-center text-red-500">
                 You haven't placed any bids for this lot!
               </Text>
             )}
           </View>
         )}
 
-        {isRegistered && 
+        {isRegistered &&
           isAuctionActive &&
           !(lotDetail?.status === "Passed") &&
           !(lotDetail?.status === "Sold") && (
@@ -675,8 +673,7 @@ const LotDetailScreen = () => {
                     typeBid === "Fixed_Price"
                       ? handleBuyNow
                       : handleSecretAuctionBid
-                  }
-                >
+                  }>
                   <Text className="font-semibold text-center text-white uppercase">
                     {typeBid === "Fixed_Price"
                       ? "BUY FIXED BID"
@@ -690,8 +687,7 @@ const LotDetailScreen = () => {
                 typeBid === "Public_Auction" && (
                   <TouchableOpacity
                     onPress={handlePressAutoBid}
-                    className="mb-3 bg-blue-500 rounded-sm"
-                  >
+                    className="mb-3 bg-blue-500 rounded-sm">
                     <Text className="py-3 font-semibold text-center text-white">
                       BID AUTOMATION
                     </Text>
@@ -700,8 +696,7 @@ const LotDetailScreen = () => {
               {typeBid !== "Fixed_Price" && isAuctionActive && (
                 <TouchableOpacity
                   className="py-3 mb-3 bg-blue-500 rounded-sm"
-                  onPress={() => setModalVisible(true)}
-                >
+                  onPress={() => setModalVisible(true)}>
                   <Text className="font-semibold text-center text-white">
                     PLACE BID
                   </Text>
@@ -713,8 +708,7 @@ const LotDetailScreen = () => {
                 typeBid !== "Fixed_Price" && (
                   <TouchableOpacity
                     className="py-3 bg-blue-500 rounded-sm"
-                    onPress={handleJoinToBid}
-                  >
+                    onPress={handleJoinToBid}>
                     <Text className="font-semibold text-center text-white uppercase">
                       Join To Bid
                     </Text>
@@ -729,8 +723,7 @@ const LotDetailScreen = () => {
           !(lotDetail?.status === "Sold") && (
             <TouchableOpacity
               className="py-3 mt-4 bg-blue-500 rounded-sm"
-              onPress={handleRegisterToBid}
-            >
+              onPress={handleRegisterToBid}>
               <Text className="font-semibold text-center text-white uppercase">
                 Register To Bid
               </Text>

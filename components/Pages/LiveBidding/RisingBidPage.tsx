@@ -225,6 +225,7 @@ const RisingBidPage: React.FC = () => {
             item={item}
             onPlaceBid={sendBid}
             onPlaceBidMethod4={sendBidMethod4}
+            reducePrice={reducePrice}
           />
         </View>
       )}

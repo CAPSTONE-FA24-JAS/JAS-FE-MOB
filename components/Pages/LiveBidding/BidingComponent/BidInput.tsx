@@ -21,7 +21,7 @@ const BidInput: React.FC<BidInputProps> = ({
   onPlaceBidMethod4,
   reducePrice,
 }) => {
-  const [bidValue, setBidValue] = useState<number>(
+  const [bidValue, setBidValue] = useState<number>(() =>
     highestBid !== 0
       ? highestBid + (item.bidIncrement ?? 100)
       : (item.startPrice ?? 0) + (item.bidIncrement ?? 0)
@@ -121,7 +121,9 @@ const BidInput: React.FC<BidInputProps> = ({
           <View className="w-[50%] flex-row items-center border border-gray-300 rounded-md">
             <TextInput
               value={bidValue.toLocaleString()}
-              onChangeText={(e) => setBidValue(parseInt(e))}
+              onChangeText={(e) =>
+                setBidValue(parseInt(e.replace(/,/g, ""), 10))
+              }
               keyboardType="numeric"
               className="flex-1 h-12 px-2 text-sm font-semibold text-center border-gray-300 border-x"
             />

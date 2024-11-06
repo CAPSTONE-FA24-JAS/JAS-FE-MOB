@@ -1,4 +1,5 @@
 import { MyBidData } from "@/app/types/bid_type";
+import { InvoiceDetailResponse } from "@/app/types/invoice_type";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { useNavigation } from "expo-router";
 import moment from "moment-timezone";
@@ -21,6 +22,7 @@ interface ItemBidCardProps {
   yourMaxBid: number;
   statusColor: string;
   itemDetailBid: MyBidData;
+  invoiceDetails?: InvoiceDetailResponse;
 }
 
 type RootStackParamList = {
@@ -54,6 +56,7 @@ const ItemBidCard: React.FC<ItemBidCardProps> = ({
   yourMaxBid,
   statusColor,
   itemDetailBid,
+  invoiceDetails,
 }) => {
   const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
   const goToAuctionDetail = () => {
@@ -214,23 +217,39 @@ const ItemBidCard: React.FC<ItemBidCardProps> = ({
               <Text className={`text-gray-600 font-semibold text-sm `}>
                 with
               </Text>
-              <Text
-                className={`${statusColor} uppercase font-semibold text-sm `}
-              >
-                {isWin
-                  ? (
-                      itemDetailBid.lotDTO.finalPriceSold || yourMaxBid
-                    ).toLocaleString("vi-VN", {
-                      style: "currency",
-                      currency: "VND",
-                    }) ?? "0 VND"
-                  : (
-                      itemDetailBid.yourMaxBidPrice || yourMaxBid
-                    ).toLocaleString("vi-VN", {
-                      style: "currency",
-                      currency: "VND",
-                    }) ?? "0 VND"}
-              </Text>
+              {invoiceDetails ? (
+                <Text
+                  className={`${statusColor} uppercase font-semibold text-sm `}
+                >
+                  {isWin
+                    ? invoiceDetails.price.toLocaleString("vi-VN", {
+                        style: "currency",
+                        currency: "VND",
+                      }) ?? "0 VND"
+                    : invoiceDetails.price.toLocaleString("vi-VN", {
+                        style: "currency",
+                        currency: "VND",
+                      }) ?? "0 VND"}
+                </Text>
+              ) : (
+                <Text
+                  className={`${statusColor} uppercase font-semibold text-sm `}
+                >
+                  {isWin
+                    ? (
+                        itemDetailBid.lotDTO.finalPriceSold || yourMaxBid
+                      ).toLocaleString("vi-VN", {
+                        style: "currency",
+                        currency: "VND",
+                      }) ?? "0 VND"
+                    : (
+                        itemDetailBid.yourMaxBidPrice || yourMaxBid
+                      ).toLocaleString("vi-VN", {
+                        style: "currency",
+                        currency: "VND",
+                      }) ?? "0 VND"}
+                </Text>
+              )}
               {/* {soldPrice && (
                 <Text className={`${statusColor} text-sm font-bold`}>
                   - {soldPrice}

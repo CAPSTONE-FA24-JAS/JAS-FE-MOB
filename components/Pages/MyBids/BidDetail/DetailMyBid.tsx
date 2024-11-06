@@ -54,12 +54,14 @@ type RootStackParamList = {
     invoiceId: number;
     yourMaxBid: number;
     imagePayment: string;
+    invoiceDetails: InvoiceDetailResponse;
   };
   InvoiceDetailConfirm: {
     addressData: AddressListData;
     itemDetailBid: MyBidData;
     invoiceId: number;
     yourMaxBid: number;
+    invoiceDetails: InvoiceDetailResponse;
   };
   InvoiceList: undefined;
 };
@@ -103,8 +105,9 @@ const DetailMyBid: React.FC = () => {
   const [addresses, setAddresses] = useState<AddressListData[]>([]); // Add addresses state
   const [isChooseModalVisible, setChooseModalVisible] =
     useState<boolean>(false);
-  const [invoiceDetails, setInvoiceDetails] =
-    useState<InvoiceDetailResponse | null>(null);
+  const [invoiceDetails, setInvoiceDetails] = useState<
+    InvoiceDetailResponse | undefined
+  >(undefined);
   const [historyCustomerLots, setHistoryCustomerLots] = useState<
     HistoryCustomerLot[]
   >([]);
@@ -201,12 +204,13 @@ const DetailMyBid: React.FC = () => {
     );
   }
   const handleViewInvoice = () => {
-    if (defaultAddress && itemDetailBid && invoiceId) {
+    if (defaultAddress && itemDetailBid && invoiceId && invoiceDetails) {
       navigation.navigate("InvoiceDetail", {
         addressData: defaultAddress,
         itemDetailBid: itemDetailBid,
         invoiceId: invoiceId,
         yourMaxBid: yourMaxBid ?? 0,
+        invoiceDetails: invoiceDetails,
         imagePayment:
           invoiceDetails?.linkBillTransaction ||
           "https://thongkehaiphong.gov.vn/uploads/no-image.jpg",
@@ -215,12 +219,13 @@ const DetailMyBid: React.FC = () => {
   };
 
   const handleConfirmInvoice = () => {
-    if (defaultAddress && itemDetailBid && invoiceId) {
+    if (defaultAddress && itemDetailBid && invoiceId && invoiceDetails) {
       navigation.navigate("InvoiceDetailConfirm", {
         addressData: defaultAddress,
         itemDetailBid: itemDetailBid,
         invoiceId: invoiceId,
         yourMaxBid: yourMaxBid ?? 0,
+        invoiceDetails: invoiceDetails,
       });
     } else {
       showErrorMessage("No default address selected.");
@@ -246,6 +251,7 @@ const DetailMyBid: React.FC = () => {
         startTime={startTime}
         yourMaxBid={yourMaxBid || 0}
         itemDetailBid={itemDetailBid || ({} as MyBidData)}
+        invoiceDetails={invoiceDetails}
       />
       {invoiceDetails &&
         invoiceDetails.linkBillTransaction &&

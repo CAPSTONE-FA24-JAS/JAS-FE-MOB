@@ -20,6 +20,7 @@ import { RootState } from "@/redux/store";
 import { checkPasswordWallet } from "@/api/walletApi";
 import { showErrorMessage } from "@/components/FlashMessageHelpers";
 import PasswordModal from "../Payment/CheckPasswordModal";
+import { InvoiceDetailResponse } from "@/app/types/invoice_type";
 
 const StyledView = styled(View);
 const StyledText = styled(Text);
@@ -32,6 +33,7 @@ type RootStackParamList = {
     itemDetailBid: MyBidData;
     invoiceId: number;
     yourMaxBid: number;
+    invoiceDetails: InvoiceDetailResponse;
   };
   EditAddress: undefined;
   Payment: {
@@ -55,7 +57,8 @@ const InvoiceDetailConfirm: React.FC = () => {
   console.log("haveWallet IN InvoiceDetailConfirm:", haveWallet);
   console.log("====================================");
   // Get the passed parameters from the route
-  const { addressData, itemDetailBid, invoiceId, yourMaxBid } = route.params;
+  const { addressData, itemDetailBid, invoiceId, yourMaxBid, invoiceDetails } =
+    route.params;
 
   console.log("itemDetailBid IN InvoiceDetailConfirm:", itemDetailBid);
 
@@ -64,15 +67,12 @@ const InvoiceDetailConfirm: React.FC = () => {
     useState<boolean>(false);
   const [password, setPassword] = useState<string>("");
 
-  // Calculate the base price
-  const basePrice =
-    itemDetailBid?.yourMaxBidPrice ||
-    itemDetailBid?.lotDTO?.finalPriceSold ||
-    yourMaxBid ||
-    0;
-
   // Calculate the total price
-  const totalPrice = basePrice + basePrice * 0.08;
+  const bidPrice = invoiceDetails?.price || 0;
+  const feePrice = invoiceDetails?.free || 0;
+  const feeShipping = invoiceDetails?.feeShip || 0;
+  const totalPrice = invoiceDetails?.totalPrice || 0;
+
   // Handle password confirmation
   const handlePasswordConfirm = async (enteredPassword: string) => {
     setPassword(enteredPassword);
@@ -205,16 +205,13 @@ const InvoiceDetailConfirm: React.FC = () => {
               Chưa cập nhật
             </StyledText>
           </StyledView>
+
           <StyledView className="flex-row justify-between mb-1">
             <StyledText className="text-base font-medium text-gray-600">
-              Bid Price
+              Your Bid Price
             </StyledText>
             <StyledText className="text-base font-medium text-gray-600">
-              {(
-                itemDetailBid?.yourMaxBidPrice ||
-                itemDetailBid?.lotDTO?.finalPriceSold ||
-                yourMaxBid
-              )?.toLocaleString("vi-VN", {
+              {bidPrice.toLocaleString("vi-VN", {
                 style: "currency",
                 currency: "VND",
               }) || "0 VND"}
@@ -222,31 +219,31 @@ const InvoiceDetailConfirm: React.FC = () => {
           </StyledView>
           <StyledView className="flex-row justify-between mb-1">
             <StyledText className="text-base font-medium text-gray-600">
-              Fee VAT 8%
+              Platform Fee
             </StyledText>
             <StyledText className="text-base font-medium text-gray-600">
-              {(
-                (itemDetailBid?.yourMaxBidPrice ||
-                  itemDetailBid?.lotDTO?.finalPriceSold ||
-                  yourMaxBid) * 0.08
-              ).toLocaleString("vi-VN", {
+              {feePrice.toLocaleString("vi-VN", {
                 style: "currency",
                 currency: "VND",
               }) || "0 VND"}
             </StyledText>
           </StyledView>
+          <StyledView className="flex-row justify-between mb-1">
+            <StyledText className="text-base font-medium text-gray-600">
+              Shipping Fee
+            </StyledText>
+            <StyledText className="text-base font-medium text-gray-600">
+              {feeShipping.toLocaleString("vi-VN", {
+                style: "currency",
+                currency: "VND",
+              }) || "0 VND"}
+            </StyledText>
+          </StyledView>
+
           <StyledView className="flex-row justify-between mt-3">
             <StyledText className="text-lg font-bold">Total</StyledText>
             <StyledText className="text-lg font-bold">
-              {(
-                (itemDetailBid?.yourMaxBidPrice ||
-                  itemDetailBid?.lotDTO?.finalPriceSold ||
-                  yourMaxBid) +
-                (itemDetailBid?.yourMaxBidPrice ||
-                  itemDetailBid?.lotDTO?.finalPriceSold ||
-                  yourMaxBid) *
-                  0.08
-              ).toLocaleString("vi-VN", {
+              {totalPrice.toLocaleString("vi-VN", {
                 style: "currency",
                 currency: "VND",
               }) || "0 VND"}

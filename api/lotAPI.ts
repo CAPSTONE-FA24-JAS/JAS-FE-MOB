@@ -113,28 +113,112 @@ export const registerToBid = async (
 export const checkCustomerInLot = async (
   customerId: number,
   lotId: number
-): Promise<boolean> => {
+): Promise<{
+  customerId: number;
+  lotId: number;
+  customerLotId: number;
+  result: boolean;
+} | null> => {
   try {
     const response = await axios.get(`${API_URL}/api/Lot/CheckCustomerInLot`, {
       params: { customerId, lotId },
     });
 
     if (response.data.isSuccess && response.data.data) {
-      console.log("Customer is in the lot.");
-      // showSuccessMessage(
-      //   response.data.message || "Customer was joined to lot."
-      // );
-      return true;
+      console.log("Customer is in the lot:", response.data.data);
+      // Return the full data object if the customer is in the lot
+      return response.data.data;
     } else {
       console.log("Customer is not in the lot.");
-      // showErrorMessage(
-      //   response.data.message || "Customer hasn't joined the lot."
-      // );
-      return false;
+      return null;
     }
   } catch (error) {
     console.error("Error checking customer in lot:", error);
     showErrorMessage("Unable to check customer's participation in the lot.");
     throw error;
+  }
+};
+
+// Function to check if the customer has bid on a specific lot
+export const checkCustomerHaveBidPrice = async (
+  customerId: number,
+  lotId: number
+): Promise<ApiResponse | null> => {
+  try {
+    const response = await axios.post<ApiResponse>(
+      `${API_URL}/api/Lot/CheckCustomerHaveBidPrice`,
+      {
+        customerId,
+        lotId,
+      }
+    );
+
+    if (response.data.isSuccess && response.data.data) {
+      console.log("Customer has bid on the lot:", response.data.data);
+      // showSuccessMessage(
+      //   response.data.message || "The customer is auctioned into the lot."
+      // );
+      return response.data;
+    } else {
+      console.log("Customer hasn't bid on the lot.");
+      // showErrorMessage(
+      //   response.data.message || "The customer hasn't bid to the lot."
+      // );
+      return null;
+    }
+  } catch (error: any) {
+    console.error("Error checking customer's bid status:", error);
+    // showErrorMessage("Unable to check if the customer has bid on the lot.");
+    throw new ApiError(
+      error.response?.data?.code || 500,
+      error.response?.data?.message || "Error checking bid status."
+    );
+  }
+};
+
+// Function to set auto-bid configuration
+export const setAutoBidConfig = async (
+  minPrice: number,
+  maxPrice: number,
+  numberOfPriceStep: number,
+  timeIncrement: number,
+  customerLotId: number
+): Promise<void> => {
+  try {
+    const response = await axios.post<ApiResponse>(
+      `${API_URL}/api/CustomerLots/SetAutoBid`,
+      {
+        minPrice,
+        maxPrice,
+        numberOfPriceStep,
+        timeIncrement,
+        customerLotId,
+      }
+    );
+
+    if (response.data.isSuccess) {
+      console.log("Set auto-bid configuration successfully:", response.data);
+      showSuccessMessage(
+        response.data.message || "Auto-bid configuration set successfully."
+      );
+    } else {
+      throw new Error(
+        response.data.message || "Failed to set auto-bid configuration."
+      );
+    }
+  } catch (error: any) {
+    console.error("Error setting auto-bid configuration:", error);
+    if (error.response && error.response.data) {
+      const { code, message } = error.response.data;
+      throw new ApiError(
+        code || 500,
+        message || "Unable to set auto-bid configuration."
+      );
+    } else if (error instanceof ApiError) {
+      throw error;
+    } else {
+      showErrorMessage("Unable to set auto-bid configuration.");
+      throw new ApiError(500, "Unable to set auto-bid configuration.");
+    }
   }
 };

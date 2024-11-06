@@ -86,6 +86,9 @@ export interface InvoiceDetailResponse {
   tax: any;
   note: any;
   addressToShip: any;
+  price: number;
+  free: number;
+  feeShip: any;
   statusInvoiceDTOs: StatusInvoiceDto[];
   id: number;
   status: string;

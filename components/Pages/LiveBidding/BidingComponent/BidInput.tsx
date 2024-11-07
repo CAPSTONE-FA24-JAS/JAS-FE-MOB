@@ -161,6 +161,7 @@ const BidInput: React.FC<BidInputProps> = ({
           <View className="w-[50%] flex-row items-center border border-gray-300 rounded-md">
             <TextInput
               value={bidValue.toLocaleString()}
+              editable={false}
               onChangeText={(e) => {
                 const numericValue = parseInt(e.replace(/,/g, ""), 10);
                 setBidValue(isNaN(numericValue) ? 0 : numericValue); // Set to 0 if NaN

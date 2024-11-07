@@ -629,10 +629,10 @@ const LotDetailScreen = () => {
             {currentPriceCheck !== null && bidTimeCheck !== null ? (
               <Text className="mb-2 text-sm font-semibold text-center text-green-500">
                 You have placed a bid for this Lot with{" "}
-                {currentPriceCheck.toLocaleString("en-US", {
-                  style: "currency",
-                  currency: "USD",
-                })}{" "}
+                {currentPriceCheck.toLocaleString("vi-VN", {
+                    style: "currency",
+                    currency: "VND",
+                  })}{" "}
                 at {moment(bidTimeCheck).format("HH:mm A, MM/DD/YYYY")}.
               </Text>
             ) : (
@@ -643,7 +643,7 @@ const LotDetailScreen = () => {
           </View>
         )}
 
-        {isRegistered &&
+        {isRegistered && !currentPriceCheck  && !bidTimeCheck &&
           isAuctionActive &&
           !(lotDetail?.status === "Passed") &&
           !(lotDetail?.status === "Sold") && (

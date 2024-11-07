@@ -23,6 +23,8 @@ export const placeBidFixedPriceAndSecret = async (
   lotId: number
 ): Promise<PlaceBidResponse | null> => {
   try {
+    console.log("body method12", currentPrice, customerId, lotId);
+
     const response = await axios.post<PlaceBidResponse>(
       `${API_URL}/api/BidPrices/PlaceBidFixedPriceAndSercet`,
       {

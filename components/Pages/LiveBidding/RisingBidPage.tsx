@@ -89,6 +89,7 @@ const RisingBidPage: React.FC = () => {
     reducePrice,
     resultBidding,
     setResultBidding,
+    isEndLot,
   } = useBidding();
 
   useEffect(() => {
@@ -233,6 +234,7 @@ const RisingBidPage: React.FC = () => {
             reducePrice={reducePrice}
             resultBidding={resultBidding}
             setResultBidding={setResultBidding}
+            isEndLot={isEndLot}
           />
         </View>
       )}

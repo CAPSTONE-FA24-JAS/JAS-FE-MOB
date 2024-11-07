@@ -20,6 +20,7 @@ interface BidInputProps {
   reducePrice?: number;
   resultBidding?: string;
   setResultBidding: React.Dispatch<React.SetStateAction<string>>;
+  isEndLot: boolean; //just for method 3
 }
 
 const BidInput: React.FC<BidInputProps> = ({
@@ -31,6 +32,7 @@ const BidInput: React.FC<BidInputProps> = ({
   reducePrice,
   resultBidding,
   setResultBidding,
+  isEndLot, //just for method 3
 }) => {
   const [bidValue, setBidValue] = useState<number>(() =>
     highestBid !== 0
@@ -176,7 +178,8 @@ const BidInput: React.FC<BidInputProps> = ({
               isEndAuction ||
               item.status === "Sold" ||
               item.status === "Passed" ||
-              loading
+              loading ||
+              isEndLot // Disable when auction is ended just for method 3
             }
             onPress={handleSubmitBidMethod3}
             className="w-[20%] flex items-center justify-center h-12 bg-blue-500 rounded-md">

@@ -34,6 +34,7 @@ interface UseBiddingResult {
   reducePrice: number;
   resultBidding: string;
   setResultBidding: React.Dispatch<React.SetStateAction<string>>;
+  isEndLot: boolean;
 }
 
 export function useBidding(): UseBiddingResult {
@@ -47,6 +48,7 @@ export function useBidding(): UseBiddingResult {
   const [winnerPrice, setWinnerPrice] = useState<string>("");
   const [reducePrice, setReducePrice] = useState<number>(0);
   const [resultBidding, setResultBidding] = useState<string>("");
+  const [isEndLot, setIsEndLot] = useState<boolean>(false);
 
   const connectionRef = useRef<HubConnection | null>(null);
 
@@ -153,8 +155,14 @@ export function useBidding(): UseBiddingResult {
       }
     );
 
+    // end lot asap use for disable bidding btn
+    connection.on("AuctionPublicEnded", (message: string) => {
+      console.log(`${message}`);
+      setIsEndLot(true);
+    });
+
     //sendresultcheckcurrentprice
-    // khi end auction
+    // khi end auction tổng kết kết quả
     connection.on(
       "AuctionEndedWithWinner",
       (message: string, customerId: string, price: number) => {
@@ -363,5 +371,6 @@ export function useBidding(): UseBiddingResult {
     reducePrice,
     resultBidding,
     setResultBidding,
+    isEndLot,
   };
 }

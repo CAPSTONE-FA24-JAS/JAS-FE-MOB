@@ -179,7 +179,7 @@ const PlaceBidModal: React.FC<PlaceBidModalProps> = ({
 
           {/* Bid Input */}
           <Text className="mt-6 mb-2 text-lg font-bold text-center">
-            Enter Your Bid ($)
+            Enter Your Bid (VND)
           </Text>
 
           {/* Conditional Input Field Logic */}

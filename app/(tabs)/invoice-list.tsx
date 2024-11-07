@@ -132,8 +132,8 @@ const InvoiceList: React.FC = () => {
       isWin={true}
       title={item.myBidDTO?.lotDTO.title ?? "Unknown Title"}
       lotNumber={`Lot #${item.myBidDTO?.lotId}`}
-      soldPrice={item.totalPrice}
-      yourMaxBid={item.totalPrice}
+      soldPrice={item.price}
+      yourMaxBid={item?.myBidDTO?.yourMaxBidPrice}
       statusInvoice={item?.status}
       itemInvoice={item}
       image={

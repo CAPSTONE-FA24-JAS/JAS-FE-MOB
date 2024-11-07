@@ -20,10 +20,13 @@ export interface InvoicesByStatusResponse {
 export interface InvoiceData {
   id: number;
   status: string;
+  price: number;
   totalPrice: number;
+  linkBillTransaction: string;
   paymentMethodId: number | null;
   addressToShipId: number | null;
   shipperId: number;
+  creationDate: string;
   myBidDTO: DataCurentBidResponse | null;
 }
 

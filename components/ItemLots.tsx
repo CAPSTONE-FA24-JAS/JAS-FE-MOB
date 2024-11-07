@@ -152,7 +152,7 @@ const ItemLots: React.FC<ItemLotsProps> = ({
                   style: "currency",
                   currency: "VND",
                 })}{" "}
-                - $
+                -
                 {maxPrice.toLocaleString("vi-VN", {
                   style: "currency",
                   currency: "VND",

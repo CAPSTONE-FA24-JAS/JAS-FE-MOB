@@ -81,10 +81,21 @@ const ConsignItem: React.FC<ConsignItemProps> = ({
           {minPrice || maxPrice ? (
             <View className="flex-row">
               {minPrice && (
-                <Text className="mt-1 mr-2 text-lg font-bold">{minPrice}$</Text>
+                <Text className="mt-1 mr-2 text-lg font-bold">
+                  {minPrice.toLocaleString("vi-VN", {
+                    style: "currency",
+                    currency: "VND",
+                  })}
+                </Text>
               )}
               {maxPrice && (
-                <Text className="mt-1 text-lg font-bold">- {maxPrice}$</Text>
+                <Text className="mt-1 text-lg font-bold">
+                  -{" "}
+                  {maxPrice.toLocaleString("vi-VN", {
+                    style: "currency",
+                    currency: "VND",
+                  })}
+                </Text>
               )}
             </View>
           ) : null}

@@ -28,7 +28,7 @@ interface ItemPastBidsProps {
   statusInvoice?: string;
   itemBid: DataCurentBidResponse;
   itemInvoice?: InvoiceData;
-  statusTabs: number;
+  statusTabs?: number;
 }
 
 type RootStackParamList = {

@@ -39,6 +39,8 @@ const SecretAuctionBidModal: React.FC<SecretAuctionBidModalProps> = ({
   };
 
   const handleSubmit = () => {
+    console.log("jhfgiklhki");
+    
     onSubmit(bidAmount);
     setBidAmount(minPrice); // Reset to minPrice after submission
   };

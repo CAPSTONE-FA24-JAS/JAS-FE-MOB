@@ -217,7 +217,6 @@ const LotDetailScreen = () => {
   //     showErrorMessage("Unable to process 'Buy It Now'.");
   //     setPasswordModalVisible(true); // Show the password modal
   //   }
-
   // };
 
   const handleBuyNow = () => {
@@ -244,41 +243,22 @@ const LotDetailScreen = () => {
   };
 
   const handleSubmitBidType12 = async (bidAmount: number) => {
+    console.log("bidAmount", bidAmount);
+
     try {
-      if (userId && lotDetail?.startPrice && lotDetail?.id) {
+      if (userId && lotDetail && lotDetail?.id) {
         await placeBidFixedPriceAndSecret(bidAmount, userId, lotDetail.id);
         showSuccessMessage("Bid placed successfully!");
       } else {
-        showErrorMessage("Failed to place bid.");
+        if (!userId) return showErrorMessage("Khong co userId");
+        if (!lotDetail) return showErrorMessage("Khong co lotDetail");
+        // showErrorMessage("Failed to place bid.");
       }
     } catch (error) {
       showErrorMessage("An error occurred while placing the bid.");
     } finally {
       setSecretAuctionBidVisible(false);
-    }
-  };
-
-  const handleConfirmPassword = async (enteredPassword: string) => {
-    setPassword(enteredPassword);
-    try {
-      if (haveWallet && enteredPassword) {
-        // Use enteredPassword directly for verification
-        const isPasswordCorrect = await checkPasswordWallet(
-          haveWallet,
-          enteredPassword
-        );
-
-        if (isPasswordCorrect) {
-          await handlePlaceBid(); // Call place bid function
-          setPassword(""); // Reset the password state
-        } else {
-          showErrorMessage("Incorrect wallet password, please try again.");
-        }
-      } else {
-        showErrorMessage("Wallet ID or password is not available.");
-      }
-    } catch (error) {
-      showErrorMessage("Failed to verify password.");
+      setConfirmBuyNowVisible(false);
     }
   };
 
@@ -289,6 +269,11 @@ const LotDetailScreen = () => {
       ? lotDetail.buyNowPrice - lotDetail.deposit
       : 0; // Calculate bid price
     const lotId = lotDetail.id;
+    console.log("nhap vao place bid", {
+      currentPrice,
+      userId,
+      lotId,
+    });
 
     try {
       const response = await placeBidFixedPriceAndSecret(
@@ -296,6 +281,7 @@ const LotDetailScreen = () => {
         userId,
         lotId
       );
+      console.log("responseFixed", response);
 
       if (response?.isSuccess) {
         showSuccessMessage("Bid placed successfully!");
@@ -528,11 +514,6 @@ const LotDetailScreen = () => {
     }
   };
 
-  const paymentAmountFixed =
-    (lotDetail?.buyNowPrice ?? 0) - (lotDetail?.deposit ?? 0);
-  const paymentAmountSecret =
-    (lotDetail?.startPrice ?? 0) - (lotDetail?.deposit ?? 0);
-
   // Assuming lotDetail.endTime is in a format that can be parsed by new Date()
   const isAuctionActive = lotDetail?.endTime
     ? new Date() < new Date(lotDetail.endTime)
@@ -553,7 +534,8 @@ const LotDetailScreen = () => {
             <Swiper
               showsPagination={true}
               autoplay={true}
-              style={{ height: "100%" }}>
+              style={{ height: "100%" }}
+            >
               {lotDetail?.jewelry?.imageJewelries?.length ?? 0 > 0 ? (
                 lotDetail?.jewelry?.imageJewelries.map((img, index) =>
                   img?.imageLink ? (
@@ -673,7 +655,8 @@ const LotDetailScreen = () => {
                     typeBid === "Fixed_Price"
                       ? handleBuyNow
                       : handleSecretAuctionBid
-                  }>
+                  }
+                >
                   <Text className="font-semibold text-center text-white uppercase">
                     {typeBid === "Fixed_Price"
                       ? "BUY FIXED BID"
@@ -687,7 +670,8 @@ const LotDetailScreen = () => {
                 typeBid === "Public_Auction" && (
                   <TouchableOpacity
                     onPress={handlePressAutoBid}
-                    className="mb-3 bg-blue-500 rounded-sm">
+                    className="mb-3 bg-blue-500 rounded-sm"
+                  >
                     <Text className="py-3 font-semibold text-center text-white">
                       BID AUTOMATION
                     </Text>
@@ -696,7 +680,8 @@ const LotDetailScreen = () => {
               {typeBid !== "Fixed_Price" && isAuctionActive && (
                 <TouchableOpacity
                   className="py-3 mb-3 bg-blue-500 rounded-sm"
-                  onPress={() => setModalVisible(true)}>
+                  onPress={() => setModalVisible(true)}
+                >
                   <Text className="font-semibold text-center text-white">
                     PLACE BID
                   </Text>
@@ -708,7 +693,8 @@ const LotDetailScreen = () => {
                 typeBid !== "Fixed_Price" && (
                   <TouchableOpacity
                     className="py-3 bg-blue-500 rounded-sm"
-                    onPress={handleJoinToBid}>
+                    onPress={handleJoinToBid}
+                  >
                     <Text className="font-semibold text-center text-white uppercase">
                       Join To Bid
                     </Text>
@@ -723,7 +709,8 @@ const LotDetailScreen = () => {
           !(lotDetail?.status === "Sold") && (
             <TouchableOpacity
               className="py-3 mt-4 bg-blue-500 rounded-sm"
-              onPress={handleRegisterToBid}>
+              onPress={handleRegisterToBid}
+            >
               <Text className="font-semibold text-center text-white uppercase">
                 Register To Bid
               </Text>
@@ -749,28 +736,12 @@ const LotDetailScreen = () => {
             />
           )}
       </View>
-      {/* Password Modal for 'Buy It Now' */}
-      {typeBid === "Fixed_Price" ? (
-        <PasswordModal
-          isVisible={passwordModalVisible}
-          onClose={() => setPasswordModalVisible(false)}
-          onConfirm={handleConfirmPassword}
-          amount={paymentAmountFixed || 0} // Pass the amount prop here
-        />
-      ) : typeBid === "Secret_Auction" ? (
-        <PasswordModal
-          isVisible={passwordModalVisible}
-          onClose={() => setPasswordModalVisible(false)}
-          onConfirm={handleConfirmPassword}
-          amount={paymentAmountSecret || 0} // Pass the amount prop here
-        />
-      ) : null}
 
       {/* Modals */}
       <ConfirmBuyNowModal
         isVisible={confirmBuyNowVisible}
         onClose={() => setConfirmBuyNowVisible(false)}
-        onConfirm={handleConfirmBuyNow}
+        onConfirm={handleSubmitBidType12}
         price={lotDetail?.buyNowPrice ?? 0}
         lotId={lotDetail?.id ?? 0}
       />

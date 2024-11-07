@@ -32,6 +32,8 @@ interface UseBiddingResult {
   winnerCustomer: string;
   winnerPrice: string;
   reducePrice: number;
+  resultBidding: string;
+  setResultBidding: React.Dispatch<React.SetStateAction<string>>;
 }
 
 export function useBidding(): UseBiddingResult {
@@ -44,6 +46,7 @@ export function useBidding(): UseBiddingResult {
   const [winnerCustomer, setWinnerCustomer] = useState<string>("");
   const [winnerPrice, setWinnerPrice] = useState<string>("");
   const [reducePrice, setReducePrice] = useState<number>(0);
+  const [resultBidding, setResultBidding] = useState<string>("");
 
   const connectionRef = useRef<HubConnection | null>(null);
 
@@ -150,6 +153,7 @@ export function useBidding(): UseBiddingResult {
       }
     );
 
+    //sendresultcheckcurrentprice
     // khi end auction
     connection.on(
       "AuctionEndedWithWinner",
@@ -166,6 +170,14 @@ export function useBidding(): UseBiddingResult {
             }
           )}`
         );
+      }
+    );
+
+    connection.on(
+      "SendResultCheckCurrentPrice",
+      (message: string, price: number) => {
+        console.log(`${message} price ${price}`);
+        setResultBidding(`${message} : ${price}`);
       }
     );
   }, []);
@@ -349,5 +361,7 @@ export function useBidding(): UseBiddingResult {
     winnerCustomer,
     winnerPrice,
     reducePrice,
+    resultBidding,
+    setResultBidding,
   };
 }

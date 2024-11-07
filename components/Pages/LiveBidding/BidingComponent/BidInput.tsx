@@ -1,5 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { View, TextInput, TouchableOpacity, Text } from "react-native";
+import {
+  View,
+  TextInput,
+  TouchableOpacity,
+  Text,
+  Alert,
+  ToastAndroid,
+} from "react-native";
 import { LotDetail } from "@/app/types/lot_type";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
@@ -11,6 +18,8 @@ interface BidInputProps {
   onPlaceBid: (price: number) => Promise<void>;
   onPlaceBidMethod4: (price: number) => Promise<void>;
   reducePrice?: number;
+  resultBidding?: string;
+  setResultBidding: React.Dispatch<React.SetStateAction<string>>;
 }
 
 const BidInput: React.FC<BidInputProps> = ({
@@ -20,6 +29,8 @@ const BidInput: React.FC<BidInputProps> = ({
   onPlaceBid,
   onPlaceBidMethod4,
   reducePrice,
+  resultBidding,
+  setResultBidding,
 }) => {
   const [bidValue, setBidValue] = useState<number>(() =>
     highestBid !== 0
@@ -38,6 +49,18 @@ const BidInput: React.FC<BidInputProps> = ({
   const priceLimitofCustomer = useSelector(
     (state: RootState) => state.auth.userResponse?.customerDTO.priceLimit
   );
+
+  useEffect(() => {
+    if (resultBidding) {
+      ToastAndroid.showWithGravity(
+        resultBidding,
+        ToastAndroid.LONG,
+        ToastAndroid.BOTTOM
+      );
+
+      setResultBidding("");
+    }
+  }, [resultBidding]);
 
   const validateBidMethod3 = (value: number) => {
     if (isFinancialProof && value > priceLimitofCustomer) {
@@ -95,10 +118,27 @@ const BidInput: React.FC<BidInputProps> = ({
       );
       return;
     }
-    setLoading(true);
-    setError(null);
-    await onPlaceBidMethod4(price);
-    setLoading(false);
+
+    // Hiển thị alert để xác nhận
+    Alert.alert(
+      "Xác nhận đặt giá",
+      `Bạn có chắc chắn muốn đặt giá ${price.toLocaleString()} cho món này không?`,
+      [
+        {
+          text: "Hủy",
+          style: "cancel",
+        },
+        {
+          text: "OK",
+          onPress: async () => {
+            setLoading(true);
+            setError(null);
+            await onPlaceBidMethod4(price);
+            setLoading(false);
+          },
+        },
+      ]
+    );
   };
 
   if (item.lotType === "Public_Auction") {
@@ -121,16 +161,22 @@ const BidInput: React.FC<BidInputProps> = ({
           <View className="w-[50%] flex-row items-center border border-gray-300 rounded-md">
             <TextInput
               value={bidValue.toLocaleString()}
-              onChangeText={(e) =>
-                setBidValue(parseInt(e.replace(/,/g, ""), 10))
-              }
+              onChangeText={(e) => {
+                const numericValue = parseInt(e.replace(/,/g, ""), 10);
+                setBidValue(isNaN(numericValue) ? 0 : numericValue); // Set to 0 if NaN
+              }}
               keyboardType="numeric"
               className="flex-1 h-12 px-2 text-sm font-semibold text-center border-gray-300 border-x"
             />
           </View>
 
           <TouchableOpacity
-            disabled={isEndAuction || item.status === "Sold" || loading}
+            disabled={
+              isEndAuction ||
+              item.status === "Sold" ||
+              item.status === "Passed" ||
+              loading
+            }
             onPress={handleSubmitBidMethod3}
             className="w-[20%] flex items-center justify-center h-12 bg-blue-500 rounded-md">
             <Text className="text-xs font-semibold text-white">BIDDING</Text>
@@ -149,10 +195,15 @@ const BidInput: React.FC<BidInputProps> = ({
       <View className="w-full p-3">
         <View className="flex items-center justify-between">
           <TouchableOpacity
-            disabled={isEndAuction || item.status === "Sold"}
+            disabled={
+              isEndAuction ||
+              item.status === "Sold" ||
+              loading ||
+              item.status === "Passed"
+            }
             onPress={() => handleSubmitBidMethod4(reducePrice ?? 0)}
             className={
-              isEndAuction || item.status === "Sold"
+              isEndAuction || item.status === "Sold" || item.status === "Passed"
                 ? "w-[50%] flex items-center justify-center h-12 bg-gray-500 rounded-md"
                 : "w-[50%] flex items-center justify-center h-12 bg-blue-500 rounded-md"
             }>

@@ -18,6 +18,7 @@ import BidsList from "./BidingComponent/BidsList";
 import BidInput from "./BidingComponent/BidInput";
 import { useBidding } from "@/hooks/useBidding";
 import AuctionResultModal from "@/components/Modal/AuctionResultModal";
+import { useNavigation } from "expo-router";
 
 type RisingBidPageParams = {
   RisingBidPage: {
@@ -28,6 +29,7 @@ type RisingBidPageParams = {
 const RisingBidPage: React.FC = () => {
   const route = useRoute<RouteProp<RisingBidPageParams, "RisingBidPage">>();
   const { itemId } = route.params ?? {};
+  const navigation = useNavigation();
 
   const accountId = useSelector(
     (state: RootState) => state.auth.userResponse?.id
@@ -85,6 +87,8 @@ const RisingBidPage: React.FC = () => {
     winnerPrice,
     sendBidMethod4,
     reducePrice,
+    resultBidding,
+    setResultBidding,
   } = useBidding();
 
   useEffect(() => {
@@ -117,6 +121,7 @@ const RisingBidPage: React.FC = () => {
 
   const onClose = () => {
     console.log("Close modal");
+    navigation.goBack();
   };
 
   // useEffect(() => {
@@ -226,6 +231,8 @@ const RisingBidPage: React.FC = () => {
             onPlaceBid={sendBid}
             onPlaceBidMethod4={sendBidMethod4}
             reducePrice={reducePrice}
+            resultBidding={resultBidding}
+            setResultBidding={setResultBidding}
           />
         </View>
       )}

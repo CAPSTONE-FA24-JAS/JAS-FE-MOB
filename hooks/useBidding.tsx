@@ -28,13 +28,14 @@ interface UseBiddingResult {
   sendBid: (price: number) => Promise<void>;
   sendBidMethod4: (price: number) => Promise<void>;
   disconnect: () => Promise<void>;
-  isEndAuction: boolean;
+  isEndAuctionMedthod3: boolean;
   winnerCustomer: string;
   winnerPrice: string;
   reducePrice: number;
   resultBidding: string;
   setResultBidding: React.Dispatch<React.SetStateAction<string>>;
   isEndLot: boolean;
+  isEndAuctionMethod4: boolean;
 }
 
 export function useBidding(): UseBiddingResult {
@@ -43,12 +44,15 @@ export function useBidding(): UseBiddingResult {
   const [messages, setMessages] = useState<Message[]>([]);
   const [endTime, setEndTime] = useState<string>("");
   const [error, setError] = useState<string | null>(null);
-  const [isEndAuction, setIsEndAuction] = useState<boolean>(false);
+  const [isEndAuctionMedthod3, setIsEndAuctionMedthod3] =
+    useState<boolean>(false);
   const [winnerCustomer, setWinnerCustomer] = useState<string>("");
   const [winnerPrice, setWinnerPrice] = useState<string>("");
   const [reducePrice, setReducePrice] = useState<number>(0);
   const [resultBidding, setResultBidding] = useState<string>("");
   const [isEndLot, setIsEndLot] = useState<boolean>(false);
+  const [isEndAuctionMethod4, setIsEndAuctionMethod4] =
+    useState<boolean>(false);
 
   const connectionRef = useRef<HubConnection | null>(null);
 
@@ -67,7 +71,7 @@ export function useBidding(): UseBiddingResult {
         );
         setWinnerCustomer(cusid);
         setWinnerPrice(currentPrice);
-        setIsEndAuction(true);
+        setIsEndAuctionMethod4(true);
         setReducePrice(Number(currentPrice));
       }
     );
@@ -166,7 +170,7 @@ export function useBidding(): UseBiddingResult {
     connection.on(
       "AuctionEndedWithWinner",
       (message: string, customerId: string, price: number) => {
-        setIsEndAuction(true);
+        setIsEndAuctionMedthod3(true);
         setWinnerCustomer(customerId);
         setWinnerPrice(price.toString());
         console.log(
@@ -365,12 +369,13 @@ export function useBidding(): UseBiddingResult {
     sendBid,
     sendBidMethod4,
     disconnect,
-    isEndAuction,
+    isEndAuctionMedthod3,
     winnerCustomer,
     winnerPrice,
     reducePrice,
     resultBidding,
     setResultBidding,
     isEndLot,
+    isEndAuctionMethod4,
   };
 }

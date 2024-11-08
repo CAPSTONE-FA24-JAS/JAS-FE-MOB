@@ -82,7 +82,7 @@ const RisingBidPage: React.FC = () => {
     joinChatRoom,
     sendBid,
     disconnect,
-    isEndAuction,
+    isEndAuctionMedthod3,
     winnerCustomer,
     winnerPrice,
     sendBidMethod4,
@@ -90,6 +90,7 @@ const RisingBidPage: React.FC = () => {
     resultBidding,
     setResultBidding,
     isEndLot,
+    isEndAuctionMethod4,
   } = useBidding();
 
   useEffect(() => {
@@ -226,7 +227,8 @@ const RisingBidPage: React.FC = () => {
       {isConnected && (
         <View className="absolute bottom-0 left-0 right-0 bg-white shadow-lg">
           <BidInput
-            isEndAuction={isEndAuction}
+            isEndAuctionMethod3={isEndAuctionMedthod3}
+            isEndAuctionMethod4={isEndAuctionMethod4}
             highestBid={highestPrice}
             item={item}
             onPlaceBid={sendBid}
@@ -246,7 +248,14 @@ const RisingBidPage: React.FC = () => {
       )}
 
       <AuctionResultModal
-        visible={isEndAuction}
+        visible={isEndAuctionMedthod3}
+        currentUser={customerId?.toString() || ""}
+        userWinner={winnerCustomer}
+        winningPrice={winnerPrice}
+        onClose={onClose}
+      />
+      <AuctionResultModal
+        visible={isEndAuctionMethod4}
         currentUser={customerId?.toString() || ""}
         userWinner={winnerCustomer}
         winningPrice={winnerPrice}

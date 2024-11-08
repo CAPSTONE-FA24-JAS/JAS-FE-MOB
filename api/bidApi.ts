@@ -85,6 +85,8 @@ export const getBidsOfCustomer = async (
   pageIndex: number = 1,
   pageSize: number = 10
 ): Promise<GetBidsOfCustomerResponse | null> => {
+  console.log("getCURRENTBidOfCustomerRUN");
+
   try {
     const response = await axios.get<GetBidsOfCustomerResponse>(
       `${API_URL}/api/CustomerLots/GetBidsOfCustomer`,
@@ -118,6 +120,8 @@ export const getPastBidOfCustomer = async (
   pageIndex: number = 1,
   pageSize: number = 10
 ): Promise<GetPastBidOfCustomerResponse | null> => {
+  console.log("getPastBidOfCustomerRUN");
+  
   try {
     const response = await axios.get<GetPastBidOfCustomerResponse>(
       `${API_URL}/api/CustomerLots/GetPastBidOfCustomer`,

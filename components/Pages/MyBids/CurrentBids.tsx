@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { ActivityIndicator, ScrollView, Text, View } from "react-native";
 import ItemCurrentBids from "./ItemCurrentBids";
-import { getBidsOfCustomer } from "@/api/bidApi";
+import { getBidsOfCustomer, getPastBidOfCustomer } from "@/api/bidApi";
 import { DataCurentBidResponse } from "@/app/types/bid_type";
 
 interface CurrentBidsProps {
@@ -16,8 +16,10 @@ const CurrentBids: React.FC<CurrentBidsProps> = ({ customerId }) => {
   useEffect(() => {
     const fetchCurrentBids = async () => {
       try {
-        const status = 1; // Giả sử status=1 tương ứng với "Current Bids"
-        const response = await getBidsOfCustomer(customerId, status, 1, 10);
+        const status = [1]; // Giả sử status=1 tương ứng với "Current Bids"
+        const response = await getPastBidOfCustomer(customerId, status, 1, 10);
+
+        // const response = await getBidsOfCustomer(customerId, status, 1, 10);
         if (response && response.data) {
           setBidsData(response.data.dataResponse);
         }

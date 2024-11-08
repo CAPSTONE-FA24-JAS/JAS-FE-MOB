@@ -42,6 +42,7 @@ const BidInput: React.FC<BidInputProps> = ({
   const [stepBidIncrement, setStepBidIncrement] = useState<number>(1);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
+  const [loadingMethod4, setLoadingMethod4] = useState<boolean>(false);
 
   const priceLimit = useSelector(
     (store: RootState) => store.auth.userResponse?.customerDTO.priceLimit
@@ -53,7 +54,7 @@ const BidInput: React.FC<BidInputProps> = ({
   );
 
   useEffect(() => {
-    if (resultBidding) {
+    if (resultBidding && resultBidding !== "") {
       ToastAndroid.showWithGravity(
         resultBidding,
         ToastAndroid.LONG,
@@ -133,10 +134,14 @@ const BidInput: React.FC<BidInputProps> = ({
         {
           text: "OK",
           onPress: async () => {
-            setLoading(true);
+            setLoadingMethod4(true);
             setError(null);
             await onPlaceBidMethod4(price);
-            setLoading(false);
+            ToastAndroid.showWithGravity(
+              `Bidding successfully with ${price.toLocaleString()}`,
+              ToastAndroid.LONG,
+              ToastAndroid.BOTTOM
+            );
           },
         },
       ]
@@ -164,10 +169,6 @@ const BidInput: React.FC<BidInputProps> = ({
             <TextInput
               value={bidValue.toLocaleString()}
               editable={false}
-              onChangeText={(e) => {
-                const numericValue = parseInt(e.replace(/,/g, ""), 10);
-                setBidValue(isNaN(numericValue) ? 0 : numericValue); // Set to 0 if NaN
-              }}
               keyboardType="numeric"
               className="flex-1 h-12 px-2 text-sm font-semibold text-center border-gray-300 border-x"
             />
@@ -179,7 +180,7 @@ const BidInput: React.FC<BidInputProps> = ({
               item.status === "Sold" ||
               item.status === "Passed" ||
               loading ||
-              isEndLot // Disable when auction is ended just for method 3
+              isEndLot // Disable when auction is currently ended just for method 3
             }
             onPress={handleSubmitBidMethod3}
             className="w-[20%] flex items-center justify-center h-12 bg-blue-500 rounded-md">
@@ -202,12 +203,15 @@ const BidInput: React.FC<BidInputProps> = ({
             disabled={
               isEndAuction ||
               item.status === "Sold" ||
-              loading ||
+              loadingMethod4 ||
               item.status === "Passed"
             }
             onPress={() => handleSubmitBidMethod4(reducePrice ?? 0)}
             className={
-              isEndAuction || item.status === "Sold" || item.status === "Passed"
+              isEndAuction ||
+              item.status === "Sold" ||
+              item.status === "Passed" ||
+              loadingMethod4
                 ? "w-[50%] flex items-center justify-center h-12 bg-gray-500 rounded-md"
                 : "w-[50%] flex items-center justify-center h-12 bg-blue-500 rounded-md"
             }>

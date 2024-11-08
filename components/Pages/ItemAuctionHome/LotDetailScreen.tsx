@@ -636,9 +636,7 @@ const LotDetailScreen = () => {
                 at {moment(bidTimeCheck).format("HH:mm A, MM/DD/YYYY")}.
               </Text>
             ) : (
-              <Text className="mb-2 text-sm font-semibold text-center text-red-500">
-                You haven't placed any bids for this lot!
-              </Text>
+             null
             )}
           </View>
         )}

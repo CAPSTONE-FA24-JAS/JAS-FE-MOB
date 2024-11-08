@@ -12,10 +12,11 @@ import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
 
 interface BidInputProps {
-  isEndAuction: boolean;
+  isEndAuctionMethod4: boolean;
   highestBid: number;
   item: LotDetail;
   onPlaceBid: (price: number) => Promise<void>;
+  isEndAuctionMethod3: boolean;
   onPlaceBidMethod4: (price: number) => Promise<void>;
   reducePrice?: number;
   resultBidding?: string;
@@ -24,10 +25,11 @@ interface BidInputProps {
 }
 
 const BidInput: React.FC<BidInputProps> = ({
-  isEndAuction,
+  isEndAuctionMethod4,
   highestBid,
   item,
   onPlaceBid,
+  isEndAuctionMethod3,
   onPlaceBidMethod4,
   reducePrice,
   resultBidding,
@@ -176,7 +178,7 @@ const BidInput: React.FC<BidInputProps> = ({
 
           <TouchableOpacity
             disabled={
-              isEndAuction ||
+              isEndAuctionMethod3 ||
               item.status === "Sold" ||
               item.status === "Passed" ||
               loading ||
@@ -201,14 +203,14 @@ const BidInput: React.FC<BidInputProps> = ({
         <View className="flex items-center justify-between">
           <TouchableOpacity
             disabled={
-              isEndAuction ||
+              isEndAuctionMethod4 ||
               item.status === "Sold" ||
               loadingMethod4 ||
               item.status === "Passed"
             }
             onPress={() => handleSubmitBidMethod4(reducePrice ?? 0)}
             className={
-              isEndAuction ||
+              isEndAuctionMethod4 ||
               item.status === "Sold" ||
               item.status === "Passed" ||
               loadingMethod4
@@ -216,7 +218,9 @@ const BidInput: React.FC<BidInputProps> = ({
                 : "w-[50%] flex items-center justify-center h-12 bg-blue-500 rounded-md"
             }>
             <Text className="text-xl font-semibold text-white">
-              {isEndAuction || item.status === "Sold" ? "SOLD" : "BUY NOW"}
+              {isEndAuctionMethod4 || item.status === "Sold"
+                ? "SOLD"
+                : "BUY NOW"}
             </Text>
             {error && (
               <Text className="mt-2 text-center text-red-500">{error}</Text>

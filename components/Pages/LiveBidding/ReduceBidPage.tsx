@@ -1,6 +1,3 @@
-import { RouteProp, useRoute } from "@react-navigation/native";
-import React, { useEffect, useState } from "react";
-import { View, Text, FlatList } from "react-native";
 import { getLotDetailById } from "@/api/lotAPI";
 import {
   Auction,
@@ -9,24 +6,27 @@ import {
   Seller,
   Staff,
 } from "@/app/types/lot_type";
+import { useBiddingMethod4 } from "@/hooks/useBiddingMethod4";
 import { RootState } from "@/redux/store";
+import { RouteProp, useRoute } from "@react-navigation/native";
+import { useNavigation } from "expo-router";
+import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import CountDownTimer from "./BidingComponent/CountDownTimer";
 import ProductCard from "./BidingComponent/ProductCard";
 import BidsList from "./BidingComponent/BidsList";
-import BidInput from "./BidingComponent/BidInput";
-import AuctionResultModal from "@/components/Modal/AuctionResultModal";
-import { useNavigation } from "expo-router";
-import { useBiddingMethod3 } from "@/hooks/useBiddingMethod3";
+import { View } from "lucide-react-native";
+import { FlatList, Text } from "react-native";
+import BidInputMethod4 from "./BidingComponent/BidInputMethod4";
 
-type RisingBidPageParams = {
-  RisingBidPage: {
+type ReduceBidPageParams = {
+  ReduceBidPage: {
     itemId: number;
   };
 };
 
-const RisingBidPage: React.FC = () => {
-  const route = useRoute<RouteProp<RisingBidPageParams, "RisingBidPage">>();
+const ReduceBidPage: React.FC<{}> = () => {
+  const route = useRoute<RouteProp<ReduceBidPageParams, "ReduceBidPage">>();
   const { itemId } = route.params ?? {};
   const navigation = useNavigation();
 
@@ -89,30 +89,26 @@ const RisingBidPage: React.FC = () => {
     fetchLotDetail();
   }, [itemId]);
 
-  const typeBid = item.lotType;
-
   const {
     isConnected,
     endTime,
-    highestPrice,
     messages,
-    setMessages,
     error,
-    joinLiveBiddingMethod3,
-    sendBid,
+    joinLiveBiddingMethod4,
+    sendBidMethod4,
     disconnect,
-    isEndAuctionMedthod3,
-    isEndLot,
-    resultBidding,
-    setResultBidding,
     winnerCustomer,
     winnerPrice,
-  } = useBiddingMethod3();
+    reducePrice,
+    resultBidding,
+    setResultBidding,
+    isEndAuctionMethod4,
+  } = useBiddingMethod4();
 
   useEffect(() => {
-    if (accountId && itemId && typeBid === "Public_Auction") {
+    if (accountId && itemId) {
       console.log("Joining chat room...", accountId, itemId);
-      joinLiveBiddingMethod3(accountId, itemId);
+      joinLiveBiddingMethod4(accountId, itemId);
     }
 
     return () => {
@@ -168,6 +164,7 @@ const RisingBidPage: React.FC = () => {
           bids={messages ? messages : []}
           item={item}
           currentCusId={customerId ?? 0}
+          reducePrice={reducePrice}
         />
       ),
     },
@@ -208,14 +205,13 @@ const RisingBidPage: React.FC = () => {
 
       {isConnected && (
         <View className="absolute bottom-0 left-0 right-0 bg-white shadow-lg">
-          <BidInput
-            isEndAuctionMethod3={isEndAuctionMedthod3}
-            highestBid={highestPrice}
+          <BidInputMethod4
+            isEndAuctionMethod4={isEndAuctionMethod4}
             item={item}
-            onPlaceBid={sendBid}
-            resultBidding={resultBidding}
+            reducePrice={reducePrice}
             setResultBidding={setResultBidding}
-            isEndLot={isEndLot}
+            onPlaceBidMethod4={sendBidMethod4}
+            resultBidding={resultBidding}
           />
         </View>
       )}
@@ -226,15 +222,16 @@ const RisingBidPage: React.FC = () => {
         </View>
       )}
 
+      {/*  
       <AuctionResultModal
-        visible={isEndAuctionMedthod3}
+        visible={isEndAuctionMethod4}
         currentUser={customerId?.toString() || ""}
         userWinner={winnerCustomer}
         winningPrice={winnerPrice}
         onClose={onClose}
-      />
+      /> */}
     </View>
   );
 };
 
-export default RisingBidPage;
+export default ReduceBidPage;

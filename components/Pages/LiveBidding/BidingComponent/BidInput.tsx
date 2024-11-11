@@ -12,26 +12,20 @@ import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
 
 interface BidInputProps {
-  isEndAuctionMethod4: boolean;
   highestBid: number;
   item: LotDetail;
   onPlaceBid: (price: number) => Promise<void>;
   isEndAuctionMethod3: boolean;
-  onPlaceBidMethod4: (price: number) => Promise<void>;
-  reducePrice?: number;
   resultBidding?: string;
   setResultBidding: React.Dispatch<React.SetStateAction<string>>;
   isEndLot: boolean; //just for method 3
 }
 
 const BidInput: React.FC<BidInputProps> = ({
-  isEndAuctionMethod4,
   highestBid,
   item,
   onPlaceBid,
   isEndAuctionMethod3,
-  onPlaceBidMethod4,
-  reducePrice,
   resultBidding,
   setResultBidding,
   isEndLot, //just for method 3
@@ -77,9 +71,6 @@ const BidInput: React.FC<BidInputProps> = ({
     if (value <= highestBid) {
       return `Bid must be higher than ${highestBid.toLocaleString()}`;
     }
-    if (value % (item.bidIncrement ?? 100) !== 0) {
-      return `Bid must be a multiple of ${item.bidIncrement?.toLocaleString()}`;
-    }
     if (value > priceLimit) {
       return `Bid must be lower than your price limit (${priceLimit?.toLocaleString()})`;
     }
@@ -113,41 +104,6 @@ const BidInput: React.FC<BidInputProps> = ({
     setError(null);
     await onPlaceBid(bidValue);
     setLoading(false);
-  };
-
-  const handleSubmitBidMethod4 = async (price: number) => {
-    console.log("Method 4", price);
-    if (price > priceLimitofCustomer) {
-      setError(
-        `Bid must be lower than your price limit (${priceLimitofCustomer?.toLocaleString()})`
-      );
-      return;
-    }
-
-    // Hiển thị alert để xác nhận
-    Alert.alert(
-      "Xác nhận đặt giá",
-      `Bạn có chắc chắn muốn đặt giá ${price.toLocaleString()} cho món này không?`,
-      [
-        {
-          text: "Hủy",
-          style: "cancel",
-        },
-        {
-          text: "OK",
-          onPress: async () => {
-            setLoadingMethod4(true);
-            setError(null);
-            await onPlaceBidMethod4(price);
-            ToastAndroid.showWithGravity(
-              `Bidding successfully with ${price.toLocaleString()}`,
-              ToastAndroid.LONG,
-              ToastAndroid.BOTTOM
-            );
-          },
-        },
-      ]
-    );
   };
 
   if (item.lotType === "Public_Auction") {
@@ -193,40 +149,6 @@ const BidInput: React.FC<BidInputProps> = ({
         {error && (
           <Text className="mt-2 text-center text-red-500">{error}</Text>
         )}
-      </View>
-    );
-  }
-
-  if (item.lotType === "Auction_Price_GraduallyReduced") {
-    return (
-      <View className="w-full p-3">
-        <View className="flex items-center justify-between">
-          <TouchableOpacity
-            disabled={
-              isEndAuctionMethod4 ||
-              item.status === "Sold" ||
-              loadingMethod4 ||
-              item.status === "Passed"
-            }
-            onPress={() => handleSubmitBidMethod4(reducePrice ?? 0)}
-            className={
-              isEndAuctionMethod4 ||
-              item.status === "Sold" ||
-              item.status === "Passed" ||
-              loadingMethod4
-                ? "w-[50%] flex items-center justify-center h-12 bg-gray-500 rounded-md"
-                : "w-[50%] flex items-center justify-center h-12 bg-blue-500 rounded-md"
-            }>
-            <Text className="text-xl font-semibold text-white">
-              {isEndAuctionMethod4 || item.status === "Sold"
-                ? "SOLD"
-                : "BUY NOW"}
-            </Text>
-            {error && (
-              <Text className="mt-2 text-center text-red-500">{error}</Text>
-            )}
-          </TouchableOpacity>
-        </View>
       </View>
     );
   }

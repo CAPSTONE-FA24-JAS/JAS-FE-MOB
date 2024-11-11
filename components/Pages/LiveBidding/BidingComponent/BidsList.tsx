@@ -1,18 +1,13 @@
 import { LotDetail } from "@/app/types/lot_type";
+import { Message } from "@/hooks/useBiddingMethod3";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import React, { useMemo } from "react";
 import { View, Text } from "react-native";
 
-interface Bid {
-  time: string;
-  amount: number;
-  customerId: number | string;
-}
-
 interface BidsListProps {
   item: LotDetail;
-  bids: Bid[];
-  currentCusId?: number; // Add this prop to identify current user's bids
+  bids: Message[];
+  currentCusId: number; // Add this prop to identify current user's bids
   reducePrice?: number;
 }
 
@@ -22,14 +17,25 @@ const BidsList: React.FC<BidsListProps> = ({
   currentCusId,
   reducePrice,
 }) => {
-  // Sort bids by time, newest first
+  console.log("bids", bids);
+
+  // Filter and sort bids by time, newest first
   const sortedBids = useMemo(() => {
-    return [...bids].sort((a, b) => {
-      const timeA = new Date(a.time).getTime();
-      const timeB = new Date(b.time).getTime();
+    const filterBids = [...bids].filter((bid) => {
+      // Filter based on status and customer ID
+      if (bid.status === "Processing" || bid.status === "Failed") {
+        return bid.customerId === currentCusId?.toString();
+      }
+      return true;
+    });
+    return filterBids.sort((a, b) => {
+      const timeA = new Date(a.bidTime).getTime();
+      const timeB = new Date(b.bidTime).getTime();
       return timeB - timeA;
     });
-  }, [bids]);
+  }, [bids, currentCusId]);
+
+  console.log("sortedBids", sortedBids);
 
   const formatTime = (timeString: string) => {
     const date = new Date(timeString);
@@ -44,14 +50,11 @@ const BidsList: React.FC<BidsListProps> = ({
     });
   };
 
-  console.log("lottypesss", item.lotType);
-  console.log("bids reduce", reducePrice);
-
   if (item.lotType === "Public_Auction") {
     return (
       <View className="p-4 ">
         {sortedBids.map((bid, index) => {
-          const isCurrentUserBid = bid.customerId === currentCusId;
+          const isCurrentUserBid = bid.customerId === currentCusId.toString();
 
           return (
             <View key={index}>
@@ -62,9 +65,13 @@ const BidsList: React.FC<BidsListProps> = ({
                     : "bg-white border-gray-300 border"
                 }`}>
                 <View>
-                  <Text className="text-gray-600">{formatTime(bid.time)}</Text>
+                  <Text className="text-gray-600">
+                    {formatTime(bid.bidTime)}
+                  </Text>
                   {isCurrentUserBid && (
-                    <Text className="text-xs text-blue-600">Your bid</Text>
+                    <Text className="text-xs text-blue-600">
+                      Your bid::::: Status : ${bid.status}
+                    </Text>
                   )}
                 </View>
 
@@ -72,7 +79,7 @@ const BidsList: React.FC<BidsListProps> = ({
                   className={`font-bold ${
                     isCurrentUserBid ? "text-blue-700" : "text-gray-700"
                   }`}>
-                  ${bid.amount.toLocaleString()}
+                  ${bid.currentPrice}
                 </Text>
               </View>
 

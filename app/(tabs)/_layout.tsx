@@ -54,6 +54,7 @@ import Deposit from "@/components/Pages/Wallet/Deposit";
 import Withdraw from "@/components/Pages/Wallet/Widthraw";
 import RegisterToBid from "@/components/Pages/MyBids/RegisterToBid";
 import EditAddress from "@/components/Pages/Address/EditAddress.";
+import ReduceBidPage from "@/components/Pages/LiveBidding/ReduceBidPage";
 
 // Declare Drawer and Stack Navigators
 const Drawer = createDrawerNavigator();
@@ -172,8 +173,7 @@ function DrawerLayout() {
         drawerActiveBackgroundColor: "lightgray", // Set background color for active item
         drawerActiveTintColor: Colors.primary, // Set text color for active item
         drawerInactiveTintColor: "black", // Set text color for inactive items
-      }}
-    >
+      }}>
       {/* Parent Categories */}
       <Drawer.Screen
         name="Auctions"
@@ -292,6 +292,13 @@ export default function AppNavigator() {
         }}
       />
       <Stack.Screen
+        name="ReduceBidPage"
+        component={ReduceBidPage}
+        options={{
+          header: () => <CustomHeaderDetail title="Live Bidding" />,
+        }}
+      />
+      <Stack.Screen
         name="EditAddress"
         component={EditAddress}
         options={{
@@ -338,7 +345,7 @@ export default function AppNavigator() {
         component={PaymentSuccess}
         options={{
           header: () => (
-            <Text className="text-center pt-20 bg-white text-2xl font-bold  uppercase">
+            <Text className="pt-20 text-2xl font-bold text-center uppercase bg-white">
               Payment Success
             </Text>
           ),
@@ -349,7 +356,7 @@ export default function AppNavigator() {
         component={BidSuccess}
         options={{
           header: () => (
-            <Text className="text-center pt-20 bg-white text-2xl font-bold  uppercase">
+            <Text className="pt-20 text-2xl font-bold text-center uppercase bg-white">
               Bid Success
             </Text>
           ),
@@ -367,7 +374,7 @@ export default function AppNavigator() {
         component={OTP}
         options={{
           header: () => (
-            <Text className="text-center pt-20 bg-white text-2xl font-bold  uppercase">
+            <Text className="pt-20 text-2xl font-bold text-center uppercase bg-white">
               OTP Verification
             </Text>
           ),

@@ -163,12 +163,11 @@ const InvoiceList: React.FC = () => {
   // Closed = 11
   return (
     <SafeAreaView className="flex-1 bg-white">
-      <View className="bg-white py-2">
+      <View className="py-2 bg-white">
         <ScrollView
           horizontal
           showsHorizontalScrollIndicator={false}
-          contentContainerStyle={{ paddingHorizontal: 16 }}
-        >
+          contentContainerStyle={{ paddingHorizontal: 16 }}>
           <View className="flex-row gap-2">
             {statusTabs.map((tab) => (
               <TouchableOpacity
@@ -176,13 +175,11 @@ const InvoiceList: React.FC = () => {
                 onPress={() => setSelectedStatus(tab.value ?? 2)}
                 className={`px-4 py-2 rounded ${
                   selectedStatus === tab.value ? "bg-yellow-500" : "bg-gray-300"
-                }`}
-              >
+                }`}>
                 <Text
                   className={`text-sm font-bold ${
                     selectedStatus === tab.value ? "text-white" : "text-black"
-                  }`}
-                >
+                  }`}>
                   {tab.label}
                 </Text>
               </TouchableOpacity>
@@ -193,14 +190,14 @@ const InvoiceList: React.FC = () => {
 
       {/* Hiển thị loading hoặc danh sách hóa đơn */}
       {loading ? (
-        <View className="flex-1 justify-center items-center">
+        <View className="items-center justify-center flex-1">
           <ActivityIndicator size="large" color="#0000ff" />
         </View>
       ) : (
         <>
           {invoiceList.length === 0 ? (
-            <View className="flex-1 justify-center items-center ">
-              <Text className="text-center text-lg text-gray-700">
+            <View className="items-center justify-center flex-1 ">
+              <Text className="text-lg text-center text-gray-700">
                 No invoice found
               </Text>
             </View>

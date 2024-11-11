@@ -9,7 +9,6 @@ import AppGradient from "@/components/AppGradient";
 import { useRouter } from "expo-router";
 import Animated, { FadeInDown } from "react-native-reanimated";
 
-import beachImage from "../assets/bg-jas/bg1.png";
 import { NativeWindStyleSheet } from "nativewind";
 
 NativeWindStyleSheet.setOutput({
@@ -36,7 +35,7 @@ const App = () => {
   return (
     <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
       <ImageBackground
-        source={beachImage}
+        source={require("../assets/bg-jas/bg1.png")}
         resizeMode="cover"
         style={{ flex: 1, width: "100%", height: "100%" }}>
         <AppGradient colors={["rgba(0,0,0,0)", "rgba(0,0,0,0)"]}>

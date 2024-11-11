@@ -7,7 +7,7 @@ NativeWindStyleSheet.setOutput({
 });
 
 export default function App() {
-  LogBox.ignoreAllLogs(); // tắt log warning của expo để lát test spam
+  LogBox.ignoreLogs(["Warning: ..."]);
 
   return (
     <View style={styles.container}>

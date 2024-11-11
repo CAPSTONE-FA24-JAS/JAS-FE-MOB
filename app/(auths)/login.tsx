@@ -1,32 +1,27 @@
 // app/(auths)/login.tsx
 
-import { Link, useRouter } from "expo-router";
-import React, { useEffect, useState } from "react";
-import {
-  View,
-  TextInput,
-  Button,
-  Alert,
-  ScrollView,
-  Text,
-  TouchableOpacity,
-  Image,
-} from "react-native";
-import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch, RootState } from "@/redux/store";
 import { LoginApi } from "@/api/authApi";
-import { Feather } from "@expo/vector-icons";
-import beachImage from "../../assets/bg-jas/header_login.png";
-import ggIcon from "../../assets/icons/gg-icon.png";
-import fbIcon from "../../assets/icons/fb-icon.png";
 import {
   showErrorMessage,
   showSuccessMessage,
 } from "@/components/FlashMessageHelpers";
-import { Checkbox } from "react-native-paper";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { fetchProfile } from "@/redux/slices/profileSlice";
 import LoadingOverlay from "@/components/LoadingOverlay";
+import { fetchProfile } from "@/redux/slices/profileSlice";
+import { AppDispatch, RootState } from "@/redux/store";
+import { Feather } from "@expo/vector-icons";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { Link, useRouter } from "expo-router";
+import React, { useEffect, useState } from "react";
+import {
+  Image,
+  ScrollView,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from "react-native";
+import { Checkbox } from "react-native-paper";
+import { useDispatch, useSelector } from "react-redux";
 
 const Login: React.FC = () => {
   const [username, setUsername] = useState("");
@@ -82,12 +77,10 @@ const Login: React.FC = () => {
       router.replace("/home-screen");
       console.log("Login successful, navigating to home..."); // Debug log
     } catch (error) {
-
       showErrorMessage("Invalid username or password.");
       console.error("Login error:", error);
     }
     setLoading(false);
-
   };
 
   useEffect(() => {
@@ -111,7 +104,7 @@ const Login: React.FC = () => {
 
   useEffect(() => {
     if (isLoginSuccessful) {
-      router.push("/home-screen");
+      router.replace("/home-screen");
     }
   }, [isLoginSuccessful, router]);
 
@@ -127,7 +120,7 @@ const Login: React.FC = () => {
       <View className="flex w-full h-full mx-auto my-auto bg-white">
         <View className="w-full h-full mx-auto my-auto">
           <Image
-            source={beachImage}
+            source={require("../../assets/bg-jas/header_login.png")}
             className="w-full h-[40%] items-center mx-auto mb-2"
           />
           <View className="flex-row w-full mx-10 mb-10">
@@ -139,11 +132,11 @@ const Login: React.FC = () => {
             </View>
             <View className="flex-row w-[30%]">
               <Image
-                source={fbIcon}
+                source={require("../../assets/icons/fb-icon.png")}
                 className="w-[60px] h-[60px] items-center rounded-full mx-auto mr-2"
               />
               <Image
-                source={ggIcon}
+                source={require("../../assets/icons/gg-icon.png")}
                 className="w-[60px] h-[60px] items-center rounded-full mx-auto "
               />
             </View>
@@ -177,7 +170,7 @@ const Login: React.FC = () => {
                 </TouchableOpacity>
               </View>
             </View>
-            <View className="px-3  flex-row items-center mx-7">
+            <View className="flex-row items-center px-3 mx-7">
               <Checkbox
                 status={rememberMe ? "checked" : "unchecked"}
                 onPress={() => setRememberMe(!rememberMe)}
@@ -191,8 +184,7 @@ const Login: React.FC = () => {
             <View className="flex-row items-center justify-between mx-10 mt-6 ">
               <TouchableOpacity
                 className="w-[150px]  bg-[#4765F9] rounded-md"
-                onPress={handleLogin}
-              >
+                onPress={handleLogin}>
                 <Text className="py-3 text-xl font-semibold text-center text-white uppercase px-9">
                   Sign in
                 </Text>

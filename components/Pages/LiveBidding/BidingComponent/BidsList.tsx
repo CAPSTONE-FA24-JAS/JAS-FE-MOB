@@ -35,8 +35,6 @@ const BidsList: React.FC<BidsListProps> = ({
     });
   }, [bids, currentCusId]);
 
-  console.log("sortedBids", sortedBids);
-
   const formatTime = (timeString: string) => {
     const date = new Date(timeString);
     return date.toLocaleString("en-GB", {
@@ -50,11 +48,14 @@ const BidsList: React.FC<BidsListProps> = ({
     });
   };
 
+  console.log("cusid", currentCusId);
+
   if (item.lotType === "Public_Auction") {
     return (
       <View className="p-4 ">
         {sortedBids.map((bid, index) => {
-          const isCurrentUserBid = bid.customerId === currentCusId.toString();
+          const isCurrentUserBid = bid.customerId == currentCusId.toString();
+          console.log("cusidbid", bid.customerId);
 
           return (
             <View key={index}>

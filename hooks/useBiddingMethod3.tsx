@@ -6,12 +6,12 @@ import {
 } from "@microsoft/signalr";
 import axios from "axios";
 
-const API_BASE_URL = process.env.EXPO_PUBLIC_API_URL || "http://localhost:7251";
+const API_BASE_URL = process.env.EXPO_PUBLIC_API_URL;
 
 export interface Message {
   currentPrice: number;
   bidTime: string;
-  status: "Success" | "Failed" | "Processing";
+  status: string;
   customerId: string;
   firstName?: string;
   lastName?: string;
@@ -79,7 +79,6 @@ export function useBiddingMethod3(): UseBiddingResult {
 
     //get all history bid
     connection.on("SendHistoryBiddingOfLot", (bids: Message[]) => {
-      console.log(`All bids`, bids);
       if (bids) {
         setMessages(bids);
       }
@@ -113,31 +112,29 @@ export function useBiddingMethod3(): UseBiddingResult {
     );
 
     // sau khi bid xong sẽ gửi về kết quả
-    connection.on(
-      "SendBiddingPrice",
-      (
-        customerId: string,
-        price: number,
-        bidTime: string,
-        status: "Success" | "Failed" | "Processing"
-      ) => {
-        console.log(
-          `New bid from ${customerId}: ${price.toLocaleString("vi-VN", {
-            style: "currency",
-            currency: "VND",
-          })} at ${bidTime}`
-        );
-        setMessages((prev) => [
-          ...prev,
-          {
-            currentPrice: price,
-            bidTime: bidTime,
-            customerId: customerId,
-            status: status,
-          },
-        ]);
-      }
-    );
+    // connection.on(
+    //   "SendBiddingPrice",
+    //   (customerId: string, price: number, bidTime: string) => {
+    //     console.log(
+    //       `New bid from before handle ${customerId}: ${price.toLocaleString(
+    //         "vi-VN",
+    //         {
+    //           style: "currency",
+    //           currency: "VND",
+    //         }
+    //       )} at ${bidTime}`
+    //     );
+    //     setMessages((prev) => [
+    //       ...prev,
+    //       {
+    //         currentPrice: price,
+    //         bidTime: bidTime,
+    //         customerId: customerId,
+    //         status: "đang xử lýwwwwwwwwwwwwwwwwwwwwwwW",
+    //       },
+    //     ]);
+    //   }
+    // );
 
     // end lot asap use for disable bidding btn
     connection.on("AuctionPublicEnded", (message: string) => {
@@ -259,6 +256,19 @@ export function useBiddingMethod3(): UseBiddingResult {
         `${API_BASE_URL}/api/BidPrices/PlaceBiding/place-bid`,
         body
       );
+
+      if (response.data.isSuccess) {
+        console.log("Send bid successfully");
+        setMessages((prev) => [
+          ...prev,
+          {
+            currentPrice: price,
+            bidTime: body.bidTime,
+            customerId: "11",
+            status: "Processing",
+          },
+        ]);
+      }
 
       if (!response.data.isSuccess) {
         throw new Error(response.data.message);

@@ -1,11 +1,16 @@
-import { Link } from "expo-router";
+import { Link, useRouter } from "expo-router";
 import React from "react";
-import { View, StyleSheet } from "react-native";
+import { View, StyleSheet, Text } from "react-native";
+import { TouchableOpacity } from "react-native-gesture-handler";
 
 const Page = () => {
+  const router = useRouter();
   return (
     <View style={styles.container}>
       <Link href="/(tabs)/nature-meditate">Ready to meditate</Link>
+      <TouchableOpacity onPress={() => router.back()}>
+        <Text>Go to Invoice List</Text>
+      </TouchableOpacity>
     </View>
   );
 };

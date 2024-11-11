@@ -1,12 +1,29 @@
 import { Tab, TabView } from "@rneui/base";
-import React from "react";
+import React, { useEffect } from "react";
 import PastBids from "@/components/Pages/MyBids/PastBids";
 import CurrentBids from "@/components/Pages/MyBids/CurrentBids";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
+import { useRoute } from "@react-navigation/native";
 
 export default function MyBids() {
   const [index, setIndex] = React.useState(0);
+
+  const route = useRoute<{
+    key: string;
+    name: string;
+    params: { tab?: string };
+  }>(); // Lấy tham số từ route
+  const tab = route.params?.tab; // Lấy giá trị của tab từ tham số điều hướng
+
+  // Thiết lập tab dựa vào tham số 'tab' trong route
+  useEffect(() => {
+    if (tab === "past") {
+      setIndex(1); // Nếu tab là "past", chọn tab Past
+    } else {
+      setIndex(0); // Mặc định mở tab Current
+    }
+  }, [tab]);
   const userId = useSelector(
     (state: RootState) => state.auth.userResponse?.customerDTO?.id
   );

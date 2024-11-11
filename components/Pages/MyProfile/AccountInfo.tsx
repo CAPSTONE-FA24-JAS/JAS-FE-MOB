@@ -10,6 +10,7 @@ import { logout } from "@/redux/slices/authSlice";
 import { useNavigation } from "expo-router";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { UserInfo } from "@/app/types/profilte_type";
+import { resetNotifications } from "@/redux/slices/notificationSlice";
 
 type RouteParams = {
   userData: UserInfo;
@@ -54,6 +55,7 @@ const AccountInfo: React.FC = () => {
   };
 
   // Handle delete account
+  // Handle delete account
   const handleDeleteAccount = async () => {
     if (!userId) return;
     try {
@@ -61,7 +63,8 @@ const AccountInfo: React.FC = () => {
       // Trigger logout
       setConfirmModalVisible(false); // Close the modal
       dispatch(logout()); // Dispatch the logout action to log out the user
-      navigation.navigate("login");
+      dispatch(resetNotifications()); // Reset notifications on logout
+      navigation.navigate("login"); // Navigate to login screen
     } catch (error) {
       console.error("Error deleting account:", error);
     }

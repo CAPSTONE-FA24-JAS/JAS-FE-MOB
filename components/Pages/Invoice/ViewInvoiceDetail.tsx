@@ -1,32 +1,25 @@
 // ViewInvoiceDetail.tsx
 import React from "react";
-import {
-  View,
-  Text,
-  ScrollView,
-  TouchableOpacity,
-  StyleSheet,
-} from "react-native";
+import { View, Text, ScrollView, TouchableOpacity } from "react-native";
 import { styled } from "nativewind";
 import { useNavigation, useRoute, RouteProp } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { AddressListData } from "@/app/types/address_type";
 import { MyBidData } from "@/app/types/bid_type";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
-import ImageGallery from "@/components/ImageGallery";
 import ImageGalleryOne from "@/components/ImageGalleryOne";
 import { InvoiceDetailResponse } from "@/app/types/invoice_type";
 
 type RootStackParamList = {
   InvoiceDetail: {
-    addressData: AddressListData;
-    itemDetailBid: MyBidData;
-    invoiceId: number;
-    yourMaxBid: number;
-    imagePayment: string;
-    invoiceDetails: InvoiceDetailResponse;
+    addressData?: AddressListData;
+    itemDetailBid?: MyBidData;
+    invoiceId?: number;
+    yourMaxBid?: number;
+    imagePayment?: string;
+    invoiceDetails?: InvoiceDetailResponse;
+    idNoti?: number;
   };
 };
 
@@ -37,7 +30,19 @@ const StyledTouchableOpacity = styled(TouchableOpacity);
 const ViewInvoiceDetail: React.FC = () => {
   const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
   const route = useRoute<RouteProp<RootStackParamList, "InvoiceDetail">>();
+
   const user = useSelector((state: RootState) => state.auth.userResponse);
+
+  let notificationId: number | undefined;
+  try {
+    const notificationRoute =
+      useRoute<RouteProp<RootStackParamList, "InvoiceDetail">>();
+    notificationId = notificationRoute.params?.idNoti;
+    console.log("Notification ID:", notificationId);
+  } catch (error) {
+    // If there's an error accessing notification params, it means we weren't navigated from notifications
+    console.log("Not navigated from notifications");
+  }
 
   // Destructure the passed parameters
   const {
@@ -61,15 +66,15 @@ const ViewInvoiceDetail: React.FC = () => {
   };
 
   return (
-    <StyledView className="flex-1 bg-white p-4">
+    <StyledView className="flex-1 p-4 bg-white">
       <ScrollView>
         {/* Customer Information */}
 
-        <StyledText className="text-lg font-bold mb-2">
+        <StyledText className="mb-2 text-lg font-bold">
           CUSTOMER INFORMATION
         </StyledText>
 
-        <StyledView className="border-t border-gray-300 py-3 mb-3">
+        <StyledView className="py-3 mb-3 border-t border-gray-300">
           <View className="flex-row justify-between mb-1">
             <StyledText className="text-base font-medium text-gray-600">
               Full Name
@@ -108,10 +113,10 @@ const ViewInvoiceDetail: React.FC = () => {
         </StyledView>
 
         {/* Order Information */}
-        <StyledText className="text-lg font-bold mt-4 mb-2">
+        <StyledText className="mt-4 mb-2 text-lg font-bold">
           ORDER INFORMATION
         </StyledText>
-        <StyledView className="border-t  border-gray-300 py-3 mb-3">
+        <StyledView className="py-3 mb-3 border-t border-gray-300">
           <StyledView className="flex-row justify-between mb-1">
             <StyledText className="text-base font-medium text-gray-600">
               Invoice Code
@@ -141,7 +146,7 @@ const ViewInvoiceDetail: React.FC = () => {
             <StyledText className="text-base font-medium text-gray-600">
               Name Production
             </StyledText>
-            <StyledText className="text-base w-1/2 text-right font-medium text-gray-600">
+            <StyledText className="w-1/2 text-base font-medium text-right text-gray-600">
               {itemDetailBid.lotDTO.title}
             </StyledText>
           </StyledView>
@@ -200,7 +205,7 @@ const ViewInvoiceDetail: React.FC = () => {
 
         {imagePayment && (
           <View className="mt-2 mb-4">
-            <StyledText className="text-lg uppercase font-bold mb-2">
+            <StyledText className="mb-2 text-lg font-bold uppercase">
               Bill Payment Image
             </StyledText>
             <View className="border-t border-gray-300">
@@ -218,9 +223,9 @@ const ViewInvoiceDetail: React.FC = () => {
         {/* Back Button */}
         <StyledTouchableOpacity
           onPress={handleBack}
-          className="p-3 rounded bg-blue-500 mt-5"
+          className="p-3 mt-5 bg-blue-500 rounded"
         >
-          <StyledText className="text-white text-center font-bold">
+          <StyledText className="font-bold text-center text-white">
             BACK
           </StyledText>
         </StyledTouchableOpacity>

@@ -117,8 +117,8 @@ export function useBiddingMethod3(): UseBiddingResult {
         setMessages((prev) =>
           prev.map((message) =>
             message.customerId === cusid &&
-            message.bidTime === bidtime &&
-            message.status === "Processing"
+            message.status === "Processing" &&
+            message.currentPrice === price
               ? { ...message, status: status }
               : message
           )

@@ -84,57 +84,47 @@ export function useBiddingMethod3(): UseBiddingResult {
       }
     });
 
+    // sau khi bid xong sẽ gửi về kết quả
+    connection.on(
+      "SendBiddingPrice",
+      (customerId: string, price: string, bidTime: string) => {
+        console.log(
+          `New bid from before handling ${customerId}: ${price} at ${bidTime}`
+        );
+        setMessages((prev) => [
+          ...prev,
+          {
+            currentPrice: Number(price),
+            bidTime: bidTime,
+            customerId: customerId,
+            status: "Processing",
+          },
+        ]);
+      }
+    );
+
     // Xử lý sự kiện khi mình bidding người đấu giá
     connection.on(
       "SendBiddingPriceAfterProcessingStream",
-      (
-        cusid: string,
-        price: number,
-        bidtime: string,
-        status: "Success" | "Failed" | "Processing"
-      ) => {
+      (cusid: string, price: number, bidtime: string, status: string) => {
         console.log(
           `New bid from ${cusid}: ${price.toLocaleString("vi-VN", {
             style: "currency",
             currency: "VND",
           })} at ${bidtime}`
         );
-        setMessages((prev) => [
-          ...prev,
-          {
-            currentPrice: price,
-            bidTime: bidtime,
-            customerId: cusid,
-            status: status,
-          },
-        ]);
+
+        setMessages((prev) =>
+          prev.map((message) =>
+            message.customerId === cusid &&
+            message.bidTime === bidtime &&
+            message.status === "Processing"
+              ? { ...message, status: status }
+              : message
+          )
+        );
       }
     );
-
-    // sau khi bid xong sẽ gửi về kết quả
-    // connection.on(
-    //   "SendBiddingPrice",
-    //   (customerId: string, price: number, bidTime: string) => {
-    //     console.log(
-    //       `New bid from before handle ${customerId}: ${price.toLocaleString(
-    //         "vi-VN",
-    //         {
-    //           style: "currency",
-    //           currency: "VND",
-    //         }
-    //       )} at ${bidTime}`
-    //     );
-    //     setMessages((prev) => [
-    //       ...prev,
-    //       {
-    //         currentPrice: price,
-    //         bidTime: bidTime,
-    //         customerId: customerId,
-    //         status: "đang xử lýwwwwwwwwwwwwwwwwwwwwwwW",
-    //       },
-    //     ]);
-    //   }
-    // );
 
     // end lot asap use for disable bidding btn
     connection.on("AuctionPublicEnded", (message: string) => {
@@ -179,7 +169,7 @@ export function useBiddingMethod3(): UseBiddingResult {
         }
 
         const connection = new HubConnectionBuilder()
-          .withUrl(`${API_BASE_URL}/Auctionning`)
+          .withUrl(`${API_BASE_URL}/auctionning`)
           .withAutomaticReconnect()
           .configureLogging(LogLevel.Information)
           .build();
@@ -256,19 +246,6 @@ export function useBiddingMethod3(): UseBiddingResult {
         `${API_BASE_URL}/api/BidPrices/PlaceBiding/place-bid`,
         body
       );
-
-      if (response.data.isSuccess) {
-        console.log("Send bid successfully");
-        setMessages((prev) => [
-          ...prev,
-          {
-            currentPrice: price,
-            bidTime: body.bidTime,
-            customerId: "11",
-            status: "Processing",
-          },
-        ]);
-      }
 
       if (!response.data.isSuccess) {
         throw new Error(response.data.message);

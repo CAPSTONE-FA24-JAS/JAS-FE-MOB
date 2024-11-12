@@ -114,6 +114,9 @@ const RisingBidPage: React.FC = () => {
       console.log("Joining chat room...", accountId, itemId);
       joinLiveBiddingMethod3(accountId, itemId);
     }
+    return () => {
+      disconnect();
+    };
   }, [accountId, itemId, item.lotType]);
 
   const onClose = () => {
@@ -212,6 +215,7 @@ const RisingBidPage: React.FC = () => {
             resultBidding={resultBidding}
             setResultBidding={setResultBidding}
             isEndLot={isEndLot}
+            bids={messages}
           />
         </View>
       )}

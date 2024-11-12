@@ -10,6 +10,7 @@ import {
 import { LotDetail } from "@/app/types/lot_type";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
+import { Message } from "@/hooks/useBiddingMethod3";
 
 interface BidInputProps {
   highestBid: number;
@@ -19,6 +20,7 @@ interface BidInputProps {
   resultBidding?: string;
   setResultBidding: React.Dispatch<React.SetStateAction<string>>;
   isEndLot: boolean; //just for method 3
+  bids: Message[];
 }
 
 const BidInput: React.FC<BidInputProps> = ({
@@ -29,6 +31,7 @@ const BidInput: React.FC<BidInputProps> = ({
   resultBidding,
   setResultBidding,
   isEndLot, //just for method 3
+  bids,
 }) => {
   const [bidValue, setBidValue] = useState<number>(() =>
     highestBid !== 0
@@ -38,7 +41,6 @@ const BidInput: React.FC<BidInputProps> = ({
   const [stepBidIncrement, setStepBidIncrement] = useState<number>(1);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
-  const [loadingMethod4, setLoadingMethod4] = useState<boolean>(false);
 
   const priceLimit = useSelector(
     (store: RootState) => store.auth.userResponse?.customerDTO.priceLimit
@@ -47,6 +49,10 @@ const BidInput: React.FC<BidInputProps> = ({
   const isFinancialProof = item.haveFinancialProof;
   const priceLimitofCustomer = useSelector(
     (state: RootState) => state.auth.userResponse?.customerDTO.priceLimit
+  );
+
+  const cusid = useSelector(
+    (state: RootState) => state.auth.userResponse?.customerDTO.id
   );
 
   useEffect(() => {
@@ -106,6 +112,17 @@ const BidInput: React.FC<BidInputProps> = ({
     setLoading(false);
   };
 
+  const checkProcessingBidOfMine = (bids: Message[]): boolean => {
+    if (cusid) {
+      return !!bids.find(
+        (bid) =>
+          bid.customerId.toString() === cusid.toString() &&
+          bid.status === "Processing"
+      );
+    }
+    return false;
+  };
+
   if (item.lotType === "Public_Auction") {
     return (
       <View className="w-full p-2">
@@ -138,10 +155,20 @@ const BidInput: React.FC<BidInputProps> = ({
               item.status === "Sold" ||
               item.status === "Passed" ||
               loading ||
-              isEndLot // Disable when auction is currently ended just for method 3
+              isEndLot || // Disable when auction is currently ended just for method 3
+              checkProcessingBidOfMine(bids)
             }
             onPress={handleSubmitBidMethod3}
-            className="w-[20%] flex items-center justify-center h-12 bg-blue-500 rounded-md">
+            className={
+              isEndAuctionMethod3 ||
+              item.status === "Sold" ||
+              item.status === "Passed" ||
+              loading ||
+              isEndLot || // Disable when auction is currently ended just for method 3
+              checkProcessingBidOfMine(bids)
+                ? "w-[20%] flex items-center justify-center h-12 bg-gray-500 rounded-md"
+                : "w-[20%] flex items-center justify-center h-12 bg-blue-500 rounded-md "
+            }>
             <Text className="text-xs font-semibold text-white">BIDDING</Text>
           </TouchableOpacity>
         </View>

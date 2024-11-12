@@ -7,7 +7,7 @@ import { View, Text } from "react-native";
 interface BidsListProps {
   item: LotDetail;
   bids: Message[];
-  currentCusId: number; // Add this prop to identify current user's bids
+  currentCusId: number;
   reducePrice?: number;
 }
 
@@ -19,22 +19,20 @@ const BidsList: React.FC<BidsListProps> = ({
 }) => {
   console.log("bids", bids);
 
-  // Filter and sort bids by time, newest first
+  // Memoized sorted bids
   const sortedBids = useMemo(() => {
-    const filterBids = [...bids].filter((bid) => {
-      // Filter based on status and customer ID
-      if (bid.status === "Processing" || bid.status === "Failed") {
-        return bid.customerId === currentCusId?.toString();
-      }
-      return true;
-    });
-    return filterBids.sort((a, b) => {
-      const timeA = new Date(a.bidTime).getTime();
-      const timeB = new Date(b.bidTime).getTime();
-      return timeB - timeA;
-    });
+    return bids
+      .filter((bid) =>
+        ["Processing", "Failed"].includes(bid.status)
+          ? bid.customerId.toString() === currentCusId.toString()
+          : true
+      )
+      .sort(
+        (a, b) => new Date(b.bidTime).getTime() - new Date(a.bidTime).getTime()
+      );
   }, [bids, currentCusId]);
 
+  // Helper to format time
   const formatTime = (timeString: string) => {
     const date = new Date(timeString);
     return date.toLocaleString("en-GB", {
@@ -48,48 +46,18 @@ const BidsList: React.FC<BidsListProps> = ({
     });
   };
 
-  console.log("cusid", currentCusId);
-
   if (item.lotType === "Public_Auction") {
     return (
-      <View className="p-4 ">
-        {sortedBids.map((bid, index) => {
-          const isCurrentUserBid = bid.customerId == currentCusId.toString();
-          console.log("cusidbid", bid.customerId);
-
-          return (
-            <View key={index}>
-              <View
-                className={`flex-row justify-between rounded-md p-3 ${
-                  isCurrentUserBid
-                    ? "bg-blue-100 border border-blue-300"
-                    : "bg-white border-gray-300 border"
-                }`}>
-                <View>
-                  <Text className="text-gray-600">
-                    {formatTime(bid.bidTime)}
-                  </Text>
-                  {isCurrentUserBid && (
-                    <Text className="text-xs text-blue-600">
-                      Your bid::::: Status : ${bid.status}
-                    </Text>
-                  )}
-                </View>
-
-                <Text
-                  className={`font-bold ${
-                    isCurrentUserBid ? "text-blue-700" : "text-gray-700"
-                  }`}>
-                  ${bid.currentPrice}
-                </Text>
-              </View>
-
-              {index < sortedBids.length - 1 && (
-                <View className="h-[1px] bg-gray-200 my-2" />
-              )}
-            </View>
-          );
-        })}
+      <View className="p-4">
+        {sortedBids.map((bid, index) => (
+          <MemoizedItem
+            key={index}
+            bid={bid}
+            currentCusId={currentCusId}
+            formatTime={formatTime}
+            showDivider={index < sortedBids.length - 1}
+          />
+        ))}
       </View>
     );
   }
@@ -98,14 +66,14 @@ const BidsList: React.FC<BidsListProps> = ({
     const percentReduce =
       item.startPrice && reducePrice
         ? (((item.startPrice - reducePrice) / item.startPrice) * 100).toFixed(2)
-        : 0;
+        : "0";
     return (
       <View className="p-4">
         <View className="flex-row items-center justify-around p-3 py-6 bg-white border border-gray-300 rounded-md">
           <Text className="text-lg">Current Price:</Text>
-          <Text className="text-xl text-gray-600">{reducePrice}</Text>
+          <Text className="text-xl text-gray-600">${reducePrice}</Text>
           <View className="flex items-center">
-            <Text className="text-lg text-center text-red-700 ">
+            <Text className="text-lg text-center text-red-700">
               {percentReduce}%
             </Text>
             <MaterialCommunityIcons
@@ -123,3 +91,72 @@ const BidsList: React.FC<BidsListProps> = ({
 };
 
 export default BidsList;
+
+// Memoized Item Component
+interface MemoizedItemProps {
+  bid: Message;
+  currentCusId: number;
+  formatTime: (timeString: string) => string;
+  showDivider: boolean;
+}
+
+const MemoizedItem: React.FC<MemoizedItemProps> = React.memo(
+  ({ bid, currentCusId, formatTime, showDivider }) => {
+    const isCurrentUserBid =
+      bid.customerId.toString() === currentCusId.toString();
+
+    // Status color helpers
+    const getStatusColor = (status: string) => {
+      switch (status.toLowerCase()) {
+        case "processing":
+          return "text-yellow-600";
+        case "failed":
+          return "text-red-600";
+        case "success":
+          return "text-blue-600";
+        default:
+          return "text-gray-600";
+      }
+    };
+
+    const getStatusBgColor = (status: string) => {
+      switch (status.toLowerCase()) {
+        case "processing":
+          return "bg-yellow-100 border-yellow-300";
+        case "failed":
+          return "bg-red-100 border-red-300";
+        case "success":
+          return "bg-blue-100 border-blue-300";
+        default:
+          return "bg-white border-gray-300";
+      }
+    };
+
+    return (
+      <View>
+        <View
+          className={`flex-row justify-between rounded-md p-3 ${
+            isCurrentUserBid
+              ? getStatusBgColor(bid.status)
+              : "bg-white border-gray-300 border"
+          }`}>
+          <View>
+            <Text className="text-gray-600">{formatTime(bid.bidTime)}</Text>
+            {isCurrentUserBid && (
+              <Text className={`text-xs ${getStatusColor(bid.status)}`}>
+                Your bid • Status: {bid.status}
+              </Text>
+            )}
+          </View>
+          <Text
+            className={`font-bold ${
+              isCurrentUserBid ? getStatusColor(bid.status) : "text-gray-700"
+            }`}>
+            ${bid.currentPrice}
+          </Text>
+        </View>
+        {showDivider && <View className="h-[1px] bg-gray-200 my-2" />}
+      </View>
+    );
+  }
+);

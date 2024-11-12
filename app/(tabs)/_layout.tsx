@@ -54,6 +54,7 @@ import Deposit from "@/components/Pages/Wallet/Deposit";
 import Withdraw from "@/components/Pages/Wallet/Widthraw";
 import RegisterToBid from "@/components/Pages/MyBids/RegisterToBid";
 import EditAddress from "@/components/Pages/Address/EditAddress.";
+import ReduceBidPage from "@/components/Pages/LiveBidding/ReduceBidPage";
 import Notification from "../../components/Pages/Notifications";
 
 // Declare Drawer and Stack Navigators
@@ -287,6 +288,13 @@ export default function AppNavigator() {
       <Stack.Screen
         name="RisingBidPage"
         component={RisingBidPage}
+        options={{
+          header: () => <CustomHeaderDetail title="Live Bidding" />,
+        }}
+      />
+      <Stack.Screen
+        name="ReduceBidPage"
+        component={ReduceBidPage}
         options={{
           header: () => <CustomHeaderDetail title="Live Bidding" />,
         }}

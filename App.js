@@ -1,5 +1,5 @@
 import { StatusBar } from "expo-status-bar";
-import { LogBox, StyleSheet, View } from "react-native";
+import { StyleSheet, View } from "react-native";
 import { NativeWindStyleSheet } from "nativewind";
 
 NativeWindStyleSheet.setOutput({
@@ -7,8 +7,6 @@ NativeWindStyleSheet.setOutput({
 });
 
 export default function App() {
-  LogBox.ignoreLogs(["Warning: ..."]);
-
   return (
     <View style={styles.container}>
       <StatusBar style="auto" />

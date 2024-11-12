@@ -10,31 +10,28 @@ import {
 import { LotDetail } from "@/app/types/lot_type";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
+import { Message } from "@/hooks/useBiddingMethod3";
 
 interface BidInputProps {
-  isEndAuctionMethod4: boolean;
   highestBid: number;
   item: LotDetail;
   onPlaceBid: (price: number) => Promise<void>;
   isEndAuctionMethod3: boolean;
-  onPlaceBidMethod4: (price: number) => Promise<void>;
-  reducePrice?: number;
   resultBidding?: string;
   setResultBidding: React.Dispatch<React.SetStateAction<string>>;
   isEndLot: boolean; //just for method 3
+  bids: Message[];
 }
 
 const BidInput: React.FC<BidInputProps> = ({
-  isEndAuctionMethod4,
   highestBid,
   item,
   onPlaceBid,
   isEndAuctionMethod3,
-  onPlaceBidMethod4,
-  reducePrice,
   resultBidding,
   setResultBidding,
   isEndLot, //just for method 3
+  bids,
 }) => {
   const [bidValue, setBidValue] = useState<number>(() =>
     highestBid !== 0
@@ -44,7 +41,6 @@ const BidInput: React.FC<BidInputProps> = ({
   const [stepBidIncrement, setStepBidIncrement] = useState<number>(1);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
-  const [loadingMethod4, setLoadingMethod4] = useState<boolean>(false);
 
   const priceLimit = useSelector(
     (store: RootState) => store.auth.userResponse?.customerDTO.priceLimit
@@ -53,6 +49,10 @@ const BidInput: React.FC<BidInputProps> = ({
   const isFinancialProof = item.haveFinancialProof;
   const priceLimitofCustomer = useSelector(
     (state: RootState) => state.auth.userResponse?.customerDTO.priceLimit
+  );
+
+  const cusid = useSelector(
+    (state: RootState) => state.auth.userResponse?.customerDTO.id
   );
 
   useEffect(() => {
@@ -76,9 +76,6 @@ const BidInput: React.FC<BidInputProps> = ({
     }
     if (value <= highestBid) {
       return `Bid must be higher than ${highestBid.toLocaleString()}`;
-    }
-    if (value % (item.bidIncrement ?? 100) !== 0) {
-      return `Bid must be a multiple of ${item.bidIncrement?.toLocaleString()}`;
     }
     if (value > priceLimit) {
       return `Bid must be lower than your price limit (${priceLimit?.toLocaleString()})`;
@@ -115,39 +112,15 @@ const BidInput: React.FC<BidInputProps> = ({
     setLoading(false);
   };
 
-  const handleSubmitBidMethod4 = async (price: number) => {
-    console.log("Method 4", price);
-    if (price > priceLimitofCustomer) {
-      setError(
-        `Bid must be lower than your price limit (${priceLimitofCustomer?.toLocaleString()})`
+  const checkProcessingBidOfMine = (bids: Message[]): boolean => {
+    if (cusid) {
+      return !!bids.find(
+        (bid) =>
+          bid.customerId.toString() === cusid.toString() &&
+          bid.status === "Processing"
       );
-      return;
     }
-
-    // Hiển thị alert để xác nhận
-    Alert.alert(
-      "Xác nhận đặt giá",
-      `Bạn có chắc chắn muốn đặt giá ${price.toLocaleString()} cho món này không?`,
-      [
-        {
-          text: "Hủy",
-          style: "cancel",
-        },
-        {
-          text: "OK",
-          onPress: async () => {
-            setLoadingMethod4(true);
-            setError(null);
-            await onPlaceBidMethod4(price);
-            ToastAndroid.showWithGravity(
-              `Bidding successfully with ${price.toLocaleString()}`,
-              ToastAndroid.LONG,
-              ToastAndroid.BOTTOM
-            );
-          },
-        },
-      ]
-    );
+    return false;
   };
 
   if (item.lotType === "Public_Auction") {
@@ -182,10 +155,20 @@ const BidInput: React.FC<BidInputProps> = ({
               item.status === "Sold" ||
               item.status === "Passed" ||
               loading ||
-              isEndLot // Disable when auction is currently ended just for method 3
+              isEndLot || // Disable when auction is currently ended just for method 3
+              checkProcessingBidOfMine(bids)
             }
             onPress={handleSubmitBidMethod3}
-            className="w-[20%] flex items-center justify-center h-12 bg-blue-500 rounded-md">
+            className={
+              isEndAuctionMethod3 ||
+              item.status === "Sold" ||
+              item.status === "Passed" ||
+              loading ||
+              isEndLot || // Disable when auction is currently ended just for method 3
+              checkProcessingBidOfMine(bids)
+                ? "w-[20%] flex items-center justify-center h-12 bg-gray-500 rounded-md"
+                : "w-[20%] flex items-center justify-center h-12 bg-blue-500 rounded-md "
+            }>
             <Text className="text-xs font-semibold text-white">BIDDING</Text>
           </TouchableOpacity>
         </View>
@@ -193,40 +176,6 @@ const BidInput: React.FC<BidInputProps> = ({
         {error && (
           <Text className="mt-2 text-center text-red-500">{error}</Text>
         )}
-      </View>
-    );
-  }
-
-  if (item.lotType === "Auction_Price_GraduallyReduced") {
-    return (
-      <View className="w-full p-3">
-        <View className="flex items-center justify-between">
-          <TouchableOpacity
-            disabled={
-              isEndAuctionMethod4 ||
-              item.status === "Sold" ||
-              loadingMethod4 ||
-              item.status === "Passed"
-            }
-            onPress={() => handleSubmitBidMethod4(reducePrice ?? 0)}
-            className={
-              isEndAuctionMethod4 ||
-              item.status === "Sold" ||
-              item.status === "Passed" ||
-              loadingMethod4
-                ? "w-[50%] flex items-center justify-center h-12 bg-gray-500 rounded-md"
-                : "w-[50%] flex items-center justify-center h-12 bg-blue-500 rounded-md"
-            }>
-            <Text className="text-xl font-semibold text-white">
-              {isEndAuctionMethod4 || item.status === "Sold"
-                ? "SOLD"
-                : "BUY NOW"}
-            </Text>
-            {error && (
-              <Text className="mt-2 text-center text-red-500">{error}</Text>
-            )}
-          </TouchableOpacity>
-        </View>
       </View>
     );
   }

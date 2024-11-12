@@ -19,11 +19,24 @@ import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
 import { StackNavigationProp } from "@react-navigation/stack";
 import LoadingOverlay from "@/components/LoadingOverlay";
+import { useRoute, RouteProp } from "@react-navigation/native";
 
 // Define the types for navigation routes
 type RootStackParamList = {
   ConsignDetailTimeLine: { item: dataResponseConsignList }; // Định nghĩa rằng ConsignDetailTimeLine nhận một đối tượng item kiểu ConsignResponse
 };
+
+// Mapping of the status to display
+const statusTextMap = [
+  "Requested",
+  "Assigned",
+  "Preliminary",
+  "Approved Preliminary",
+  "Received Jewelry",
+  "Manager Approved",
+  "Authorized",
+  "Rejected Preliminary",
+];
 
 const HistoryItemConsign: React.FC = () => {
   const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
@@ -35,7 +48,26 @@ const HistoryItemConsign: React.FC = () => {
   const sellerId = useSelector(
     (state: RootState) => state.auth.userResponse?.customerDTO.id
   ); // Lấy userId từ Redux
+  type RouteParams = {
+    params: {
+      tab?: number;
+    };
+  };
 
+  console.log("selectedStatus", selectedStatus);
+
+  const route = useRoute<RouteProp<RouteParams, "params">>();
+
+  const tab = route.params?.tab; // Lấy giá trị của tab từ tham số điều hướng
+
+  // Thiết lập tab dựa vào tham số 'tab' trong route
+  useEffect(() => {
+    if (tab === 3) {
+      setSelectedStatus(3); // Nếu tab là "past", chọn tab Past
+    } else {
+      setSelectedStatus(0); // Mặc định mở tab Current
+    }
+  }, [tab]);
   // const scrollViewRef = useRef<ScrollView>(null);
 
   // Hàm gọi API
@@ -87,18 +119,18 @@ const HistoryItemConsign: React.FC = () => {
     item.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  const statusTextMap = [
-    "Requested",
-    "Assigned",
-    // "Requested Preliminary", // ẩn
-    "Preliminary",
-    "Approved Preliminary",
-    "Recived Jewelry", // hiện biên bản xác nhận
-    // "Final Valuated", // ẩn
-    "Manager Approved",
-    "Authorized", // cho coi giấy uỷ quyền
-    "Rejected Preliminary",
-  ];
+  // const statusTextMap = [
+  //   "Requested",
+  //   "Assigned",
+  //   // "Requested Preliminary", // ẩn
+  //   "Preliminary",
+  //   "Approved Preliminary",
+  //   "Recived Jewelry", // hiện biên bản xác nhận
+  //   // "Final Valuated", // ẩn
+  //   "Manager Approved",
+  //   "Authorized", // cho coi giấy uỷ quyền
+  //   "Rejected Preliminary",
+  // ];
   // Corresponding status indices to match statusTextMap
   const statusIndices = [0, 1, 3, 4, 5, 7, 8, 9];
 
@@ -113,7 +145,7 @@ const HistoryItemConsign: React.FC = () => {
           <View className="flex-row items-center">
             <TouchableOpacity
               className={`px-4 py-2 mr-2 ${
-                selectedStatus === null ? "bg-gray-800" : "bg-gray-400"
+                selectedStatus === null ? "bg-yellow-500" : "bg-gray-400"
               } rounded`}
               onPress={() => setSelectedStatus(null)}
             >
@@ -136,7 +168,9 @@ const HistoryItemConsign: React.FC = () => {
           </View>
         </ScrollView>
         {loading ? (
-          <LoadingOverlay visible={loading} />
+          <View className="items-center justify-center py-20 flex-1">
+            <ActivityIndicator size="large" color="#0000ff" />
+          </View>
         ) : (
           <View>
             <TextInput

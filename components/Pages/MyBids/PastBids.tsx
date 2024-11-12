@@ -34,7 +34,7 @@ const PastBids: React.FC<PastBidsProps> = ({ customerId }) => {
 
   if (loading) {
     return (
-      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+      <View>
         <ActivityIndicator size="large" color="#0000ff" />
       </View>
     );

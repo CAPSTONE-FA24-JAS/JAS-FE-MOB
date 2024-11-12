@@ -198,7 +198,7 @@ const DetailMyBid: React.FC = () => {
 
   if (loading) {
     return (
-      <View className="flex-1 justify-center items-center">
+      <View className="items-center justify-center flex-1">
         <ActivityIndicator size="large" color="#0000ff" />
       </View>
     );
@@ -257,15 +257,15 @@ const DetailMyBid: React.FC = () => {
         invoiceDetails.linkBillTransaction &&
         invoiceDetails.status !== "PendingPayment" &&
         invoiceDetails.status !== "CreateInvoice" && (
-          <View className="my-2 bg-green-600 p-2 ">
-            <Text className="text-lg font-semibold text-white  text-center">
+          <View className="p-2 my-2 bg-green-600 ">
+            <Text className="text-lg font-semibold text-center text-white">
               You have successfully paid for this invoice.
             </Text>
           </View>
         )}
       {invoiceDetails && invoiceDetails.statusInvoiceDTOs && (
         <View className="mx-4 mt-4">
-          <Text className="font-semibold text-lg text-gray-600 mb-2">
+          <Text className="mb-2 text-lg font-semibold text-gray-600">
             Delivered Image:{" "}
             <Text className="font-bold text-gray-800">
               (Shipper ID: {invoiceDetails.shipperId})
@@ -311,36 +311,33 @@ const DetailMyBid: React.FC = () => {
         <View>
           {itemDetailBid?.status === "CreateInvoice" ? (
             <TouchableOpacity
-              className="bg-blue-500 p-3 mx-4 rounded mt-4"
-              onPress={handleConfirmInvoice}
-            >
-              <Text className="text-white text-center font-semibold uppercase text-base">
+              className="p-3 mx-4 mt-4 bg-blue-500 rounded"
+              onPress={handleConfirmInvoice}>
+              <Text className="text-base font-semibold text-center text-white uppercase">
                 Confirm Invoice
               </Text>
             </TouchableOpacity>
           ) : (
             <TouchableOpacity
-              className="bg-blue-500 p-3  mx-4 rounded my-4"
-              onPress={handleViewInvoice}
-            >
-              <Text className="text-white text-center font-semibold uppercase text-base">
+              className="p-3 mx-4 my-4 bg-blue-500 rounded"
+              onPress={handleViewInvoice}>
+              <Text className="text-base font-semibold text-center text-white uppercase">
                 View Invoice
               </Text>
             </TouchableOpacity>
           )}
         </View>
       ) : !invoiceId && isWin ? (
-        <View className=" flex-row mb-6 mx-auto">
+        <View className="flex-row mx-auto mb-6 ">
           <Text className="text-center text-gray-500 ">You need to go to</Text>
           <TouchableOpacity>
             <Text
-              className="text-center text-blue-500 font-semibold ml-2 "
-              onPress={() => navigation.navigate("InvoiceList")}
-            >
+              className="ml-2 font-semibold text-center text-blue-500 "
+              onPress={() => navigation.navigate("InvoiceList")}>
               Invoice List
             </Text>
           </TouchableOpacity>
-          <Text className="text-center text-gray-500 ml-2">to continue.</Text>
+          <Text className="ml-2 text-center text-gray-500">to continue.</Text>
         </View>
       ) : null}
 
@@ -348,8 +345,7 @@ const DetailMyBid: React.FC = () => {
         animationType="slide"
         transparent={true}
         visible={isChooseModalVisible}
-        onRequestClose={() => setChooseModalVisible(false)}
-      >
+        onRequestClose={() => setChooseModalVisible(false)}>
         <ChooseAddress
           addresses={addresses}
           selectedAddress={defaultAddress}

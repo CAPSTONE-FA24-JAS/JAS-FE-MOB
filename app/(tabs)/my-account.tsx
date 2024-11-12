@@ -12,6 +12,7 @@ import { logout } from "@/redux/slices/authSlice";
 import { showErrorMessage } from "@/components/FlashMessageHelpers";
 import { checkPasswordWallet } from "@/api/walletApi";
 import PasswordModal from "@/components/Pages/Payment/CheckPasswordModal";
+import { resetNotifications } from "@/redux/slices/notificationSlice";
 
 type RootStackParamList = {
   ChangePassword: undefined;
@@ -93,6 +94,8 @@ const MyAccount = () => {
   // Add logout handler
   const handleLogout = () => {
     dispatch(logout()); // Dispatch the logout action
+    dispatch(resetNotifications()); // Reset notifications on logout
+
     router.push("/login");
   };
 

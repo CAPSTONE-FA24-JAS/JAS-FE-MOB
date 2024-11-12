@@ -172,7 +172,7 @@ const ItemPastBids: React.FC<ItemPastBidsProps> = ({
         return typeBid;
     }
   };
-  console.log("itemBid", itemBid);
+  // console.log("itemBid", itemBid);
 
   return (
     <TouchableOpacity
@@ -225,9 +225,7 @@ const ItemPastBids: React.FC<ItemPastBidsProps> = ({
           <TouchableOpacity
             className={` rounded px-4 py-1 justify-center mr-4 flex-row items-center`}
             style={{
-              backgroundColor: getStatusColorInvoice(
-                statusInvoice ?? "N/A"
-              ),
+              backgroundColor: getStatusColorInvoice(statusInvoice ?? "N/A"),
             }}
           >
             <Text className="text-base text-center font-semibold text-white uppercase">

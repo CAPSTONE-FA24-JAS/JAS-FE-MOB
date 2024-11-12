@@ -5,3 +5,8 @@ export interface Response<T> {
   data: T;
   errorMessages: string;
 }
+
+export interface ResponseList<T> {
+  dataResponse: T[];
+  totalItemRepsone: number;
+}

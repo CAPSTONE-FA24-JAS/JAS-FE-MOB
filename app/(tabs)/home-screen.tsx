@@ -64,67 +64,67 @@ const HomeScreen = () => {
     fetchAuctions();
   }, []);
 
-  // / Set up SignalR connection and event listeners
-  useEffect(() => {
-    // Create connection
-    const newConnection = new signalR.HubConnectionBuilder()
-      .withUrl(HOME_URL)
-      .withAutomaticReconnect()
-      .build();
+  // // / Set up SignalR connection and event listeners
+  // useEffect(() => {
+  //   // Create connection
+  //   const newConnection = new signalR.HubConnectionBuilder()
+  //     .withUrl(HOME_URL)
+  //     .withAutomaticReconnect()
+  //     .build();
 
-    setConnection(newConnection);
+  //   setConnection(newConnection);
 
-    return () => {
-      if (newConnection) {
-        newConnection.stop(); // Stop connection when component unmounts
-      }
-    };
-  }, []);
+  //   return () => {
+  //     if (newConnection) {
+  //       newConnection.stop(); // Stop connection when component unmounts
+  //     }
+  //   };
+  // }, []);
 
-  // Start the connection and listen for events
-  useEffect(() => {
-    let retryCount = 0;
-    const MAX_RETRIES = 5;
-    const RETRY_DELAY = 3000;
+  // // Start the connection and listen for events
+  // useEffect(() => {
+  //   let retryCount = 0;
+  //   const MAX_RETRIES = 5;
+  //   const RETRY_DELAY = 3000;
 
-    const startConnection = async () => {
-      if (connection) {
-        connection
-          .start()
-          .then(() => {
-            console.log("Connected to SignalR");
-            showSuccessMessage("Connected to SignalR");
-            // Subscribe to SignalR events
-            connection.on("AuctionHasBeenStarted", (auctionId) => {
-              console.log("Auction started", auctionId);
-              // Handle auction started event
-              fetchAuctions(); // Reload auctions when one starts
-            });
+  //   const startConnection = async () => {
+  //     if (connection) {
+  //       connection
+  //         .start()
+  //         .then(() => {
+  //           console.log("Connected to SignalR");
+  //           showSuccessMessage("Connected to SignalR");
+  //           // Subscribe to SignalR events
+  //           connection.on("AuctionHasBeenStarted", (auctionId) => {
+  //             console.log("Auction started", auctionId);
+  //             // Handle auction started event
+  //             fetchAuctions(); // Reload auctions when one starts
+  //           });
 
-            connection.on("AuctionHasBeenEnd", (auctionId) => {
-              console.log("Auction ended", auctionId);
-              // Handle auction ended event
-              fetchAuctions(); // Reload auctions when one ends
-            });
-          })
-          .catch((error) => {
-            if (retryCount < MAX_RETRIES) {
-              retryCount++;
-              setTimeout(startConnection, RETRY_DELAY);
-            } else {
-              console.log("Max retries reached. Could not connect to SignalR.");
-            }
-          });
-      }
-    };
+  //           connection.on("AuctionHasBeenEnd", (auctionId) => {
+  //             console.log("Auction ended", auctionId);
+  //             // Handle auction ended event
+  //             fetchAuctions(); // Reload auctions when one ends
+  //           });
+  //         })
+  //         .catch((error) => {
+  //           if (retryCount < MAX_RETRIES) {
+  //             retryCount++;
+  //             setTimeout(startConnection, RETRY_DELAY);
+  //           } else {
+  //             console.log("Max retries reached. Could not connect to SignalR.");
+  //           }
+  //         });
+  //     }
+  //   };
 
-    startConnection();
-    return () => {
-      if (connection) {
-        connection.stop(); // Stop connection when component unmounts
-      }
-    };
-  }, [connection]);
+  //   startConnection();
+  //   return () => {
+  //     if (connection) {
+  //       connection.stop(); // Stop connection when component unmounts
+  //     }
+  //   };
+  // }, [connection]);
 
   if (loading) {
     return (

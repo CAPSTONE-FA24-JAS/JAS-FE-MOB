@@ -67,7 +67,7 @@ const AutoBidSaveConfig: React.FC = () => {
     estimatedPrice.min
   );
   const [nextBidTime, setNextBidTime] = useState<number>(10); // Default starting time for bid increment
-  const [numberOfPriceStep, setNumberOfPriceStep] = useState<number>(1000);
+  const [numberOfPriceStep, setNumberOfPriceStep] = useState<number>(1);
 
   const [notifyExceeded, setNotifyExceeded] = useState<boolean>(false);
   const [modalVisible, setModalVisible] = useState<boolean>(false);
@@ -140,8 +140,8 @@ const AutoBidSaveConfig: React.FC = () => {
       setErrorMessage("Max price must be at least min price plus price step.");
       return;
     }
-    if (numberOfPriceStep < 1000) {
-      setErrorMessage("Price step must be at least 1000.");
+    if (numberOfPriceStep > 20) {
+      setErrorMessage("Price step must be at least 20.");
       return;
     }
     if (nextBidTime < 1) {
@@ -181,10 +181,10 @@ const AutoBidSaveConfig: React.FC = () => {
   };
   const handleStepChange = (value: string) => {
     const parsedValue = parseInt(value, 10);
-    if (!isNaN(parsedValue) && parsedValue >= 0) {
+    if (!isNaN(parsedValue) && parsedValue >= 0 && parsedValue <= 20) {
       setNumberOfPriceStep(parsedValue);
     } else {
-      setNumberOfPriceStep(0);
+      setNumberOfPriceStep(0); // Default to 0 if out of range or invalid
     }
   };
 
@@ -326,7 +326,7 @@ const AutoBidSaveConfig: React.FC = () => {
           <View className="flex-row items-center mb-4">
             <TouchableOpacity
               onPress={() =>
-                setNumberOfPriceStep((prev) => Math.max(0, prev - 100))
+                setNumberOfPriceStep((prev) => Math.max(0, prev - 1))
               }
               className={`w-12 py-1 bg-gray-200 rounded-l-lg ${
                 numberOfPriceStep <= 0 ? "opacity-50" : ""
@@ -342,8 +342,11 @@ const AutoBidSaveConfig: React.FC = () => {
               keyboardType="numeric"
             />
             <TouchableOpacity
-              onPress={() => setNumberOfPriceStep((prev) => prev + 100)}
+              onPress={() =>
+                setNumberOfPriceStep((prev) => Math.min(20, prev + 1))
+              }
               className="w-12 py-1 bg-gray-200 rounded-r-lg"
+              disabled={numberOfPriceStep >= 20}
             >
               <Text className="text-2xl text-center">+</Text>
             </TouchableOpacity>

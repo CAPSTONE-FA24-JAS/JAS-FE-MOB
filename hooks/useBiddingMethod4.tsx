@@ -7,7 +7,7 @@ import {
 import axios from "axios";
 import { Message } from "./useBiddingMethod3";
 
-const API_BASE_URL = process.env.EXPO_PUBLIC_API_URL || "http://localhost:7251";
+const API_BASE_URL = process.env.EXPO_PUBLIC_API_URL;
 
 interface UseBiddingResult {
   isConnected: boolean;
@@ -102,7 +102,7 @@ export function useBiddingMethod4(): UseBiddingResult {
         }
 
         const connection = new HubConnectionBuilder()
-          .withUrl(`${API_BASE_URL}/Auctionning`)
+          .withUrl(`${API_BASE_URL}/auctionning`)
           .withAutomaticReconnect()
           .configureLogging(LogLevel.Information)
           .build();

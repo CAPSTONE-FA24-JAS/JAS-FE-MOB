@@ -33,7 +33,6 @@ const RisingBidPage: React.FC = () => {
   const accountId = useSelector(
     (state: RootState) => state.auth.userResponse?.id
   );
-
   const customerId = useSelector(
     (state: RootState) => state.auth.userResponse?.customerDTO.id
   );
@@ -60,11 +59,7 @@ const RisingBidPage: React.FC = () => {
     jewelry: {
       id: 0,
       name: "",
-      imageJewelries: [
-        {
-          imageLink: "",
-        },
-      ],
+      imageJewelries: [{ imageLink: "" }],
     } as Jewelry,
     startPrice: 0,
     finalPriceSold: 0,
@@ -124,23 +119,6 @@ const RisingBidPage: React.FC = () => {
     navigation.goBack();
   };
 
-  // useEffect(() => {
-  //   if (!isConnected) {
-  //     const interval = setInterval(() => {
-  //       if (!isConnected) {
-  //         console.log("Attempting to reconnect...");
-  //         if (accountId && itemId) {
-  //           joinChatRoom(accountId, itemId);
-  //         }
-  //       }
-  //     }, 5000);
-
-  //     return () => clearInterval(interval);
-  //   }
-  // }, [isConnected, accountId, itemId, joinChatRoom]);
-
-  // Convert messages to bid format
-
   const mainContent = [
     { key: "timer", component: <CountDownTimer endTime={endTime ?? ""} /> },
     {
@@ -164,7 +142,7 @@ const RisingBidPage: React.FC = () => {
       key: "bids",
       component: (
         <BidsList
-          bids={messages ? messages : []}
+          bids={messages || []}
           item={item}
           currentCusId={customerId ?? 0}
         />
@@ -194,7 +172,7 @@ const RisingBidPage: React.FC = () => {
 
   return (
     <View className="flex-1 bg-white">
-      {isConnected && (
+      {isConnected ? (
         <FlatList
           data={mainContent}
           renderItem={({ item }) => (
@@ -203,6 +181,10 @@ const RisingBidPage: React.FC = () => {
           keyExtractor={(item) => item.key}
           ListFooterComponent={() => <View style={{ height: 100 }} />}
         />
+      ) : (
+        <View className="absolute top-0 left-0 right-0 p-2 bg-red-500">
+          <Text className="text-center text-white">Reconnecting...</Text>
+        </View>
       )}
 
       {isConnected && (
@@ -217,12 +199,6 @@ const RisingBidPage: React.FC = () => {
             isEndLot={isEndLot}
             bids={messages}
           />
-        </View>
-      )}
-
-      {!isConnected && (
-        <View className="absolute top-0 left-0 right-0 p-2 bg-red-500">
-          <Text className="text-center text-white">Reconnecting...</Text>
         </View>
       )}
 

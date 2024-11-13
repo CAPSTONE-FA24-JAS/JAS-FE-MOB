@@ -1,8 +1,5 @@
-import { ImageJewelry } from "@/app/types/lot_type";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
 import React from "react";
 import { View, Text, Image } from "react-native";
-import { TouchableOpacity } from "react-native-gesture-handler";
 
 interface ProductCardProps {
   id: string;

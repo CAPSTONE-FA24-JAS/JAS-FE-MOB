@@ -1,4 +1,8 @@
-import { getLotDetailById } from "@/api/lotAPI";
+import React, { useEffect, useState } from "react";
+import { View, Text, FlatList } from "react-native";
+import BidsList from "./BidingComponent/BidsList";
+import ProductCard from "./BidingComponent/ProductCard";
+import CountDownTimer from "./BidingComponent/CountDownTimer";
 import {
   Auction,
   Jewelry,
@@ -7,16 +11,11 @@ import {
   Staff,
 } from "@/app/types/lot_type";
 import { useBiddingMethod4 } from "@/hooks/useBiddingMethod4";
+import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
 import { RouteProp, useRoute } from "@react-navigation/native";
 import { useNavigation } from "expo-router";
-import { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
-import CountDownTimer from "./BidingComponent/CountDownTimer";
-import ProductCard from "./BidingComponent/ProductCard";
-import BidsList from "./BidingComponent/BidsList";
-import { View } from "lucide-react-native";
-import { FlatList, Text } from "react-native";
+import { getLotDetailById } from "@/api/lotAPI";
 import BidInputMethod4 from "./BidingComponent/BidInputMethod4";
 
 type ReduceBidPageParams = {
@@ -25,19 +24,10 @@ type ReduceBidPageParams = {
   };
 };
 
-const ReduceBidPage: React.FC<{}> = () => {
+const ReduceBidPage = () => {
   const route = useRoute<RouteProp<ReduceBidPageParams, "ReduceBidPage">>();
   const { itemId } = route.params ?? {};
   const navigation = useNavigation();
-
-  const accountId = useSelector(
-    (state: RootState) => state.auth.userResponse?.id
-  );
-
-  const customerId = useSelector(
-    (state: RootState) => state.auth.userResponse?.customerDTO.id
-  );
-
   const [item, setItem] = useState<LotDetail>({
     buyNowPrice: undefined,
     id: 0,
@@ -72,6 +62,30 @@ const ReduceBidPage: React.FC<{}> = () => {
     currentPrice: 0,
   });
 
+  const {
+    endTime,
+    reducePrice,
+    disconnect,
+    error,
+    isConnected,
+    isEndAuctionMethod4,
+    messages,
+    resultBidding,
+    setResultBidding,
+    winnerCustomer,
+    winnerPrice,
+    joinLiveBiddingMethod4,
+    sendBidMethod4,
+  } = useBiddingMethod4();
+
+  const accountId = useSelector(
+    (state: RootState) => state.auth.userResponse?.id
+  );
+
+  const customerId = useSelector(
+    (state: RootState) => state.auth.userResponse?.customerDTO.id
+  );
+
   useEffect(() => {
     const fetchLotDetail = async () => {
       if (!itemId) return;
@@ -89,54 +103,15 @@ const ReduceBidPage: React.FC<{}> = () => {
     fetchLotDetail();
   }, [itemId]);
 
-  const {
-    isConnected,
-    endTime,
-    messages,
-    error,
-    joinLiveBiddingMethod4,
-    sendBidMethod4,
-    disconnect,
-    winnerCustomer,
-    winnerPrice,
-    reducePrice,
-    resultBidding,
-    setResultBidding,
-    isEndAuctionMethod4,
-  } = useBiddingMethod4();
-
   useEffect(() => {
     if (accountId && itemId) {
-      console.log("Joining chat room...", accountId, itemId);
+      console.log("Joining bid 4 room...", accountId, itemId);
       joinLiveBiddingMethod4(accountId, itemId);
     }
-
     return () => {
       disconnect();
     };
   }, [accountId, itemId, item.lotType]);
-
-  const onClose = () => {
-    console.log("Close modal");
-    navigation.goBack();
-  };
-
-  // useEffect(() => {
-  //   if (!isConnected) {
-  //     const interval = setInterval(() => {
-  //       if (!isConnected) {
-  //         console.log("Attempting to reconnect...");
-  //         if (accountId && itemId) {
-  //           joinChatRoom(accountId, itemId);
-  //         }
-  //       }
-  //     }, 5000);
-
-  //     return () => clearInterval(interval);
-  //   }
-  // }, [isConnected, accountId, itemId, joinChatRoom]);
-
-  // Convert messages to bid format
 
   const mainContent = [
     { key: "timer", component: <CountDownTimer endTime={endTime ?? ""} /> },
@@ -161,7 +136,6 @@ const ReduceBidPage: React.FC<{}> = () => {
       key: "bids",
       component: (
         <BidsList
-          bids={messages ? messages : []}
           item={item}
           currentCusId={customerId ?? 0}
           reducePrice={reducePrice}
@@ -170,37 +144,21 @@ const ReduceBidPage: React.FC<{}> = () => {
     },
   ];
 
-  if (!itemId || !accountId) {
-    return (
-      <View className="items-center justify-center flex-1 bg-white">
-        <Text>Missing required parameters</Text>
-      </View>
-    );
-  }
-
-  if (error) {
-    console.error("Bidding error:", error);
-  }
-
-  if (!item) {
-    return (
-      <View className="items-center justify-center flex-1 bg-white">
-        <Text>Loading...</Text>
-      </View>
-    );
-  }
-
   return (
     <View className="flex-1 bg-white">
-      {isConnected && (
+      {isConnected ? (
         <FlatList
           data={mainContent}
           renderItem={({ item }) => (
             <View className="mb-2">{item.component}</View>
           )}
           keyExtractor={(item) => item.key}
-          ListFooterComponent={() => <View style={{ height: 100 }} />}
+          ListFooterComponent={<View className="h-24" />}
         />
+      ) : (
+        <View className="absolute top-0 left-0 right-0 p-2 bg-red-500">
+          <Text className="text-center text-white">Reconnecting...</Text>
+        </View>
       )}
 
       {isConnected && (
@@ -215,21 +173,6 @@ const ReduceBidPage: React.FC<{}> = () => {
           />
         </View>
       )}
-
-      {!isConnected && (
-        <View className="absolute top-0 left-0 right-0 p-2 bg-red-500">
-          <Text className="text-center text-white">Reconnecting...</Text>
-        </View>
-      )}
-
-      {/*  
-      <AuctionResultModal
-        visible={isEndAuctionMethod4}
-        currentUser={customerId?.toString() || ""}
-        userWinner={winnerCustomer}
-        winningPrice={winnerPrice}
-        onClose={onClose}
-      /> */}
     </View>
   );
 };

@@ -6,7 +6,7 @@ import { View, Text } from "react-native";
 
 interface BidsListProps {
   item: LotDetail;
-  bids: Message[];
+  bids?: Message[];
   currentCusId: number;
   reducePrice?: number;
 }
@@ -17,20 +17,7 @@ const BidsList: React.FC<BidsListProps> = ({
   currentCusId,
   reducePrice,
 }) => {
-  console.log("bids", bids);
-
   // Memoized sorted bids
-  const sortedBids = useMemo(() => {
-    return bids
-      .filter((bid) =>
-        ["Processing", "Failed"].includes(bid.status)
-          ? bid.customerId.toString() === currentCusId.toString()
-          : true
-      )
-      .sort(
-        (a, b) => new Date(b.bidTime).getTime() - new Date(a.bidTime).getTime()
-      );
-  }, [bids, currentCusId]);
 
   // Helper to format time
   const formatTime = (timeString: string) => {
@@ -46,7 +33,19 @@ const BidsList: React.FC<BidsListProps> = ({
     });
   };
 
-  if (item.lotType === "Public_Auction") {
+  if (item.lotType === "Public_Auction" && bids) {
+    const sortedBids = useMemo(() => {
+      return bids
+        .filter((bid) =>
+          ["Processing", "Failed"].includes(bid.status)
+            ? bid.customerId.toString() === currentCusId.toString()
+            : true
+        )
+        .sort(
+          (a, b) =>
+            new Date(b.bidTime).getTime() - new Date(a.bidTime).getTime()
+        );
+    }, [bids, currentCusId]);
     return (
       <View className="p-4">
         {sortedBids.map((bid, index) => (
@@ -62,7 +61,9 @@ const BidsList: React.FC<BidsListProps> = ({
     );
   }
 
-  if (item.lotType === "Auction_Price_GraduallyReduced") {
+  console.log("type", item.lotType);
+
+  if (item.lotType.trim() === "Auction_Price_GraduallyReduced") {
     const percentReduce =
       item.startPrice && reducePrice
         ? (((item.startPrice - reducePrice) / item.startPrice) * 100).toFixed(2)
@@ -87,7 +88,7 @@ const BidsList: React.FC<BidsListProps> = ({
     );
   }
 
-  return null;
+  return <Text>abnbbbbbbbbbbbbbbbb</Text>;
 };
 
 export default BidsList;

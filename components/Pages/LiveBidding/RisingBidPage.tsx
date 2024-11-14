@@ -73,6 +73,9 @@ const RisingBidPage: React.FC = () => {
 
       try {
         const response = await getLotDetailById(itemId);
+        console.log("-----------------------------------------------");
+        console.log("Lot detail responsessssss:", response);
+
         if (response?.isSuccess && response.data) {
           setItem(response.data);
         }
@@ -197,7 +200,7 @@ const RisingBidPage: React.FC = () => {
             resultBidding={resultBidding}
             setResultBidding={setResultBidding}
             isEndLot={isEndLot}
-            bids={messages}
+            bids={Array.isArray(messages) ? messages : []}
           />
         </View>
       )}

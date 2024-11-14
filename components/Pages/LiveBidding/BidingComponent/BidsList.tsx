@@ -21,42 +21,67 @@ const BidsList: React.FC<BidsListProps> = ({
 
   // Helper to format time
   const formatTime = (timeString: string) => {
-    const date = new Date(timeString);
-    return date.toLocaleString("en-GB", {
+    // Tách phần milliseconds từ chuỗi thời gian
+    const [datePart, millisecondsPart] = timeString.split(".");
+    const milliseconds = millisecondsPart
+      ? millisecondsPart.slice(0, 3)
+      : "000";
+
+    // Tạo đối tượng Date từ phần ngày giờ
+    const date = new Date(datePart + "Z");
+
+    // Định dạng chuỗi thời gian
+    const formattedDate = date.toLocaleString("en-GB", {
       day: "2-digit",
       month: "2-digit",
       year: "2-digit",
       hour: "numeric",
       minute: "numeric",
       second: "numeric",
-      hour12: false,
     });
+
+    // Ghép thêm phần milliseconds
+    return `${formattedDate}.${milliseconds}`;
   };
 
   if (item.lotType === "Public_Auction" && bids) {
+    if (!bids || !Array.isArray(bids)) {
+      return (
+        <View className="p-4">
+          <Text>No bids available</Text>
+        </View>
+      );
+    }
     const sortedBids = useMemo(() => {
-      return bids
-        .filter((bid) =>
-          ["Processing", "Failed"].includes(bid.status)
-            ? bid.customerId.toString() === currentCusId.toString()
-            : true
-        )
-        .sort(
-          (a, b) =>
-            new Date(b.bidTime).getTime() - new Date(a.bidTime).getTime()
-        );
+      console.log("Raw bids:", bids);
+
+      const filteredBids = bids.filter((bid) =>
+        ["Processing", "Failed"].includes(bid.status)
+          ? bid.customerId.toString().trim() === currentCusId.toString().trim()
+          : true
+      );
+
+      console.log("Filtered bids:", filteredBids);
+
+      return filteredBids.sort(
+        (a, b) => new Date(b.bidTime).getTime() - new Date(a.bidTime).getTime()
+      );
     }, [bids, currentCusId]);
     return (
       <View className="p-4">
-        {sortedBids.map((bid, index) => (
-          <MemoizedItem
-            key={index}
-            bid={bid}
-            currentCusId={currentCusId}
-            formatTime={formatTime}
-            showDivider={index < sortedBids.length - 1}
-          />
-        ))}
+        {sortedBids.length > 0 ? (
+          sortedBids.map((bid, index) => (
+            <MemoizedItem
+              key={`${bid.customerId}-${bid.bidTime}-${index}`}
+              bid={bid}
+              currentCusId={currentCusId}
+              formatTime={formatTime}
+              showDivider={index < sortedBids.length - 1}
+            />
+          ))
+        ) : (
+          <Text className="items-center text-center">No bids yet</Text>
+        )}
       </View>
     );
   }

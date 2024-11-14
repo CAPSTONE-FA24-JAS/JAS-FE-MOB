@@ -79,8 +79,10 @@ export function useBiddingMethod3(): UseBiddingResult {
 
     //get all history bid
     connection.on("SendHistoryBiddingOfLot", (bids: Message[]) => {
-      if (bids) {
+      if (Array.isArray(bids) && bids.length > 0) {
         setMessages(bids);
+      } else {
+        setMessages([]);
       }
     });
 
@@ -88,44 +90,60 @@ export function useBiddingMethod3(): UseBiddingResult {
     connection.on(
       "SendBiddingPrice",
       (customerId: string, price: string, bidTime: string) => {
-        console.log(
-          `New bid from before handling ${customerId}: ${price} at ${bidTime}`
-        );
-        setMessages((prev) => [
-          ...prev,
-          {
+        console.log("New bid from chưa handle", customerId, price, bidTime);
+
+        setMessages((prevMessages) => {
+          const newBid = {
             currentPrice: Number(price),
             bidTime: bidTime,
             customerId: customerId,
             status: "Processing",
-          },
-        ]);
+          };
+          // Nếu messages rỗng, trả về mảng chỉ có bid mới
+          if (!prevMessages || prevMessages.length === 0) {
+            return [newBid];
+          }
+          // Ngược lại thêm bid mới vào mảng hiện tại
+          return [...prevMessages, newBid];
+        });
       }
     );
 
-    // Xử lý sự kiện khi mình bidding người đấu giá
+    // Xử lý sự kiện khi đã xử lý lệnh bidding đó
     connection.on(
       "SendBiddingPriceAfterProcessingStream",
       (cusid: string, price: number, bidtime: string, status: string) => {
         console.log(
-          `New bid from ${cusid}: ${price.toLocaleString("vi-VN", {
+          `Processed bid from ${cusid}: ${price.toLocaleString("vi-VN", {
             style: "currency",
             currency: "VND",
-          })} at ${bidtime}`
+          })} at ${bidtime} with status ${status}`
         );
 
-        setMessages((prev) =>
-          prev.map((message) =>
+        const newBid = {
+          currentPrice: Number(price),
+          bidTime: bidtime,
+          customerId: cusid,
+          status: status,
+        };
+
+        setMessages((prev) => {
+          // Nếu không có bid nào trước đó, thêm bid này vào
+          if (!prev || prev.length === 0) {
+            return [newBid];
+          }
+
+          // Nếu đã có bid, cập nhật trạng thái của bid hiện tại
+          return prev.map((message) =>
             message.customerId === cusid &&
             message.status === "Processing" &&
             message.currentPrice === price
               ? { ...message, status: status }
               : message
-          )
-        );
+          );
+        });
       }
     );
-
     // end lot asap use for disable bidding btn
     connection.on("AuctionPublicEnded", (message: string) => {
       console.log(`${message}`);

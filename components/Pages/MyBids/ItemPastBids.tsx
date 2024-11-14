@@ -211,7 +211,9 @@ const ItemPastBids: React.FC<ItemPastBidsProps> = ({
         />
         <View
           className={
-            isWin ? "bg-[#98C583] p-2 w-[100%]" : "bg-[#C5838F] p-2 w-[100%]"
+            isWin
+              ? "bg-[#98C583] p-2 mt-2 rounded-md w-[100%]"
+              : "bg-[#C5838F] p-2 mt-2 rounded-md w-[100%]"
           }
         >
           <Text className="text-lg font-bold text-center text-white">
@@ -220,7 +222,7 @@ const ItemPastBids: React.FC<ItemPastBidsProps> = ({
         </View>
       </View>
 
-      <View className="w-[60%]">
+      <View className="w-[58%] pl-4">
         {invoiceId ? (
           <TouchableOpacity
             className={` rounded px-4 py-1 justify-center mr-4 flex-row items-center`}

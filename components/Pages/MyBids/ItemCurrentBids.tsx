@@ -116,6 +116,10 @@ const ItemCurrentBids: React.FC<ItemCurrentBidsProps> = ({
     }
   };
 
+  const now = new Date().getTime();
+  const start = new Date(startTime).getTime();
+  const isComingSoon = now < start;
+
   return (
     <TouchableOpacity
       onPress={goToAuctionDetail}
@@ -134,13 +138,19 @@ const ItemCurrentBids: React.FC<ItemCurrentBidsProps> = ({
         </View>
         <View
           className={
-            isLive
-              ? "bg-[#98C583] p-2 w-[100%]"
-              : " bg-yellow-600  p-2 w-[100%]"
+            isLive === true && timeLeft !== "Ended"
+              ? "bg-[#98C583] p-2 mt-2 rounded-md  w-[100%]"
+              : isLive === false && timeLeft !== "Ended" && isComingSoon
+              ? "bg-yellow-600  p-2 mt-2 rounded-md  w-[100%]"
+              : " bg-gray-600  p-2 mt-2 rounded-md  w-[100%]"
           }
         >
           <Text className="text-lg font-bold text-center text-white">
-            {isLive ? "Live Bidding" : "Coming Soon"}
+            {isLive === true && timeLeft !== "Ended"
+              ? "Live Bidding"
+              : isLive === false && timeLeft !== "Ended" && isComingSoon
+              ? "Coming Soon"
+              : "Ended"}
           </Text>
           <Text className="text-sm font-bold text-center text-white">
             {timeLeft} left
@@ -148,7 +158,7 @@ const ItemCurrentBids: React.FC<ItemCurrentBidsProps> = ({
         </View>
       </View>
 
-      <View className="w-[60%]">
+      <View className="w-[58%] pl-4">
         <TouchableOpacity
           className={` rounded px-4 py-1 justify-center mr-4 flex-row items-center`}
           style={{ backgroundColor: getStatusColor(status) }}

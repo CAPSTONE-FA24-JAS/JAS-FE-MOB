@@ -33,6 +33,8 @@ import PasswordModal from "../Payment/CheckPasswordModal";
 import ConfirmBuyNowModal from "./ModalLot/ConfirmBuyNowModal";
 import SecretAuctionBidModal from "./ModalLot/SecretAuctionBidModal";
 import CountdownTimerBid from "@/components/CountDown/CountdownTimer";
+import { addNewWatchingForCustomer } from "@/api/watchingApi";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 // Define the navigation param list type
 type RootStackParamList = {
@@ -103,6 +105,8 @@ const LotDetailScreen = () => {
     null
   );
   const [bidTimeCheck, setBidTimeCheck] = useState<string | null>(null);
+
+  const [isWatching, setWatching] = useState(false);
 
   // Fetch lot details when the component mounts
   // useEffect(() => {
@@ -191,6 +195,31 @@ const LotDetailScreen = () => {
       fetchRegistrationStatus();
     }, [fetchLotDetail, fetchRegistrationStatus])
   );
+
+  const handleAddWatching = async () => {
+    if (!userId || !lotDetail?.jewelryId) {
+      showErrorMessage("Unable to watch. Missing user or jewelry information.");
+      return;
+    }
+    setLoading(true);
+
+    try {
+      const response = await addNewWatchingForCustomer(
+        userId,
+        lotDetail.jewelryId
+      );
+      if (response?.isSuccess) {
+        showSuccessMessage("Watching added successfully.");
+        setWatching(true);
+      } else {
+        showErrorMessage("Unable to add watching.");
+      }
+    } catch (error) {
+      showErrorMessage("Unable to add watching.");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const item = {
     id,
@@ -540,7 +569,8 @@ const LotDetailScreen = () => {
             <Swiper
               showsPagination={true}
               autoplay={true}
-              style={{ height: "100%" }}>
+              style={{ height: "100%" }}
+            >
               {lotDetail?.jewelry?.imageJewelries?.length ?? 0 > 0 ? (
                 lotDetail?.jewelry?.imageJewelries.map((img, index) =>
                   img?.imageLink ? (
@@ -562,7 +592,17 @@ const LotDetailScreen = () => {
           <View className="flex-row p-4 justify-evenly">
             <Text className="font-bold text-gray-400">Share</Text>
             <Text className="font-bold text-gray-400">Follow</Text>
-            <Text className="font-bold text-gray-400">Watch</Text>
+            <TouchableOpacity
+              onPress={handleAddWatching}
+              className="flex-row items-center gap-1"
+            >
+              {isWatching && (
+                <MaterialCommunityIcons name="star" size={24} color="yellow" />
+              )}
+              <Text className="font-bold text-gray-400">
+                {isWatching ? "Watching" : "Watch"}
+              </Text>
+            </TouchableOpacity>
           </View>
           {/* {lotDetail && lotDetail.finalPriceSold && (
             <View className="py-2 bg-green-200 ">
@@ -658,7 +698,8 @@ const LotDetailScreen = () => {
                     typeBid === "Fixed_Price"
                       ? handleBuyNow
                       : handleSecretAuctionBid
-                  }>
+                  }
+                >
                   <Text className="font-semibold text-center text-white uppercase">
                     {typeBid === "Fixed_Price"
                       ? "BUY FIXED BID"
@@ -672,7 +713,8 @@ const LotDetailScreen = () => {
                 typeBid === "Public_Auction" && (
                   <TouchableOpacity
                     onPress={handlePressAutoBid}
-                    className="mb-3 bg-blue-500 rounded-sm">
+                    className="mb-3 bg-blue-500 rounded-sm"
+                  >
                     <Text className="py-3 font-semibold text-center text-white">
                       BID AUTOMATION
                     </Text>
@@ -681,7 +723,8 @@ const LotDetailScreen = () => {
               {typeBid !== "Fixed_Price" && isAuctionActive && (
                 <TouchableOpacity
                   className="py-3 mb-3 bg-blue-500 rounded-sm"
-                  onPress={() => setModalVisible(true)}>
+                  onPress={() => setModalVisible(true)}
+                >
                   <Text className="font-semibold text-center text-white">
                     PLACE BID
                   </Text>
@@ -693,7 +736,8 @@ const LotDetailScreen = () => {
                 typeBid !== "Fixed_Price" && (
                   <TouchableOpacity
                     className="py-3 bg-blue-500 rounded-sm"
-                    onPress={handleJoinToBid}>
+                    onPress={handleJoinToBid}
+                  >
                     <Text className="font-semibold text-center text-white uppercase">
                       Join To Bid
                     </Text>
@@ -708,7 +752,8 @@ const LotDetailScreen = () => {
           !(lotDetail?.status === "Sold") && (
             <TouchableOpacity
               className="py-3 mt-4 bg-blue-500 rounded-sm"
-              onPress={handleRegisterToBid}>
+              onPress={handleRegisterToBid}
+            >
               <Text className="font-semibold text-center text-white uppercase">
                 Register To Bid
               </Text>

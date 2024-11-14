@@ -112,8 +112,8 @@ const InvoiceList: React.FC = () => {
   const statusTabs = [
     // { label: "All", value: null },
     { label: "1.CreateInvoice", value: 2 },
-    { label: "2.Paid", value: 3 },
-    { label: "3.PendingPayment", value: 4 },
+    { label: "2.PendingPayment", value: 3 },
+    { label: "3.Paid", value: 4 },
     { label: "4.Delivering", value: 5 },
     { label: "5.Delivered", value: 6 },
     { label: "6.Rejected", value: 7 },
@@ -152,8 +152,8 @@ const InvoiceList: React.FC = () => {
   );
 
   // CreateInvoice = 2,
-  // Paid = 3,
-  // PendingPayment = 4,
+  // PendingPayment = 3,
+  // Paid = 4,
   // Delivering = 5,
   // Delivered =6,
   // Rejected = 7,
@@ -167,7 +167,8 @@ const InvoiceList: React.FC = () => {
         <ScrollView
           horizontal
           showsHorizontalScrollIndicator={false}
-          contentContainerStyle={{ paddingHorizontal: 16 }}>
+          contentContainerStyle={{ paddingHorizontal: 16 }}
+        >
           <View className="flex-row gap-2">
             {statusTabs.map((tab) => (
               <TouchableOpacity
@@ -175,11 +176,13 @@ const InvoiceList: React.FC = () => {
                 onPress={() => setSelectedStatus(tab.value ?? 2)}
                 className={`px-4 py-2 rounded ${
                   selectedStatus === tab.value ? "bg-yellow-500" : "bg-gray-300"
-                }`}>
+                }`}
+              >
                 <Text
                   className={`text-sm font-bold ${
                     selectedStatus === tab.value ? "text-white" : "text-black"
-                  }`}>
+                  }`}
+                >
                   {tab.label}
                 </Text>
               </TouchableOpacity>

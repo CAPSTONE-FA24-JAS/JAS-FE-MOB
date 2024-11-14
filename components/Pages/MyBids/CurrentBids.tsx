@@ -57,98 +57,66 @@ const CurrentBids: React.FC<CurrentBidsProps> = ({ customerId }) => {
     );
   }
 
-  // Dữ liệu giả cho các item với trạng thái live/coming soon
-  // const bidsData = [
-  //   {
-  //     id: 1,
-  //     isLive: true,
-  //     title: "Fine Jewels",
-  //     lotNumber: "Lot #102",
-  //     description: "Breitling Colt Chronograph in Steel",
-  //     estimate: "US3500 - US4000",
-  //     currentBid: "$3200",
-  //     timeLeft: "2h 30m",
-  //     endTime: "12 September 2024 22:00 GMT +7",
-  //   },
-  //   {
-  //     id: 2,
-  //     isLive: false,
-  //     title: "Luxury Watches",
-  //     lotNumber: "Lot #205",
-  //     description: "Rolex Submariner in Gold",
-  //     estimate: "US10000 - US12000",
-  //     currentBid: "Not started",
-  //     timeLeft: "Starts in 2d 5h",
-  //     endTime: "15 September 2024 14:00 GMT +7",
-  //   },
-  //   {
-  //     id: 3,
-  //     isLive: true,
-  //     title: "Rare Antiques",
-  //     lotNumber: "Lot #330",
-  //     description: "18th Century Vase",
-  //     estimate: "US2000 - US2500",
-  //     currentBid: "$2100",
-  //     timeLeft: "45m",
-  //     endTime: "12 September 2024 20:30 GMT +7",
-  //   },
-  //   {
-  //     id: 4,
-  //     isLive: false,
-  //     title: "Modern Art",
-  //     lotNumber: "Lot #410",
-  //     description: "Abstract Painting by XYZ",
-  //     estimate: "US15000 - US18000",
-  //     currentBid: "Not started",
-  //     timeLeft: "Starts in 5d 12h",
-  //     endTime: "18 September 2024 10:00 GMT +7",
-  //   },
-  // ];
-
   return (
     <ScrollView>
-      {bidsData.map((item) => (
-        <ItemCurrentBids
-          key={item.id}
-          id={item.lotId}
-          isLive={
-            item.lotDTO.status === "Auctionning"
-              ? true
-              : item.lotDTO.status === "Ready"
-              ? false
-              : false
-          } // Điều chỉnh theo logic của bạn
-          title={item.lotDTO.title}
-          minPrice={item.lotDTO.startPrice || 0}
-          maxPrice={item.lotDTO.endPrice || 0} // chưa có trong api
-          image={item.lotDTO.imageLinkJewelry}
-          status={item.lotDTO.status}
-          lotNumber={`Lot #${item.lotId}`} // Hoặc lấy từ dữ liệu API nếu có
-          typeBid={item.lotDTO.lotType} // Điều chỉnh theo dữ liệu thực
-          price={item.lotDTO.buyNowPrice || 0}
-          timeLeft={calculateTimeLeft(item.lotDTO.endTime)} // Hàm tính thời gian còn lại
-          endTime={item.lotDTO.endTime} // Chuyển đổi thời gian kết thúc
-          startTime={item.lotDTO.startTime} // Chuyển đổi thời gian kết thúc
-          itemBid={item}
-        />
-      ))}
+      {bidsData.map((item) => {
+        const now = new Date().getTime();
+        const startTime = new Date(item.lotDTO.startTime).getTime();
+        const endTime = new Date(item.lotDTO.endTime).getTime();
+
+        return (
+          <ItemCurrentBids
+            key={item.id}
+            id={item.lotId}
+            isLive={now >= startTime && now <= endTime} // Check if the current time is between startTime and endTime
+            title={item.lotDTO.title}
+            minPrice={item.lotDTO.startPrice || 0}
+            maxPrice={item.lotDTO.endPrice || 0} // chưa có trong api
+            image={item.lotDTO.imageLinkJewelry}
+            status={item.lotDTO.status}
+            lotNumber={`Lot #${item.lotId}`} // Hoặc lấy từ dữ liệu API nếu có
+            typeBid={item.lotDTO.lotType} // Điều chỉnh theo dữ liệu thực
+            price={item.lotDTO.buyNowPrice || 0}
+            timeLeft={calculateTimeLeft(
+              item.lotDTO.startTime,
+              item.lotDTO.endTime
+            )} // Hàm tính thời gian còn lại
+            endTime={item.lotDTO.endTime} // Chuyển đổi thời gian kết thúc
+            startTime={item.lotDTO.startTime} // Chuyển đổi thời gian kết thúc
+            itemBid={item}
+          />
+        );
+      })}
     </ScrollView>
   );
 };
 
-// Hàm tính thời gian còn lại từ endTime
-const calculateTimeLeft = (endTime: string): string => {
-  const end = new Date(endTime).getTime();
+const calculateTimeLeft = (
+  startTime: string | null,
+  endTime: string
+): string => {
   const now = new Date().getTime();
-  const difference = end - now;
+  const start = startTime ? new Date(startTime).getTime() : null;
+  const end = new Date(endTime).getTime();
 
-  if (difference <= 0) return "Ended";
-
-  const hours = Math.floor((difference / (1000 * 60 * 60)) % 24);
-  const minutes = Math.floor((difference / (1000 * 60)) % 60);
-  const seconds = Math.floor((difference / 1000) % 60);
-
-  return `${hours}h ${minutes}m ${seconds}s`;
+  if (start && now < start) {
+    // Status: upcoming
+    const difference = start - now;
+    const hours = Math.floor(difference / (1000 * 60 * 60));
+    const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
+    const seconds = Math.floor((difference % (1000 * 60)) / 1000);
+    return ` ${hours}h ${minutes}m ${seconds}s`;
+  } else if (start && end && now >= start && now <= end) {
+    // Status: living
+    const difference = end - now;
+    const hours = Math.floor(difference / (1000 * 60 * 60));
+    const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
+    const seconds = Math.floor((difference % (1000 * 60)) / 1000);
+    return `${hours}h ${minutes}m ${seconds}s`;
+  } else {
+    // Status: ended
+    return "Ended";
+  }
 };
 
 export default CurrentBids;

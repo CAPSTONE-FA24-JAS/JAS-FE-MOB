@@ -203,3 +203,34 @@ export const paymentInvoiceByWallet = async (
     throw error; // Tiếp tục ném lỗi nếu bạn muốn xử lý ở nơi gọi hàm này
   }
 };
+
+// Function to update the shipping address for an invoice
+export const updateAddressToShipForInvoice = async (
+  invoiceId: number,
+  addressToShipId: number
+): Promise<InvoiceResponse<null> | null> => {
+  console.log("updateAddressToShipForInvoice", invoiceId, addressToShipId);
+
+  try {
+    const response = await axios.patch<InvoiceResponse<null>>(
+      `${API_URL}/api/Invoices/UpdateAddressToShipForInvoice`,
+      {
+        invoiceId,
+        addressToShipId,
+      }
+    );
+
+    if (response.data.isSuccess) {
+      console.log("Update Invoice Successfully:", response.data);
+      showSuccessMessage("Address updated successfully.");
+      return response.data;
+    } else {
+      // showErrorMessage("Unable to update address.");
+      return null;
+    }
+  } catch (error) {
+    console.error("Error updating address:", error);
+    // showErrorMessage("Unable to update address.");
+    return null;
+  }
+};

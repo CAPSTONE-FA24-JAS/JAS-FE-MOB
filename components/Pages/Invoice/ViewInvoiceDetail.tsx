@@ -130,7 +130,7 @@ const ViewInvoiceDetail: React.FC = () => {
               Lot Code
             </StyledText>
             <StyledText className="text-base font-medium text-gray-600">
-              #{itemDetailBid.lotId}
+              #{itemDetailBid?.lotId}
             </StyledText>
           </StyledView>
           <StyledView className="flex-row justify-between mb-1">
@@ -138,7 +138,7 @@ const ViewInvoiceDetail: React.FC = () => {
               Customer Lot Code
             </StyledText>
             <StyledText className="text-base font-medium text-gray-600">
-              #{itemDetailBid.id}
+              #{itemDetailBid?.id}
             </StyledText>
           </StyledView>
 
@@ -147,7 +147,7 @@ const ViewInvoiceDetail: React.FC = () => {
               Name Production
             </StyledText>
             <StyledText className="w-1/2 text-base font-medium text-right text-gray-600">
-              {itemDetailBid.lotDTO.title}
+              {itemDetailBid?.lotDTO.title}
             </StyledText>
           </StyledView>
           <StyledView className="flex-row justify-between mb-1">
@@ -155,7 +155,7 @@ const ViewInvoiceDetail: React.FC = () => {
               Type of Production
             </StyledText>
             <StyledText className="text-base font-medium text-gray-600">
-              {itemDetailBid.lotDTO.lotType || "Not Updated"}
+              {itemDetailBid?.lotDTO.lotType || "Not Updated"}
             </StyledText>
           </StyledView>
           <StyledView className="flex-row justify-between mb-1">

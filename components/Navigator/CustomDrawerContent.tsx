@@ -129,7 +129,7 @@ const CustomDrawerContent: React.FC<CustomDrawerContentProps> = (props) => {
             }}
           >
             <FontAwesome name="star" size={24} color="blue" />
-            <Text style={{ marginLeft: 20 }}>Watched Lots</Text>
+            <Text style={{ marginLeft: 20 }}>Watched Jewelry</Text>
           </View>
         </TouchableOpacity>
 

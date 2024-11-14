@@ -70,8 +70,10 @@ const InvoiceDetailConfirm: React.FC = () => {
   // Calculate the total price
   const bidPrice = invoiceDetails?.price || 0;
   const feePrice = invoiceDetails?.free || 0;
-  const feeShipping = invoiceDetails?.feeShip || 0;
+  const feeShipping = invoiceDetails.feeShip || 0;
   const totalPrice = invoiceDetails?.totalPrice || 0;
+
+  console.log("feeShipping IN InvoiceDetailConfirm:", feeShipping);
 
   // Handle password confirmation
   const handlePasswordConfirm = async (enteredPassword: string) => {
@@ -154,7 +156,8 @@ const InvoiceDetailConfirm: React.FC = () => {
               Address
             </StyledText>
             <Text className="text-base text-right w-[70%] font-semibold">
-              {addressData?.addressLine}
+              {/* {addressData?.addressLine} */}
+              {invoiceDetails?.addressToShip}
             </Text>
           </View>
         </StyledView>
@@ -233,7 +236,7 @@ const InvoiceDetailConfirm: React.FC = () => {
               Shipping Fee
             </StyledText>
             <StyledText className="text-base font-medium text-gray-600">
-              {feeShipping.toLocaleString("vi-VN", {
+              {invoiceDetails.feeShip.toLocaleString("vi-VN", {
                 style: "currency",
                 currency: "VND",
               }) || "0 VND"}

@@ -184,7 +184,8 @@ const Login: React.FC = () => {
             <View className="flex-row items-center justify-between mx-10 mt-6 ">
               <TouchableOpacity
                 className="w-[150px]  bg-[#4765F9] rounded-md"
-                onPress={handleLogin}>
+                onPress={handleLogin}
+              >
                 <Text className="py-3 text-xl font-semibold text-center text-white uppercase px-9">
                   Sign in
                 </Text>

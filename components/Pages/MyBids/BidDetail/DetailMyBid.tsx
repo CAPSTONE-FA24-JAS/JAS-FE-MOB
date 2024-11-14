@@ -27,8 +27,12 @@ import {
   InvoiceDetailResponse,
   StatusInvoiceDto,
 } from "@/app/types/invoice_type";
-import { getDetailInvoice } from "@/api/invoiceApi";
+import {
+  getDetailInvoice,
+  updateAddressToShipForInvoice,
+} from "@/api/invoiceApi";
 import ImageGallery from "@/components/ImageGallery";
+import LoadingOverlay from "@/components/LoadingOverlay";
 
 type RootStackParamList = {
   DetailMyBid: {
@@ -93,6 +97,7 @@ const DetailMyBid: React.FC = () => {
     (state: RootState) => state.auth.userResponse?.customerDTO?.id
   );
   const statusColor = isWin ? "text-green-600" : "text-red-600";
+  const [isLoading, setIsLoading] = useState(false); // Add loading state
 
   const [itemDetailBid, setItemDetailBid] = useState<MyBidData | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
@@ -218,15 +223,54 @@ const DetailMyBid: React.FC = () => {
     }
   };
 
-  const handleConfirmInvoice = () => {
+  const handleConfirmInvoice = async () => {
     if (defaultAddress && itemDetailBid && invoiceId && invoiceDetails) {
-      navigation.navigate("InvoiceDetailConfirm", {
-        addressData: defaultAddress,
-        itemDetailBid: itemDetailBid,
-        invoiceId: invoiceId,
-        yourMaxBid: yourMaxBid ?? 0,
-        invoiceDetails: invoiceDetails,
-      });
+      setIsLoading(true);
+      try {
+        const response = await updateAddressToShipForInvoice(
+          invoiceId,
+          defaultAddress.id
+        );
+
+        if (response && response.isSuccess) {
+          // Refetch invoice details after successful address update
+          const updatedInvoiceResponse = await getDetailInvoice(invoiceId);
+
+          if (updatedInvoiceResponse && updatedInvoiceResponse.isSuccess) {
+            // Proceed with navigation with updated invoice details
+            navigation.navigate("InvoiceDetailConfirm", {
+              addressData: defaultAddress,
+              itemDetailBid: itemDetailBid,
+              invoiceId: invoiceId,
+              yourMaxBid: yourMaxBid ?? 0,
+              invoiceDetails: updatedInvoiceResponse.data,
+            });
+          } else {
+            // If refetching invoice fails, navigate with original invoice details
+            showErrorMessage("Failed to retrieve updated invoice details.");
+            navigation.navigate("InvoiceDetailConfirm", {
+              addressData: defaultAddress,
+              itemDetailBid: itemDetailBid,
+              invoiceId: invoiceId,
+              yourMaxBid: yourMaxBid ?? 0,
+              invoiceDetails: invoiceDetails,
+            });
+          }
+        } else {
+          // If updateAddressToShipForInvoice fails, navigate with original details
+          navigation.navigate("InvoiceDetailConfirm", {
+            addressData: defaultAddress,
+            itemDetailBid: itemDetailBid,
+            invoiceId: invoiceId,
+            yourMaxBid: yourMaxBid ?? 0,
+            invoiceDetails: invoiceDetails,
+          });
+        }
+      } catch (error) {
+        showErrorMessage("Unable to update the shipping address.");
+      } finally {
+        setIsLoading(false);
+      }
     } else {
       showErrorMessage("No default address selected.");
     }
@@ -234,6 +278,7 @@ const DetailMyBid: React.FC = () => {
 
   return (
     <View className="flex-1 pb-4 bg-white">
+      <LoadingOverlay visible={isLoading} />
       <ItemBidCard
         key={id}
         id={id}
@@ -309,10 +354,12 @@ const DetailMyBid: React.FC = () => {
 
       {invoiceId ? (
         <View>
-          {itemDetailBid?.status === "CreateInvoice" ? (
+          {itemDetailBid?.status === "CreateInvoice" ||
+          itemDetailBid?.status === "PendingPayment" ? (
             <TouchableOpacity
               className="p-3 mx-4 mt-4 bg-blue-500 rounded"
-              onPress={handleConfirmInvoice}>
+              onPress={handleConfirmInvoice}
+            >
               <Text className="text-base font-semibold text-center text-white uppercase">
                 Confirm Invoice
               </Text>
@@ -320,7 +367,8 @@ const DetailMyBid: React.FC = () => {
           ) : (
             <TouchableOpacity
               className="p-3 mx-4 my-4 bg-blue-500 rounded"
-              onPress={handleViewInvoice}>
+              onPress={handleViewInvoice}
+            >
               <Text className="text-base font-semibold text-center text-white uppercase">
                 View Invoice
               </Text>
@@ -333,7 +381,8 @@ const DetailMyBid: React.FC = () => {
           <TouchableOpacity>
             <Text
               className="ml-2 font-semibold text-center text-blue-500 "
-              onPress={() => navigation.navigate("InvoiceList")}>
+              onPress={() => navigation.navigate("InvoiceList")}
+            >
               Invoice List
             </Text>
           </TouchableOpacity>
@@ -345,7 +394,8 @@ const DetailMyBid: React.FC = () => {
         animationType="slide"
         transparent={true}
         visible={isChooseModalVisible}
-        onRequestClose={() => setChooseModalVisible(false)}>
+        onRequestClose={() => setChooseModalVisible(false)}
+      >
         <ChooseAddress
           addresses={addresses}
           selectedAddress={defaultAddress}

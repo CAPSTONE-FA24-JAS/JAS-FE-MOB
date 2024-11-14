@@ -1,36 +1,27 @@
 import React from "react";
-import { View, Text, FlatList, ListRenderItem } from "react-native";
+import { View, FlatList, ListRenderItem } from "react-native";
 import { ItemWatched, WatchedItem } from "./ItemWatched";
+import { WatchingData } from "@/app/types/watching_type";
 
-const ItemWatchedCurrent: React.FC = () => {
-  const watchedItems: WatchedItem[] = [
-    {
-      lot: 102,
-      title: "Breitling Colt Chrosas in Steel",
-      estimate: "Est: US$700 - US$900",
-      status: "SOLD",
-    },
-    {
-      lot: 102,
-      title: "Breitling Colt Chro...",
-      estimate: "Est: US$700 - US$900",
-      status: "PASSED",
-    },
-    // Add more items as needed
-  ];
+interface ItemWatchedCurrentProps {
+  watching: WatchingData[];
+}
 
-  const renderItem: ListRenderItem<WatchedItem> = ({ item }) => (
+const ItemWatchedCurrent: React.FC<ItemWatchedCurrentProps> = ({
+  watching,
+}) => {
+  const renderItem: ListRenderItem<WatchingData> = ({ item }) => (
     <ItemWatched item={item} />
   );
 
   return (
-    <View className="flex-1">
+    <View className="flex-1 bg-white p-2">
       <FlatList
-        data={watchedItems}
+        data={watching}
         renderItem={renderItem}
-        keyExtractor={(item, index) => index.toString()}
+        keyExtractor={(item) => item.id.toString()}
         numColumns={2}
-        className="bg-white"
+        contentContainerStyle={{ paddingBottom: 16 }}
       />
     </View>
   );

@@ -1,11 +1,6 @@
 import React from "react";
-import { createDrawerNavigator } from "@react-navigation/drawer";
-import { createStackNavigator } from "@react-navigation/stack";
-import {
-  Entypo,
-  FontAwesome,
-  MaterialCommunityIcons,
-} from "@expo/vector-icons";
+
+import { FontAwesome, MaterialCommunityIcons } from "@expo/vector-icons";
 import Colors from "@/constants/Colors";
 import CustomHeader from "@/components/CustomHeader";
 import HomeScreen from "./home-screen";
@@ -56,7 +51,8 @@ import RegisterToBid from "@/components/Pages/MyBids/RegisterToBid";
 import EditAddress from "@/components/Pages/Address/EditAddress.";
 import ReduceBidPage from "@/components/Pages/LiveBidding/ReduceBidPage";
 import Notification from "../../components/Pages/Notifications";
-
+import { createStackNavigator } from "@react-navigation/stack";
+import { createDrawerNavigator } from "@react-navigation/drawer";
 // Declare Drawer and Stack Navigators
 const Drawer = createDrawerNavigator();
 const Stack = createStackNavigator();
@@ -174,8 +170,7 @@ function DrawerLayout() {
         drawerActiveBackgroundColor: "lightgray", // Set background color for active item
         drawerActiveTintColor: Colors.primary, // Set text color for active item
         drawerInactiveTintColor: "black", // Set text color for inactive items
-      }}
-    >
+      }}>
       {/* Parent Categories */}
       <Drawer.Screen
         name="Auctions"

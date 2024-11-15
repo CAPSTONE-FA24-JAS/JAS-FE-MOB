@@ -14,8 +14,7 @@ import AddressInfo from "./AddressInfo";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
 import TimeLineBid from "./TimeLineBid";
-import { useFocusEffect, useNavigation } from "expo-router";
-import { StackNavigationProp } from "@react-navigation/stack";
+import { useNavigation } from "expo-router";
 import { DataCurentBidResponse, MyBidData } from "@/app/types/bid_type";
 import { getMyBidByCustomerLotId } from "@/api/bidApi";
 import { showErrorMessage } from "@/components/FlashMessageHelpers";
@@ -33,6 +32,7 @@ import {
 } from "@/api/invoiceApi";
 import ImageGallery from "@/components/ImageGallery";
 import LoadingOverlay from "@/components/LoadingOverlay";
+import { StackNavigationProp } from "@react-navigation/stack";
 
 type RootStackParamList = {
   DetailMyBid: {
@@ -183,7 +183,7 @@ const DetailMyBid: React.FC = () => {
     }
   };
 
-  useFocusEffect(
+  useEffect(
     useCallback(() => {
       setLoading(true); // Show loading spinner
       fetchBidDetails();
@@ -358,8 +358,7 @@ const DetailMyBid: React.FC = () => {
           itemDetailBid?.status === "PendingPayment" ? (
             <TouchableOpacity
               className="p-3 mx-4 mt-4 bg-blue-500 rounded"
-              onPress={handleConfirmInvoice}
-            >
+              onPress={handleConfirmInvoice}>
               <Text className="text-base font-semibold text-center text-white uppercase">
                 Confirm Invoice
               </Text>
@@ -367,8 +366,7 @@ const DetailMyBid: React.FC = () => {
           ) : (
             <TouchableOpacity
               className="p-3 mx-4 my-4 bg-blue-500 rounded"
-              onPress={handleViewInvoice}
-            >
+              onPress={handleViewInvoice}>
               <Text className="text-base font-semibold text-center text-white uppercase">
                 View Invoice
               </Text>
@@ -381,8 +379,7 @@ const DetailMyBid: React.FC = () => {
           <TouchableOpacity>
             <Text
               className="ml-2 font-semibold text-center text-blue-500 "
-              onPress={() => navigation.navigate("InvoiceList")}
-            >
+              onPress={() => navigation.navigate("InvoiceList")}>
               Invoice List
             </Text>
           </TouchableOpacity>
@@ -394,8 +391,7 @@ const DetailMyBid: React.FC = () => {
         animationType="slide"
         transparent={true}
         visible={isChooseModalVisible}
-        onRequestClose={() => setChooseModalVisible(false)}
-      >
+        onRequestClose={() => setChooseModalVisible(false)}>
         <ChooseAddress
           addresses={addresses}
           selectedAddress={defaultAddress}

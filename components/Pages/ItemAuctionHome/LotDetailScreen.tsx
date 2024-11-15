@@ -22,7 +22,6 @@ import {
 import moment from "moment-timezone";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
-import { useFocusEffect } from "expo-router";
 import {
   showErrorMessage,
   showSuccessMessage,
@@ -189,11 +188,12 @@ const LotDetailScreen = () => {
   }, [userId, id]);
 
   // Use useFocusEffect to reload only when navigating back
-  useFocusEffect(
+  useEffect(
     useCallback(() => {
       fetchLotDetail();
       fetchRegistrationStatus();
-    }, [fetchLotDetail, fetchRegistrationStatus])
+    }, [fetchLotDetail, fetchRegistrationStatus]),
+    []
   );
 
   const handleAddWatching = async () => {
@@ -569,8 +569,7 @@ const LotDetailScreen = () => {
             <Swiper
               showsPagination={true}
               autoplay={true}
-              style={{ height: "100%" }}
-            >
+              style={{ height: "100%" }}>
               {lotDetail?.jewelry?.imageJewelries?.length ?? 0 > 0 ? (
                 lotDetail?.jewelry?.imageJewelries.map((img, index) =>
                   img?.imageLink ? (
@@ -594,8 +593,7 @@ const LotDetailScreen = () => {
             <Text className="font-bold text-gray-400">Follow</Text>
             <TouchableOpacity
               onPress={handleAddWatching}
-              className="flex-row items-center gap-1"
-            >
+              className="flex-row items-center gap-1">
               {isWatching && (
                 <MaterialCommunityIcons name="star" size={24} color="yellow" />
               )}
@@ -698,8 +696,7 @@ const LotDetailScreen = () => {
                     typeBid === "Fixed_Price"
                       ? handleBuyNow
                       : handleSecretAuctionBid
-                  }
-                >
+                  }>
                   <Text className="font-semibold text-center text-white uppercase">
                     {typeBid === "Fixed_Price"
                       ? "BUY FIXED BID"
@@ -713,8 +710,7 @@ const LotDetailScreen = () => {
                 typeBid === "Public_Auction" && (
                   <TouchableOpacity
                     onPress={handlePressAutoBid}
-                    className="mb-3 bg-blue-500 rounded-sm"
-                  >
+                    className="mb-3 bg-blue-500 rounded-sm">
                     <Text className="py-3 font-semibold text-center text-white">
                       BID AUTOMATION
                     </Text>
@@ -723,8 +719,7 @@ const LotDetailScreen = () => {
               {typeBid !== "Fixed_Price" && isAuctionActive && (
                 <TouchableOpacity
                   className="py-3 mb-3 bg-blue-500 rounded-sm"
-                  onPress={() => setModalVisible(true)}
-                >
+                  onPress={() => setModalVisible(true)}>
                   <Text className="font-semibold text-center text-white">
                     PLACE BID
                   </Text>
@@ -736,8 +731,7 @@ const LotDetailScreen = () => {
                 typeBid !== "Fixed_Price" && (
                   <TouchableOpacity
                     className="py-3 bg-blue-500 rounded-sm"
-                    onPress={handleJoinToBid}
-                  >
+                    onPress={handleJoinToBid}>
                     <Text className="font-semibold text-center text-white uppercase">
                       Join To Bid
                     </Text>
@@ -752,8 +746,7 @@ const LotDetailScreen = () => {
           !(lotDetail?.status === "Sold") && (
             <TouchableOpacity
               className="py-3 mt-4 bg-blue-500 rounded-sm"
-              onPress={handleRegisterToBid}
-            >
+              onPress={handleRegisterToBid}>
               <Text className="font-semibold text-center text-white uppercase">
                 Register To Bid
               </Text>

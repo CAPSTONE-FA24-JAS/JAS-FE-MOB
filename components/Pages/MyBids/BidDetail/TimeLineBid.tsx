@@ -1,12 +1,6 @@
-import { ChevronDown, ChevronUp } from "lucide-react-native";
 import React, { useState } from "react";
-import {
-  View,
-  Text,
-  StyleSheet,
-  ScrollView,
-  TouchableOpacity,
-} from "react-native";
+import AntDesign from "@expo/vector-icons/AntDesign";
+import { View, Text, ScrollView, TouchableOpacity } from "react-native";
 
 interface TimelineEvent {
   date: string;
@@ -39,8 +33,8 @@ const TimeLineBid: React.FC<TimeLineBidProps> = ({ historyCustomerLots }) => {
     .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()); // Sort by date descending
 
   return (
-    <ScrollView className="bg-white mt-2 mx-4 rounded-md">
-      <Text className="text-xl font-bold mt-4 ml-4">Timeline</Text>
+    <ScrollView className="mx-4 mt-2 bg-white rounded-md">
+      <Text className="mt-4 ml-4 text-xl font-bold">Timeline</Text>
       <View className="mx-10 mt-4">
         {timelineData
           .slice(0, expanded ? timelineData.length : 3)
@@ -64,15 +58,14 @@ const TimeLineBid: React.FC<TimeLineBidProps> = ({ historyCustomerLots }) => {
       {timelineData.length > 1 && (
         <TouchableOpacity
           onPress={toggleExpanded}
-          className="flex-row items-center justify-center p-2 mt-2 bg-gray-100 rounded"
-        >
+          className="flex-row items-center justify-center p-2 mt-2 bg-gray-100 rounded">
           <Text className="mr-2">
             {expanded ? "Thu gọn" : "Xem toàn bộ lịch sử"}
           </Text>
           {expanded ? (
-            <ChevronUp size={20} color="#4B5563" />
+            <AntDesign name="caretup" size={20} color="#4B5563" />
           ) : (
-            <ChevronDown size={20} color="#4B5563" />
+            <AntDesign name="caretdown" size={24} color="#4B5563" />
           )}
         </TouchableOpacity>
       )}

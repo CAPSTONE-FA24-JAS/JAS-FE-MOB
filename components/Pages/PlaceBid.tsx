@@ -50,7 +50,7 @@ const PlaceBid = () => {
       <View className="flex flex-row gap-5 p-3 bg-slate-100">
         <Image
           className="relative w-1/4 h-20 rounded-lg"
-          source={require(".../../../assets/item-jas/item1.jpg")}
+          source={require("../../assets/item-jas/item1.jpg")}
         />
         <View>
           <Text className="text-lg font-bold text-gray-800">Lot #{lotId}</Text>
@@ -75,8 +75,7 @@ const PlaceBid = () => {
         <View className="flex-row items-center w-full">
           <TouchableOpacity
             onPress={handleDecrease}
-            className="px-4 py-3 bg-gray-200 rounded-l"
-          >
+            className="px-4 py-3 bg-gray-200 rounded-l">
             <Text className="text-xl font-bold">-</Text>
           </TouchableOpacity>
           <View className="w-4/5 px-4 py-3 bg-gray-100">
@@ -89,8 +88,7 @@ const PlaceBid = () => {
           </View>
           <TouchableOpacity
             onPress={handleIncrease}
-            className="px-4 py-3 bg-gray-200 rounded-r"
-          >
+            className="px-4 py-3 bg-gray-200 rounded-r">
             <Text className="text-xl font-bold">+</Text>
           </TouchableOpacity>
         </View>
@@ -98,8 +96,7 @@ const PlaceBid = () => {
 
       <TouchableOpacity
         onPress={handlePlaceBid}
-        className="absolute bottom-0 left-0 right-0 py-3 bg-blue-500 rounded-sm"
-      >
+        className="absolute bottom-0 left-0 right-0 py-3 bg-blue-500 rounded-sm">
         <Text className="text-lg font-semibold text-center text-white">
           PLACE BID
         </Text>

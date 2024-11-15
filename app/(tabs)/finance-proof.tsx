@@ -1,13 +1,13 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { View, Text, SectionList, TouchableOpacity } from "react-native";
 import { useSelector } from "react-redux";
-import { useFocusEffect, useNavigation } from "@react-navigation/native";
-import { StackNavigationProp } from "@react-navigation/stack";
+import { useNavigation } from "@react-navigation/native";
 import { getListFinancialProof } from "@/api/financeProofApi";
 import { RootState } from "@/redux/store";
 import { FinancialProof } from "../types/finance_proof_type";
 import ItemFinanceProof from "@/components/ItemFinaceProof";
 import { parseDate } from "@/utils/utils";
+import { StackNavigationProp } from "@react-navigation/stack";
 
 type RootStackParamList = {
   FinanceProof: undefined;
@@ -21,7 +21,7 @@ const FinanceProof = () => {
   >([]);
   const { userResponse } = useSelector((state: RootState) => state.auth);
 
-  useFocusEffect(
+  useEffect(
     useCallback(() => {
       getListFinancialProof(userResponse?.customerDTO.id)
         .then((response) => {

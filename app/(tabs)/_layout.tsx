@@ -1,11 +1,6 @@
 import React from "react";
-import { createDrawerNavigator } from "@react-navigation/drawer";
-import { createStackNavigator } from "@react-navigation/stack";
-import {
-  Entypo,
-  FontAwesome,
-  MaterialCommunityIcons,
-} from "@expo/vector-icons";
+
+import { FontAwesome, MaterialCommunityIcons } from "@expo/vector-icons";
 import Colors from "@/constants/Colors";
 import CustomHeader from "@/components/CustomHeader";
 import HomeScreen from "./home-screen";
@@ -15,14 +10,11 @@ import Consign from "./consign";
 import HistoryItemConsign from "./history-item-consign";
 import WatchedLots from "./watched-lots";
 import MyBids from "./my-bids";
-// import PastBids from "./invoice-list";
 import FinanceProof from "./finance-proof";
 import TermsConditions from "./terms-conditions";
 import AboutScreen from "./about";
 import RateUs from "./rate-us";
-// import LotDetailScreen from "./lot-detail";
 import CustomDrawerContent from "@/components/Navigator/CustomDrawerContent";
-// import BiddingAuction from "./bidding-auction";
 import ConsignStep from "@/components/Pages/ConsignStep";
 import CustomHeaderDetail from "@/components/CustomHeaderDetail";
 import BiddingAuction from "@/components/Pages/ItemAuctionHome/BiddingAuction";
@@ -39,7 +31,6 @@ import ConsignDetailTimeLine from "@/components/Pages/ConsignItemTimeLine";
 import RisingBidPage from "@/components/Pages/LiveBidding/RisingBidPage";
 import InvoiceList from "./invoice-list";
 import DetailMyBid from "@/components/Pages/MyBids/BidDetail/DetailMyBid";
-// import InvoiceDetail from "@/components/Pages/Invoice/InvoiceDetailConfirm"; // Ensure this path is correct and the component is properly exported
 import InvoiceDetailConfirm from "@/components/Pages/Invoice/InvoiceDetailConfirm";
 import ViewInvoiceDetail from "@/components/Pages/Invoice/ViewInvoiceDetail";
 import Payment from "@/components/Pages/Payment/Payment";
@@ -56,7 +47,8 @@ import RegisterToBid from "@/components/Pages/MyBids/RegisterToBid";
 import EditAddress from "@/components/Pages/Address/EditAddress.";
 import ReduceBidPage from "@/components/Pages/LiveBidding/ReduceBidPage";
 import Notification from "../../components/Pages/Notifications";
-
+import { createStackNavigator } from "@react-navigation/stack";
+import { createDrawerNavigator } from "@react-navigation/drawer";
 // Declare Drawer and Stack Navigators
 const Drawer = createDrawerNavigator();
 const Stack = createStackNavigator();
@@ -174,8 +166,7 @@ function DrawerLayout() {
         drawerActiveBackgroundColor: "lightgray", // Set background color for active item
         drawerActiveTintColor: Colors.primary, // Set text color for active item
         drawerInactiveTintColor: "black", // Set text color for inactive items
-      }}
-    >
+      }}>
       {/* Parent Categories */}
       <Drawer.Screen
         name="Auctions"

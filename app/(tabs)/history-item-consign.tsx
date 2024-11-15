@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -9,11 +9,8 @@ import {
   ScrollView,
 } from "react-native";
 import ConsignItem, { ConsignItemProps } from "@/components/ConsignItem";
-import { router, useFocusEffect, useNavigation } from "expo-router";
-import {
-  dataResponseConsignList,
-  HistoryConsignmentResponse,
-} from "../types/consign_type";
+import { useNavigation } from "expo-router";
+import { dataResponseConsignList } from "../types/consign_type";
 import { getHistoryConsign } from "@/api/consignAnItemApi";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
@@ -108,10 +105,11 @@ const HistoryItemConsign: React.FC = () => {
   }, [sellerId, selectedStatus]);
 
   // Gọi API khi selectedStatus thay đổi
-  useFocusEffect(
+  useEffect(
     useCallback(() => {
       fetchConsignmentHistory();
-    }, [fetchConsignmentHistory])
+    }, [fetchConsignmentHistory]),
+    [fetchConsignmentHistory]
   );
 
   // Hàm xử lý tìm kiếm
@@ -140,15 +138,13 @@ const HistoryItemConsign: React.FC = () => {
         <ScrollView
           horizontal={true}
           showsHorizontalScrollIndicator={false}
-          className="mb-4"
-        >
+          className="mb-4">
           <View className="flex-row items-center">
             <TouchableOpacity
               className={`px-4 py-2 mr-2 ${
                 selectedStatus === null ? "bg-yellow-500" : "bg-gray-400"
               } rounded`}
-              onPress={() => setSelectedStatus(null)}
-            >
+              onPress={() => setSelectedStatus(null)}>
               <Text className="font-bold text-white uppercase">ALL</Text>
             </TouchableOpacity>
 
@@ -158,8 +154,7 @@ const HistoryItemConsign: React.FC = () => {
                 className={`px-4 py-2 mr-2 ${
                   selectedStatus === status ? "bg-yellow-500" : "bg-gray-400"
                 } rounded`}
-                onPress={() => setSelectedStatus(status)}
-              >
+                onPress={() => setSelectedStatus(status)}>
                 <Text className="font-bold text-white uppercase">
                   {index + 1}. {statusTextMap[index]}
                 </Text>
@@ -168,7 +163,7 @@ const HistoryItemConsign: React.FC = () => {
           </View>
         </ScrollView>
         {loading ? (
-          <View className="items-center justify-center py-20 flex-1">
+          <View className="items-center justify-center flex-1 py-20">
             <ActivityIndicator size="large" color="#0000ff" />
           </View>
         ) : (

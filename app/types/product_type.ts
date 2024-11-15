@@ -3,3 +3,5 @@ export interface ProductItemType {
   name: string;
   vietnameseName: string | null;
 }
+
+export default {};

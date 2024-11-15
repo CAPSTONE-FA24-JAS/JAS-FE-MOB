@@ -28,28 +28,30 @@ const CustomDrawerContent: React.FC<CustomDrawerContentProps> = (props) => {
         <Text style={{ fontSize: 18, color: "gray", marginBottom: 10 }}>
           Auctions
         </Text>
-        <TouchableOpacity onPress={() => props.navigation.navigate("HomePage")}>
+        <TouchableOpacity
+          onPress={() =>
+            props.navigation.navigate("Auctions", { screen: "HomePage" })
+          }>
           <View
             style={{
               flexDirection: "row",
               alignItems: "center",
               paddingVertical: 10,
-            }}
-          >
+            }}>
             <MaterialCommunityIcons name="gavel" size={24} color="blue" />
             <Text style={{ marginLeft: 20 }}>Home Page</Text>
           </View>
         </TouchableOpacity>
         <TouchableOpacity
-          onPress={() => props.navigation.navigate("PastAuctions")}
-        >
+          onPress={() =>
+            props.navigation.navigate("Auctions", { screen: "PastAuctions" })
+          }>
           <View
             style={{
               flexDirection: "row",
               alignItems: "center",
               paddingVertical: 10,
-            }}
-          >
+            }}>
             <MaterialCommunityIcons name="history" size={24} color="blue" />
             <Text style={{ marginLeft: 20 }}>Past Auctions</Text>
           </View>
@@ -66,15 +68,13 @@ const CustomDrawerContent: React.FC<CustomDrawerContentProps> = (props) => {
         <TouchableOpacity
           onPress={() =>
             props.navigation.navigate("Account", { screen: "MyAccount" })
-          }
-        >
+          }>
           <View
             style={{
               flexDirection: "row",
               alignItems: "center",
               paddingVertical: 10,
-            }}
-          >
+            }}>
             <FontAwesome name="user" size={24} color="blue" />
             <Text style={{ marginLeft: 20 }}>My Account</Text>
           </View>
@@ -83,15 +83,13 @@ const CustomDrawerContent: React.FC<CustomDrawerContentProps> = (props) => {
         <TouchableOpacity
           onPress={() =>
             props.navigation.navigate("Account", { screen: "ConsignItem" })
-          }
-        >
+          }>
           <View
             style={{
               flexDirection: "row",
               alignItems: "center",
               paddingVertical: 10,
-            }}
-          >
+            }}>
             <MaterialCommunityIcons name="diamond" size={24} color="blue" />
             <Text style={{ marginLeft: 20 }}>Consign An Item</Text>
           </View>
@@ -102,15 +100,13 @@ const CustomDrawerContent: React.FC<CustomDrawerContentProps> = (props) => {
             props.navigation.navigate("Account", {
               screen: "HistoryItemConsign",
             })
-          }
-        >
+          }>
           <View
             style={{
               flexDirection: "row",
               alignItems: "center",
               paddingVertical: 10,
-            }}
-          >
+            }}>
             <MaterialCommunityIcons name="diamond" size={24} color="blue" />
             <Text style={{ marginLeft: 20 }}>History Item Consign</Text>
           </View>
@@ -119,15 +115,13 @@ const CustomDrawerContent: React.FC<CustomDrawerContentProps> = (props) => {
         <TouchableOpacity
           onPress={() =>
             props.navigation.navigate("Account", { screen: "WatchedLots" })
-          }
-        >
+          }>
           <View
             style={{
               flexDirection: "row",
               alignItems: "center",
               paddingVertical: 10,
-            }}
-          >
+            }}>
             <FontAwesome name="star" size={24} color="blue" />
             <Text style={{ marginLeft: 20 }}>Watched Jewelry</Text>
           </View>
@@ -136,15 +130,13 @@ const CustomDrawerContent: React.FC<CustomDrawerContentProps> = (props) => {
         <TouchableOpacity
           onPress={() =>
             props.navigation.navigate("Account", { screen: "MyBids" })
-          }
-        >
+          }>
           <View
             style={{
               flexDirection: "row",
               alignItems: "center",
               paddingVertical: 10,
-            }}
-          >
+            }}>
             <FontAwesome name="dollar" size={24} color="blue" />
             <Text style={{ marginLeft: 20 }}>My Bids</Text>
           </View>
@@ -153,15 +145,13 @@ const CustomDrawerContent: React.FC<CustomDrawerContentProps> = (props) => {
         <TouchableOpacity
           onPress={() =>
             props.navigation.navigate("Account", { screen: "InvoiceList" })
-          }
-        >
+          }>
           <View
             style={{
               flexDirection: "row",
               alignItems: "center",
               paddingVertical: 10,
-            }}
-          >
+            }}>
             <MaterialCommunityIcons name="credit-card" size={24} color="blue" />
             <Text style={{ marginLeft: 20 }}>Invoice List</Text>
           </View>
@@ -170,15 +160,13 @@ const CustomDrawerContent: React.FC<CustomDrawerContentProps> = (props) => {
         <TouchableOpacity
           onPress={() =>
             props.navigation.navigate("Account", { screen: "FinanceProof" })
-          }
-        >
+          }>
           <View
             style={{
               flexDirection: "row",
               alignItems: "center",
               paddingVertical: 10,
-            }}
-          >
+            }}>
             <MaterialCommunityIcons name="credit-card" size={24} color="blue" />
             <Text style={{ marginLeft: 20 }}>Finance Proof</Text>
           </View>
@@ -195,15 +183,13 @@ const CustomDrawerContent: React.FC<CustomDrawerContentProps> = (props) => {
             props.navigation.navigate("About", {
               screen: "TermsConditionsScreen",
             })
-          }
-        >
+          }>
           <View
             style={{
               flexDirection: "row",
               alignItems: "center",
               paddingVertical: 10,
-            }}
-          >
+            }}>
             <FontAwesome name="file-text" size={24} color="blue" />
             <Text style={{ marginLeft: 20 }}>Terms & Conditions</Text>
           </View>
@@ -211,15 +197,13 @@ const CustomDrawerContent: React.FC<CustomDrawerContentProps> = (props) => {
         <TouchableOpacity
           onPress={() =>
             props.navigation.navigate("About", { screen: "AboutScreenMain" })
-          }
-        >
+          }>
           <View
             style={{
               flexDirection: "row",
               alignItems: "center",
               paddingVertical: 10,
-            }}
-          >
+            }}>
             <FontAwesome name="info-circle" size={24} color="blue" />
             <Text style={{ marginLeft: 20 }}>About</Text>
           </View>
@@ -227,15 +211,13 @@ const CustomDrawerContent: React.FC<CustomDrawerContentProps> = (props) => {
         <TouchableOpacity
           onPress={() =>
             props.navigation.navigate("About", { screen: "RateUsScreen" })
-          }
-        >
+          }>
           <View
             style={{
               flexDirection: "row",
               alignItems: "center",
               paddingVertical: 10,
-            }}
-          >
+            }}>
             <FontAwesome name="heart" size={24} color="blue" />
             <Text style={{ marginLeft: 20 }}>Rate Us</Text>
           </View>

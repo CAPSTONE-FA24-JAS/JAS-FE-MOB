@@ -51,3 +51,5 @@ export interface DeleteAccountResponse {
   data: any;
   errorMessages: any;
 }
+
+export default {};

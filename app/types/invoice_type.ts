@@ -111,3 +111,5 @@ export interface StatusInvoiceDto {
   currentDate: string;
   invoiceId: number;
 }
+
+export default {};

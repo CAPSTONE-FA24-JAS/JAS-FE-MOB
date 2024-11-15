@@ -257,3 +257,5 @@ export interface ValuationDocument {
   creationDate: string;
   createdBy: number;
 }
+
+export default {};

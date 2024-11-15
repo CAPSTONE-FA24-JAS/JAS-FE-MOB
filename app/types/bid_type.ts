@@ -85,3 +85,5 @@ export type PlaceBidResponse = {
   data: null;
   errorMessages: string[] | null;
 };
+
+export default {};

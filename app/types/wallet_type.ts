@@ -40,3 +40,5 @@ export interface TransactionResponse {
   data: Transaction[];
   errorMessages: string[] | null;
 }
+
+export default {};

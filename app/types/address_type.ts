@@ -134,3 +134,5 @@ export interface WhiteListWard {
   From: any;
   To: any;
 }
+
+export default {};

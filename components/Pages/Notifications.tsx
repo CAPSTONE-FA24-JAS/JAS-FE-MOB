@@ -8,7 +8,6 @@ import {
   RefreshControl,
   Modal,
 } from "react-native";
-import { useFocusEffect } from "expo-router";
 import {
   getNotificationByAccountId,
   markNotificationAsReadByAccount,
@@ -138,8 +137,7 @@ const Notifications: React.FC = () => {
     return (
       <TouchableOpacity
         onPress={handleLoadMore}
-        className="px-4 py-2 mx-4 my-2 bg-blue-500 rounded-lg"
-      >
+        className="px-4 py-2 mx-4 my-2 bg-blue-500 rounded-lg">
         <Text className="font-medium text-center text-white">Show More</Text>
       </TouchableOpacity>
     );
@@ -184,8 +182,7 @@ const Notifications: React.FC = () => {
       {unreadNotifications.length > 0 && (
         <TouchableOpacity
           className="flex-row justify-end"
-          onPress={handleReadAll}
-        >
+          onPress={handleReadAll}>
           <Text className=" w-[100px] py-2 text-lg font-semibold italic text-gray-600">
             Read all
           </Text>
@@ -222,19 +219,17 @@ const Notifications: React.FC = () => {
         visible={modalVisible}
         transparent={true}
         animationType="fade"
-        onRequestClose={() => setModalVisible(false)}
-      >
-        <View className="flex-1 justify-center items-center bg-black/50 bg-opacity-50">
-          <View className="bg-white p-4 rounded-lg w-3/4">
-            <Text className="text-lg text-center mb-4 font-semibold">
+        onRequestClose={() => setModalVisible(false)}>
+        <View className="items-center justify-center flex-1 bg-opacity-50 bg-black/50">
+          <View className="w-3/4 p-4 bg-white rounded-lg">
+            <Text className="mb-4 text-lg font-semibold text-center">
               Are you sure you want to mark all unread notifications as read?
             </Text>
             <View className="flex-row justify-between">
               <TouchableOpacity
                 onPress={() => setModalVisible(false)}
-                className="px-4 py-2 w-[45%] bg-gray-300 rounded "
-              >
-                <Text className="uppercase font-semibold  text-center">
+                className="px-4 py-2 w-[45%] bg-gray-300 rounded ">
+                <Text className="font-semibold text-center uppercase">
                   Cancel
                 </Text>
               </TouchableOpacity>
@@ -243,9 +238,8 @@ const Notifications: React.FC = () => {
                 disabled={loadingMark}
                 className={`px-4 py-2 w-[45%] bg-blue-500 rounded ${
                   loadingMark ? "bg-gray-500" : "bg-blue-500"
-                }`}
-              >
-                <Text className="text-white uppercase font-semibold text-center">
+                }`}>
+                <Text className="font-semibold text-center text-white uppercase">
                   {loadingMark ? "Confirming..." : "Yes"}
                 </Text>
               </TouchableOpacity>

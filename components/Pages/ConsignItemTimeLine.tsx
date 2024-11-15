@@ -1,23 +1,23 @@
 import React, { useEffect, useState } from "react";
 import { View, Text, Image, ScrollView, Linking } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
-import { ChevronDown, ChevronUp } from "lucide-react-native";
 import { useRoute } from "@react-navigation/native";
 import {
   dataResponseConsignList,
   TimeLineConsignment,
 } from "@/app/types/consign_type";
 import PreValuationDetailsModal from "../Modal/PreValuationDetailsModal";
+import AntDesign from "@expo/vector-icons/AntDesign";
 import { showErrorMessage, showSuccessMessage } from "../FlashMessageHelpers";
 import ImageGallery from "../ImageGallery";
 import {
   getDetailHistoryValuation,
   updateStatusForValuation,
 } from "@/api/consignAnItemApi";
-import { StackNavigationProp } from "@react-navigation/stack";
 import { useNavigation } from "expo-router";
 import FinalValuationDetailsModal from "../Modal/FinalValuationDetailsModal";
 import moment from "moment-timezone";
+import { StackNavigationProp } from "@react-navigation/stack";
 
 // Define the types for navigation routes
 type RootStackParamList = {
@@ -239,8 +239,7 @@ const ConsignDetailTimeLine: React.FC = () => {
             <Text
               className={`uppercase ${getStatusColor(
                 item?.status
-              )} px-2 py-1 rounded-md text-white text-center mb-2 text-base font-semibold uppercase`}
-            >
+              )} px-2 py-1 rounded-md text-white text-center mb-2 text-base font-semibold uppercase`}>
               {statusTextMap[item?.status as ConsignStatus]}
             </Text>
             <View className="flex-row items-center justify-between ">
@@ -284,8 +283,7 @@ const ConsignDetailTimeLine: React.FC = () => {
               ) : item?.status === "ManagerApproved" ? (
                 <TouchableOpacity
                   className="w-full p-2 mt-2 bg-blue-500 rounded"
-                  onPress={handleViewFinalValuation}
-                >
+                  onPress={handleViewFinalValuation}>
                   <Text className="font-bold text-center text-white">
                     Show Final Valuation Modal
                   </Text>
@@ -342,9 +340,8 @@ const ConsignDetailTimeLine: React.FC = () => {
                                     )[0]?.documentLink
                                   )
                               : () => {}
-                          }
-                        >
-                          <Text className="text-gray-700 font-semibold">
+                          }>
+                          <Text className="font-semibold text-gray-700">
                             Download delivery receipt
                           </Text>
                           {/* đoạn này đang kh biết tải hẳn luôn ha là mở modal */}
@@ -353,8 +350,7 @@ const ConsignDetailTimeLine: React.FC = () => {
                     {event?.statusName == "Preliminary" && ( // chưa biết cái nào hiển thị tài liệu nên để đây
                       <TouchableOpacity
                         className="p-2 mt-1 bg-gray-200 rounded w-[140px] "
-                        onPress={handleViewPreValuation}
-                      >
+                        onPress={handleViewPreValuation}>
                         <Text className="font-semibold text-center text-gray-700">
                           View Preliminary
                         </Text>
@@ -364,8 +360,7 @@ const ConsignDetailTimeLine: React.FC = () => {
                     {event?.statusName == "FinalValuated" && ( // chưa biết cái nào hiển thị tài liệu nên để đây
                       <TouchableOpacity
                         className="p-2 mt-1 bg-gray-200 rounded w-[140px] "
-                        onPress={handleViewFinalValuation}
-                      >
+                        onPress={handleViewFinalValuation}>
                         <Text className="font-semibold text-center text-gray-700">
                           View Final Valuated
                         </Text>
@@ -380,15 +375,14 @@ const ConsignDetailTimeLine: React.FC = () => {
         {timeline.length > 4 && (
           <TouchableOpacity
             onPress={toggleExpanded}
-            className="flex-row items-center justify-center p-2 mt-2 bg-gray-100 rounded"
-          >
+            className="flex-row items-center justify-center p-2 mt-2 bg-gray-100 rounded">
             <Text className="mr-2">
               {expanded ? "Thu gọn" : "Xem toàn bộ lịch sử"}
             </Text>
             {expanded ? (
-              <ChevronUp size={20} color="#4B5563" />
+              <AntDesign name="caretup" size={20} color="#4B5563" />
             ) : (
-              <ChevronDown size={20} color="#4B5563" />
+              <AntDesign name="caretdown" size={20} color="#4B5563" />
             )}
           </TouchableOpacity>
         )}

@@ -45,3 +45,5 @@ export interface Data {
   user: UserAccount;
   accessToken: string;
 }
+
+export default {};

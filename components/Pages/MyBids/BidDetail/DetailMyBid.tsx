@@ -187,7 +187,8 @@ const DetailMyBid: React.FC = () => {
     useCallback(() => {
       setLoading(true); // Show loading spinner
       fetchBidDetails();
-    }, [itemBid.id, userId, invoiceId, isWin])
+    }, [itemBid.id, userId, invoiceId, isWin]),
+    [itemBid.id, userId, invoiceId, isWin]
   );
 
   // Function to open the EditAddress modal

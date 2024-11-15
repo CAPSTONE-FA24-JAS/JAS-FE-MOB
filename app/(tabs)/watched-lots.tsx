@@ -18,12 +18,18 @@ export default function WatchedLots() {
   );
 
   // Separate watchings based on status
-  const upcomingWatchings = watchings.filter(
-    (watch) => new Date(watch.jewelryDTO.time_Bidding) > new Date()
-  );
-  const pastWatchings = watchings.filter(
-    (watch) => new Date(watch.jewelryDTO.time_Bidding) <= new Date()
-  );
+  const upcomingWatchings =
+    Array.isArray(watchings) && watchings
+      ? watchings.filter(
+          (watch) => new Date(watch.jewelryDTO.time_Bidding) > new Date()
+        )
+      : [];
+  const pastWatchings =
+    Array.isArray(watchings) && watchings
+      ? watchings.filter(
+          (watch) => new Date(watch.jewelryDTO.time_Bidding) <= new Date()
+        )
+      : [];
 
   useEffect(() => {
     const fetchWatchings = async () => {
@@ -59,8 +65,7 @@ export default function WatchedLots() {
           backgroundColor: "transparent",
           alignSelf: "center",
           width: "50%",
-        }}
-      >
+        }}>
         <Tab.Item
           title="Upcoming"
           titleStyle={(active) => ({

@@ -297,3 +297,5 @@ export interface ImageShaphy2 {
   imageLink: string;
   shaphieId: any;
 }
+
+export default {};

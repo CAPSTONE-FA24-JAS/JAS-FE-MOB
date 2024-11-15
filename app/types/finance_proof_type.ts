@@ -11,3 +11,5 @@ export interface FinancialProof {
   expireDate: string;
   status: string;
 }
+
+export default {};

@@ -108,7 +108,8 @@ const HistoryItemConsign: React.FC = () => {
   useEffect(
     useCallback(() => {
       fetchConsignmentHistory();
-    }, [fetchConsignmentHistory])
+    }, [fetchConsignmentHistory]),
+    [fetchConsignmentHistory]
   );
 
   // Hàm xử lý tìm kiếm

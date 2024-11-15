@@ -46,3 +46,5 @@ export interface AuctionData {
   imageLink: string;
   status: string;
 }
+
+export default {};

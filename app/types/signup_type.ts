@@ -35,3 +35,5 @@ export interface registerCustomer {
   idIssuanceDate?: string;
   idExpirationDate?: string;
 }
+
+export default {};

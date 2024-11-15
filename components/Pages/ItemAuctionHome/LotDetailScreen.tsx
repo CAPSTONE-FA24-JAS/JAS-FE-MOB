@@ -11,7 +11,6 @@ import {
 import { Divider } from "react-native-paper";
 import Swiper from "react-native-swiper";
 import { useNavigation, useRoute } from "@react-navigation/native";
-import { NativeStackNavigationProp } from "react-native-screens/lib/typescript/native-stack/types";
 import PlaceBidModal from "@/components/Modal/PlaceBidModal";
 import { LotDetail } from "@/app/types/lot_type";
 import {
@@ -34,6 +33,7 @@ import SecretAuctionBidModal from "./ModalLot/SecretAuctionBidModal";
 import CountdownTimerBid from "@/components/CountDown/CountdownTimer";
 import { addNewWatchingForCustomer } from "@/api/watchingApi";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 
 // Define the navigation param list type
 type RootStackParamList = {

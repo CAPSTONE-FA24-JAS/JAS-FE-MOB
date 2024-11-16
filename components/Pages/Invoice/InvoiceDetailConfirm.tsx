@@ -117,42 +117,42 @@ const InvoiceDetailConfirm: React.FC = () => {
   };
 
   return (
-    <StyledView className="flex-1 bg-white p-4">
+    <StyledView className="flex-1 p-4 bg-white">
       <ScrollView>
         {/* Customer Information */}
-        <StyledText className="text-lg font-bold mb-2">
+        <StyledText className="mb-2 text-lg font-bold">
           CUSTOMER INFORMATION
         </StyledText>
-        <StyledView className="border-t  border-gray-300 py-3 mb-3">
+        <StyledView className="py-3 mb-3 border-t border-gray-300">
           <View className="flex-row justify-between">
-            <StyledText className="text-base mb-1 font-semibold text-gray-600">
+            <StyledText className="mb-1 text-base font-semibold text-gray-600">
               Full Name
             </StyledText>
-            <Text className="text-base text-right font-semibold">
+            <Text className="text-base font-semibold text-right">
               {user?.customerDTO.lastName} {user?.customerDTO.firstName}
             </Text>
           </View>
 
           <View className="flex-row justify-between">
-            <StyledText className="text-base mb-1 font-semibold text-gray-600">
+            <StyledText className="mb-1 text-base font-semibold text-gray-600">
               Phone Number
             </StyledText>
-            <Text className="text-base text-right font-semibold">
+            <Text className="text-base font-semibold text-right">
               {user?.phoneNumber}
             </Text>
           </View>
 
           <View className="flex-row justify-between">
-            <StyledText className="text-base mb-1 font-semibold text-gray-600">
+            <StyledText className="mb-1 text-base font-semibold text-gray-600">
               Email
             </StyledText>
-            <Text className="text-base text-right font-semibold">
+            <Text className="text-base font-semibold text-right">
               {user?.email}
             </Text>
           </View>
 
           <View className="flex-row justify-between">
-            <StyledText className="text-base mb-1 font-semibold text-gray-600">
+            <StyledText className="mb-1 text-base font-semibold text-gray-600">
               Address
             </StyledText>
             <Text className="text-base text-right w-[70%] font-semibold">
@@ -163,10 +163,10 @@ const InvoiceDetailConfirm: React.FC = () => {
         </StyledView>
 
         {/* Order Information */}
-        <StyledText className="text-lg font-bold mt-4 mb-2">
+        <StyledText className="mt-4 mb-2 text-lg font-bold">
           ORDER INFORMATION
         </StyledText>
-        <StyledView className="border-t border-b border-gray-300 py-3 mb-3">
+        <StyledView className="py-3 mb-3 border-t border-b border-gray-300">
           <StyledView className="flex-row justify-between mb-1">
             <StyledText className="text-base font-medium text-gray-600">
               Invoice Code
@@ -196,7 +196,7 @@ const InvoiceDetailConfirm: React.FC = () => {
             <StyledText className="text-base font-medium text-gray-600">
               Name production
             </StyledText>
-            <StyledText className="text-base w-1/2 text-right font-medium text-gray-600">
+            <StyledText className="w-1/2 text-base font-medium text-right text-gray-600">
               {itemDetailBid.lotDTO.title}
             </StyledText>
           </StyledView>
@@ -214,7 +214,10 @@ const InvoiceDetailConfirm: React.FC = () => {
               Your Bid Price
             </StyledText>
             <StyledText className="text-base font-medium text-gray-600">
-              {bidPrice.toLocaleString("vi-VN", {
+              {(bidPrice && typeof bidPrice === "number"
+                ? bidPrice
+                : 0
+              ).toLocaleString("vi-VN", {
                 style: "currency",
                 currency: "VND",
               }) || "0 VND"}
@@ -225,7 +228,10 @@ const InvoiceDetailConfirm: React.FC = () => {
               Platform Fee
             </StyledText>
             <StyledText className="text-base font-medium text-gray-600">
-              {feePrice.toLocaleString("vi-VN", {
+              {(feePrice && typeof feePrice === "number"
+                ? feePrice
+                : 0
+              ).toLocaleString("vi-VN", {
                 style: "currency",
                 currency: "VND",
               }) || "0 VND"}
@@ -236,7 +242,11 @@ const InvoiceDetailConfirm: React.FC = () => {
               Shipping Fee
             </StyledText>
             <StyledText className="text-base font-medium text-gray-600">
-              {invoiceDetails.feeShip.toLocaleString("vi-VN", {
+              {(invoiceDetails.feeShip &&
+              typeof invoiceDetails.feeShip === "number"
+                ? invoiceDetails.feeShip
+                : 0
+              ).toLocaleString("vi-VN", {
                 style: "currency",
                 currency: "VND",
               }) || "0 VND"}
@@ -246,10 +256,12 @@ const InvoiceDetailConfirm: React.FC = () => {
           <StyledView className="flex-row justify-between mt-3">
             <StyledText className="text-lg font-bold">Total</StyledText>
             <StyledText className="text-lg font-bold">
-              {totalPrice.toLocaleString("vi-VN", {
-                style: "currency",
-                currency: "VND",
-              }) || "0 VND"}
+              {totalPrice
+                ? totalPrice.toLocaleString("vi-VN", {
+                    style: "currency",
+                    currency: "VND",
+                  })
+                : "0 VND"}
             </StyledText>
           </StyledView>
         </StyledView>
@@ -271,9 +283,10 @@ const InvoiceDetailConfirm: React.FC = () => {
         <StyledTouchableOpacity
           disabled={!isChecked}
           onPress={handleConfirm} // Show password modal
-          className={`p-3 rounded ${isChecked ? "bg-blue-500" : "bg-gray-300"}`}
-        >
-          <StyledText className="text-white text-center font-bold">
+          className={`p-3 rounded ${
+            isChecked ? "bg-blue-500" : "bg-gray-300"
+          }`}>
+          <StyledText className="font-bold text-center text-white">
             CONFIRM
           </StyledText>
         </StyledTouchableOpacity>

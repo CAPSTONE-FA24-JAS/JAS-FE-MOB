@@ -5,6 +5,9 @@
   },
   "build": {
     "development": {
+      "env": {
+        "EXPO_PUBLIC_API_URL": "http://104.43.108.155"
+      },
       "developmentClient": true,
       "distribution": "internal",
       "android": {
@@ -15,6 +18,9 @@
       "distribution": "internal"
     },
     "production": {
+      "env": {
+        "EXPO_PUBLIC_API_URL": "http://104.43.108.155"
+      },
       "autoIncrement": true,
       "android": {
         "buildType": "apk"

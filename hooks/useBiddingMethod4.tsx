@@ -6,9 +6,8 @@ import {
 } from "@microsoft/signalr";
 import axios from "axios";
 import { Message } from "./useBiddingMethod3";
-import { EXPO_PUBLIC_API_URL } from "@env";
 
-const API_BASE_URL = EXPO_PUBLIC_API_URL || "http://localhost:7251";
+const API_BASE_URL = process.env.EXPO_PUBLIC_API_URL;
 
 interface UseBiddingResult {
   isConnected: boolean;

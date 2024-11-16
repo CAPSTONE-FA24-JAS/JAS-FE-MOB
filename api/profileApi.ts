@@ -9,9 +9,8 @@ import {
 } from "@/app/types/profilte_type";
 import { useDispatch } from "react-redux";
 import { logout } from "@/redux/slices/authSlice";
-import { EXPO_PUBLIC_API_URL } from "@env";
 
-const API_URL = EXPO_PUBLIC_API_URL || "http://localhost:7251";
+const API_URL = process.env.EXPO_PUBLIC_API_URL || "http://localhost:7251";
 
 // Get Profile
 export const getProfile = async (userId: number): Promise<ProfileResponse> => {

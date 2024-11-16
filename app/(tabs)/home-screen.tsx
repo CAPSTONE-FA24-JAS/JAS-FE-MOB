@@ -12,9 +12,8 @@ import { getAuctionsByStatus, viewAuctions } from "@/api/auctionApi";
 import { MaterialIcons } from "@expo/vector-icons";
 import * as signalR from "@microsoft/signalr"; // Import SignalR library
 import { showSuccessMessage } from "@/components/FlashMessageHelpers";
-import { EXPO_PUBLIC_API_URL } from "@env";
 
-const API_URL = EXPO_PUBLIC_API_URL || "http://localhost:7251";
+const API_URL = process.env.EXPO_PUBLIC_API_URL || "http://localhost:7251";
 const HOME_URL = `${API_URL}/auctionning`; // The SignalR hub URL
 
 const HomeScreen = () => {

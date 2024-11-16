@@ -8,10 +8,9 @@ import {
   ViewAutionIdReponse,
   ViewAutionsReponse,
 } from "@/app/types/auction_type";
-import { EXPO_PUBLIC_API_URL } from "@env";
 
 // Define the base API URL
-const API_URL = EXPO_PUBLIC_API_URL || "http://localhost:7251";
+const API_URL = process.env.EXPO_PUBLIC_API_URL || "http://localhost:7251";
 
 // Function to fetch all auctions
 export const viewAuctions = async (): Promise<ViewAutionsReponse> => {

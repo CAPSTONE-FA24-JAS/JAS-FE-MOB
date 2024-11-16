@@ -7,9 +7,8 @@ import {
   ListProvinceResponse,
   ListWardResponse,
 } from "@/app/types/address_type";
-import { EXPO_PUBLIC_API_URL } from "@env";
 
-const API_URL = EXPO_PUBLIC_API_URL || "http://localhost:7251";
+const API_URL = process.env.EXPO_PUBLIC_API_URL || "http://localhost:7251";
 const GHN_API_URL = "https://dev-online-gateway.ghn.vn/shiip/public-api";
 const GHN_TOKEN = "648d5484-1c1d-11ef-8bfa-8a2dda8ec551";
 

@@ -6,9 +6,8 @@ import {
 import apiClient from "./config";
 import { ApiResponse } from "./utils/ApiError";
 import { WatchingResponse } from "@/app/types/watching_type";
-import { EXPO_PUBLIC_API_URL } from "@env";
 
-const API_URL = EXPO_PUBLIC_API_URL || "http://localhost:7251";
+const API_URL = process.env.EXPO_PUBLIC_API_URL || "http://localhost:7251";
 
 // Function to get list of all watchings by customer ID
 export const getAllWatchingsByCustomerId = async (

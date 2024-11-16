@@ -1,7 +1,6 @@
 // src/api/config.ts
-import { EXPO_PUBLIC_API_URL } from "@env";
 
-const API_URL = EXPO_PUBLIC_API_URL || "http://localhost:7251";
+const API_URL = process.env.EXPO_PUBLIC_API_URL;
 console.log("API_URL:", API_URL); // Check if API_URL is defined
 
 if (!API_URL) {

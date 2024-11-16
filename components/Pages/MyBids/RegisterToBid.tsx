@@ -116,7 +116,7 @@ const RegisterToBid = () => {
             }
 
             if (lotDetail.status !== "Auctioning") {
-              navigation.goBack();
+              navigation.replace("LotDetail", { itemId: lotDetail.id });
             }
           } catch (error: any) {
             if (error instanceof ApiError) {

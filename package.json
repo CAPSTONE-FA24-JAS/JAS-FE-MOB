@@ -29,7 +29,7 @@
     "expo-linear-gradient": "~14.0.1",
     "expo-linking": "~7.0.2",
     "expo-media-library": "~17.0.2",
-    "expo-router": "~4.0.5",
+    "expo-router": "~4.0.6",
     "expo-status-bar": "~2.0.0",
     "moment-timezone": "^0.5.46",
     "nativewind": "^2.0.11",
@@ -49,6 +49,7 @@
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",
+    "@react-native-community/cli": "^15.1.2",
     "tailwindcss": "3.3.2"
   },
   "private": true,

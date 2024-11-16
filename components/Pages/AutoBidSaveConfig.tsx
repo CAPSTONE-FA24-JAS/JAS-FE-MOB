@@ -21,6 +21,7 @@ import { setAutoBidConfig } from "@/api/lotAPI";
 
 type RootStackParamList = {
   BidAutomation: BidAutomationRouteParams;
+  LotDetail: { id: number };
 };
 
 type BidAutomationRouteParams = {
@@ -170,7 +171,7 @@ const AutoBidSaveConfig: React.FC = () => {
       );
 
       // On success, navigate back
-      navigation.goBack();
+      navigation.replace("LotDetail", { id: customerLotId });
     } catch (error: any) {
       // If there's an error, show an alert with the API error message
       Alert.alert(
@@ -227,7 +228,7 @@ const AutoBidSaveConfig: React.FC = () => {
               - Increasing
             </Text>
           </View>
-          <Text className="font-bold text-base text-gray-600">
+          <Text className="text-base font-bold text-gray-600">
             #{lotDetail.id}
           </Text>
         </View>
@@ -240,7 +241,7 @@ const AutoBidSaveConfig: React.FC = () => {
         </Text>
         <View className="mx-auto w-[90%]">
           {/* Min Price input */}
-          <Text className="mt-4 mb-2 font-semibold uppercase text-base text-gray-600">
+          <Text className="mt-4 mb-2 text-base font-semibold text-gray-600 uppercase">
             Min Price (VND) &gt;=
           </Text>
           <View className="flex-row items-center mb-4">
@@ -251,8 +252,7 @@ const AutoBidSaveConfig: React.FC = () => {
               className={`w-12 py-1 bg-gray-200 rounded-l-lg ${
                 startingPrice <= estimatedPrice.min ? "opacity-50" : ""
               }`}
-              disabled={startingPrice <= estimatedPrice.min}
-            >
+              disabled={startingPrice <= estimatedPrice.min}>
               <Text className="text-4xl text-center">-</Text>
             </TouchableOpacity>
             <TextInput
@@ -270,14 +270,13 @@ const AutoBidSaveConfig: React.FC = () => {
             />
             <TouchableOpacity
               onPress={() => handleIncrement(setStartingPrice)}
-              className="w-12 py-1 bg-gray-200 rounded-r-lg"
-            >
+              className="w-12 py-1 bg-gray-200 rounded-r-lg">
               <Text className="text-2xl text-center">+</Text>
             </TouchableOpacity>
           </View>
 
           {/* Max Price input */}
-          <Text className="mt-4 mb-2 font-semibold uppercase text-base text-gray-600">
+          <Text className="mt-4 mb-2 text-base font-semibold text-gray-600 uppercase">
             Max Price (VND) &lt;=
           </Text>
           <View className="flex-row items-center mb-4">
@@ -293,8 +292,7 @@ const AutoBidSaveConfig: React.FC = () => {
                   ? "opacity-50"
                   : ""
               }`}
-              disabled={maxPrice <= estimatedPrice.min + numberOfPriceStep}
-            >
+              disabled={maxPrice <= estimatedPrice.min + numberOfPriceStep}>
               <Text className="text-4xl text-center">-</Text>
             </TouchableOpacity>
             <TextInput
@@ -313,14 +311,13 @@ const AutoBidSaveConfig: React.FC = () => {
             />
             <TouchableOpacity
               onPress={() => handleIncrement(setMaxPrice)}
-              className="w-12 py-1 bg-gray-200 rounded-r-lg"
-            >
+              className="w-12 py-1 bg-gray-200 rounded-r-lg">
               <Text className="text-2xl text-center">+</Text>
             </TouchableOpacity>
           </View>
 
           {/* Price Step input */}
-          <Text className="mt-4 mb-2 font-semibold uppercase text-base text-gray-600">
+          <Text className="mt-4 mb-2 text-base font-semibold text-gray-600 uppercase">
             Price Step (VND)
           </Text>
           <View className="flex-row items-center mb-4">
@@ -331,8 +328,7 @@ const AutoBidSaveConfig: React.FC = () => {
               className={`w-12 py-1 bg-gray-200 rounded-l-lg ${
                 numberOfPriceStep <= 0 ? "opacity-50" : ""
               }`}
-              disabled={numberOfPriceStep <= 0}
-            >
+              disabled={numberOfPriceStep <= 0}>
               <Text className="text-4xl text-center">-</Text>
             </TouchableOpacity>
             <TextInput
@@ -346,14 +342,13 @@ const AutoBidSaveConfig: React.FC = () => {
                 setNumberOfPriceStep((prev) => Math.min(20, prev + 1))
               }
               className="w-12 py-1 bg-gray-200 rounded-r-lg"
-              disabled={numberOfPriceStep >= 20}
-            >
+              disabled={numberOfPriceStep >= 20}>
               <Text className="text-2xl text-center">+</Text>
             </TouchableOpacity>
           </View>
 
           {/* Next Bid Time input */}
-          <Text className="mt-4 mb-2 font-semibold uppercase text-base text-gray-600">
+          <Text className="mt-4 mb-2 text-base font-semibold text-gray-600 uppercase">
             Next Bid Time (Minutes)
           </Text>
           <View className="flex-row items-center mb-4">
@@ -362,8 +357,7 @@ const AutoBidSaveConfig: React.FC = () => {
               className={`w-12 py-1 bg-gray-200 rounded-l-lg ${
                 nextBidTime <= 1 ? "opacity-50" : ""
               }`}
-              disabled={nextBidTime <= 1}
-            >
+              disabled={nextBidTime <= 1}>
               <Text className="text-4xl text-center">-</Text>
             </TouchableOpacity>
             <TextInput
@@ -381,8 +375,7 @@ const AutoBidSaveConfig: React.FC = () => {
             />
             <TouchableOpacity
               onPress={() => setNextBidTime((prev) => prev + 1)}
-              className="w-12 py-1 bg-gray-200 rounded-r-lg"
-            >
+              className="w-12 py-1 bg-gray-200 rounded-r-lg">
               <Text className="text-2xl text-center">+</Text>
             </TouchableOpacity>
           </View>
@@ -396,7 +389,7 @@ const AutoBidSaveConfig: React.FC = () => {
           </Text>
         </View>
         {errorMessage && (
-          <Text className="text-red-500 text-center mt-4">{errorMessage}</Text>
+          <Text className="mt-4 text-center text-red-500">{errorMessage}</Text>
         )}
       </ScrollView>
       {/* Error Message Display */}
@@ -404,8 +397,7 @@ const AutoBidSaveConfig: React.FC = () => {
       {/* Submit Button */}
       <TouchableOpacity
         onPress={handleSubmit}
-        className="absolute bottom-0 left-0 right-0 py-3 bg-blue-500"
-      >
+        className="absolute bottom-0 left-0 right-0 py-3 bg-blue-500">
         <Text className="text-lg font-bold text-center text-white">
           SUBMIT AUTOMATION BID
         </Text>

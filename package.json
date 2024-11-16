@@ -61,7 +61,9 @@
           "axios",
           "moment-timezone",
           "react-redux",
-          "typescript"
+          "typescript",
+          "react-native-image-viewing",
+          "react-native-swiper"
         ]
       }
     }

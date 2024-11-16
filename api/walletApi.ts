@@ -8,8 +8,9 @@ import {
   TransactionResponse,
   WalletBalanceResponse,
 } from "@/app/types/wallet_type";
+import { EXPO_PUBLIC_API_URL } from "@env";
 
-const API_URL = process.env.EXPO_PUBLIC_API_URL || "http://localhost:7251";
+const API_URL = EXPO_PUBLIC_API_URL || "http://localhost:7251";
 
 // Function to check if the wallet password is correct
 export const checkPasswordWallet = async (

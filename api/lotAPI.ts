@@ -6,8 +6,9 @@ import {
 import apiClient from "./config";
 import { ListLotResponse, LotDetailResponse } from "@/app/types/lot_type";
 import { ApiError, ApiResponse } from "./utils/ApiError";
+import { EXPO_PUBLIC_API_URL } from "@env";
 
-const API_URL = process.env.EXPO_PUBLIC_API_URL || "http://localhost:7251";
+const API_URL = EXPO_PUBLIC_API_URL || "http://localhost:7251";
 
 // Function to get list of lots by auction ID
 export const getLotsByAuctionId = async (

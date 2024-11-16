@@ -1,8 +1,9 @@
 import { Notification } from "@/app/types/notification_type";
 import { Response, ResponseList } from "@/app/types/respone_type";
 import axios from "axios";
+import { EXPO_PUBLIC_API_URL } from "@env";
 
-const API_URL = process.env.EXPO_PUBLIC_API_URL || "http://localhost:7251";
+const API_URL = EXPO_PUBLIC_API_URL || "http://localhost:7251";
 
 export const getNotificationByAccountId = async (
   accountId: string,

@@ -10,8 +10,9 @@ import {
   GetMyBidResponse,
   PlaceBidResponse,
 } from "@/app/types/bid_type";
+import { EXPO_PUBLIC_API_URL } from "@env";
 
-const API_URL = process.env.EXPO_PUBLIC_API_URL || "http://localhost:7251";
+const API_URL = EXPO_PUBLIC_API_URL || "http://localhost:7251";
 
 export type GetBidsOfCustomerResponse = CurentBidResponse<DataCurentBid>;
 export type GetPastBidOfCustomerResponse = CurentBidResponse<DataCurentBid>;
@@ -121,7 +122,7 @@ export const getPastBidOfCustomer = async (
   pageSize: number = 10
 ): Promise<GetPastBidOfCustomerResponse | null> => {
   console.log("getPastBidOfCustomerRUN");
-  
+
   try {
     const response = await axios.get<GetPastBidOfCustomerResponse>(
       `${API_URL}/api/CustomerLots/GetPastBidOfCustomer`,

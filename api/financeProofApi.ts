@@ -1,8 +1,9 @@
 import { Response } from "@/app/types/respone_type";
 import apiClient from "./config";
 import { FinancialProof } from "@/app/types/finance_proof_type";
+import { EXPO_PUBLIC_API_URL } from "@env";
 
-const API_URL = process.env.EXPO_PUBLIC_API_URL || "http://localhost:7251";
+const API_URL = EXPO_PUBLIC_API_URL || "http://localhost:7251";
 
 export const getListFinancialProof = async (
   userId: number = 0

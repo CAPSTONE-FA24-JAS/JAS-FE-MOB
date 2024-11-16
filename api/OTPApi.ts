@@ -1,7 +1,8 @@
 // api.js hoặc api.ts (nếu bạn dùng TypeScript)
 import axios from "axios";
+import { EXPO_PUBLIC_API_URL } from "@env";
 
-const API_URL = process.env.EXPO_PUBLIC_API_URL || "http://localhost:7251";
+const API_URL = EXPO_PUBLIC_API_URL || "http://localhost:7251";
 
 export const getValuationById = async (valuationId: number) => {
   try {

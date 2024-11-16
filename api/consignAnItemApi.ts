@@ -9,8 +9,9 @@ import {
 } from "@/app/types/consign_type";
 import { Response } from "@/app/types/respone_type";
 import apiClient from "./config";
+import { EXPO_PUBLIC_API_URL } from "@env";
 
-const API_URL = process.env.EXPO_PUBLIC_API_URL || "http://localhost:7251";
+const API_URL = EXPO_PUBLIC_API_URL || "http://localhost:7251";
 
 export const consignAnItem = async (
   sellerId: number,

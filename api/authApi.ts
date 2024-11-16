@@ -8,8 +8,9 @@ import { login, register } from "@/redux/slices/authSlice";
 import { AppDispatch } from "@/redux/store";
 import axios from "axios";
 import { router } from "expo-router";
+import { EXPO_PUBLIC_API_URL } from "@env";
 
-const API_URL = process.env.EXPO_PUBLIC_API_URL || "http://localhost:7251";
+const API_URL = EXPO_PUBLIC_API_URL || "http://localhost:7251";
 
 // authApi.ts
 

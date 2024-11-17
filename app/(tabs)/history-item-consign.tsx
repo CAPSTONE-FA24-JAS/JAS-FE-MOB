@@ -1,22 +1,21 @@
+import { getHistoryConsign } from "@/api/consignAnItemApi";
+import ConsignItem, { ConsignItemProps } from "@/components/ConsignItem";
+import { RootState } from "@/redux/store";
+import { RouteProp, useFocusEffect, useRoute } from "@react-navigation/native";
+import { StackNavigationProp } from "@react-navigation/stack";
+import { useNavigation } from "expo-router";
 import React, { useCallback, useEffect, useState } from "react";
 import {
-  View,
+  ActivityIndicator,
+  FlatList,
+  ScrollView,
   Text,
   TextInput,
-  FlatList,
   TouchableOpacity,
-  ActivityIndicator,
-  ScrollView,
+  View,
 } from "react-native";
-import ConsignItem, { ConsignItemProps } from "@/components/ConsignItem";
-import { useNavigation } from "expo-router";
-import { dataResponseConsignList } from "../types/consign_type";
-import { getHistoryConsign } from "@/api/consignAnItemApi";
 import { useSelector } from "react-redux";
-import { RootState } from "@/redux/store";
-import { StackNavigationProp } from "@react-navigation/stack";
-import LoadingOverlay from "@/components/LoadingOverlay";
-import { useRoute, RouteProp } from "@react-navigation/native";
+import { dataResponseConsignList } from "../types/consign_type";
 
 // Define the types for navigation routes
 type RootStackParamList = {
@@ -58,13 +57,13 @@ const HistoryItemConsign: React.FC = () => {
   const tab = route.params?.tab; // Lấy giá trị của tab từ tham số điều hướng
 
   // Thiết lập tab dựa vào tham số 'tab' trong route
-  useEffect(() => {
+  useFocusEffect(() => {
     if (tab === 3) {
       setSelectedStatus(3); // Nếu tab là "past", chọn tab Past
     } else {
       setSelectedStatus(0); // Mặc định mở tab Current
     }
-  }, [tab]);
+  });
   // const scrollViewRef = useRef<ScrollView>(null);
 
   // Hàm gọi API

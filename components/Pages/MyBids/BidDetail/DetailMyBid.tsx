@@ -1,38 +1,31 @@
-import React, { useCallback, useEffect, useState } from "react";
-import {
-  View,
-  Text,
-  SafeAreaView,
-  ActivityIndicator,
-  Modal,
-  Image,
-} from "react-native";
-import { RouteProp, useRoute } from "@react-navigation/native";
-import { TouchableOpacity } from "react-native-gesture-handler";
-import ItemBidCard from "./ItemBidCard";
-import AddressInfo from "./AddressInfo";
-import { useSelector } from "react-redux";
-import { RootState } from "@/redux/store";
-import TimeLineBid from "./TimeLineBid";
-import { useNavigation } from "expo-router";
-import { DataCurentBidResponse, MyBidData } from "@/app/types/bid_type";
-import { getMyBidByCustomerLotId } from "@/api/bidApi";
-import { showErrorMessage } from "@/components/FlashMessageHelpers";
-import { AddressListData } from "@/app/types/address_type";
 import { getAddressesByCustomerId } from "@/api/addressApi";
-import ChooseAddress from "../../Address/ChooseAddress";
+import { getMyBidByCustomerLotId } from "@/api/bidApi";
+import {
+  getDetailInvoice,
+  updateAddressToShipForInvoice,
+} from "@/api/invoiceApi";
+import { AddressListData } from "@/app/types/address_type";
+import { DataCurentBidResponse, MyBidData } from "@/app/types/bid_type";
 import {
   HistoryCustomerLot,
   InvoiceDetailResponse,
   StatusInvoiceDto,
 } from "@/app/types/invoice_type";
-import {
-  getDetailInvoice,
-  updateAddressToShipForInvoice,
-} from "@/api/invoiceApi";
+import { showErrorMessage } from "@/components/FlashMessageHelpers";
 import ImageGallery from "@/components/ImageGallery";
 import LoadingOverlay from "@/components/LoadingOverlay";
+import { RootState } from "@/redux/store";
+import { RouteProp, useFocusEffect, useRoute } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
+import { useNavigation } from "expo-router";
+import React, { useCallback, useState } from "react";
+import { ActivityIndicator, Modal, Text, View } from "react-native";
+import { TouchableOpacity } from "react-native-gesture-handler";
+import { useSelector } from "react-redux";
+import ChooseAddress from "../../Address/ChooseAddress";
+import AddressInfo from "./AddressInfo";
+import ItemBidCard from "./ItemBidCard";
+import TimeLineBid from "./TimeLineBid";
 
 type RootStackParamList = {
   DetailMyBid: {
@@ -183,12 +176,11 @@ const DetailMyBid: React.FC = () => {
     }
   };
 
-  useEffect(
+  useFocusEffect(
     useCallback(() => {
       setLoading(true); // Show loading spinner
       fetchBidDetails();
-    }, [itemBid.id, userId, invoiceId, isWin]),
-    [itemBid.id, userId, invoiceId, isWin]
+    }, [itemBid.id, userId, invoiceId, isWin])
   );
 
   // Function to open the EditAddress modal

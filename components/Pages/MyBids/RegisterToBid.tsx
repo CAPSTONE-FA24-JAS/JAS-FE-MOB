@@ -113,10 +113,16 @@ const RegisterToBid = () => {
               if (lotDetail.lotType === "Auction_Price_GraduallyReduced") {
                 navigation.replace("ReduceBidPage", { itemId: lotDetail.id });
               }
+              if (lotDetail.lotType === "Fixed_Price") {
+                navigation.goBack();
+              }
+              if (lotDetail.lotType === "Secret_Auction") {
+                navigation.goBack();
+              }
             }
 
             if (lotDetail.status !== "Auctioning") {
-              navigation.replace("LotDetail", { itemId: lotDetail.id });
+              navigation.goBack();
             }
           } catch (error: any) {
             if (error instanceof ApiError) {

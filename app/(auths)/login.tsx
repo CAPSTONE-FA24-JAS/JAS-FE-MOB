@@ -7,6 +7,7 @@ import {
 } from "@/components/FlashMessageHelpers";
 import LoadingOverlay from "@/components/LoadingOverlay";
 import { fetchProfile } from "@/redux/slices/profileSlice";
+import { initializeSignalR } from "@/redux/slices/signalRSlice";
 import { AppDispatch, RootState } from "@/redux/store";
 import { Feather } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -55,6 +56,11 @@ const Login: React.FC = () => {
       setIsLoginSuccessful(true);
       showSuccessMessage("Login successful! Redirecting...");
       setLoading(false);
+
+      // Initialize SignalR connection
+      if (userData && userData.id) {
+        dispatch(initializeSignalR(userData.id)); // Pass accountId to SignalR
+      }
 
       if (rememberMe) {
         // Save credentials

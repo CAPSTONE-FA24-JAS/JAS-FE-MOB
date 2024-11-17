@@ -1,22 +1,32 @@
-import { configureStore } from "@reduxjs/toolkit";
-import authReducer, { logout } from "./slices/authSlice";
-import profileReducer from "./slices/profileSlice"; // Import profileReducer
-import notificationReducer from "./slices/notificationSlice"; // Import notificationReducer
-
-import { useDispatch } from "react-redux";
+import { Action, configureStore, ThunkAction } from "@reduxjs/toolkit";
+import authReducer from "./slices/authSlice";
+import profileReducer from "./slices/profileSlice";
+import notificationReducer from "./slices/notificationSlice";
+import signalRReducer from "./slices/signalRSlice";
 
 const store = configureStore({
   reducer: {
     auth: authReducer,
-    profile: profileReducer, // Add profile reducer to store
-    notifications: notificationReducer, // Add notification reducer to store
+    profile: profileReducer,
+    notifications: notificationReducer,
+    signalR: signalRReducer,
   },
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware({
+      thunk: true, // Đảm bảo Redux Toolkit xử lý thunk đúng cách
+    }),
 });
-// store.dispatch(logout());
 
 export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;
 
-export default store;
+// export type AppThunk<ReturnType = void> = ThunkAction<
+//   ReturnType,
+//   RootState,
+//   unknown,
+//   Action<string>,
 
-export const useAppDispatch = () => useDispatch<AppDispatch>();
+// >;
+
+export type AppThunk = ThunkAction<void, RootState, undefined, Action<string>>;
+export default store;

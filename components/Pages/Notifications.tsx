@@ -15,22 +15,30 @@ import {
 import { Notification } from "@/app/types/notification_type";
 import NotificationItem from "../ItemNotification";
 import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "@/redux/store";
-import { showErrorMessage } from "../FlashMessageHelpers";
+import store, { RootState } from "@/redux/store";
+import { showErrorMessage, showSuccessMessage } from "../FlashMessageHelpers";
 import {
   markNotificationAsRead,
   setLoading,
   setNotifications,
   setTotalItems,
 } from "@/redux/slices/notificationSlice";
+import * as signalR from "@microsoft/signalr"; // Import SignalR library
+import { initializeSignalR } from "@/redux/slices/signalRSlice";
+
+const API_URL = process.env.EXPO_PUBLIC_API_URL || "http://localhost:7251";
+const SIGNALR_URL = `${API_URL}/auctionning`; // The SignalR hub URL
 
 const Notifications: React.FC = () => {
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<typeof store.dispatch>();
   const { notifications, loading, totalItems, loadingMark } = useSelector(
     (state: RootState) => state.notifications
   );
   const accountId = useSelector(
     (state: RootState) => state.auth.userResponse?.id
+  );
+  const [connection, setConnection] = useState<signalR.HubConnection | null>(
+    null
   );
   // const [notifications, setNotifications] = useState<Notification[]>([]);
   const [pageIndex, setPageIndex] = useState(1);
@@ -80,6 +88,7 @@ const Notifications: React.FC = () => {
   useEffect(() => {
     if (accountId) {
       fetchNotifications(1, true);
+      dispatch(initializeSignalR(accountId)); // Initialize SignalR for this account
     }
   }, [accountId]);
 
@@ -137,7 +146,8 @@ const Notifications: React.FC = () => {
     return (
       <TouchableOpacity
         onPress={handleLoadMore}
-        className="px-4 py-2 mx-4 my-2 bg-blue-500 rounded-lg">
+        className="px-4 py-2 mx-4 my-2 bg-blue-500 rounded-lg"
+      >
         <Text className="font-medium text-center text-white">Show More</Text>
       </TouchableOpacity>
     );
@@ -182,7 +192,8 @@ const Notifications: React.FC = () => {
       {unreadNotifications.length > 0 && (
         <TouchableOpacity
           className="flex-row justify-end"
-          onPress={handleReadAll}>
+          onPress={handleReadAll}
+        >
           <Text className=" w-[100px] py-2 text-lg font-semibold italic text-gray-600">
             Read all
           </Text>
@@ -219,7 +230,8 @@ const Notifications: React.FC = () => {
         visible={modalVisible}
         transparent={true}
         animationType="fade"
-        onRequestClose={() => setModalVisible(false)}>
+        onRequestClose={() => setModalVisible(false)}
+      >
         <View className="items-center justify-center flex-1 bg-opacity-50 bg-black/50">
           <View className="w-3/4 p-4 bg-white rounded-lg">
             <Text className="mb-4 text-lg font-semibold text-center">
@@ -228,7 +240,8 @@ const Notifications: React.FC = () => {
             <View className="flex-row justify-between">
               <TouchableOpacity
                 onPress={() => setModalVisible(false)}
-                className="px-4 py-2 w-[45%] bg-gray-300 rounded ">
+                className="px-4 py-2 w-[45%] bg-gray-300 rounded "
+              >
                 <Text className="font-semibold text-center uppercase">
                   Cancel
                 </Text>
@@ -238,7 +251,8 @@ const Notifications: React.FC = () => {
                 disabled={loadingMark}
                 className={`px-4 py-2 w-[45%] bg-blue-500 rounded ${
                   loadingMark ? "bg-gray-500" : "bg-blue-500"
-                }`}>
+                }`}
+              >
                 <Text className="font-semibold text-center text-white uppercase">
                   {loadingMark ? "Confirming..." : "Yes"}
                 </Text>

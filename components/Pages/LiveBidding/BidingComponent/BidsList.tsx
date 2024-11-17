@@ -1,8 +1,13 @@
+import { buyNowMethod3 } from "@/api/bidApi";
 import { LotDetail } from "@/app/types/lot_type";
+import {
+  showErrorMessage,
+  showSuccessMessage,
+} from "@/components/FlashMessageHelpers";
 import { Message } from "@/hooks/useBiddingMethod3";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import React, { useMemo } from "react";
-import { View, Text } from "react-native";
+import { View, Text, TouchableOpacity, Alert } from "react-native";
 
 interface BidsListProps {
   item: LotDetail;
@@ -18,6 +23,8 @@ const BidsList: React.FC<BidsListProps> = ({
   reducePrice,
 }) => {
   // Memoized sorted bids
+
+  console.log("item", item);
 
   // Helper to format time
   const formatTime = (timeString: string) => {
@@ -44,11 +51,74 @@ const BidsList: React.FC<BidsListProps> = ({
     return `${formattedDate}.${milliseconds}`;
   };
 
+  const handleBuyNow = async () => {
+    Alert.alert(
+      "Confirm Purchase",
+      `Are you sure you want to purchase this item for ${item.finalPriceSold.toLocaleString(
+        "vi-VN",
+        {
+          style: "currency",
+          currency: "VND",
+        }
+      )}?`,
+      [
+        {
+          text: "Cancel",
+          style: "cancel",
+        },
+        {
+          text: "Yes",
+
+          onPress: async () => {
+            const response = await buyNowMethod3(currentCusId, item.id);
+            if (response) {
+              showSuccessMessage("Item purchased successfully!");
+            } else {
+              showErrorMessage("Failed to purchase item.");
+            }
+          },
+        },
+      ]
+    );
+  };
+
+  const buyNow = () => {
+    return (
+      <View className="mb-4">
+        <View className="p-4 bg-white border border-gray-300 rounded-md">
+          <Text className="mb-2 text-lg font-semibold text-center">
+            Buy Now Price
+          </Text>
+          <Text className="mb-2 text-2xl font-bold text-center text-red-600">
+            {item.finalPriceSold.toLocaleString("vi-VN", {
+              style: "currency",
+              currency: "VND",
+            })}
+          </Text>
+          <TouchableOpacity
+            className="px-4 py-3 bg-red-600 rounded-md"
+            onPress={() => {
+              console.log("item", item.finalPriceSold);
+              handleBuyNow();
+            }}>
+            <Text className="font-semibold text-center text-white">
+              BUY NOW
+            </Text>
+          </TouchableOpacity>
+          <Text className="mt-2 text-xs text-center text-gray-500">
+            Skip the bidding - purchase immediately at a price
+          </Text>
+        </View>
+      </View>
+    );
+  };
+
   if (item.lotType === "Public_Auction" && bids) {
     if (!bids || !Array.isArray(bids)) {
       return (
         <View className="p-4">
           <Text>No bids available</Text>
+          {buyNow()}
         </View>
       );
     }
@@ -69,6 +139,7 @@ const BidsList: React.FC<BidsListProps> = ({
     }, [bids, currentCusId]);
     return (
       <View className="p-4">
+        {buyNow()}
         {sortedBids.length > 0 ? (
           sortedBids.map((bid, index) => (
             <MemoizedItem

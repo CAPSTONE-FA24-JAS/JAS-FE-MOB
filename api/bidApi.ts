@@ -121,7 +121,7 @@ export const getPastBidOfCustomer = async (
   pageSize: number = 10
 ): Promise<GetPastBidOfCustomerResponse | null> => {
   console.log("getPastBidOfCustomerRUN");
-  
+
   try {
     const response = await axios.get<GetPastBidOfCustomerResponse>(
       `${API_URL}/api/CustomerLots/GetPastBidOfCustomer`,

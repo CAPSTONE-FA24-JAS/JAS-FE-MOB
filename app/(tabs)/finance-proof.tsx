@@ -33,8 +33,7 @@ const FinanceProof = () => {
           console.error("Error fetching financial proof data:", error);
           setFinancialProofData([]);
         });
-    }, [userResponse?.id]),
-    []
+    }, [userResponse?.id])
   );
 
   const groupDataByMonth = (data: FinancialProof[]) => {

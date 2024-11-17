@@ -153,6 +153,8 @@ export const checkCustomerHaveBidPrice = async (
       }
     );
 
+    console.log("Check customer's bid status response:", response.data);
+
     if (response.data.isSuccess && response.data.data) {
       console.log("Customer has bid on the lot:", response.data.data);
       // showSuccessMessage(

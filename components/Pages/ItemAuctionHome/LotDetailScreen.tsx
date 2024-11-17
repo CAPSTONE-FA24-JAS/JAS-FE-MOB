@@ -24,6 +24,7 @@ import moment from "moment-timezone";
 import React, { useCallback, useState } from "react";
 import {
   ActivityIndicator,
+  Alert,
   Image,
   SafeAreaView,
   ScrollView,
@@ -245,21 +246,6 @@ const LotDetailScreen = () => {
 
   const handleBuyNow = () => {
     setConfirmBuyNowVisible(true); // Show confirmation modal
-  };
-
-  const handleConfirmBuyNow = async () => {
-    setConfirmBuyNowVisible(false); // Close the modal first
-    try {
-      if (customerId && lotDetail?.id) {
-        await buyNowMethod3(customerId, lotDetail.id);
-        showSuccessMessage("Bid placed successfully!");
-        fetchLotDetail(); // Reload the lot details
-      } else {
-        showErrorMessage("Failed to place bid.");
-      }
-    } catch (error) {
-      showErrorMessage("An error occurred while placing the bid.");
-    }
   };
 
   const handleSecretAuctionBid = () => {

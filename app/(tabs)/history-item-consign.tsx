@@ -57,13 +57,13 @@ const HistoryItemConsign: React.FC = () => {
   const tab = route.params?.tab; // Lấy giá trị của tab từ tham số điều hướng
 
   // Thiết lập tab dựa vào tham số 'tab' trong route
-  useFocusEffect(() => {
+  useEffect(() => {
     if (tab === 3) {
       setSelectedStatus(3); // Nếu tab là "past", chọn tab Past
     } else {
       setSelectedStatus(0); // Mặc định mở tab Current
     }
-  });
+  }, [tab]);
   // const scrollViewRef = useRef<ScrollView>(null);
 
   // Hàm gọi API

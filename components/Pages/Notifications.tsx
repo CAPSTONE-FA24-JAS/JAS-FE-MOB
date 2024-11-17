@@ -53,6 +53,8 @@ const Notifications: React.FC = () => {
 
   const hasMore = notifications.length < totalItems;
 
+  console.log("notifications", notifications);
+
   // Fetch notifications from the API
   const fetchNotifications = async (page: number, shouldRefresh = false) => {
     if (!accountId) {

@@ -21,8 +21,10 @@ const notificationSlice = createSlice({
   initialState,
   reducers: {
     setNotifications: (state, action: PayloadAction<Notification[]>) => {
+      console.log("setNotifications payload:", action.payload); // Log payload
       state.notifications = action.payload;
     },
+
     setTotalItems: (state, action: PayloadAction<number>) => {
       state.totalItems = action.payload;
     },

@@ -241,16 +241,19 @@ const FinalValuationDetailsModal: React.FC<FinalValuationDetailsModalProps> = ({
             </View>
 
             <View className="flex-row justify-between w-[90%] my-5">
-              <Text className="text-xl font-bold text-gray-900 w-[70%]">
+              <Text className="text-xl font-bold text-gray-900 w-[50%]">
                 Total estimated retail replacement cost:
               </Text>
               {details?.estimatedCost ? (
-                <Text className="text-2xl w-[120px] text-[#D80000] font-bold">
+                <Text className="text-lg w-[50%] text-[#D80000] font-bold">
                   {" "}
                   {details?.estimatedCost}
                 </Text>
               ) : (
-                <Text className="text-2xl text-[#D80000] font-bold"> $0</Text>
+                <Text className="text-lg  w-[50%] text-[#D80000] font-bold">
+                  {" "}
+                  $0
+                </Text>
               )}
             </View>
 

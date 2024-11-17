@@ -56,7 +56,8 @@ const NotificationItem = ({ item }: { item: Notification }) => {
       item.notifi_Type === "Customerlot" ||
       item.title.includes("Đấu giá thua")
     ) {
-      console.log("Navigate to my bid past");
+      console.log("Navigating to Account", { screen: "MyBids" });
+
       // navigation.navigate("ValuationDetail", { item: item.id });
       navigation.navigate("Account", {
         screen: "MyBids",

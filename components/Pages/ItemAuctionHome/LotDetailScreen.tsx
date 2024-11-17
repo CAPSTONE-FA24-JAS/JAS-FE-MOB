@@ -24,7 +24,6 @@ import moment from "moment-timezone";
 import React, { useCallback, useState } from "react";
 import {
   ActivityIndicator,
-  Alert,
   Image,
   SafeAreaView,
   ScrollView,

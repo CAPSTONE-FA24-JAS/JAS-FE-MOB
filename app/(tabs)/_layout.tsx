@@ -166,7 +166,8 @@ function DrawerLayout() {
         drawerActiveBackgroundColor: "lightgray", // Set background color for active item
         drawerActiveTintColor: Colors.primary, // Set text color for active item
         drawerInactiveTintColor: "black", // Set text color for inactive items
-      }}>
+      }}
+    >
       {/* Parent Categories */}
       <Drawer.Screen
         name="Auctions"

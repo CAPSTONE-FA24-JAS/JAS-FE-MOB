@@ -1,39 +1,41 @@
-import React, { useCallback, useEffect, useState } from "react";
-import {
-  View,
-  Text,
-  Image,
-  ScrollView,
-  TouchableOpacity,
-  SafeAreaView,
-  ActivityIndicator,
-} from "react-native";
-import { Divider } from "react-native-paper";
-import Swiper from "react-native-swiper";
-import { useNavigation, useRoute } from "@react-navigation/native";
-import PlaceBidModal from "@/components/Modal/PlaceBidModal";
-import { LotDetail } from "@/app/types/lot_type";
+import { buyNowMethod3, placeBidFixedPriceAndSecret } from "@/api/bidApi";
 import {
   checkCustomerHaveBidPrice,
   checkCustomerInLot,
   getLotDetailById,
 } from "@/api/lotAPI";
-import moment from "moment-timezone";
-import { useSelector } from "react-redux";
-import { RootState } from "@/redux/store";
+import { addNewWatchingForCustomer } from "@/api/watchingApi";
+import { LotDetail } from "@/app/types/lot_type";
+import CountdownTimerBid from "@/components/CountDown/CountdownTimer";
 import {
   showErrorMessage,
   showSuccessMessage,
 } from "@/components/FlashMessageHelpers";
-import { checkPasswordWallet } from "@/api/walletApi";
-import { buyNowMethod3, placeBidFixedPriceAndSecret } from "@/api/bidApi";
-import PasswordModal from "../Payment/CheckPasswordModal";
+import PlaceBidModal from "@/components/Modal/PlaceBidModal";
+import { RootState } from "@/redux/store";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
+import {
+  useFocusEffect,
+  useNavigation,
+  useRoute,
+} from "@react-navigation/native";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import moment from "moment-timezone";
+import React, { useCallback, useState } from "react";
+import {
+  ActivityIndicator,
+  Image,
+  SafeAreaView,
+  ScrollView,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
+import { Divider } from "react-native-paper";
+import Swiper from "react-native-swiper";
+import { useSelector } from "react-redux";
 import ConfirmBuyNowModal from "./ModalLot/ConfirmBuyNowModal";
 import SecretAuctionBidModal from "./ModalLot/SecretAuctionBidModal";
-import CountdownTimerBid from "@/components/CountDown/CountdownTimer";
-import { addNewWatchingForCustomer } from "@/api/watchingApi";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 
 // Define the navigation param list type
 type RootStackParamList = {
@@ -135,13 +137,6 @@ const LotDetailScreen = () => {
     }
   }, [id]);
 
-  // Fetch lot details on screen focus
-  // useFocusEffect(
-  //   useCallback(() => {
-  //     fetchLotDetail();
-  //   }, [fetchLotDetail])
-  // );
-
   // Updated fetchRegistrationStatus function
   const fetchRegistrationStatus = useCallback(async () => {
     try {
@@ -188,12 +183,11 @@ const LotDetailScreen = () => {
   }, [userId, id]);
 
   // Use useFocusEffect to reload only when navigating back
-  useEffect(
+  useFocusEffect(
     useCallback(() => {
       fetchLotDetail();
       fetchRegistrationStatus();
-    }, [fetchLotDetail, fetchRegistrationStatus]),
-    []
+    }, [fetchLotDetail, fetchRegistrationStatus])
   );
 
   const handleAddWatching = async () => {
@@ -279,6 +273,7 @@ const LotDetailScreen = () => {
       if (userId && lotDetail && lotDetail?.id) {
         await placeBidFixedPriceAndSecret(bidAmount, userId, lotDetail.id);
         showSuccessMessage("Bid placed successfully!");
+        fetchLotDetail(); // Reload the lot details
       } else {
         if (!userId) return showErrorMessage("Khong co userId");
         if (!lotDetail) return showErrorMessage("Khong co lotDetail");

@@ -1,13 +1,13 @@
-import React, { useCallback, useEffect, useState } from "react";
-import { View, Text, SectionList, TouchableOpacity } from "react-native";
-import { useSelector } from "react-redux";
-import { useNavigation } from "@react-navigation/native";
 import { getListFinancialProof } from "@/api/financeProofApi";
-import { RootState } from "@/redux/store";
-import { FinancialProof } from "../types/finance_proof_type";
 import ItemFinanceProof from "@/components/ItemFinaceProof";
+import { RootState } from "@/redux/store";
 import { parseDate } from "@/utils/utils";
+import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
+import React, { useCallback, useState } from "react";
+import { SectionList, Text, TouchableOpacity, View } from "react-native";
+import { useSelector } from "react-redux";
+import { FinancialProof } from "../types/finance_proof_type";
 
 type RootStackParamList = {
   FinanceProof: undefined;
@@ -21,7 +21,7 @@ const FinanceProof = () => {
   >([]);
   const { userResponse } = useSelector((state: RootState) => state.auth);
 
-  useEffect(
+  useFocusEffect(
     useCallback(() => {
       getListFinancialProof(userResponse?.customerDTO.id)
         .then((response) => {
@@ -33,8 +33,7 @@ const FinanceProof = () => {
           console.error("Error fetching financial proof data:", error);
           setFinancialProofData([]);
         });
-    }, [userResponse?.id]),
-    []
+    }, [userResponse?.id])
   );
 
   const groupDataByMonth = (data: FinancialProof[]) => {

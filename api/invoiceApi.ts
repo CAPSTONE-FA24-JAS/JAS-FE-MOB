@@ -234,3 +234,62 @@ export const updateAddressToShipForInvoice = async (
     return null;
   }
 };
+
+// Function to initiate payment of an invoice by bank transfer
+export const paymentInvoiceByBankTransfer = async (
+  invoiceId: number,
+  amount: number
+): Promise<InvoiceResponse<null> | null> => {
+  console.log("log paymentInvoiceByBankTransfer", invoiceId, amount);
+
+  try {
+    const response = await axios.post<InvoiceResponse<null>>(
+      `${API_URL}/api/Invoices/paymentInvoiceByBankTransfer`,
+      {
+        invoiceId,
+        amount,
+      }
+    );
+
+    if (
+      response.data.isSuccess &&
+      response.data.message === "Add transaction Successfully"
+    ) {
+      console.log("Payment by bank transfer successful:", response.data);
+      showSuccessMessage("Payment by bank transfer was successful.");
+      return response.data;
+    } else {
+      // Hiển thị Alert với thông điệp lỗi từ phản hồi
+      Alert.alert(
+        "Lỗi Thanh Toán",
+        response.data.message || "Failed to pay invoice by bank transfer.",
+        [{ text: "OK" }],
+        { cancelable: false }
+      );
+      return null; // Bạn có thể trả về null hoặc xử lý theo cách khác
+    }
+  } catch (error: any) {
+    console.error("Error paying invoice by bank transfer:", error);
+
+    // Kiểm tra xem lỗi có phải là lỗi Axios và có phản hồi không
+    if (axios.isAxiosError(error) && error.response) {
+      const serverMessage = error.response.data.message;
+      Alert.alert(
+        "Lỗi Thanh Toán",
+        serverMessage || "Unable to pay invoice by bank transfer.",
+        [{ text: "OK" }],
+        { cancelable: false }
+      );
+    } else {
+      // Lỗi không phải từ máy chủ hoặc không có phản hồi
+      Alert.alert(
+        "Lỗi Thanh Toán",
+        "Unable to pay invoice by bank transfer.",
+        [{ text: "OK" }],
+        { cancelable: false }
+      );
+    }
+
+    throw error; // Tiếp tục ném lỗi nếu bạn muốn xử lý ở nơi gọi hàm này
+  }
+};

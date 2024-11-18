@@ -10,6 +10,7 @@ import {
   GetMyBidResponse,
   PlaceBidResponse,
 } from "@/app/types/bid_type";
+import { Alert } from "react-native";
 
 const API_URL = process.env.EXPO_PUBLIC_API_URL || "http://localhost:7251";
 
@@ -46,6 +47,7 @@ export const placeBidFixedPriceAndSecret = async (
           "You are not registered for this lot. Please register first."
         );
       } else {
+        Alert.alert("Error", response.data.message || "Failed to place bid.");
         showErrorMessage(response.data.message || "Failed to place bid.");
       }
       return null;

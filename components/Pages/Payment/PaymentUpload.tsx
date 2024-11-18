@@ -27,11 +27,13 @@ type RootStackParamList = {
     invoiceId: number;
     itemDetailBid: MyBidData;
     yourMaxBid: number;
+    totalPrice: number;
   };
   PaymentUpload: {
     invoiceId: number;
     itemDetailBid: MyBidData;
     yourMaxBid: number;
+    totalPrice: number;
   };
 };
 
@@ -44,7 +46,7 @@ type PaymentUploadNavigationProp = StackNavigationProp<
 const PaymentUpload: React.FC = () => {
   const navigation = useNavigation<PaymentUploadNavigationProp>();
   const route = useRoute<PaymentUploadRouteProp>();
-  const { invoiceId, itemDetailBid, yourMaxBid } = route.params;
+  const { invoiceId, itemDetailBid, yourMaxBid, totalPrice } = route.params;
 
   const [image, setImage] = useState<string | null>(null);
   const [termsChecked, setTermsChecked] = useState<boolean>(false);
@@ -108,6 +110,7 @@ const PaymentUpload: React.FC = () => {
           invoiceId,
           itemDetailBid,
           yourMaxBid,
+          totalPrice: totalPrice,
         });
       } else {
         showErrorMessage(

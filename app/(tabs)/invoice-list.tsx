@@ -40,34 +40,6 @@ const InvoiceList: React.FC = () => {
     }
   }, [selectedStatus, userId]);
 
-  // // Hàm gọi API
-  // const fetchInvoices = async () => {
-  //   if (!userId) return;
-  //   try {
-  //     setLoading(true);
-  //     const response = await getInvoicesByStatusForCustomer(
-  //       userId,
-  //       selectedStatus
-  //     );
-
-  //     if (response && response.isSuccess) {
-  //       // Nếu API trả về thành công, cập nhật danh sách hóa đơn
-  //       setInvoiceList(response.data.dataResponse);
-  //     } else if (response && !response.isSuccess && response.errorMessages) {
-  //       // Nếu isSuccess là false, hiển thị thông báo lỗi từ errorMessages
-  //       const errorMessage = response.errorMessages.join(", ");
-  //       showErrorMessage(errorMessage);
-  //       setInvoiceList([]);
-  //     }
-  //   } catch (error) {
-  //     setInvoiceList([]); // Set danh sách hóa đơn rỗng nếu có lỗi
-  //     console.error("Error fetching invoices:", error);
-  //     showErrorMessage("Unable to retrieve invoices."); // Thông báo chung khi có lỗi khác
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // };
-
   // Hàm gọi API
   const fetchInvoices = async () => {
     if (!userId) return;
@@ -81,6 +53,17 @@ const InvoiceList: React.FC = () => {
       if (response) {
         if (response.isSuccess) {
           // Nếu API trả về thành công, cập nhật danh sách hóa đơn
+          const sortedData = response.data.dataResponse.sort((a, b) => {
+            const timeA = a.myBidDTO?.lotDTO?.endTime
+              ? new Date(a.myBidDTO.lotDTO.endTime).getTime()
+              : 0; // Nếu không có `endTime`, mặc định là 0
+            const timeB = b.myBidDTO?.lotDTO?.endTime
+              ? new Date(b.myBidDTO.lotDTO.endTime).getTime()
+              : 0;
+            return timeB - timeA; // Tăng dần, dùng `timeB - timeA` nếu muốn giảm dần
+          });
+          setInvoiceList(sortedData);
+
           setInvoiceList(response.data.dataResponse);
         } else if (response.errorMessages) {
           // Nếu isSuccess là false, kiểm tra thông báo lỗi cụ thể

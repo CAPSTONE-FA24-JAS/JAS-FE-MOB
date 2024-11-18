@@ -22,6 +22,7 @@ import {
   showSuccessMessage,
 } from "@/components/FlashMessageHelpers";
 import {
+  paymentInvoiceByBankTransfer,
   paymentInvoiceByVnPay,
   paymentInvoiceByWallet,
 } from "@/api/invoiceApi";
@@ -38,11 +39,13 @@ type RootStackParamList = {
     invoiceId: number;
     itemDetailBid: MyBidData;
     yourMaxBid: number;
+    totalPrice: number;
   };
   PaymentSuccess: {
     invoiceId?: number;
     itemDetailBid: MyBidData;
     yourMaxBid: number;
+    totalPrice: number;
   };
   Payment: {
     totalPrice: number;
@@ -111,8 +114,33 @@ const Payment: React.FC = () => {
 
   const handlePayment = async () => {
     if (selectedPayment === "qr") {
-      // Show QR modal
-      setIsQRModalVisible(true);
+      // Xử lý thanh toán qua QR
+      setIsProcessing(true); // Hiển thị trạng thái đang xử lý
+      try {
+        const response = await paymentInvoiceByBankTransfer(
+          invoiceId,
+          totalPrice
+        );
+
+        if (response?.isSuccess) {
+          // Hiển thị modal QR nếu API thành công
+          showSuccessMessage(
+            response.message || "QR payment initiated successfully."
+          );
+          setIsQRModalVisible(true);
+        } else {
+          // Hiển thị lỗi nếu API trả về lỗi
+          showErrorMessage(
+            response?.message || "Failed to initiate QR payment."
+          );
+        }
+      } catch (error) {
+        // Xử lý lỗi khi gọi API thất bại
+        showErrorMessage("An error occurred during QR payment.");
+        console.error("QR Payment Error:", error);
+      } finally {
+        setIsProcessing(false); // Tắt trạng thái đang xử lý
+      }
     } else if (selectedPayment === "wallet") {
       // Show password modal
       setPasswordModalVisible(true);
@@ -182,6 +210,7 @@ const Payment: React.FC = () => {
                 invoiceId: invoiceId,
                 itemDetailBid: itemDetailBid,
                 yourMaxBid: yourMaxBid,
+                totalPrice: totalPrice,
               });
             } else {
               showErrorMessage(response?.message || "Payment failed.");
@@ -208,10 +237,14 @@ const Payment: React.FC = () => {
     <View className="flex-1 bg-gray-100">
       <ScrollView className="flex-1">
         <View className="p-4">
-          <Text className="font-bold uppercase my-2 text-lg text-gray-600"> Price need pay: {totalPrice?.toLocaleString("vi-VN", {
-                style: "currency",
-                currency: "VND",
-              })}</Text>
+          <Text className="font-bold uppercase my-2 text-lg text-gray-600">
+            {" "}
+            Price need pay:{" "}
+            {totalPrice?.toLocaleString("vi-VN", {
+              style: "currency",
+              currency: "VND",
+            })}
+          </Text>
           {/* Balance */}
           <BalanceCard />
 
@@ -288,46 +321,6 @@ const Payment: React.FC = () => {
         </View>
       </ScrollView>
 
-      {/* Modal for Payment Confirmation */}
-      {/* <Modal
-        visible={isPaymentModalVisible}
-        transparent={true}
-        animationType="slide"
-      >
-        <View className="flex-1 justify-center items-center bg-black/50 bg-opacity-50">
-          <View className="w-4/5 p-4 bg-white rounded-lg">
-            <Text className="text-lg font-bold text-center mb-4">
-              If you have successfully completed the payment, please take a
-              screenshot of the transfer bill and upload the payment photo to
-              complete!
-            </Text>
-            <TouchableOpacity
-              className="p-3 rounded bg-green-500 mb-2"
-              onPress={() => {
-                setIsPaymentModalVisible(false);
-                navigation.navigate("PaymentUpload", {
-                  invoiceId,
-                  itemDetailBid,
-                  yourMaxBid,
-                });
-              }}
-            >
-              <Text className="text-white text-base text-center font-semibold">
-                I have successfully paid
-              </Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              className="p-3 rounded bg-gray-500 "
-              onPress={() => setIsPaymentModalVisible(false)}
-            >
-              <Text className="text-white text-base  text-center  font-semibold">
-                Oops, I haven't paid yet
-              </Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-      </Modal> */}
-
       {/* Modal QR */}
       <Modal
         visible={isQRModalVisible}
@@ -373,6 +366,7 @@ const Payment: React.FC = () => {
                     invoiceId,
                     itemDetailBid,
                     yourMaxBid,
+                    totalPrice,
                   });
                 }}
               >

@@ -3,10 +3,16 @@ import {
   checkCustomerHaveBidPrice,
   checkCustomerInLot,
   getLotDetailById,
+  getTotalCustomerInLotFixedPrice,
 } from "@/api/lotAPI";
 import { addNewWatchingForCustomer } from "@/api/watchingApi";
 import { LotDetail } from "@/app/types/lot_type";
 import CountdownTimerBid from "@/components/CountDown/CountdownTimer";
+
+// Extend LotDetail type to include totalCustomers
+interface ExtendedLotDetail extends LotDetail {
+  totalCustomers?: number;
+}
 import {
   showErrorMessage,
   showSuccessMessage,
@@ -87,7 +93,7 @@ const LotDetailScreen = () => {
     ? (route.params as RouteParams)
     : {};
 
-  const [lotDetail, setLotDetail] = useState<LotDetail | null>(null);
+  const [lotDetail, setLotDetail] = useState<ExtendedLotDetail | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [modalVisible, setModalVisible] = useState<boolean>(false);
@@ -124,8 +130,37 @@ const LotDetailScreen = () => {
       try {
         setLoading(true);
         const data = await getLotDetailById(id);
+
         if (data?.isSuccess) {
-          setLotDetail(data.data);
+          // Kiểm tra nếu loại lô là Fixed_Price
+          if (data.data.lotType === "Fixed_Price") {
+            try {
+              // Gọi API lấy số lượng khách hàng
+              const totalCustomers = await getTotalCustomerInLotFixedPrice(id);
+
+              if (totalCustomers !== null) {
+                console.log(
+                  "Total customers in fixed price lot:",
+                  totalCustomers
+                );
+                setLotDetail({
+                  ...data.data,
+                  totalCustomers,
+                } as ExtendedLotDetail); // Gắn thêm totalCustomers vào dữ liệu lotDetail
+              }
+            } catch (error) {
+              console.error(
+                "Error fetching total customers for Fixed_Price lot:",
+                error
+              );
+              showErrorMessage(
+                "Unable to fetch total customers for Fixed_Price lot."
+              );
+              setLotDetail(data.data); // Dù lỗi, vẫn gắn dữ liệu lotDetail
+            }
+          } else {
+            setLotDetail(data.data); // Không phải Fixed_Price, chỉ gắn dữ liệu lotDetail
+          }
         } else {
           setError(data?.message || "Failed to load data.");
         }
@@ -585,17 +620,14 @@ const LotDetailScreen = () => {
               </Text>
             </TouchableOpacity>
           </View>
-          {/* {lotDetail && lotDetail.finalPriceSold && (
-            <View className="py-2 bg-green-200 ">
-              <Text className="font-bold text-center text-green-700 uppercase">
-                Final Price Sold:{" "}
-                {lotDetail?.finalPriceSold.toLocaleString("vi-VN", {
-                  style: "currency",
-                  currency: "VND",
-                })}
-              </Text>
-            </View>
-          )} */}
+          {lotDetail?.totalCustomers &&
+            lotDetail?.lotType === "Fixed_Price" && (
+              <View className="py-2 bg-blue-200 ">
+                <Text className="font-bold text-center text-blue-700 uppercase">
+                  Total bidders: {lotDetail.totalCustomers}
+                </Text>
+              </View>
+            )}
           <View className="p-4 space-y-2">
             <View>
               {/* Thời gian đấu giá */}

@@ -27,23 +27,22 @@ const HomeScreen = () => {
   const fetchAuctions = async () => {
     try {
       setLoading(true);
-      const [status1Response, status2Response, status3Response] =
-        await Promise.all([
-          getAuctionsByStatus(3),
-          getAuctionsByStatus(2),
-          getAuctionsByStatus(1),
-        ]);
+      const [status1Response] = await Promise.all([
+        getAuctionsByStatus(3),
+        // getAuctionsByStatus(2),
+        // getAuctionsByStatus(1),
+      ]);
 
       if (
-        status1Response.isSuccess &&
-        status2Response.isSuccess &&
-        status3Response.isSuccess
+        status1Response.isSuccess
+        // status2Response.isSuccess &&
+        // status3Response.isSuccess
       ) {
         const now = new Date();
         const combinedAuctions = [
           ...status1Response.data,
-          ...status2Response.data,
-          ...status3Response.data,
+          // ...status2Response.data,
+          // ...status3Response.data,
         ]
           // .filter((auction) => new Date(auction.endTime) > now)
           .sort((a, b) => b.id - a.id);
@@ -141,7 +140,8 @@ const HomeScreen = () => {
         <Text className="text-red-500">{error}</Text>
         <TouchableOpacity
           className="px-4 py-2 mt-4 bg-blue-500 rounded"
-          onPress={fetchAuctions}>
+          onPress={fetchAuctions}
+        >
           <Text className="text-white">Retry</Text>
         </TouchableOpacity>
       </View>
@@ -156,7 +156,8 @@ const HomeScreen = () => {
       <View className="flex-row items-center justify-end p-4">
         <TouchableOpacity
           onPress={fetchAuctions}
-          className="flex-row items-center px-2 py-1 bg-gray-300 rounded">
+          className="flex-row items-center px-2 py-1 bg-gray-300 rounded"
+        >
           <MaterialIcons name="refresh" size={24} color="black" />
           <Text className="ml-2 font-semibold text-gray-700">Reload</Text>
         </TouchableOpacity>

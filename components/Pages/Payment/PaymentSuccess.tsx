@@ -1,7 +1,7 @@
 import React from "react";
 import { View, Text, TouchableOpacity } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons"; // Sử dụng icon checkmark
-import { useNavigation } from "expo-router";
+import { router, useNavigation } from "expo-router";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { MyBidData } from "@/app/types/bid_type";
 import { RouteProp, useRoute } from "@react-navigation/native";
@@ -15,6 +15,7 @@ type RootStackParamList = {
     invoiceId?: number;
     itemDetailBid: MyBidData;
     yourMaxBid: number;
+    totalPrice: number;
   };
 };
 
@@ -28,7 +29,7 @@ const PaymentSuccess: React.FC = () => {
   const navigation = useNavigation<PaymentSuccessNavigationProp>();
   const route = useRoute<PaymentSuccessRouteProp>();
   const user = useSelector((state: RootState) => state.auth.userResponse);
-  const { invoiceId, itemDetailBid, yourMaxBid } = route.params;
+  const { invoiceId, itemDetailBid, yourMaxBid, totalPrice } = route.params;
 
   console.log("====================================");
   console.log("route.params", invoiceId, "itemDetailBid", itemDetailBid);
@@ -42,14 +43,7 @@ const PaymentSuccess: React.FC = () => {
     navigation.navigate("Account", { screen: "InvoiceList" as const });
   };
 
-  const basePrice =
-    itemDetailBid?.yourMaxBidPrice ||
-    itemDetailBid?.lotDTO?.finalPriceSold ||
-    yourMaxBid ||
-    0;
-
   // Calculate the total price
-  const totalPrice = basePrice + basePrice * 0.08;
 
   return (
     <View className="flex-1 bg-white pt-20 ">
@@ -73,7 +67,9 @@ const PaymentSuccess: React.FC = () => {
           <Text className="text-base font-semibold text-gray-600">
             Invoice Code
           </Text>
-          <Text className="text-base font-bold text-black">#{invoiceId ||1}</Text>
+          <Text className="text-base font-bold text-black">
+            #{invoiceId || 1}
+          </Text>
         </View>
         <View className="flex-row justify-between mb-3 ">
           <Text className="text-base font-semibold text-gray-600">

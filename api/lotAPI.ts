@@ -6,6 +6,7 @@ import {
 import apiClient from "./config";
 import { ListLotResponse, LotDetailResponse } from "@/app/types/lot_type";
 import { ApiError, ApiResponse } from "./utils/ApiError";
+import { Response } from "@/app/types/respone_type";
 
 const API_URL = process.env.EXPO_PUBLIC_API_URL || "http://localhost:7251";
 
@@ -222,5 +223,35 @@ export const setAutoBidConfig = async (
       showErrorMessage("Unable to set auto-bid configuration.");
       throw new ApiError(500, "Unable to set auto-bid configuration.");
     }
+  }
+};
+
+// Function to get the total number of customers in a fixed price lot
+export const getTotalCustomerInLotFixedPrice = async (
+  lotId: number
+): Promise<number | null> => {
+  try {
+    const response = await axios.get<Response<number>>(
+      `${API_URL}/api/Lot/TotalCustomerInLotFixedPrice`,
+      {
+        params: { lotId },
+      }
+    );
+
+    if (response.data.isSuccess && response.data.data !== null) {
+      console.log("Total customers in lot (fixed price):", response.data.data);
+      return response.data.data; // Trả về số lượng khách hàng
+    } else {
+      throw new Error(
+        response.data.message || "Failed to retrieve total customers."
+      );
+    }
+  } catch (error) {
+    console.error(
+      "Error retrieving total customers in lot (fixed price):",
+      error
+    );
+    showErrorMessage("Unable to retrieve total customers in the lot.");
+    throw error;
   }
 };

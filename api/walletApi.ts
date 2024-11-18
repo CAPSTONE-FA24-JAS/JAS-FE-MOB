@@ -106,11 +106,15 @@ export const createWallet = async (
 
 // Function to top up the wallet
 export const depositWallet = async (
+  customerId: number,
   walletId: number,
   amount: number
 ): Promise<string> => {
   try {
+    console.log("Depositing to wallet:", customerId, walletId, amount);
+
     const response = await axios.post(`${API_URL}/api/Wallet/TopUp`, {
+      customerId,
       walletId,
       amount,
     });

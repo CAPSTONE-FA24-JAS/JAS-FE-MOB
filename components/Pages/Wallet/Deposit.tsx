@@ -15,6 +15,9 @@ const Deposit: React.FC = () => {
   const [selectedPayment, setSelectedPayment] = useState<string>("vnpay");
   const [amount, setAmount] = useState<number>(1000000); // Default amount set to 1000000
   const [loading, setLoading] = useState<boolean>(false); // Add loading state
+  const cusid = useSelector(
+    (state: RootState) => state.profile.profile?.customerDTO?.id
+  );
 
   // Get wallet ID from Redux state
   const walletId = useSelector(
@@ -33,10 +36,20 @@ const Deposit: React.FC = () => {
 
     setLoading(true); // Start loading
     try {
-      const paymentLink = await depositWallet(walletId, depositAmount);
-      if (paymentLink) {
-        // Open the payment link in the browser
-        Linking.openURL(paymentLink);
+      if (cusid) {
+        console.log("Depositing amount:", depositAmount);
+        console.log("Customer ID:", cusid);
+        console.log("Wallet ID:", walletId);
+
+        const paymentLink = await depositWallet(cusid, walletId, depositAmount);
+        if (paymentLink) {
+          // Open the payment link in the browser
+          Linking.openURL(paymentLink);
+        }
+      } else {
+        showErrorMessage(
+          "Customer ID not found. Unable to proceed with deposit."
+        );
       }
     } catch (error) {
       console.error("Error during deposit:", error);

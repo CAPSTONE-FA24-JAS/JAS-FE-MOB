@@ -117,7 +117,7 @@ export const getBidsOfCustomer = async (
 export const getPastBidOfCustomer = async (
   customerId: number,
   status: number[],
-  pageIndex: number = 1,
+  pageIndex: number,
   pageSize: number
 ): Promise<GetPastBidOfCustomerResponse | null> => {
   console.log("getPastBidOfCustomerRUN");

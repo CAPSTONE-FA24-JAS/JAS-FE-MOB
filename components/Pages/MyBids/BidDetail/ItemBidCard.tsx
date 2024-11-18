@@ -217,6 +217,17 @@ const ItemBidCard: React.FC<ItemBidCardProps> = ({
               <Text className={`text-gray-600 font-semibold text-sm `}>
                 with
               </Text>
+              {!isWin && (
+                <Text
+                  className={`${statusColor} uppercase font-semibold text-sm `}
+                >
+                  {yourMaxBid.toLocaleString("vi-VN", {
+                    style: "currency",
+                    currency: "VND",
+                  }) ?? "0 VND"}
+                </Text>
+              )}
+
               {invoiceDetails ? (
                 <Text
                   className={`${statusColor} uppercase font-semibold text-sm `}
@@ -235,19 +246,12 @@ const ItemBidCard: React.FC<ItemBidCardProps> = ({
                 <Text
                   className={`${statusColor} uppercase font-semibold text-sm `}
                 >
-                  {isWin
-                    ? (
-                        itemDetailBid.lotDTO.finalPriceSold || yourMaxBid
-                      ).toLocaleString("vi-VN", {
-                        style: "currency",
-                        currency: "VND",
-                      }) ?? "0 VND"
-                    : (
-                        itemDetailBid.yourMaxBidPrice || yourMaxBid
-                      ).toLocaleString("vi-VN", {
-                        style: "currency",
-                        currency: "VND",
-                      }) ?? "0 VND"}
+                  {isWin &&
+                    (yourMaxBid.toLocaleString("vi-VN", {
+                      style: "currency",
+                      currency: "VND",
+                    }) ??
+                      "0 VND")}
                 </Text>
               )}
               {/* {soldPrice && (
@@ -256,6 +260,11 @@ const ItemBidCard: React.FC<ItemBidCardProps> = ({
                 </Text>
               )} */}
             </View>
+
+            <Text>
+              <Text className="font-semibold">Type:</Text>{" "}
+              {formatTypeBid(typeBid ?? "N/A")}
+            </Text>
 
             {minPrice !== 0 && maxPrice !== 0 && (
               <View className="">

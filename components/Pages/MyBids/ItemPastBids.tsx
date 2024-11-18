@@ -188,8 +188,15 @@ const ItemPastBids: React.FC<ItemPastBidsProps> = ({
           id,
           status: statusLot,
           typeBid: typeBid,
-          minPrice: minPrice,
-          maxPrice: minPrice,
+          minPrice: typeBid === "Auction_Price_GraduallyReduced" ? 0 : minPrice,
+          maxPrice:
+            typeBid === "Fixed_Price"
+              ? 0
+              : typeBid === "Secret_Auction"
+              ? itemBid?.lotDTO?.finalPriceSold ?? 0
+              : typeBid === "Public_Auction"
+              ? 0
+              : minPrice,
           image,
           endTime: endTime,
           startTime: startTime,
@@ -291,15 +298,17 @@ const ItemPastBids: React.FC<ItemPastBidsProps> = ({
             </View>
           </View>
         )}
-        <Text className="text-base text-gray-600">
-          SOLD:{" "}
-          <Text className="font-semibold">
-            {soldPrice.toLocaleString("vi-VN", {
-              style: "currency",
-              currency: "VND",
-            })}
+        {isWin && (
+          <Text className="text-base text-gray-600">
+            SOLD:{" "}
+            <Text className="font-semibold">
+              {yourMaxBid.toLocaleString("vi-VN", {
+                style: "currency",
+                currency: "VND",
+              })}
+            </Text>
           </Text>
-        </Text>
+        )}
         <Text className="text-base text-gray-600">
           Your max bid:{" "}
           <Text className="font-semibold">

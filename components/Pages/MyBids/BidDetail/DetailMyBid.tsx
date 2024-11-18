@@ -351,7 +351,8 @@ const DetailMyBid: React.FC = () => {
           itemDetailBid?.status === "PendingPayment" ? (
             <TouchableOpacity
               className="p-3 mx-4 mt-4 bg-blue-500 rounded"
-              onPress={handleConfirmInvoice}>
+              onPress={handleConfirmInvoice}
+            >
               <Text className="text-base font-semibold text-center text-white uppercase">
                 Confirm Invoice
               </Text>
@@ -359,7 +360,8 @@ const DetailMyBid: React.FC = () => {
           ) : (
             <TouchableOpacity
               className="p-3 mx-4 my-4 bg-blue-500 rounded"
-              onPress={handleViewInvoice}>
+              onPress={handleViewInvoice}
+            >
               <Text className="text-base font-semibold text-center text-white uppercase">
                 View Invoice
               </Text>
@@ -372,7 +374,8 @@ const DetailMyBid: React.FC = () => {
           <TouchableOpacity>
             <Text
               className="ml-2 font-semibold text-center text-blue-500 "
-              onPress={() => navigation.navigate("InvoiceList")}>
+              onPress={() => navigation.navigate("InvoiceList")}
+            >
               Invoice List
             </Text>
           </TouchableOpacity>
@@ -384,7 +387,8 @@ const DetailMyBid: React.FC = () => {
         animationType="slide"
         transparent={true}
         visible={isChooseModalVisible}
-        onRequestClose={() => setChooseModalVisible(false)}>
+        onRequestClose={() => setChooseModalVisible(false)}
+      >
         <ChooseAddress
           addresses={addresses}
           selectedAddress={defaultAddress}

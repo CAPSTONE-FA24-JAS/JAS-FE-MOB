@@ -3,6 +3,7 @@ import authReducer from "./slices/authSlice";
 import profileReducer from "./slices/profileSlice";
 import notificationReducer from "./slices/notificationSlice";
 import signalRReducer from "./slices/signalRSlice";
+import { useDispatch } from "react-redux";
 
 const store = configureStore({
   reducer: {
@@ -30,3 +31,5 @@ export type AppDispatch = typeof store.dispatch;
 
 export type AppThunk = ThunkAction<void, RootState, undefined, Action<string>>;
 export default store;
+
+export const useAppDispatch = () => useDispatch<AppDispatch>();

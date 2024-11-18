@@ -55,8 +55,7 @@ const BalanceCard: React.FC = () => {
           right={(props) => (
             <TouchableOpacity
               onPress={() => setIsBalanceVisible(!isBalanceVisible)}
-              className="mr-6 mt-10"
-            >
+              className="mt-10 mr-6">
               <Icon
                 name={isBalanceVisible ? "visibility" : "visibility-off"}
                 size={24}

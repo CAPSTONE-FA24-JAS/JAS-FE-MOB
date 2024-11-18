@@ -8,6 +8,7 @@ import {
   TransactionResponse,
   WalletBalanceResponse,
 } from "@/app/types/wallet_type";
+import { Response } from "@/app/types/respone_type";
 
 const API_URL = process.env.EXPO_PUBLIC_API_URL || "http://localhost:7251";
 
@@ -161,6 +162,40 @@ export const getTransactionsByCustomer = async (
   } catch (error) {
     console.error("Error fetching transactions:", error);
     showErrorMessage("Unable to retrieve transactions.");
+    throw error;
+  }
+};
+
+export const RequestNewWithdraw = async (
+  customerId: number,
+  walletId: number,
+  amount: number
+): Promise<Response<string | null>> => {
+  try {
+    console.log(
+      "Requesting withdraw for wallet:",
+      customerId,
+      walletId,
+      amount
+    );
+
+    const response = await axios.post<Response<string | null>>(
+      `${API_URL}/api/Wallet/RequestNewWithdraw`,
+      {
+        customerId,
+        walletId,
+        amount,
+      }
+    );
+
+    if (response.data.code === 200 && response.data.isSuccess) {
+      return response.data;
+    } else {
+      throw new Error("Failed to request withdraw.");
+    }
+  } catch (error) {
+    console.error("Error requesting withdraw:", error);
+    showErrorMessage("Unable to request withdraw.");
     throw error;
   }
 };

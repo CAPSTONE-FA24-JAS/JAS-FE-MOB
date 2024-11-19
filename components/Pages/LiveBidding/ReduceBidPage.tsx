@@ -17,6 +17,7 @@ import { RouteProp, useRoute } from "@react-navigation/native";
 import { useNavigation } from "expo-router";
 import { getLotDetailById } from "@/api/lotAPI";
 import BidInputMethod4 from "./BidingComponent/BidInputMethod4";
+import AuctionResultModal from "@/components/Modal/AuctionResultModal";
 
 type ReduceBidPageParams = {
   ReduceBidPage: {
@@ -85,6 +86,11 @@ const ReduceBidPage = () => {
   const customerId = useSelector(
     (state: RootState) => state.auth.userResponse?.customerDTO.id
   );
+
+  const onClose = () => {
+    console.log("Close modal");
+    navigation.goBack();
+  };
 
   useEffect(() => {
     const fetchLotDetail = async () => {
@@ -173,6 +179,14 @@ const ReduceBidPage = () => {
           />
         </View>
       )}
+
+      <AuctionResultModal
+        visible={isEndAuctionMethod4}
+        currentUser={customerId?.toString() || ""}
+        userWinner={winnerCustomer}
+        winningPrice={winnerPrice}
+        onClose={onClose}
+      />
     </View>
   );
 };

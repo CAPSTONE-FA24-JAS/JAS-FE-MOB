@@ -56,6 +56,7 @@ export function useBiddingMethod3(): UseBiddingResult {
 
   const setupSignalRHandlers = useCallback((connection: HubConnection) => {
     // Xử lý sự kiện khi có người tham gia phòng đấu giá
+
     connection.on("JoinLot", (user: string, message: string) => {
       console.log(`${user}: ${message}`);
     });
@@ -144,6 +145,7 @@ export function useBiddingMethod3(): UseBiddingResult {
         });
       }
     );
+
     // end lot asap use for disable bidding btn
     connection.on("AuctionPublicEnded", (message: string) => {
       console.log(`${message}`);
@@ -153,7 +155,7 @@ export function useBiddingMethod3(): UseBiddingResult {
     //sendresultcheckcurrentprice
     // khi end auction tổng kết kết quả
     connection.on(
-      "AuctionEndedWithWinner",
+      "AuctionEndedWithWinnerPublic",
       (message: string, customerId: string, price: number) => {
         setIsEndAuctionMedthod3(true);
         setWinnerCustomer(customerId);
@@ -170,13 +172,14 @@ export function useBiddingMethod3(): UseBiddingResult {
       }
     );
 
-    connection.on(
-      "SendResultCheckCurrentPrice",
-      (message: string, price: number) => {
-        console.log(`${message} price ${price}`);
-        setResultBidding(`${message} : ${price}`);
-      }
-    );
+    // validate price
+    // connection.on(
+    //   "SendResultCheckCurrentPrice",
+    //   (message: string, price: number) => {
+    //     console.log(`${message} price ${price}`);
+    //     setResultBidding(`${message} : ${price}`);
+    //   }
+    // );
   }, []);
 
   const joinLiveBiddingMethod3 = useCallback(

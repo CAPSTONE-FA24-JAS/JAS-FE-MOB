@@ -6,7 +6,9 @@ export interface Notification {
   notifiableId: number;
   notifi_Type: string;
   accountId: number;
-  imageNoti: string;
+  imageLink: string;
+  creationDate: string;
+  statusOfValuation: any;
 }
 
 export default {};

@@ -24,10 +24,10 @@ import {
   setTotalItems,
 } from "@/redux/slices/notificationSlice";
 import * as signalR from "@microsoft/signalr"; // Import SignalR library
-import { initializeSignalR } from "@/redux/slices/signalRSlice";
+import { useSignalR } from "@/hooks/useSignalR";
 
 const API_URL = process.env.EXPO_PUBLIC_API_URL || "http://localhost:7251";
-const SIGNALR_URL = `${API_URL}/auctionning`; // The SignalR hub URL
+const SIGNALR_URL = `${API_URL}/Notification`; // The SignalR hub URL
 
 const Notifications: React.FC = () => {
   const dispatch = useDispatch<typeof store.dispatch>();
@@ -37,23 +37,21 @@ const Notifications: React.FC = () => {
   const accountId = useSelector(
     (state: RootState) => state.auth.userResponse?.id
   );
-  const [connection, setConnection] = useState<signalR.HubConnection | null>(
-    null
-  );
-  // const [notifications, setNotifications] = useState<Notification[]>([]);
-  const [pageIndex, setPageIndex] = useState(1);
-  // const [loading, setLoading] = useState(false);
-  // const [loadingMark, setLoadingMark] = useState(false);
+  const { realTimeNotifications } = useSignalR(SIGNALR_URL, accountId); // Dùng hook để quản lý SignalR
+  const [mergedNotifications, setMergedNotifications] = useState(notifications);
   const [refreshing, setRefreshing] = useState(false);
-  // const [totalItems, setTotalItems] = useState(0);
   const [modalVisible, setModalVisible] = useState(false); // State để hiển thị modal xác nhận
-  const [initialFetchDone, setInitialFetchDone] = useState(false); // Trạng thái để kiểm tra lần đầu fetch
 
   const pageSize = 10;
 
   const hasMore = notifications.length < totalItems;
 
   console.log("notifications", notifications);
+
+  // Đồng bộ notifications từ API và SignalR
+  useEffect(() => {
+    setMergedNotifications([...realTimeNotifications, ...notifications]);
+  }, [realTimeNotifications, notifications]);
 
   // Fetch notifications from the API
   const fetchNotifications = async (page: number, shouldRefresh = false) => {
@@ -90,7 +88,6 @@ const Notifications: React.FC = () => {
   useEffect(() => {
     if (accountId) {
       fetchNotifications(1, true);
-      dispatch(initializeSignalR(accountId)); // Initialize SignalR for this account
     }
   }, [accountId]);
 
@@ -168,26 +165,6 @@ const Notifications: React.FC = () => {
   };
 
   // Handle marking all unread notifications as read
-
-  // Xử lý khi người dùng xác nhận đọc tất cả thông báo
-  // const handleConfirmReadAll = async () => {
-  //   // Gọi API để đánh dấu tất cả thông báo chưa đọc là đã đọc
-  //   setLoadingMark(true);
-  //   try {
-  //     for (const notification of unreadNotifications) {
-  //       await markNotificationAsReadByAccount(notification.id);
-  //     }
-
-  //     // Sau khi gọi API, reload lại danh sách thông báo
-  //     fetchNotifications(1, true);
-  //     setModalVisible(false); // Đóng modal
-  //   } catch (error) {
-  //     setLoadingMark(false);
-  //     console.error("Error marking all notifications as read:", error);
-  //   } finally {
-  //     setLoadingMark(false);
-  //   }
-  // };
 
   return (
     <View className="flex-1 py-2 bg-white">

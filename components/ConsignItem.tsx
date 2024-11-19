@@ -23,6 +23,7 @@ export interface ConsignItemProps {
   image: string;
   status: ConsignStatus;
   date: string;
+  index: number;
   onViewDetails?: () => void;
 }
 
@@ -49,6 +50,7 @@ const ConsignItem: React.FC<ConsignItemProps> = ({
   onViewDetails,
   image,
   date,
+  index,
 }) => {
   const statusColor = statusColors[status] || "text-gray-500";
   const imageLink = image ? image : "https://via.placeholder.com/150";
@@ -68,6 +70,9 @@ const ConsignItem: React.FC<ConsignItemProps> = ({
 
   return (
     <View className="p-4 mb-2 bg-white rounded-lg shadow">
+      <Text className=" py-1 px-2 bg-blue-400 font-semibold z-40 text-white rounded-full absolute top-1 left-2">
+        {index + 1}
+      </Text>
       <View className="flex-row items-center">
         <Image source={{ uri: imageLink }} className="w-24 h-24 mr-4 rounded" />
         <View className="flex-1">

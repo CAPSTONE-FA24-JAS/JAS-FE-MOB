@@ -19,7 +19,6 @@ interface FinalValuationDetailsModalProps {
   isVisible: boolean;
   onClose: () => void;
   onApprove: () => void;
-  onReject: () => void;
   details: {
     id: number;
     images: string[];
@@ -60,7 +59,6 @@ const FinalValuationDetailsModal: React.FC<FinalValuationDetailsModalProps> = ({
   isVisible,
   onClose,
   onApprove,
-  onReject,
   details,
 }) => {
   const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
@@ -287,13 +285,7 @@ const FinalValuationDetailsModal: React.FC<FinalValuationDetailsModalProps> = ({
 
           {/* Action Buttons */}
           {details?.status === "ManagerApproved" && (
-            <View className="flex-row justify-around mt-4">
-              <TouchableOpacity
-                className="px-8 py-3 bg-red-500 rounded-lg"
-                onPress={onReject}
-              >
-                <Text className="text-base font-bold text-white">REJECT</Text>
-              </TouchableOpacity>
+            <View className="flex-row justify-center mt-4">
               <TouchableOpacity
                 className="px-8 py-3 bg-green-500 rounded-lg"
                 onPress={handlePowerOfAttorney}

@@ -79,9 +79,9 @@ export const consignAnItem = async (
 
 export const getHistoryConsign = async (
   sellerId: number,
-  status?: number, // status là tùy chọn
-  pageSize: number = 10,
-  pageIndex: number = 1
+  pageSize: number,
+  pageIndex: number,
+  status?: number // status là tùy chọn
 ): Promise<HistoryConsignmentResponse | null> => {
   try {
     const params: any = {
@@ -173,5 +173,41 @@ export const getDetailHistoryValuation = async (
     console.error("Error fetching valuation history:", error);
     showErrorMessage("Unable to fetch valuation history.");
     return [];
+  }
+};
+
+export const rejectForValuations = async (
+  id: number,
+  status: number,
+  reason: string
+): Promise<any> => {
+  console.log("Rejecting valuation:", { id, status, reason });
+
+  try {
+    const response = await axios.put(
+      `${API_URL}/api/Valuations/RejectForValuations`,
+      null, // Không cần body trong PUT nếu sử dụng query parameters
+      {
+        params: {
+          id, // ID của định giá
+          status, // Trạng thái cần cập nhật
+          reason, // Lý do hủy
+        },
+      }
+    );
+
+    if (response.data.isSuccess) {
+      console.log("Reject valuation successfully:", response.data);
+      showSuccessMessage(
+        response.data.message || "Cập nhật trạng thái thành công."
+      );
+      return response.data;
+    } else {
+      throw new Error(response.data.message || "Lỗi khi cập nhật trạng thái.");
+    }
+  } catch (error) {
+    console.error("Error rejecting valuation:", error);
+    showErrorMessage("Không thể hủy định giá.");
+    throw error;
   }
 };

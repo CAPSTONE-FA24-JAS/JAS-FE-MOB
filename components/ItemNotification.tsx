@@ -4,6 +4,7 @@ import { markNotificationAsRead } from "@/redux/slices/notificationSlice";
 import { FontAwesome } from "@expo/vector-icons";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { router, useNavigation } from "expo-router";
+import moment from "moment-timezone";
 // components/NotificationItem.tsx
 import React from "react";
 import { View, Text, Image } from "react-native";
@@ -136,12 +137,15 @@ const NotificationItem = ({ item }: { item: Notification }) => {
       } `}
       key={item.id} // Ensuring key is unique
     >
+      <Text className="font-semibold text-gray-600 mb-2">
+        {moment(item.creationDate).format("HH:mm A, DD/MM/YYYY")}
+      </Text>
       <View className="flex-row items-center">
         <View className="mr-3 w-[24%]">
           <Image
             source={{
               uri:
-                item.imageNoti ??
+                item.imageLink ??
                 "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQWz9tftw9qculFH1gxieWkxL6rbRk_hrXTSg&s",
             }}
             className="w-[90px] h-[100px] rounded-xl"

@@ -27,21 +27,23 @@ const HomeScreen = () => {
   const fetchAuctions = async () => {
     try {
       setLoading(true);
-      const [status1Response] = await Promise.all([
-        getAuctionsByStatus(3),
-        // getAuctionsByStatus(2),
-        // getAuctionsByStatus(1),
-      ]);
+      const [status1Response, status2Response] =
+        await Promise.all([
+          getAuctionsByStatus(3),
+          getAuctionsByStatus(2),
+          // getAuctionsByStatus(1),
+        ]);
 
       if (
-        status1Response.isSuccess
-        // status2Response.isSuccess &&
+        status1Response.isSuccess &&
+        status2Response.isSuccess 
+        // &&
         // status3Response.isSuccess
       ) {
         const now = new Date();
         const combinedAuctions = [
           ...status1Response.data,
-          // ...status2Response.data,
+          ...status2Response.data,
           // ...status3Response.data,
         ]
           // .filter((auction) => new Date(auction.endTime) > now)

@@ -17,7 +17,7 @@ const initialState: NotificationState = {
 };
 
 const notificationSlice = createSlice({
-  name: "notifications",
+  name: "Notification",
   initialState,
   reducers: {
     setNotifications: (state, action: PayloadAction<Notification[]>) => {
@@ -43,6 +43,10 @@ const notificationSlice = createSlice({
         notification.is_Read = true;
       }
     },
+    addNotification: (state, action: PayloadAction<Notification>) => {
+      state.notifications.push(action.payload);
+    },
+
     // Reset notifications when the user logs out
     resetNotifications: (state) => {
       state.notifications = [];
@@ -60,6 +64,7 @@ export const {
   setLoadingMark,
   markNotificationAsRead,
   resetNotifications,
+  addNotification,
 } = notificationSlice.actions;
 
 export default notificationSlice.reducer;

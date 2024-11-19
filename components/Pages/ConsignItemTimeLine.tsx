@@ -12,12 +12,14 @@ import { showErrorMessage, showSuccessMessage } from "../FlashMessageHelpers";
 import ImageGallery from "../ImageGallery";
 import {
   getDetailHistoryValuation,
+  rejectForValuations,
   updateStatusForValuation,
 } from "@/api/consignAnItemApi";
 import { useNavigation } from "expo-router";
 import FinalValuationDetailsModal from "../Modal/FinalValuationDetailsModal";
 import moment from "moment-timezone";
 import { StackNavigationProp } from "@react-navigation/stack";
+import LoadingOverlay from "../LoadingOverlay";
 
 // Define the types for navigation routes
 type RootStackParamList = {
@@ -60,6 +62,7 @@ const ConsignDetailTimeLine: React.FC = () => {
   const [valuationData, setValuationData] = useState<any | null>(null);
   const [isFinalModalVisible, setFinalModalVisible] = useState(false);
   // console.log("timelineAK", timeline);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     fetchTimelineData(item?.id);
@@ -142,6 +145,7 @@ const ConsignDetailTimeLine: React.FC = () => {
   };
 
   const handleApprove = async () => {
+    setLoading(true); // Bắt đầu loading
     try {
       await updateStatusForValuation(item?.id, 4);
       // Update the item status locally
@@ -150,23 +154,32 @@ const ConsignDetailTimeLine: React.FC = () => {
         status: "Preliminary",
       }));
       setModalVisible(false);
+      showSuccessMessage("Valuation approved successfully.");
     } catch (error) {
       console.error("Error approving valuation:", error);
+      showErrorMessage("Failed to approve valuation.");
+    } finally {
+      setLoading(false); // Kết thúc loading
     }
   };
 
-  const handleReject = async () => {
+  const handleReject = async (reason: string) => {
+    setLoading(true); // Bắt đầu loading
     try {
-      await updateStatusForValuation(item?.id, 9);
-      // Update the item status locally
+      await rejectForValuations(item?.id, 9, reason); // Gọi API rejectForValuations
+      // Cập nhật trạng thái của item trong UI
       setItem((prevItem) => ({
         ...prevItem,
         status: "RejectedPreliminary",
       }));
-      setModalVisible(false);
-      setFinalModalVisible(false);
+      setModalVisible(false); // Đóng modal
+      setFinalModalVisible(false); // Đóng modal cuối
+      showSuccessMessage("Valuation rejected successfully.");
     } catch (error) {
       console.error("Error rejecting valuation:", error);
+      showErrorMessage("Failed to reject valuation.");
+    } finally {
+      setLoading(false); // Kết thúc loading
     }
   };
 
@@ -220,6 +233,7 @@ const ConsignDetailTimeLine: React.FC = () => {
 
   return (
     <ScrollView className="flex-1 bg-white">
+      <LoadingOverlay visible={loading} />
       <View className="p-4">
         {/* Hiển thị thông tin item */}
         <View className="flex-row items-center mb-4">
@@ -239,7 +253,8 @@ const ConsignDetailTimeLine: React.FC = () => {
             <Text
               className={`uppercase ${getStatusColor(
                 item?.status
-              )} px-2 py-1 rounded-md text-white text-center mb-2 text-base font-semibold uppercase`}>
+              )} px-2 py-1 rounded-md text-white text-center mb-2 text-base font-semibold uppercase`}
+            >
               {statusTextMap[item?.status as ConsignStatus]}
             </Text>
             <View className="flex-row items-center justify-between ">
@@ -283,7 +298,8 @@ const ConsignDetailTimeLine: React.FC = () => {
               ) : item?.status === "ManagerApproved" ? (
                 <TouchableOpacity
                   className="w-full p-2 mt-2 bg-blue-500 rounded"
-                  onPress={handleViewFinalValuation}>
+                  onPress={handleViewFinalValuation}
+                >
                   <Text className="font-bold text-center text-white">
                     Show Final Valuation Modal
                   </Text>
@@ -340,7 +356,8 @@ const ConsignDetailTimeLine: React.FC = () => {
                                     )[0]?.documentLink
                                   )
                               : () => {}
-                          }>
+                          }
+                        >
                           <Text className="font-semibold text-gray-700">
                             Download delivery receipt
                           </Text>
@@ -350,7 +367,8 @@ const ConsignDetailTimeLine: React.FC = () => {
                     {event?.statusName == "Preliminary" && ( // chưa biết cái nào hiển thị tài liệu nên để đây
                       <TouchableOpacity
                         className="p-2 mt-1 bg-gray-200 rounded w-[140px] "
-                        onPress={handleViewPreValuation}>
+                        onPress={handleViewPreValuation}
+                      >
                         <Text className="font-semibold text-center text-gray-700">
                           View Preliminary
                         </Text>
@@ -360,7 +378,8 @@ const ConsignDetailTimeLine: React.FC = () => {
                     {event?.statusName == "FinalValuated" && ( // chưa biết cái nào hiển thị tài liệu nên để đây
                       <TouchableOpacity
                         className="p-2 mt-1 bg-gray-200 rounded w-[140px] "
-                        onPress={handleViewFinalValuation}>
+                        onPress={handleViewFinalValuation}
+                      >
                         <Text className="font-semibold text-center text-gray-700">
                           View Final Valuated
                         </Text>
@@ -375,7 +394,8 @@ const ConsignDetailTimeLine: React.FC = () => {
         {timeline.length > 4 && (
           <TouchableOpacity
             onPress={toggleExpanded}
-            className="flex-row items-center justify-center p-2 mt-2 bg-gray-100 rounded">
+            className="flex-row items-center justify-center p-2 mt-2 bg-gray-100 rounded"
+          >
             <Text className="mr-2">
               {expanded ? "Thu gọn" : "Xem toàn bộ lịch sử"}
             </Text>
@@ -394,7 +414,7 @@ const ConsignDetailTimeLine: React.FC = () => {
           onClose={() => setModalVisible(false)}
           details={valuationData} // Dữ liệu thực từ ConsignResponse đã chuyển đổi
           onApprove={handleApprove}
-          onReject={handleReject}
+          onReject={(reason: string) => handleReject(reason)}
         />
       )}
       {
@@ -406,7 +426,6 @@ const ConsignDetailTimeLine: React.FC = () => {
             showSuccessMessage("Approved");
             setFinalModalVisible(false);
           }}
-          onReject={handleReject}
         />
       }
     </ScrollView>

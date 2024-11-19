@@ -1,6 +1,6 @@
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import moment from "moment-timezone";
-import React from "react";
+import React, { useState } from "react";
 import {
   Modal,
   View,
@@ -8,13 +8,15 @@ import {
   Image,
   TouchableOpacity,
   ScrollView,
+  TextInputBase,
+  TextInput,
 } from "react-native";
 
 interface PreValuationDetailsModalProps {
   isVisible: boolean;
   onClose: () => void;
   onApprove: () => void;
-  onReject: () => void;
+  onReject: (reason: string) => void;
   details: {
     id: number;
     images: { id: number; imageLink: string }[];
@@ -40,6 +42,32 @@ const PreValuationDetailsModal: React.FC<PreValuationDetailsModalProps> = ({
   onReject,
   details,
 }) => {
+  const [rejectReasonModalVisible, setRejectReasonModalVisible] =
+    useState(false);
+  const [selectedReason, setSelectedReason] = useState<string | null>(null);
+  const [otherReason, setOtherReason] = useState<string>("");
+  const [customReason, setCustomReason] = useState("");
+
+  const suggestedReasons = [
+    "Not meeting requirements",
+    "Incomplete information",
+    "Quality issue",
+    "Incorrect details",
+    "Other",
+  ];
+
+  const handleConfirmReject = () => {
+    const reason =
+      selectedReason === "Other" ? otherReason : selectedReason || "";
+    if (reason.trim() === "") {
+      alert("Please provide a reason for rejection.");
+      return;
+    }
+
+    setRejectReasonModalVisible(false);
+    onReject(reason); // Truyền lý do cho hàm `onReject`
+  };
+
   return (
     <Modal
       visible={isVisible}
@@ -165,7 +193,7 @@ const PreValuationDetailsModal: React.FC<PreValuationDetailsModalProps> = ({
             <View className="flex-row justify-around mt-4">
               <TouchableOpacity
                 className="px-8 py-3 bg-red-500 rounded-lg"
-                onPress={onReject}
+                onPress={() => setRejectReasonModalVisible(true)}
               >
                 <Text className="font-bold text-white">REJECT</Text>
               </TouchableOpacity>
@@ -179,6 +207,64 @@ const PreValuationDetailsModal: React.FC<PreValuationDetailsModalProps> = ({
           )}
         </View>
       </View>
+
+      {/* Reject Reason Modal */}
+      <Modal
+        visible={rejectReasonModalVisible}
+        animationType="slide"
+        transparent
+        onRequestClose={() => setRejectReasonModalVisible(false)}
+      >
+        <View className="flex-1 justify-center items-center bg-black/50">
+          <View className="w-11/12 bg-white rounded-lg p-4">
+            <Text className="text-lg font-bold mb-4">Select a Reason</Text>
+            <ScrollView className="max-h-[60%]">
+              {suggestedReasons.map((reason, index) => (
+                <TouchableOpacity
+                  key={index}
+                  className={`flex-row items-center mb-2 p-3 rounded-lg ${
+                    selectedReason === reason ? "bg-blue-100" : "bg-gray-100"
+                  }`}
+                  onPress={() => setSelectedReason(reason)}
+                >
+                  <View className="h-5 w-5 border-2 border-blue-600 rounded-full flex items-center justify-center mr-4">
+                    {selectedReason === reason && (
+                      <View className="h-2.5 w-2.5 bg-blue-600 rounded-full" />
+                    )}
+                  </View>
+                  <Text className="text-base text-gray-700">{reason}</Text>
+                </TouchableOpacity>
+              ))}
+              {selectedReason === "Other" && (
+                <TextInput
+                  className="border border-gray-300 rounded-lg p-3 mt-4"
+                  placeholder="Enter your reason"
+                  value={otherReason}
+                  onChangeText={setOtherReason}
+                />
+              )}
+            </ScrollView>
+            <View className="flex-row justify-between mt-6">
+              <TouchableOpacity
+                className="flex-1 mr-2 bg-gray-300 py-3 rounded-lg"
+                onPress={() => setRejectReasonModalVisible(false)}
+              >
+                <Text className="text-center font-bold text-gray-700">
+                  Cancel
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                className="flex-1 ml-2 bg-red-500 py-3 rounded-lg"
+                onPress={handleConfirmReject}
+              >
+                <Text className="text-center font-bold text-white">
+                  Confirm
+                </Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
     </Modal>
   );
 };

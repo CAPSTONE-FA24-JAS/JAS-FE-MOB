@@ -41,6 +41,11 @@ const HistoryItemConsign: React.FC = () => {
   const [selectedStatus, setSelectedStatus] = useState<number | null>(null); // Bộ lọc trạng thái
   const [searchQuery, setSearchQuery] = useState(""); // Dữ liệu tìm kiếm
   const [noConsignmentMessage, setNoConsignmentMessage] = useState(""); // Dữ liệu tìm kiếm
+  const [page, setPage] = useState(1); // Trang hiện tại
+  const [pageSize] = useState(10); // Số mục mỗi trang
+  const [hasMore, setHasMore] = useState(true); // Trạng thái còn dữ liệu
+  const [isFetching, setIsFetching] = useState(false);
+
   const sellerId = useSelector(
     (state: RootState) => state.auth.userResponse?.customerDTO.id
   ); // Lấy userId từ Redux
@@ -60,61 +65,79 @@ const HistoryItemConsign: React.FC = () => {
   useEffect(() => {
     if (tab === 3) {
       setSelectedStatus(3); // Nếu tab là "past", chọn tab Past
+    } else if (tab === undefined) {
+      setSelectedStatus(null); // Nếu không có tab, mặc định là ALL
     } else {
-      setSelectedStatus(0); // Mặc định mở tab Current
+      setSelectedStatus(tab); // Nếu có tab, sử dụng giá trị tab
     }
   }, [tab]);
+
   // const scrollViewRef = useRef<ScrollView>(null);
 
   // Hàm gọi API
   const fetchConsignmentHistory = useCallback(async () => {
+    if (isFetching) return; // Nếu đang tải, không thực hiện thêm
+    setIsFetching(true); // Đặt trạng thái đang tải
+
     try {
       setLoading(true);
 
       if (sellerId !== undefined) {
         const response = await getHistoryConsign(
           sellerId,
+          pageSize,
+          page,
           selectedStatus !== null ? selectedStatus : undefined
-          // pageSize
-          // pageIndex
         );
 
-        if (response === null) {
-          // Khi response là null, nghĩa là không có dữ liệu
-          setNoConsignmentMessage(
-            "Không có Consign item nào ở trạng thái này."
+        if (response?.dataResponse) {
+          setItems((prevItems) =>
+            page === 1
+              ? response.dataResponse
+              : [...prevItems, ...response.dataResponse]
           );
-          setItems([]); // Set items là một mảng rỗng
+          setHasMore(response.dataResponse.length === pageSize);
         } else {
-          // Nếu có dữ liệu
-          setNoConsignmentMessage(""); // Xóa thông báo không có dữ liệu
-          setItems(
-            Array.isArray(response.dataResponse) ? response.dataResponse : []
-          );
+          setHasMore(false);
         }
       } else {
         console.error("Seller ID is undefined");
       }
     } catch (error) {
       console.error("Lỗi khi lấy lịch sử ký gửi:", error);
-      setNoConsignmentMessage("Đã xảy ra lỗi khi lấy lịch sử ký gửi.");
     } finally {
+      setIsFetching(false); // Kết thúc tải
       setLoading(false);
     }
-  }, [sellerId, selectedStatus]);
+  }, [sellerId, selectedStatus, page, pageSize, isFetching]);
 
   // Gọi API khi selectedStatus thay đổi
-  useEffect(
-    useCallback(() => {
-      fetchConsignmentHistory();
-    }, [fetchConsignmentHistory]),
-    [fetchConsignmentHistory]
-  );
+  // useEffect(
+  //   useCallback(() => {
+  //     fetchConsignmentHistory();
+  //   }, [fetchConsignmentHistory]),
+  //   [fetchConsignmentHistory]
+  // );
+
+  useEffect(() => {
+    setPage(1); // Reset về trang đầu tiên
+    setItems([]); // Xóa danh sách cũ
+  }, [selectedStatus]);
+
+  useEffect(() => {
+    fetchConsignmentHistory();
+  }, [page, selectedStatus]);
 
   // Hàm xử lý tìm kiếm
   const searchedItems = items?.filter((item) =>
     item.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
+
+  const handleLoadMore = () => {
+    if (!isFetching && hasMore) {
+      setPage((prevPage) => prevPage + 1);
+    }
+  };
 
   // const statusTextMap = [
   //   "Requested",
@@ -137,13 +160,15 @@ const HistoryItemConsign: React.FC = () => {
         <ScrollView
           horizontal={true}
           showsHorizontalScrollIndicator={false}
-          className="mb-4">
+          className="mb-4"
+        >
           <View className="flex-row items-center">
             <TouchableOpacity
               className={`px-4 py-2 mr-2 ${
                 selectedStatus === null ? "bg-yellow-500" : "bg-gray-400"
               } rounded`}
-              onPress={() => setSelectedStatus(null)}>
+              onPress={() => setSelectedStatus(null)}
+            >
               <Text className="font-bold text-white uppercase">ALL</Text>
             </TouchableOpacity>
 
@@ -153,7 +178,8 @@ const HistoryItemConsign: React.FC = () => {
                 className={`px-4 py-2 mr-2 ${
                   selectedStatus === status ? "bg-yellow-500" : "bg-gray-400"
                 } rounded`}
-                onPress={() => setSelectedStatus(status)}>
+                onPress={() => setSelectedStatus(status)}
+              >
                 <Text className="font-bold text-white uppercase">
                   {index + 1}. {statusTextMap[index]}
                 </Text>
@@ -161,28 +187,30 @@ const HistoryItemConsign: React.FC = () => {
             ))}
           </View>
         </ScrollView>
-        {loading ? (
-          <View className="items-center justify-center flex-1 py-20">
-            <ActivityIndicator size="large" color="#0000ff" />
-          </View>
-        ) : (
-          <View>
-            <TextInput
-              className="p-2 mb-4 bg-white rounded"
-              placeholder="Search..."
-              onChangeText={(text) => setSearchQuery(text)}
-              value={searchQuery}
-            />
-            {(searchedItems && searchedItems.length === 0) ||
-            noConsignmentMessage ? (
-              <Text className="text-lg text-center">Không có ký gửi nào</Text>
-            ) : (
+
+        <View>
+          <TextInput
+            className="p-2 mb-4 bg-white rounded"
+            placeholder="Search..."
+            onChangeText={(text) => setSearchQuery(text)}
+            value={searchQuery}
+          />
+          {searchedItems && searchedItems.length > 0 && (
+            <Text className="font-semibold mb-2 text-base">
+              Total: {searchedItems.length} items
+            </Text>
+          )}
+          {(searchedItems && searchedItems.length === 0 && !loading) ||
+          noConsignmentMessage ? (
+            <Text className="text-lg text-center">Không có ký gửi nào</Text>
+          ) : (
+            <View className="h-[85%]">
               <FlatList
-                className="h-[85%]"
                 data={searchedItems} // Hiển thị searchedItems
-                renderItem={({ item }) => (
+                renderItem={({ item, index }) => (
                   <ConsignItem
                     id={item.id}
+                    index={index}
                     name={item.name}
                     minPrice={item.estimatePriceMin ? item.estimatePriceMin : 0}
                     maxPrice={item.estimatePriceMax ? item.estimatePriceMax : 0}
@@ -198,15 +226,45 @@ const HistoryItemConsign: React.FC = () => {
                 )}
                 keyExtractor={(item) => item.id.toString()}
               />
-            )}
+              {hasMore && !loading && (
+                <View
+                  style={{
+                    flexDirection: "row",
+                    justifyContent: "space-between",
+                  }}
+                  className=" bottom-0 w-full "
+                >
+                  <TouchableOpacity
+                    onPress={handleLoadMore}
+                    style={{
+                      padding: 10,
+                      backgroundColor: "#007bff",
+                      borderRadius: 5,
+                      margin: 10,
+                      width: "100%",
+                    }}
+                    className="mx-auto"
+                  >
+                    <Text style={{ color: "#fff", textAlign: "center" }}>
+                      Load More
+                    </Text>
+                  </TouchableOpacity>
+                </View>
+              )}
+              {loading && (
+                <View style={{ padding: 10 }}>
+                  <ActivityIndicator size={26} color="#0000ff" />
+                </View>
+              )}
+            </View>
+          )}
 
-            {/* {items.length > 10 && (
+          {/* {items.length > 10 && (
               <TouchableOpacity className="w-full p-3 mt-4 bg-gray-800 rounded">
                 <Text className="text-center text-white">XEM THÊM</Text>
               </TouchableOpacity>
             )} */}
-          </View>
-        )}
+        </View>
       </View>
     </View>
   );

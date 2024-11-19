@@ -49,24 +49,38 @@ export function useBiddingMethod4(): UseBiddingResult {
     });
     //await _hubContext.Clients.Group(lotGroupName).SendAsync("SendBiddingPriceforReducedBidding", "Phiên đã kết thúc!", customerId, request.CurrentPrice, request.BidTime);
 
-    ///ket thuc lot dau gia
+    ///ket thuc lot dau gia co ng dau gia
     connection.on(
-      "SendBiddingPriceforReducedBidding",
-      (msg: string, cusid: string, currentPrice: string, time: string) => {
+      "AuctionEndedReduceBidding",
+      (msg: string, cusid: string, currentPrice: string) => {
         console.log(
-          `Current price updated: ${msg} at ${time} by ${cusid} with price ${currentPrice}`
+          `Current price updated: ${msg} by ${cusid} with price ${currentPrice}`
         );
         setWinnerCustomer(cusid);
         setWinnerPrice(currentPrice);
-        setIsEndAuctionMethod4(true);
         setReducePrice(Number(currentPrice));
+        setIsEndAuctionMethod4(true);
       }
     );
 
-    connection.on("SendEndTimeLot", (lotId: number, newEndTime: string) => {
-      console.log(`End time updated for lot ${lotId}: ${newEndTime}`);
-      setEndTime(newEndTime);
+    connection.on("SendAmountCustomerBid", (msg: string, amount: string) => {
+      console.log(`Amount customer bid: ${msg} with amount ${amount}`);
+      // setResultBidding(amount);
     });
+    /// end auction nhuwng k co ai dau gia
+    connection.on("AuctionEndedWithWinnerReduce", (msg: string) => {
+      console.log(`Auction ended : ${msg}`);
+      setIsEndAuctionMethod4(true);
+    });
+
+    //// sau khi mua xong thi het 1 chu ky giam gia la end lai nen can cap nhat lai
+    connection.on(
+      "SendEndTimeForReduceBidding",
+      (msg: string, newEndTime: string) => {
+        console.log(`End time updated for lot : ${newEndTime}`);
+        setEndTime(newEndTime);
+      }
+    );
 
     connection.on(
       "CurrentPriceForReduceBiddingWhenStartLot",
@@ -75,7 +89,6 @@ export function useBiddingMethod4(): UseBiddingResult {
         setReducePrice(Number(currPrice));
       }
     );
-    //await _hubContext.Clients.Group(lotGroupName).SendAsync("SendCurrentPriceForReduceBidding", lot.CurrentPrice);
 
     connection.on(
       "SendCurrentPriceForReduceBidding", // khi moi vao lot

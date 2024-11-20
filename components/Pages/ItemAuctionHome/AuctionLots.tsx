@@ -3,7 +3,8 @@ import { AuctionData } from "@/app/types/auction_type";
 import { Lot } from "@/app/types/lot_type";
 import CountdownTimerBid from "@/components/CountDown/CountdownTimer";
 import ItemLots from "@/components/ItemLots";
-import React, { useEffect, useState } from "react";
+import { useFocusEffect } from "expo-router";
+import React, { useCallback, useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -21,24 +22,30 @@ const AuctionLots: React.FC<AuctionLotsProps> = ({ dataAuction }) => {
   const [items, setItems] = useState<Lot[]>([]);
   const [loading, setLoading] = useState<boolean>(true); // Thêm state loading
 
-  useEffect(() => {
-    const fetchLots = async () => {
-      setLoading(true); // Bắt đầu loading
-      try {
-        const response = await getLotsByAuctionId(dataAuction.id);
+  const fetchLots = async () => {
+    setLoading(true); // Bắt đầu loading
+    try {
+      const response = await getLotsByAuctionId(dataAuction.id);
 
-        if (response && response.isSuccess) {
-          setItems(response.data);
-        }
-      } catch (error) {
-        console.error("Failed to fetch lots:", error);
-      } finally {
-        setLoading(false); // Kết thúc loading
+      if (response && response.isSuccess) {
+        setItems(response.data);
       }
-    };
+    } catch (error) {
+      console.error("Failed to fetch lots:", error);
+    } finally {
+      setLoading(false); // Kết thúc loading
+    }
+  };
 
-    fetchLots();
-  }, [dataAuction.id]);
+  // useEffect(() => {
+  //   fetchLots();
+  // }, []);
+
+  useFocusEffect(
+    useCallback(() => {
+      fetchLots();
+    }, [dataAuction.id])
+  );
 
   return (
     <ScrollView className="bg-white">
@@ -63,7 +70,7 @@ const AuctionLots: React.FC<AuctionLotsProps> = ({ dataAuction }) => {
 
       {/* Hiển thị loading khi dữ liệu đang được tải */}
       {loading ? (
-        <View className="flex-1 justify-center items-center mt-10">
+        <View className="items-center justify-center flex-1 mt-10">
           <ActivityIndicator size="large" color="#0000ff" />
           <Text className="mt-2 text-gray-500">Loading lots...</Text>
         </View>
@@ -87,7 +94,7 @@ const AuctionLots: React.FC<AuctionLotsProps> = ({ dataAuction }) => {
               />
             ))
           ) : (
-            <Text className="text-center text-gray-500 mt-10">
+            <Text className="mt-10 text-center text-gray-500">
               No lots available.
             </Text>
           )}

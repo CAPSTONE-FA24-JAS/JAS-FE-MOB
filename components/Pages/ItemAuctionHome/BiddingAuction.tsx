@@ -102,8 +102,7 @@ const BiddingAuction = () => {
           backgroundColor: "transparent",
           alignSelf: "center",
           width: "50%",
-        }}
-      >
+        }}>
         <Tab.Item
           title="AUCTION"
           titleStyle={(active) => ({
@@ -148,8 +147,7 @@ const BiddingAuction = () => {
         value={index}
         onChange={setIndex}
         animationType="spring"
-        disableSwipe={isSwiperActive}
-      >
+        disableSwipe={isSwiperActive}>
         <TabView.Item style={{ width: "100%" }}>
           {auctionDetails && (
             <AuctionDetailScreen

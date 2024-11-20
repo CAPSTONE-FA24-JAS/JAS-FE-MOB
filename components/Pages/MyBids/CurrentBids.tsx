@@ -59,7 +59,7 @@ const CurrentBids: React.FC<CurrentBidsProps> = ({ customerId }) => {
 
   if (loading && bidsData.length === 0) {
     return (
-      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+      <View className="items-center justify-center flex-1 h-full">
         <ActivityIndicator size="large" color="#0000ff" />
       </View>
     );
@@ -123,8 +123,7 @@ const CurrentBids: React.FC<CurrentBidsProps> = ({ customerId }) => {
             margin: 10,
             alignSelf: "center",
             width: "90%",
-          }}
-        >
+          }}>
           <Text style={{ color: "#fff", textAlign: "center" }}>Load More</Text>
         </TouchableOpacity>
       )}

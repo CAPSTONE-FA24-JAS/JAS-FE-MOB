@@ -66,7 +66,7 @@ const PastBids: React.FC<PastBidsProps> = ({ customerId }) => {
 
   if (loading && bidsData.length === 0) {
     return (
-      <View>
+      <View className="items-center justify-center flex-1">
         <ActivityIndicator size="large" color="#0000ff" />
       </View>
     );
@@ -124,8 +124,7 @@ const PastBids: React.FC<PastBidsProps> = ({ customerId }) => {
               margin: 10,
               width: "90%",
             }}
-            className="mx-auto"
-          >
+            className="mx-auto">
             <Text style={{ color: "#fff", textAlign: "center" }}>
               Load More
             </Text>

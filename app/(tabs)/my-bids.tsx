@@ -41,8 +41,7 @@ export default function MyBids() {
           backgroundColor: "transparent",
           alignSelf: "center",
           width: "50%",
-        }}
-      >
+        }}>
         <Tab.Item
           title="Current"
           titleStyle={(active) => ({
@@ -84,10 +83,10 @@ export default function MyBids() {
       </Tab>
 
       <TabView value={index} onChange={setIndex} animationType="spring">
-        <TabView.Item className="m-2">
+        <TabView.Item className="flex-1 h-full m-2">
           {userId !== undefined && <CurrentBids customerId={userId} />}
         </TabView.Item>
-        <TabView.Item className="m-2">
+        <TabView.Item className="flex-1 h-full m-2">
           {userId !== undefined && <PastBids customerId={userId} />}
         </TabView.Item>
       </TabView>

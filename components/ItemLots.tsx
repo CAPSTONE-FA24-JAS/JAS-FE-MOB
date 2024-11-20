@@ -78,32 +78,40 @@ const ItemLots: React.FC<ItemLotsProps> = ({
 
   const getStatusColor = (status: string) => {
     switch (status) {
+      case "Waiting":
+        return "bg-[#A0522D]";
       case "Ready":
-        return "#7EBF9C";
+        return "bg-[#800080]";
       case "Auctionning":
-        return "#FFA500";
+        return "bg-[#FFD700]";
       case "Sold":
-        return "#4CAF50";
+        return "bg-[#4CAF50]";
       case "Canceled":
-        return "#FF0000";
-      case "Pausing":
-        return "#FFD700";
+        return "bg-[#FF0000]";
+      case "Passed": // Passed
+        return "bg-[#0000FF]";
+      case "Pause":
+        return "bg-[#708090]";
       default:
-        return "#666666";
+        return "bg-black";
     }
   };
   const formatStatus = (status: string) => {
     switch (status) {
-      case "Ready": // sai chính tả
-        return "New Lot ready";
+      case "Waiting":
+        return "Waiting";
+      case "Ready":
+        return "Ready";
       case "Auctionning":
         return "Auctionning";
       case "Sold":
         return "Sold";
       case "Canceled":
-        return "Canceled";
-      case "Pausing":
-        return "Paused";
+        return " Canceled";
+      case "Passed":
+        return " Passed";
+      case "Pause":
+        return " Paused";
       default:
         return status;
     }
@@ -116,8 +124,9 @@ const ItemLots: React.FC<ItemLotsProps> = ({
     >
       {/* Tag status ở góc phải */}
       <TouchableOpacity
-        className={`absolute top-2 z-10 right-2 rounded px-4 py-1 flex-row items-center`}
-        style={{ backgroundColor: getStatusColor(status) }}
+        className={`absolute top-2 z-10 right-2 rounded ${getStatusColor(
+          status
+        )} px-4 py-1 flex-row items-center`}
       >
         <Text className="text-base font-semibold text-white uppercase">
           {formatStatus(status)}

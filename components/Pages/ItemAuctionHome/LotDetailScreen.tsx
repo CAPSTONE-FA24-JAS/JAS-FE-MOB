@@ -30,6 +30,7 @@ import moment from "moment-timezone";
 import React, { useCallback, useState } from "react";
 import {
   ActivityIndicator,
+  Alert,
   Image,
   SafeAreaView,
   ScrollView,
@@ -42,6 +43,8 @@ import Swiper from "react-native-swiper";
 import { useSelector } from "react-redux";
 import ConfirmBuyNowModal from "./ModalLot/ConfirmBuyNowModal";
 import SecretAuctionBidModal from "./ModalLot/SecretAuctionBidModal";
+import VideoPlayer from "@/components/VideoPlayer";
+import YouTubePlayer from "@/components/YouTubePlayer";
 
 // Define the navigation param list type
 type RootStackParamList = {
@@ -162,6 +165,7 @@ const LotDetailScreen = () => {
             setLotDetail(data.data); // Không phải Fixed_Price, chỉ gắn dữ liệu lotDetail
           }
         } else {
+          Alert.alert("Error", data?.message || "Failed to load data.");
           setError(data?.message || "Failed to load data.");
         }
       } catch {
@@ -554,12 +558,14 @@ const LotDetailScreen = () => {
     }
   };
 
-  const handleJoinToBid = () => {
+  const handleJoinToBid = (type: string) => {
     if (lotDetail) {
-      if (lotDetail.lotType === "Public_Auction") {
+      console.log("lotDetail.lotType", lotDetail.lotType);
+
+      if (type === "Public_Auction") {
         navigation.replace("RisingBidPage", { itemId: lotDetail.id }); // lot id
       }
-      if (lotDetail.lotType === "Auction_Price_GraduallyReduced") {
+      if (type === "Auction_Price_GraduallyReduced") {
         navigation.replace("ReduceBidPage", { itemId: lotDetail.id });
       }
     }
@@ -572,10 +578,31 @@ const LotDetailScreen = () => {
 
   console.log("isAuctionActive", isAuctionActive);
 
+  function getStatusClass(status: string) {
+    switch (status) {
+      case "Waiting":
+        return "bg-[#A0522D]";
+      case "Ready":
+        return "bg-[#800080]";
+      case "Auctionning":
+        return "bg-[#FFD700]";
+      case "Sold":
+        return "bg-[#4CAF50]";
+      case "Canceled":
+        return "bg-[#FF0000]";
+      case "Passed": // Passed
+        return "bg-[#0000FF]";
+      case "Pause":
+        return "bg-[#708090]";
+      default:
+        return "bg-black"; // Default màu nền nếu không khớp
+    }
+  }
+
   return (
     <SafeAreaView className="flex-1 bg-white">
       <View className="flex-1">
-        <ScrollView className="mb-32">
+        <ScrollView className="mb-20">
           {/* Countdown Timer */}
           <CountdownTimerBid
             startTime={lotDetail?.startTime || null}
@@ -620,14 +647,13 @@ const LotDetailScreen = () => {
               </Text>
             </TouchableOpacity>
           </View>
-          {lotDetail?.totalCustomers &&
-            lotDetail?.lotType === "Fixed_Price" && (
-              <View className="py-2 bg-blue-200 ">
-                <Text className="font-bold text-center text-blue-700 uppercase">
-                  Total bidders: {lotDetail.totalCustomers}
-                </Text>
-              </View>
-            )}
+          {lotDetail?.totalCustomers && lotDetail?.lotType === "Fixed_Price" ? (
+            <View className="py-2 bg-blue-200 ">
+              <Text className="font-bold text-center text-blue-700 uppercase">
+                Total bidders: {lotDetail.totalCustomers}
+              </Text>
+            </View>
+          ) : null}
           <View className="p-4 space-y-2">
             <View>
               {/* Thời gian đấu giá */}
@@ -642,9 +668,18 @@ const LotDetailScreen = () => {
                     : "N/A"}
                 </Text>
               </View>
-              <Text className="text-base font-bold text-gray-500 ">
-                Lot #{id} - Type {typeBid ? formatTypeBid(typeBid) : "N/A"}
-              </Text>
+              <View className="flex-row w-[98%] justify-between items-start">
+                <Text className="text-base font-bold text-gray-500 w-[60%] ">
+                  Lot #{id} - Type {typeBid ? formatTypeBid(typeBid) : "N/A"}
+                </Text>
+                <Text
+                  className={`font-extrabold py-1 px-10 ${getStatusClass(
+                    lotDetail?.status ?? ""
+                  )} rounded-md text-base uppercase text-white`}
+                >
+                  {lotDetail?.status}
+                </Text>
+              </View>
 
               <Text className="mb-2 text-xl font-bold text-black ">
                 {lotDetail?.jewelry?.name}
@@ -657,26 +692,32 @@ const LotDetailScreen = () => {
               <Divider bold={true} className="mt-2" />
             </View>
 
-            <Text className="mt-6 mb-2 font-bold">
-              Summary of Key Characteristics
-            </Text>
+            <Text className="mt-6 font-bold">Summary of Key Jewlery</Text>
             <Text className="text-gray-700">
               {lotDetail?.jewelry?.description || "No description available."}
             </Text>
+            <View className="flex-row  items-center">
+              <Text className="text-lg mr-2 text-gray-800">•</Text>
+              <Text className="text-gray-700">
+                For Gender: {lotDetail?.jewelry?.forGender || "Unknow"}
+              </Text>
+            </View>
             <Text className="mt-6 mb-2 font-bold">LOCATION DESCRIPTION</Text>
-            <Text className="text-gray-700">
+            <Text className="text-gray-700 mb-5">
               {lotDetail?.auction?.description ||
                 "No location description available."}
             </Text>
-            <Text className="mt-6 mb-2 font-bold">VIEWING INFORMATION</Text>
-            <Text className="text-gray-700">
+            {/* <Text className="mt-6 mb-2 font-bold">VIEWING INFORMATION</Text>
+            <Text className="text-gray-700 mb-4">
               {lotDetail?.auction?.description ||
                 "No viewing information available."}
-            </Text>
-            {/* <Text className="mt-6 mb-2 font-bold">Notes</Text>
-            <Text className="text-gray-700">
-              {lotDetail?.description || "No notes available."}
             </Text> */}
+            <YouTubePlayer
+              videoLink={
+                lotDetail?.jewelry.videoLink ||
+                "https://www.youtube.com/watch?v=kYOP52BUZTI"
+              }
+            />
           </View>
           <View className="h-32" />
         </ScrollView>
@@ -697,14 +738,14 @@ const LotDetailScreen = () => {
           </View>
         )}
 
-        {isRegistered &&
-          !currentPriceCheck &&
-          !bidTimeCheck &&
-          isAuctionActive &&
-          !(lotDetail?.status === "Passed") &&
-          !(lotDetail?.status === "Sold") && (
-            <View>
-              {(typeBid === "Fixed_Price" || typeBid === "Secret_Auction") && (
+        {isRegistered && (
+          <View>
+            {(typeBid === "Fixed_Price" || typeBid === "Secret_Auction") &&
+              !(lotDetail?.status === "Passed") &&
+              !(lotDetail?.status === "Sold") &&
+              !currentPriceCheck &&
+              !bidTimeCheck &&
+              isAuctionActive && (
                 <TouchableOpacity
                   className="py-3 mb-3 bg-blue-500 rounded-sm"
                   onPress={
@@ -720,20 +761,19 @@ const LotDetailScreen = () => {
                   </Text>
                 </TouchableOpacity>
               )}
-              {!(lotDetail?.status === "Passed") &&
-                !(lotDetail?.status === "Sold") &&
-                isAuctionActive &&
-                typeBid === "Public_Auction" && (
-                  <TouchableOpacity
-                    onPress={handlePressAutoBid}
-                    className="mb-3 bg-blue-500 rounded-sm"
-                  >
-                    <Text className="py-3 font-semibold text-center text-white">
-                      BID AUTOMATION
-                    </Text>
-                  </TouchableOpacity>
-                )}
-              {typeBid !== "Fixed_Price" && isAuctionActive && (
+            {typeBid === "Public_Auction" &&
+              !currentPriceCheck &&
+              !bidTimeCheck && (
+                <TouchableOpacity
+                  onPress={handlePressAutoBid}
+                  className="mb-3 bg-blue-500 rounded-sm"
+                >
+                  <Text className="py-3 font-semibold text-center text-white">
+                    BID AUTOMATION
+                  </Text>
+                </TouchableOpacity>
+              )}
+            {/* {typeBid !== "Fixed_Price" && isAuctionActive && (
                 <TouchableOpacity
                   className="py-3 mb-3 bg-blue-500 rounded-sm"
                   onPress={() => setModalVisible(true)}
@@ -742,22 +782,23 @@ const LotDetailScreen = () => {
                     PLACE BID
                   </Text>
                 </TouchableOpacity>
-              )}
-              {!(lotDetail?.status === "Passed") &&
-                isAuctionActive &&
-                !(lotDetail?.status === "Sold") &&
-                typeBid !== "Fixed_Price" && (
-                  <TouchableOpacity
-                    className="py-3 bg-blue-500 rounded-sm"
-                    onPress={handleJoinToBid}
-                  >
-                    <Text className="font-semibold text-center text-white uppercase">
-                      Join To Bid
-                    </Text>
-                  </TouchableOpacity>
-                )}
-            </View>
-          )}
+              )} */}
+            {(typeBid === "Public_Auction" ||
+              typeBid === "Auction_Price_GraduallyReduced") && (
+              <TouchableOpacity
+                className="py-3 bg-blue-500 rounded-sm"
+                onPress={() => handleJoinToBid(typeBid)}
+              >
+                <Text className="font-semibold text-center text-white uppercase">
+                  {lotDetail?.status === "Passed" ||
+                  lotDetail?.status === "Sold"
+                    ? "View To Bid"
+                    : "Join To Bid"}
+                </Text>
+              </TouchableOpacity>
+            )}
+          </View>
+        )}
 
         {!isRegistered &&
           !(lotDetail?.status === "Passed") &&

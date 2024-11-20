@@ -50,6 +50,23 @@ const AuctionDetailScreen: React.FC<AuctionDetailScreenProps> = ({
     return () => clearInterval(intervalId);
   }, [dataAuction.status, dataAuction.endTime, dataAuction.startTime]);
 
+  function getStatusClass(status: string) {
+    switch (status) {
+      case "Waiting": // Waiting
+        return "bg-purple-500";
+      case "UpComing": // Upcoming
+        return "bg-blue-400";
+      case "Live": // Live
+        return "bg-yellow-500";
+      case "Past": // Past
+        return "bg-green-500";
+      case "Cancelled": // Cancelled
+        return "bg-red-500";
+      default:
+        return "bg-black"; // Default màu nền nếu không khớp
+    }
+  }
+
   return (
     <ScrollView className="bg-white">
       <CountdownTimerBid
@@ -91,6 +108,18 @@ const AuctionDetailScreen: React.FC<AuctionDetailScreenProps> = ({
         </Swiper>
       </View>
       <View className="p-4">
+        <View className="flex-row w-[98%] justify-between items-center">
+          <Text className="font-semibold text-base uppercase text-gray-500 ">
+            Auction #{dataAuction.id}
+          </Text>
+          <Text
+            className={`font-extrabold py-1 px-10 ${getStatusClass(
+              dataAuction.status
+            )} rounded-md text-base uppercase text-white`}
+          >
+            {dataAuction.status}
+          </Text>
+        </View>
         <Text className="mb-2 text-xl font-bold">
           {dataAuction?.name || "Unnamed Auction"}
         </Text>
@@ -113,7 +142,7 @@ const AuctionDetailScreen: React.FC<AuctionDetailScreenProps> = ({
         </Text>
 
         {/* Phía dưới chưa có data */}
-        <Text className="mt-6 mb-2 font-bold">LOCATION DESCRIPTION</Text>
+        {/* <Text className="mt-6 mb-2 font-bold">LOCATION DESCRIPTION</Text>
         <Text className="text-gray-700">
           The auction will be held at the prestigious Grand Pavilion Hall,
           located in the heart of the city...
@@ -127,7 +156,7 @@ const AuctionDetailScreen: React.FC<AuctionDetailScreenProps> = ({
         <Text className="text-gray-700">
           Bidders must register prior to the auction; registration will be
           available online and at the venue on the day...
-        </Text>
+        </Text> */}
       </View>
     </ScrollView>
   );

@@ -7,6 +7,7 @@ import apiClient from "./config";
 import { ListLotResponse, LotDetailResponse } from "@/app/types/lot_type";
 import { ApiError, ApiResponse } from "./utils/ApiError";
 import { Response } from "@/app/types/respone_type";
+import { Alert } from "react-native";
 
 const API_URL = process.env.EXPO_PUBLIC_API_URL || "http://localhost:7251";
 
@@ -87,6 +88,7 @@ export const registerToBid = async (
         response.data.message || "Register customer to lot successfully."
       );
     } else {
+      Alert.alert("Thông báo", response.data.message);
       // Throw ApiError with specific code and message from the API
       const { code, message } = response.data;
       throw new Error(message || "Failed to register to bid.");

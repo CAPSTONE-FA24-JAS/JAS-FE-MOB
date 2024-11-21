@@ -14,7 +14,7 @@ import * as signalR from "@microsoft/signalr"; // Import SignalR library
 import { showSuccessMessage } from "@/components/FlashMessageHelpers";
 
 const API_URL = process.env.EXPO_PUBLIC_API_URL || "http://localhost:7251";
-const HOME_URL = `${API_URL}/auctionning`; // The SignalR hub URL
+const HOME_URL = `${API_URL}/notification`; // The SignalR hub URL
 
 const HomeScreen = () => {
   const [auctions, setAuctions] = useState<AuctionsData[]>([]);
@@ -27,16 +27,15 @@ const HomeScreen = () => {
   const fetchAuctions = async () => {
     try {
       setLoading(true);
-      const [status1Response, status2Response] =
-        await Promise.all([
-          getAuctionsByStatus(3),
-          getAuctionsByStatus(2),
-          // getAuctionsByStatus(1),
-        ]);
+      const [status1Response, status2Response] = await Promise.all([
+        getAuctionsByStatus(3),
+        getAuctionsByStatus(2),
+        // getAuctionsByStatus(1),
+      ]);
 
       if (
         status1Response.isSuccess &&
-        status2Response.isSuccess 
+        status2Response.isSuccess
         // &&
         // status3Response.isSuccess
       ) {
@@ -142,8 +141,7 @@ const HomeScreen = () => {
         <Text className="text-red-500">{error}</Text>
         <TouchableOpacity
           className="px-4 py-2 mt-4 bg-blue-500 rounded"
-          onPress={fetchAuctions}
-        >
+          onPress={fetchAuctions}>
           <Text className="text-white">Retry</Text>
         </TouchableOpacity>
       </View>
@@ -158,8 +156,7 @@ const HomeScreen = () => {
       <View className="flex-row items-center justify-end p-4">
         <TouchableOpacity
           onPress={fetchAuctions}
-          className="flex-row items-center px-2 py-1 bg-gray-300 rounded"
-        >
+          className="flex-row items-center px-2 py-1 bg-gray-300 rounded">
           <MaterialIcons name="refresh" size={24} color="black" />
           <Text className="ml-2 font-semibold text-gray-700">Reload</Text>
         </TouchableOpacity>

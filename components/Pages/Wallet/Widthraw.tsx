@@ -16,7 +16,6 @@ import { BankAccountInfo, getAllCardByCustomerId } from "@/api/cardApi";
 import { useNavigation } from "@react-navigation/native";
 
 const Withdraw: React.FC = () => {
-  const [selectedPayment, setSelectedPayment] = useState<string>("momo");
   const [amount, setAmount] = useState<string>("0");
   const [err, setErr] = useState<string>("");
   const [reload, setReload] = useState<boolean>(false);
@@ -58,13 +57,14 @@ const Withdraw: React.FC = () => {
   }, [walletAmount, customerId]);
 
   const isDisabled = (): boolean => {
+    console.log(amount, walletAmount);
+
     // Disable if no bank accounts, no wallet amount, invalid amount, or no payment method
     if (
-      existingBankAccounts.length === 0 ||
+      existingBankAccounts.length == 0 ||
       !walletAmount ||
       Number(amount) <= 0 ||
-      Number(amount) > walletAmount ||
-      !selectedPayment
+      Number(amount) > walletAmount
     ) {
       return true;
     }
@@ -98,7 +98,8 @@ const Withdraw: React.FC = () => {
         );
         if (response && response.isSuccess) {
           showSuccessMessage("Withdraw successfully");
-          setReload(!reload);
+          setAmount("0");
+          navigation.navigate("Wallet");
         } else {
           showErrorMessage("Unable to request withdraw.");
         }

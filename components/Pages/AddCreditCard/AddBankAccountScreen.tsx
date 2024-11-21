@@ -265,7 +265,7 @@ export const AddBankAccountScreen = () => {
           <View
             className="bg-white rounded-t-2xl"
             style={{
-              height: screenHeight * 0.7, // Chiếm 70% chiều cao màn hình
+              height: screenHeight * 0.8,
               paddingBottom: 20,
             }}>
             <View className="flex-row items-center justify-between p-4 border-b border-gray-200">
@@ -280,7 +280,7 @@ export const AddBankAccountScreen = () => {
             {/* Thanh tìm kiếm */}
             <View className="p-4">
               <View className="flex-row items-center px-3 bg-gray-100 rounded-lg">
-                <AntDesign name="search1" size={24} color="black" />{" "}
+                <AntDesign name="search1" size={24} color="black" />
                 <TextInput
                   placeholder="Tìm kiếm ngân hàng"
                   value={searchQuery}

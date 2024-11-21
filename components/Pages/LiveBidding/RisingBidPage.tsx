@@ -145,6 +145,8 @@ const RisingBidPage: React.FC = () => {
       key: "bids",
       component: (
         <BidsList
+          isEndAuctionMethod3={isEndAuctionMedthod3}
+          isEndLot={isEndLot}
           bids={messages || []}
           item={item}
           currentCusId={customerId ?? 0}

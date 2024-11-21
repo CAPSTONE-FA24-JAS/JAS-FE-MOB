@@ -110,10 +110,10 @@ const BidInputMethod4: React.FC<BidInputProps> = ({
               ? "SOLD"
               : "BUY NOW"}
           </Text>
-          {error && (
-            <Text className="mt-2 text-center text-red-500">{error}</Text>
-          )}
         </TouchableOpacity>
+        {error && (
+          <Text className="mt-2 text-center text-red-500">{error}</Text>
+        )}
       </View>
     </View>
   );

@@ -21,6 +21,7 @@ type RootStackParamList = {
   Terms: undefined;
   login: undefined;
   MyWallet: undefined;
+  AddBankAccount: undefined;
 };
 
 const MyAccount = () => {
@@ -100,7 +101,7 @@ const MyAccount = () => {
   };
 
   return (
-    <View className="p-4 bg-gray-100 flex-1">
+    <View className="flex-1 p-4 bg-gray-100">
       {/* Profile Card */}
       {userInfo ? (
         <ProfileCard
@@ -127,9 +128,8 @@ const MyAccount = () => {
       {/* Account Options */}
       <View className="mt-4 bg-white rounded-lg shadow">
         <TouchableOpacity
-          className="flex-row justify-between items-center p-4 border-b border-gray-200"
-          onPress={() => handleNavigation("AccountInfo")}
-        >
+          className="flex-row items-center justify-between p-4 border-b border-gray-200"
+          onPress={() => handleNavigation("AccountInfo")}>
           <View className="flex-row items-center">
             <MaterialCommunityIcons name="account" size={20} color="black" />
             <Text className="ml-4 text-lg">Account Info</Text>
@@ -139,13 +139,12 @@ const MyAccount = () => {
             size={30}
             color="gray"
             style={{ marginRight: 10 }}
-            className=" w-fit float-right"
+            className="float-right w-fit"
           />
         </TouchableOpacity>
         <TouchableOpacity
-          className="flex-row justify-between items-center p-4 border-b border-gray-200"
-          onPress={() => handleNavigation("ChangePassword")}
-        >
+          className="flex-row items-center justify-between p-4 border-b border-gray-200"
+          onPress={() => handleNavigation("ChangePassword")}>
           <View className="flex-row items-center">
             <MaterialCommunityIcons name="lock-reset" size={20} color="black" />
             <Text className="ml-4 text-lg">Change Password</Text>
@@ -155,13 +154,12 @@ const MyAccount = () => {
             size={30}
             color="gray"
             style={{ marginRight: 10 }}
-            className=" w-fit float-right"
+            className="float-right w-fit"
           />
         </TouchableOpacity>
         <TouchableOpacity
-          className="flex-row justify-between items-center p-4 border-b border-gray-200"
-          onPress={() => handleNavigation("MyWallet")}
-        >
+          className="flex-row items-center justify-between p-4 border-b border-gray-200"
+          onPress={() => handleNavigation("MyWallet")}>
           <View className="flex-row items-center">
             <MaterialCommunityIcons name="lock-reset" size={20} color="black" />
             <Text className="ml-4 text-lg">My Wallet</Text>
@@ -171,13 +169,27 @@ const MyAccount = () => {
             size={30}
             color="gray"
             style={{ marginRight: 10 }}
-            className=" w-fit float-right"
+            className="float-right w-fit"
           />
         </TouchableOpacity>
         <TouchableOpacity
-          className="flex-row justify-between items-center p-4 border-b border-gray-200"
-          onPress={() => handleNavigation("Help")}
-        >
+          className="flex-row items-center justify-between p-4 border-b border-gray-200"
+          onPress={() => handleNavigation("AddBankAccount")}>
+          <View className="flex-row items-center">
+            <MaterialCommunityIcons name="lock-reset" size={20} color="black" />
+            <Text className="ml-4 text-lg">Card</Text>
+          </View>
+          <MaterialCommunityIcons
+            name="chevron-right"
+            size={30}
+            color="gray"
+            style={{ marginRight: 10 }}
+            className="float-right w-fit"
+          />
+        </TouchableOpacity>
+        <TouchableOpacity
+          className="flex-row items-center justify-between p-4 border-b border-gray-200"
+          onPress={() => handleNavigation("Help")}>
           <View className="flex-row items-center">
             <MaterialCommunityIcons
               name="help-circle"
@@ -191,13 +203,12 @@ const MyAccount = () => {
             size={30}
             color="gray"
             style={{ marginRight: 10 }}
-            className=" w-fit float-right"
+            className="float-right w-fit"
           />
         </TouchableOpacity>
         <TouchableOpacity
-          className="flex-row justify-between items-center p-4 border-b border-gray-200"
-          onPress={() => handleNavigation("Terms")}
-        >
+          className="flex-row items-center justify-between p-4 border-b border-gray-200"
+          onPress={() => handleNavigation("Terms")}>
           <View className="flex-row items-center">
             <MaterialCommunityIcons
               name="file-document"
@@ -211,13 +222,12 @@ const MyAccount = () => {
             size={30}
             color="gray"
             style={{ marginRight: 10 }}
-            className=" w-fit float-right"
+            className="float-right w-fit"
           />
         </TouchableOpacity>
         <TouchableOpacity
           className="flex-row items-center p-4"
-          onPress={handleLogout}
-        >
+          onPress={handleLogout}>
           <MaterialCommunityIcons name="logout" size={20} color="black" />
           <Text className="ml-4 text-lg">Log Out</Text>
         </TouchableOpacity>

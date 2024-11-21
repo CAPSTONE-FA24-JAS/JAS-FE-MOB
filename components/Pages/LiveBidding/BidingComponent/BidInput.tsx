@@ -124,19 +124,31 @@ const BidInput: React.FC<BidInputProps> = ({
   };
 
   if (item.lotType === "Public_Auction") {
+    const highestBidActual = highestBid ? highestBid : item.startPrice;
+    console.log("highestBidActual", item.startPrice);
+
+    const isAuctionEnded =
+      isEndAuctionMethod3 ||
+      item.status === "Sold" ||
+      item.status === "Passed" ||
+      item.status === "Pause" ||
+      loading ||
+      isEndLot || // Disable when auction is currently ended just for method 3
+      checkProcessingBidOfMine(bids);
     return (
       <View className="w-full p-2">
         <Text className="text-sm font-bold text-center">
-          Highest Price: ${highestBid}
+          Highest Price: ${highestBidActual}
         </Text>
         <View className="flex-row items-center justify-between gap-2">
-          <View className="w-[20%] h-12 border border-gray-300 rounded-md bg-white">
-            <Text className="text-sm font-semibold text-center">Step</Text>
+          <View className="w-[20%] h-14 border border-gray-300 rounded-md bg-white">
+            <Text className="text-xs font-semibold text-center">Step</Text>
             <TextInput
+              editable={!isAuctionEnded}
               value={stepBidIncrement.toLocaleString()}
               onChangeText={(e) => handleBidChangeMethod3(e)}
               keyboardType="numeric"
-              className="flex-1 h-12 px-2 text-sm font-semibold text-center border-gray-300 border-x"
+              className="flex-1 px-2 text-xs font-semibold text-center border-gray-300 h-14 border-x"
             />
           </View>
 
@@ -145,7 +157,7 @@ const BidInput: React.FC<BidInputProps> = ({
               value={bidValue.toLocaleString()}
               editable={false}
               keyboardType="numeric"
-              className="flex-1 h-12 px-2 text-sm font-semibold text-center border-gray-300 border-x"
+              className="flex-1 px-2 text-lg font-semibold text-center border-gray-300 h-14 border-x"
             />
           </View>
 
@@ -154,6 +166,7 @@ const BidInput: React.FC<BidInputProps> = ({
               isEndAuctionMethod3 ||
               item.status === "Sold" ||
               item.status === "Passed" ||
+              item.status === "Pause" ||
               loading ||
               isEndLot || // Disable when auction is currently ended just for method 3
               checkProcessingBidOfMine(bids)
@@ -166,8 +179,8 @@ const BidInput: React.FC<BidInputProps> = ({
               loading ||
               isEndLot || // Disable when auction is currently ended just for method 3
               checkProcessingBidOfMine(bids)
-                ? "w-[20%] flex items-center justify-center h-12 bg-gray-500 rounded-md"
-                : "w-[20%] flex items-center justify-center h-12 bg-blue-500 rounded-md "
+                ? "w-[20%] flex items-center justify-center h-14 bg-gray-500 rounded-md"
+                : "w-[20%] flex items-center justify-center h-14 bg-blue-500 rounded-md "
             }>
             <Text className="text-xs font-semibold text-white">BIDDING</Text>
           </TouchableOpacity>

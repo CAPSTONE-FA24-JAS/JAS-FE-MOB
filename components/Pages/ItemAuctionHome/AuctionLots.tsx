@@ -37,10 +37,6 @@ const AuctionLots: React.FC<AuctionLotsProps> = ({ dataAuction }) => {
     }
   };
 
-  // useEffect(() => {
-  //   fetchLots();
-  // }, []);
-
   useFocusEffect(
     useCallback(() => {
       fetchLots();

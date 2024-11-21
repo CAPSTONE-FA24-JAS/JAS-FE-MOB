@@ -28,10 +28,12 @@ const CustomHeader: React.FC<CustomHeaderProps> = ({ title }) => {
         shadowOpacity: 0.25, // Độ mờ của shadow
         shadowRadius: 3.84, // Bán kính của shadow
         elevation: 5, // Độ cao của shadow (Android)
-      }}>
+      }}
+    >
       <TouchableOpacity
         onPress={() => navigation.openDrawer()}
-        className="mx-4">
+        className="mx-4"
+      >
         <MaterialCommunityIcons name="menu" size={24} color="black" />
       </TouchableOpacity>
 
@@ -42,7 +44,8 @@ const CustomHeader: React.FC<CustomHeaderProps> = ({ title }) => {
 
         <TouchableOpacity
           className="flex-row justify-end"
-          onPress={() => navigation.navigate("Notification")}>
+          onPress={() => navigation.navigate("Notification")}
+        >
           <MaterialCommunityIcons
             name="bell"
             size={30}

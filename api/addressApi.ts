@@ -32,7 +32,7 @@ export const getAddressesByCustomerId = async (
     }
   } catch (error) {
     console.error("Error retrieving addresses:", error);
-    showErrorMessage("Unable to retrieve addresses.");
+    // showErrorMessage("Unable to retrieve addresses.");
     throw error;
   }
 };

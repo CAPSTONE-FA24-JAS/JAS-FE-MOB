@@ -50,6 +50,8 @@ import Notification from "../../components/Pages/Notifications";
 import { createStackNavigator } from "@react-navigation/stack";
 import { createDrawerNavigator } from "@react-navigation/drawer";
 import AddBankAccountScreen from "@/components/Pages/AddCreditCard/AddBankAccountScreen";
+import { DrawerActions } from "@react-navigation/native";
+import { useNavigation } from "expo-router";
 // Declare Drawer and Stack Navigators
 const Drawer = createDrawerNavigator();
 const Stack = createStackNavigator();
@@ -74,12 +76,21 @@ function AuctionsStack() {
 
 // Stack Navigator for My Account
 function MyAccountStack() {
+  const navigation = useNavigation();
+
   return (
     <Stack.Navigator>
       <Stack.Screen
         name="MyAccount"
         component={MyAccount}
-        options={{ header: () => <CustomHeader title="My Account" /> }}
+        options={{
+          header: () => (
+            <CustomHeader
+              title="My Account"
+              // openDrawer={() => navigation.dispatch(DrawerActions.openDrawer())}
+            />
+          ),
+        }}
       />
       <Stack.Screen
         name="ConsignItem"
@@ -93,6 +104,15 @@ function MyAccountStack() {
           header: () => <CustomHeader title="History Item Consign" />,
         }}
       />
+
+      <Stack.Screen
+        name="HomePage"
+        component={HomeScreen}
+        options={{
+          header: () => <CustomHeader title="History Item Consign" />,
+        }}
+      />
+
       <Stack.Screen
         name="WatchedLots"
         component={WatchedLots}
@@ -416,32 +436,10 @@ export default function AppNavigator() {
         options={{ header: () => <CustomHeaderDetail title="Notification" /> }}
       />
 
-      {/* Navigate menu */}
-
       <Stack.Screen
         name="InvoiceList"
         component={InvoiceList}
-        options={{ header: () => <CustomHeader title="Invoice List" /> }}
-      />
-
-      <Stack.Screen
-        name="MyBids"
-        component={MyBids}
-        options={{ header: () => <CustomHeader title="My Bids" /> }}
-      />
-
-      <Stack.Screen
-        name="HistoryItemConsign"
-        component={HistoryItemConsign}
-        options={{
-          header: () => <CustomHeader title="History Item Consign" />,
-        }}
-      />
-
-      <Stack.Screen
-        name="HomePage"
-        component={HomeScreen}
-        options={{ header: () => <CustomHeader title="Home Page" /> }}
+        options={{ header: () => <CustomHeaderDetail title="Invoice List" /> }}
       />
     </Stack.Navigator>
   );

@@ -1,6 +1,15 @@
 // OTP.tsx
 import React, { useState, useRef, useEffect } from "react";
-import { View, Text, TextInput, TouchableOpacity, Image } from "react-native";
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  Image,
+  ScrollView,
+  KeyboardAvoidingView,
+  Platform,
+} from "react-native";
 import { Button } from "react-native-paper";
 import { styled } from "nativewind";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -197,7 +206,20 @@ const OTP: React.FC = () => {
     <>
       {Loading && <LoadingOverlay visible={Loading} />}
       <SafeAreaView className="flex-1 bg-white px-4">
-        <StyledView className="w-full pt-10 items-center">
+        <KeyboardAvoidingView
+          style={{ flex: 1 }}
+          behavior={Platform.OS === "ios" ? "padding" : "height"}
+          keyboardVerticalOffset={80} // Offset for the header height
+        >
+          <ScrollView
+            contentContainerStyle={{
+              flexGrow: 1,
+              justifyContent: "center",
+              alignItems: "center",
+              padding: 20,
+            }}
+            keyboardShouldPersistTaps="handled"
+          ></ScrollView>
           <StyledView className="mb-6">
             <Image
               source={require("../../../assets/icons/OTP.png")}
@@ -250,7 +272,7 @@ const OTP: React.FC = () => {
           >
             <Text className="text-xl font-semibold uppercase">Verify</Text>
           </StyledButton>
-        </StyledView>
+        </KeyboardAvoidingView>
       </SafeAreaView>
     </>
   );

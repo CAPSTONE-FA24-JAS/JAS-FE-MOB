@@ -12,7 +12,6 @@ import {
 // Define the base API URL
 const API_URL = process.env.EXPO_PUBLIC_API_URL || "http://localhost:7251";
 
-// Function to fetch all auctions
 export const viewAuctions = async (): Promise<ViewAutionsReponse> => {
   try {
     const response = await axios.get<ViewAutionsReponse>(
@@ -20,16 +19,27 @@ export const viewAuctions = async (): Promise<ViewAutionsReponse> => {
     );
 
     if (response.data.isSuccess) {
-      // Optionally, you can display a success message
-      // showSuccessMessage(response.data.message);
+      // Nếu thành công, bạn có thể hiển thị thông báo nếu cần
+      showSuccessMessage(
+        response.data.message || "Auctions retrieved successfully!"
+      );
       return response.data;
     } else {
+      // Nếu API trả về isSuccess = false, hiển thị lỗi từ server
+      showErrorMessage(response.data.message || "Failed to retrieve auctions.");
       throw new Error(response.data.message || "Failed to retrieve auctions.");
     }
-  } catch (error) {
+  } catch (error: any) {
+    // Nếu có lỗi khác (ví dụ: network error)
     console.error("Error fetching auctions:", error);
-    showErrorMessage("Unable to fetch auctions.");
-    throw error;
+
+    // Kiểm tra lỗi có response từ server hay không
+    const errorMessage =
+      error.response?.data?.message || "Unable to fetch auctions.";
+    showErrorMessage(errorMessage);
+
+    // Ném lỗi để xử lý tiếp ở chỗ gọi hàm
+    throw new Error(errorMessage);
   }
 };
 
@@ -46,20 +56,25 @@ export const getAuctionsByStatus = async (
     );
 
     if (response.data.isSuccess) {
-      // console.log("Received auctions by status:", response.data);
-
-      // Optionally, you can display a success message
-      // showSuccessMessage(response.data.message);
+      showSuccessMessage(
+        response.data.message || "Auctions retrieved successfully by status!"
+      );
       return response.data;
     } else {
+      showErrorMessage(
+        response.data.message || "Failed to retrieve auctions by status."
+      );
       throw new Error(
         response.data.message || "Failed to retrieve auctions by status."
       );
     }
-  } catch (error) {
+  } catch (error: any) {
     console.error(`Error fetching auctions with status ${statusId}:`, error);
-    showErrorMessage("Unable to fetch auctions by status.");
-    throw error;
+
+    const errorMessage =
+      error.response?.data?.message || "Unable to fetch auctions by status.";
+    showErrorMessage(errorMessage);
+    throw new Error(errorMessage);
   }
 };
 
@@ -76,14 +91,24 @@ export const viewAuctionById = async (
     );
 
     if (response.data.isSuccess) {
+      showSuccessMessage(
+        response.data.message || "Auction details retrieved successfully!"
+      );
       return response.data;
     } else {
+      showErrorMessage(
+        response.data.message || "Failed to retrieve auction details."
+      );
       throw new Error(
         response.data.message || "Failed to retrieve auction details."
       );
     }
-  } catch (error) {
+  } catch (error: any) {
     console.error("Error fetching auction details:", error);
-    throw error;
+
+    const errorMessage =
+      error.response?.data?.message || "Unable to fetch auction details.";
+    showErrorMessage(errorMessage);
+    throw new Error(errorMessage);
   }
 };

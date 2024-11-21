@@ -8,6 +8,8 @@ import { StackNavigationProp } from "@react-navigation/stack";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
 import { consignAnItem } from "@/api/consignAnItemApi";
+import { setLoading } from "@/redux/slices/notificationSlice";
+import LoadingOverlay from "../LoadingOverlay";
 
 // Define the types for navigation routes
 type RootStackParamList = {
@@ -30,6 +32,8 @@ const ConsignStep: React.FC = () => {
   const [height, setHeight] = useState("");
   const [width, setWidth] = useState("");
   const [depth, setDepth] = useState("");
+  const [loadingConssign, setLoadingConssign] = useState(false);
+
   // State để lưu data response của consignAnItem
   const [apiResponseData, setApiResponseData] = useState<any>(); // Đây là nơi lưu URL hình ảnh từ API
 
@@ -93,6 +97,7 @@ const ConsignStep: React.FC = () => {
   const confirmNext = async () => {
     if (currentStep === 2) {
       // Người dùng xác nhận tiếp tục sau khi hiện modal xác nhận
+      setLoadingConssign(true); // Hiển thị loading khi gọi API
       try {
         await handleConsignItem(); // Gọi API consignAnItem
 
@@ -102,28 +107,33 @@ const ConsignStep: React.FC = () => {
         console.error("Error consigning item:", error);
       } finally {
         closeConfirmModal(); // Đóng modal xác nhận sau khi API hoàn thành (dù thành công hay thất bại)
+        setLoadingConssign(false); // Hiển thị loading khi gọi API
       }
     }
   };
 
   return (
     <View className="flex-1 p-4 bg-white">
+      <LoadingOverlay visible={loadingConssign} />
       {/* Step Indicator */}
       <View className="flex-row items-center pb-6 my-4 border-b-2 border-gray-400 justify-evenly">
         {["1", "2", "3"].map((step, index) => (
           <View
             key={`step-${index}`}
-            className="flex-row items-center justify-between">
+            className="flex-row items-center justify-between"
+          >
             <View
               className={`w-16 h-16 rounded-full justify-center items-center ${
                 currentStep === index + 1 ? "bg-blue-500" : "bg-gray-300"
-              }`}>
+              }`}
+            >
               <Text className="text-2xl font-bold text-white">{step}</Text>
             </View>
             {index < 2 && (
               <Text
                 key={`arrow-${index}`}
-                className="ml-6 text-3xl font-semibold text-gray-700">
+                className="ml-6 text-3xl font-semibold text-gray-700"
+              >
                 {">"}
               </Text>
             )}
@@ -171,7 +181,8 @@ const ConsignStep: React.FC = () => {
               className={`py-3 px-8 w-[45%] flex-row justify-center rounded-lg ${
                 currentStep === 1 ? "bg-gray-300" : "bg-blue-500"
               }`}
-              disabled={currentStep === 1}>
+              disabled={currentStep === 1}
+            >
               <Text className="text-lg font-semibold text-white">Previous</Text>
             </TouchableOpacity>
           )}
@@ -179,7 +190,9 @@ const ConsignStep: React.FC = () => {
           {/* Disable Next button if Step 2 is invalid */}
           <TouchableOpacity
             onPress={goNext}
-            className={`py-3 px-8 w-[45%] flex-row justify-center rounded-lg ${
+            className={`py-3 px-8 ${
+              currentStep === 3 ? "w-full" : "w-[45%]"
+            }  flex-row justify-center rounded-lg ${
               (currentStep === 1 && selectedImages.length === 0) ||
               (currentStep === 2 && !isStep2Valid)
                 ? "bg-gray-300"
@@ -188,8 +201,9 @@ const ConsignStep: React.FC = () => {
             disabled={
               (currentStep === 1 && selectedImages.length === 0) ||
               (currentStep === 2 && !isStep2Valid)
-            }>
-            <Text className="text-lg font-semibold text-white">
+            }
+          >
+            <Text className="text-lg text-center w-full font-semibold text-white">
               {currentStep === 3 ? "Finish" : "Next"}
             </Text>
           </TouchableOpacity>
@@ -201,7 +215,8 @@ const ConsignStep: React.FC = () => {
         animationType="slide"
         transparent={true}
         visible={isModalVisible}
-        onRequestClose={closeModal}>
+        onRequestClose={closeModal}
+      >
         <View className="items-center justify-center flex-1 bg-black/50">
           <View className="items-center w-11/12 p-6 bg-white rounded-lg">
             <Text className="mb-4 text-3xl font-bold text-green-500">
@@ -219,7 +234,8 @@ const ConsignStep: React.FC = () => {
               onPress={() => {
                 closeModal();
                 navigation.navigate("HistoryItemConsign"); // Navigate to History Page
-              }}>
+              }}
+            >
               <Text className="text-lg font-semibold text-white">
                 History Item Consign
               </Text>
@@ -231,7 +247,8 @@ const ConsignStep: React.FC = () => {
               onPress={() => {
                 closeModal();
                 navigation.navigate("HomePage"); // Navigate back to Home
-              }}>
+              }}
+            >
               <Text className="text-lg font-semibold text-white">
                 Return to Home
               </Text>
@@ -245,7 +262,8 @@ const ConsignStep: React.FC = () => {
         animationType="fade"
         transparent={true}
         visible={isConfirmModalVisible}
-        onRequestClose={closeConfirmModal}>
+        onRequestClose={closeConfirmModal}
+      >
         <View className="items-center justify-center flex-1 bg-black/50">
           <View className="items-center w-10/12 p-6 bg-white rounded-lg">
             <Text className="mb-4 text-3xl font-bold text-blue-500">
@@ -257,12 +275,14 @@ const ConsignStep: React.FC = () => {
             <View className="flex-row w-full justify-evenly">
               <TouchableOpacity
                 onPress={closeConfirmModal}
-                className="px-8 py-3 bg-gray-500 rounded-lg">
+                className="px-8 py-3 bg-gray-500 rounded-lg"
+              >
                 <Text className="font-semibold text-white">Cancel</Text>
               </TouchableOpacity>
               <TouchableOpacity
                 onPress={confirmNext}
-                className="px-8 py-3 bg-blue-500 rounded-lg">
+                className="px-8 py-3 bg-blue-500 rounded-lg"
+              >
                 <Text className="text-base font-semibold text-white">
                   Yes, Continue
                 </Text>

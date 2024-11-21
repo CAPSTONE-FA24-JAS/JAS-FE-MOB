@@ -22,14 +22,17 @@ const PastAuctions = () => {
     const fetchAuctions = async () => {
       try {
         const response = await viewAuctions();
-        if (response.isSuccess) {
-          // Filter auctions with status "NotStarted" or "Living"
+        console.log("responsePastAuc", response);
+
+        if (response.isSuccess && response.data) {
+          // Filter auctions with status "Past"
           const filteredAuctions = response.data.filter(
             (auction) => auction.status === "Past"
           );
           setAuctions(filteredAuctions);
         } else {
-          setError(response.message || "Failed to load auctions.");
+          // Handle cases where response.data is null
+          setError(response.message || "No auctions found.");
         }
       } catch (err) {
         setError("Failed to load auctions.");
@@ -59,16 +62,15 @@ const PastAuctions = () => {
           onPress={() => {
             setLoading(true);
             setError(null);
-            // Retry fetching auctions
             viewAuctions()
               .then((response) => {
-                if (response.isSuccess) {
+                if (response.isSuccess && response.data) {
                   const filteredAuctions = response.data.filter(
                     (auction) => auction.status === "Past"
                   );
                   setAuctions(filteredAuctions);
                 } else {
-                  setError(response.message || "Failed to load auctions.");
+                  setError(response.message || "No auctions found.");
                 }
               })
               .catch(() => {

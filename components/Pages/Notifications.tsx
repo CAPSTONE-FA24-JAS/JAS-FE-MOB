@@ -181,7 +181,7 @@ const Notifications: React.FC = () => {
       <FlatList
         data={notifications}
         renderItem={({ item }) => <NotificationItem item={item} />}
-        keyExtractor={(item, index) => `${item.id || index}`}
+        keyExtractor={(item, index) => `${item.id}-${index}`}
         ListFooterComponent={
           loading ? (
             <ActivityIndicator size="small" color="#0000ff" />

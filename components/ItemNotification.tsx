@@ -20,6 +20,7 @@ type RootStackParamList = {
 const NotificationItem = ({ item }: { item: Notification }) => {
   const dispatch = useDispatch();
   const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
+  console.log("itemNoti.id", item.id);
 
   const getTypeColor = (item: Notification) => {
     switch (item.notifi_Type) {
@@ -69,6 +70,10 @@ const NotificationItem = ({ item }: { item: Notification }) => {
       console.log("Navigate to valuation");
       // navigation.navigate("ValuationDetail", { item: item.id });
       navigation.navigate("HistoryItemConsign", { tab: 3 });
+    } else if (item.notifi_Type === "Preliminary") {
+      console.log("Navigate to valuation");
+      // navigation.navigate("ValuationDetail", { item: item.id });
+      navigation.navigate("HistoryItemConsign", { tab: 3 });
     }
   };
 
@@ -92,41 +97,23 @@ const NotificationItem = ({ item }: { item: Notification }) => {
 
   // Hàm này để thay đổi màu và chữ hoa cho từ "thắng" và "thua"
   const formatTitleText = (title: string) => {
-    const formattedTitle = title.split(" ").map((word) => {
-      if (
-        word.toLowerCase() === "thắng" ||
-        word.toLowerCase() === "Thắng" ||
-        word.toLowerCase() === "THẮNG" ||
-        word.toLowerCase() === "win" ||
-        word.toLowerCase() === "Win" ||
-        word.toLowerCase() === "WIN"
-      ) {
+    return title.split(" ").map((word, index) => {
+      if (["thắng", "win"].includes(word.toLowerCase())) {
         return (
-          <Text key={word} className="text-green-700 uppercase">
-            {" "}
-            {word}{" "}
+          <Text key={`win-${index}`} className="text-green-700 uppercase">
+            {word}
           </Text>
         );
       }
-      if (
-        word.toLowerCase() === "thua" ||
-        word.toLowerCase() === "Thua" ||
-        word.toLowerCase() === "THUA" ||
-        word.toLowerCase() === "LOSE" ||
-        word.toLowerCase() === "Lose" ||
-        word.toLowerCase() === "lose"
-      ) {
+      if (["thua", "lose"].includes(word.toLowerCase())) {
         return (
-          <Text key={word} className="text-red-500 uppercase">
-            {" "}
-            {word}{" "}
+          <Text key={`lose-${index}`} className="text-red-500 uppercase">
+            {word}
           </Text>
         );
       }
-      return <Text key={word}> {word} </Text>;
+      return <Text key={`word-${index}`}> {word} </Text>;
     });
-
-    return formattedTitle;
   };
 
   return (

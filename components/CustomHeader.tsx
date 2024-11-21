@@ -5,6 +5,9 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import { DrawerNavigationProp } from "@react-navigation/drawer";
 import { ParamListBase } from "@react-navigation/routers";
+import { createSelector } from "@reduxjs/toolkit";
+import { RootState } from "@/redux/store";
+import { useSelector } from "react-redux";
 
 interface CustomHeaderProps {
   title: string;
@@ -12,6 +15,13 @@ interface CustomHeaderProps {
 
 const CustomHeader: React.FC<CustomHeaderProps> = ({ title }) => {
   const navigation = useNavigation<DrawerNavigationProp<ParamListBase>>();
+  // Selector để lấy số lượng thông báo chưa đọc
+  const selectUnreadNotificationsCount = createSelector(
+    (state: RootState) => state.notifications.notifications,
+    (notifications) => notifications.filter((notif) => !notif.is_Read).length
+  );
+
+  const unreadCount = useSelector(selectUnreadNotificationsCount);
 
   return (
     <View
@@ -20,7 +30,7 @@ const CustomHeader: React.FC<CustomHeaderProps> = ({ title }) => {
         alignItems: "center",
         paddingHorizontal: 20,
         backgroundColor: "#fff",
-        paddingTop: 40,
+        paddingTop: 50,
         paddingBottom: 20,
         justifyContent: "space-between",
         shadowColor: "#000", // Màu của shadow
@@ -52,6 +62,11 @@ const CustomHeader: React.FC<CustomHeaderProps> = ({ title }) => {
             color="black"
             style={{ marginRight: 10 }}
           />
+          {unreadCount > 0 && (
+            <Text className="absolute -top-3 text-white font-bold -left-3 py-1 px-2 bg-[#3eaef4] rounded-full">
+              {unreadCount}
+            </Text>
+          )}
         </TouchableOpacity>
       </View>
     </View>

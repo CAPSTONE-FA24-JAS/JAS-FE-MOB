@@ -441,6 +441,20 @@ export default function AppNavigator() {
         component={InvoiceList}
         options={{ header: () => <CustomHeaderDetail title="Invoice List" /> }}
       />
+
+      <Stack.Screen
+        name="MyBids"
+        component={MyBids}
+        options={{ header: () => <CustomHeaderDetail title="My Bids" /> }}
+      />
+
+      <Stack.Screen
+        name="HistoryItemConsign"
+        component={HistoryItemConsign}
+        options={{
+          header: () => <CustomHeaderDetail title="History Item Consign" />,
+        }}
+      />
     </Stack.Navigator>
   );
 }

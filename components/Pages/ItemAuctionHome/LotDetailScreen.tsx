@@ -668,17 +668,19 @@ const LotDetailScreen = () => {
                     : "N/A"}
                 </Text>
               </View>
-              <View className="flex-row w-[98%] justify-between items-start">
+              <View className="flex-row w-full mx-2 justify-between items-start">
                 <Text className="text-base font-bold text-gray-500 w-[60%] ">
                   Lot #{id} - Type {typeBid ? formatTypeBid(typeBid) : "N/A"}
                 </Text>
-                <Text
-                  className={`font-extrabold py-1 px-10 ${getStatusClass(
-                    lotDetail?.status ?? ""
-                  )} rounded-md text-base uppercase text-white`}
-                >
-                  {lotDetail?.status}
-                </Text>
+                <View className=" w-[40%] mx-auto">
+                  <Text
+                    className={`font-extrabold py-1 px-10 ${getStatusClass(
+                      lotDetail?.status ?? ""
+                    )} rounded-md text-base uppercase text-white`}
+                  >
+                    {lotDetail?.status}
+                  </Text>
+                </View>
               </View>
 
               <Text className="mb-2 text-xl font-bold text-black ">

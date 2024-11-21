@@ -257,3 +257,47 @@ export const getTotalCustomerInLotFixedPrice = async (
     throw error;
   }
 };
+
+// Function to get floor fees
+export const getFloorFees = async (): Promise<
+  | {
+      from: number | null;
+      to: number | null;
+      percent: number;
+      id: number;
+    }[]
+  | null
+> => {
+  try {
+    const response = await axios.get<{
+      code: number;
+      message: string;
+      isSuccess: boolean;
+      data: {
+        from: number | null;
+        to: number | null;
+        percent: number;
+        id: number;
+      }[];
+    }>(`${API_URL}/api/FloorFeePercents/GetFloorFees`);
+
+    if (response.data.isSuccess && response.data.data) {
+      console.log("Received floor fees:", response.data.data);
+      showSuccessMessage(
+        response.data.message || "Floor fees retrieved successfully."
+      );
+      return response.data.data; // Return the array of floor fees
+    } else {
+      throw new Error(
+        response.data.message || "Failed to retrieve floor fees."
+      );
+    }
+  } catch (error: any) {
+    console.error("Error retrieving floor fees:", error);
+    showErrorMessage("Unable to retrieve floor fees.");
+    throw new ApiError(
+      error.response?.data?.code || 500,
+      error.response?.data?.message || "Error retrieving floor fees."
+    );
+  }
+};

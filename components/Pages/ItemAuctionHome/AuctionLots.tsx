@@ -2,6 +2,7 @@ import { getLotsByAuctionId } from "@/api/lotAPI";
 import { AuctionData } from "@/app/types/auction_type";
 import { Lot } from "@/app/types/lot_type";
 import CountdownTimerBid from "@/components/CountDown/CountdownTimer";
+import AuctionCountdownTimer from "@/components/CountDown/CountdownTimerAuction";
 import ItemLots from "@/components/ItemLots";
 import { useFocusEffect } from "expo-router";
 import React, { useCallback, useEffect, useState } from "react";
@@ -45,10 +46,7 @@ const AuctionLots: React.FC<AuctionLotsProps> = ({ dataAuction }) => {
 
   return (
     <ScrollView className="bg-white">
-      <CountdownTimerBid
-        startTime={dataAuction?.startTime || null}
-        endTime={dataAuction?.endTime || null}
-      />
+      <AuctionCountdownTimer startTime={dataAuction?.startTime || null} />
 
       {/* Search and filter section */}
       <View className="flex flex-row justify-around py-3 searchbar">

@@ -1,5 +1,6 @@
 import { AuctionData } from "@/app/types/auction_type";
 import CountdownTimerBid from "@/components/CountDown/CountdownTimer";
+import AuctionCountdownTimer from "@/components/CountDown/CountdownTimerAuction";
 import moment from "moment-timezone";
 import React, { useEffect, useState } from "react";
 import { View, Text, Image, ScrollView, TouchableOpacity } from "react-native";
@@ -69,12 +70,9 @@ const AuctionDetailScreen: React.FC<AuctionDetailScreenProps> = ({
 
   return (
     <ScrollView className="bg-white">
-      <CountdownTimerBid
-        startTime={dataAuction?.startTime || null}
-        endTime={dataAuction?.endTime || null}
-      />
+      <AuctionCountdownTimer startTime={dataAuction?.startTime || null} />
 
-      <View className="h-64">
+      <View className="h-64 mt-2">
         <Swiper
           showsPagination={true}
           autoplay={true}

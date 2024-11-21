@@ -370,3 +370,18 @@ export interface ValuationDocument {
 }
 
 export default {};
+
+// Floor fee type definition
+export interface FloorFee {
+  from: number | null;
+  to: number | null;
+  percent: number;
+  id: number;
+  creationDate: string;
+  createdBy: string | null;
+  modificationDate: string | null;
+  modificationBy: string | null;
+  deletionDate: string | null;
+  deleteBy: string | null;
+  isDeleted: boolean;
+}

@@ -22,7 +22,13 @@ const TransactionHistory: React.FC = () => {
           setLoading(true);
           const response = await getTransactionsByCustomer(userId);
           if (response && response.isSuccess) {
-            setTransactions(response.data);
+            setTransactions(
+              response.data.sort(
+                (a, b) =>
+                  new Date(b.transactionTime).getTime() -
+                  new Date(a.transactionTime).getTime()
+              )
+            );
           } else {
             setError("Failed to load transactions.");
           }

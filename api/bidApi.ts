@@ -87,7 +87,11 @@ export const getBidsOfCustomer = async (
   pageIndex: number = 1,
   pageSize: number = 10
 ): Promise<GetBidsOfCustomerResponse | null> => {
-  console.log("getCURRENTBidOfCustomerRUN");
+  console.log("getCURRENTBidOfCustomerRUN", {
+    customerId,
+    status,
+    pageIndex,
+  });
 
   try {
     const response = await axios.get<GetBidsOfCustomerResponse>(

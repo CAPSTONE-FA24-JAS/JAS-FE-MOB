@@ -12,10 +12,9 @@ import { TouchableOpacity } from "react-native-gesture-handler";
 import { useDispatch } from "react-redux";
 
 type RootStackParamList = {
-  Account:
-    | { screen: "InvoiceList" }
-    | { screen: "MyBids"; params: { tab: string } }
-    | { screen: "HistoryItemConsign"; params: { tab: number } };
+  InvoiceList: undefined;
+  MyBids: { tab: string };
+  HistoryItemConsign: { tab: number };
 };
 
 const NotificationItem = ({ item }: { item: Notification }) => {
@@ -47,32 +46,29 @@ const NotificationItem = ({ item }: { item: Notification }) => {
   const handleNavigate = () => {
     if (
       item.notifi_Type === "Customerlot" ||
-      item.title.includes("Đấu giá thắng")
+      item.title.includes("Đấu giá thắng") ||
+      item.title.includes("Bidding win")
     ) {
       console.log("Navigate to invoice list");
       // navigation.navigate("InvoiceDetail", { item: item.id });
-      navigation.navigate("Account", { screen: "InvoiceList" as const });
+      navigation.navigate("InvoiceList");
+
       // router.push("/invoice-list");
     } else if (
       item.notifi_Type === "Customerlot" ||
-      item.title.includes("Đấu giá thua")
+      item.title.includes("Đấu giá thua") ||
+      item.title.includes("Bidding lose")
     ) {
       console.log("Navigating to Account", { screen: "MyBids" });
 
       // navigation.navigate("ValuationDetail", { item: item.id });
-      navigation.navigate("Account", {
-        screen: "MyBids",
-        params: { tab: "past" },
-      });
+      navigation.navigate("MyBids", { tab: "past" });
 
       // router.push("/invoice-list");
     } else if (item.notifi_Type === "Valuation") {
       console.log("Navigate to valuation");
       // navigation.navigate("ValuationDetail", { item: item.id });
-      navigation.navigate("Account", {
-        screen: "HistoryItemConsign",
-        params: { tab: 3 },
-      });
+      navigation.navigate("HistoryItemConsign", { tab: 3 });
     }
   };
 
@@ -100,7 +96,10 @@ const NotificationItem = ({ item }: { item: Notification }) => {
       if (
         word.toLowerCase() === "thắng" ||
         word.toLowerCase() === "Thắng" ||
-        word.toLowerCase() === "THẮNG"
+        word.toLowerCase() === "THẮNG" ||
+        word.toLowerCase() === "win" ||
+        word.toLowerCase() === "Win" ||
+        word.toLowerCase() === "WIN"
       ) {
         return (
           <Text key={word} className="text-green-700 uppercase">
@@ -112,7 +111,10 @@ const NotificationItem = ({ item }: { item: Notification }) => {
       if (
         word.toLowerCase() === "thua" ||
         word.toLowerCase() === "Thua" ||
-        word.toLowerCase() === "THUA"
+        word.toLowerCase() === "THUA" ||
+        word.toLowerCase() === "LOSE" ||
+        word.toLowerCase() === "Lose" ||
+        word.toLowerCase() === "lose"
       ) {
         return (
           <Text key={word} className="text-red-500 uppercase">

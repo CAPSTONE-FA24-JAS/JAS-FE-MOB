@@ -10,7 +10,7 @@ import { useSelector } from "react-redux";
 // Define the types for navigation routes
 type RootStackParamList = {
   HomePage: undefined;
-  Account: { screen: "InvoiceList" };
+  InvoiceList: undefined;
   PaymentSuccess: {
     invoiceId?: number;
     itemDetailBid: MyBidData;
@@ -40,7 +40,7 @@ const PaymentSuccess: React.FC = () => {
   };
   const handleInvoiceList = () => {
     // Navigate to 'InvoiceList' through 'Account' stack
-    navigation.navigate("Account", { screen: "InvoiceList" as const });
+    navigation.navigate("InvoiceList");
   };
 
   // Calculate the total price

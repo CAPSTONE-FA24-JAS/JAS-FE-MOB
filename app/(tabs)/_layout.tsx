@@ -167,7 +167,8 @@ function DrawerLayout() {
         drawerActiveBackgroundColor: "lightgray", // Set background color for active item
         drawerActiveTintColor: Colors.primary, // Set text color for active item
         drawerInactiveTintColor: "black", // Set text color for inactive items
-      }}>
+      }}
+    >
       {/* Parent Categories */}
       <Drawer.Screen
         name="Auctions"
@@ -413,6 +414,34 @@ export default function AppNavigator() {
         name="Notification"
         component={Notification}
         options={{ header: () => <CustomHeaderDetail title="Notification" /> }}
+      />
+
+      {/* Navigate menu */}
+
+      <Stack.Screen
+        name="InvoiceList"
+        component={InvoiceList}
+        options={{ header: () => <CustomHeader title="Invoice List" /> }}
+      />
+
+      <Stack.Screen
+        name="MyBids"
+        component={MyBids}
+        options={{ header: () => <CustomHeader title="My Bids" /> }}
+      />
+
+      <Stack.Screen
+        name="HistoryItemConsign"
+        component={HistoryItemConsign}
+        options={{
+          header: () => <CustomHeader title="History Item Consign" />,
+        }}
+      />
+
+      <Stack.Screen
+        name="HomePage"
+        component={HomeScreen}
+        options={{ header: () => <CustomHeader title="Home Page" /> }}
       />
     </Stack.Navigator>
   );

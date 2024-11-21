@@ -14,6 +14,8 @@ interface BidsListProps {
   bids?: Message[];
   currentCusId: number;
   reducePrice?: number;
+  isEndAuctionMethod3?: boolean;
+  isEndLot?: boolean;
 }
 
 const BidsList: React.FC<BidsListProps> = ({
@@ -21,6 +23,8 @@ const BidsList: React.FC<BidsListProps> = ({
   bids,
   currentCusId,
   reducePrice,
+  isEndAuctionMethod3,
+  isEndLot,
 }) => {
   // Memoized sorted bids
 
@@ -83,6 +87,12 @@ const BidsList: React.FC<BidsListProps> = ({
   };
 
   const buyNow = () => {
+    const isDisabled =
+      isEndAuctionMethod3 ||
+      isEndLot ||
+      item.status === "Sold" ||
+      item.status === "Passed";
+
     return (
       <View className="mb-4">
         <View className="p-4 bg-white border border-gray-300 rounded-md">
@@ -96,13 +106,13 @@ const BidsList: React.FC<BidsListProps> = ({
             })}
           </Text>
           <TouchableOpacity
-            className="px-4 py-3 bg-red-600 rounded-md"
-            onPress={() => {
-              console.log("item", item.finalPriceSold);
-              handleBuyNow();
-            }}>
+            className={`px-4 py-3 rounded-md ${
+              isDisabled ? "bg-gray-400" : "bg-red-600"
+            }`}
+            onPress={!isDisabled ? handleBuyNow : undefined}
+            disabled={isDisabled}>
             <Text className="font-semibold text-center text-white">
-              BUY NOW
+              {isDisabled ? "AUCTION ENDED" : "BUY NOW"}
             </Text>
           </TouchableOpacity>
           <Text className="mt-2 text-xs text-center text-gray-500">
@@ -123,19 +133,21 @@ const BidsList: React.FC<BidsListProps> = ({
       );
     }
     const sortedBids = useMemo(() => {
-      console.log("Raw bids:", bids);
-
       const filteredBids = bids.filter((bid) =>
         ["Processing", "Failed"].includes(bid.status)
           ? bid.customerId.toString().trim() === currentCusId.toString().trim()
           : true
       );
 
-      console.log("Filtered bids:", filteredBids);
-
-      return filteredBids.sort(
-        (a, b) => new Date(b.bidTime).getTime() - new Date(a.bidTime).getTime()
-      );
+      return filteredBids.sort((a, b) => {
+        const timeDiff =
+          new Date(b.bidTime).getTime() - new Date(a.bidTime).getTime();
+        if (timeDiff === 0) {
+          // Nếu thời gian bằng nhau, sắp xếp theo giá
+          return b.currentPrice - a.currentPrice;
+        }
+        return timeDiff; // Sắp xếp theo thời gian
+      });
     }, [bids, currentCusId]);
     return (
       <View className="p-4">

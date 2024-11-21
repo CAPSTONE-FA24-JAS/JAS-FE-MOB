@@ -49,6 +49,7 @@ import ReduceBidPage from "@/components/Pages/LiveBidding/ReduceBidPage";
 import Notification from "../../components/Pages/Notifications";
 import { createStackNavigator } from "@react-navigation/stack";
 import { createDrawerNavigator } from "@react-navigation/drawer";
+import AddBankAccountScreen from "@/components/Pages/AddCreditCard/AddBankAccountScreen";
 // Declare Drawer and Stack Navigators
 const Drawer = createDrawerNavigator();
 const Stack = createStackNavigator();
@@ -376,6 +377,13 @@ export default function AppNavigator() {
       <Stack.Screen
         name="MyWallet"
         component={MyWalletMain}
+        options={{
+          header: () => <CustomHeaderDetail title="My Wallet" />,
+        }}
+      />
+      <Stack.Screen
+        name="AddBankAccount"
+        component={AddBankAccountScreen}
         options={{
           header: () => <CustomHeaderDetail title="My Wallet" />,
         }}

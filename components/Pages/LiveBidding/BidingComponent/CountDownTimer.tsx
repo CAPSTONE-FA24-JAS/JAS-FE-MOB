@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { Text, View } from "react-native";
 
 interface CountDownTimerProps {
-  endTime: string; // in seconds
+  endTime: string; // ISO 8601 format recommended
 }
 
 const CountDownTimer: React.FC<CountDownTimerProps> = ({ endTime }) => {
@@ -34,32 +34,35 @@ const CountDownTimer: React.FC<CountDownTimerProps> = ({ endTime }) => {
   };
 
   useEffect(() => {
-    setTimeLeft(calculateTimeLeft());
-
-    const timer = setInterval(() => {
+    const updateTimer = () => {
       const newTimeLeft = calculateTimeLeft();
       setTimeLeft(newTimeLeft);
 
+      // Clear timer if all values are zero
       if (Object.values(newTimeLeft).every((v) => v === 0)) {
         clearInterval(timer);
       }
-    }, 1000);
+    };
+
+    updateTimer(); // Initial call
+    const timer = setInterval(updateTimer, 1000);
 
     return () => clearInterval(timer);
   }, [endTime]);
 
-  const formatTime = (seconds: number) => {
-    const min = Math.floor(seconds / 60);
-    const sec = seconds % 60;
-    return `${min}:${sec < 10 ? "0" : ""}${sec}`;
-  };
+  // Memoize the display string to avoid recalculating unnecessarily
+  const displayText = useMemo(() => {
+    const { days, hours, minutes, seconds } = timeLeft;
+
+    return days + hours + minutes + seconds === 0
+      ? "Time's up!"
+      : `Estimate Time: ${days}d ${hours}h ${minutes}m ${seconds}s left`;
+  }, [timeLeft]);
 
   return (
-    <View className="w-full p-1 bg-red-600 ">
+    <View className="w-full p-1 bg-red-600">
       <Text className="text-sm font-semibold text-center text-white">
-        Estimate Time:
-        {` ${timeLeft.days}d ${timeLeft.hours}h ${timeLeft.minutes}m ${timeLeft.seconds}s `}
-        left
+        {displayText}
       </Text>
     </View>
   );

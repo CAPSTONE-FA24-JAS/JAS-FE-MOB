@@ -109,6 +109,8 @@ const ReduceBidPage = () => {
     fetchLotDetail();
   }, [itemId]);
 
+  console.log("Item:", item.endTime);
+
   useEffect(() => {
     if (accountId && itemId) {
       console.log("Joining bid 4 room...", accountId, itemId);
@@ -120,7 +122,10 @@ const ReduceBidPage = () => {
   }, [accountId, itemId, item.lotType]);
 
   const mainContent = [
-    { key: "timer", component: <CountDownTimer endTime={endTime ?? ""} /> },
+    {
+      key: "timer",
+      component: <CountDownTimer endTime={endTime || item.endTime} />,
+    },
     {
       key: "product",
       component: (

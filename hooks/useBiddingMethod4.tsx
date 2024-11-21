@@ -47,14 +47,12 @@ export function useBiddingMethod4(): UseBiddingResult {
     connection.on("JoinLot", (user: string, message: string) => {
       console.log(`${user}: ${message}`);
     });
-    //await _hubContext.Clients.Group(lotGroupName).SendAsync("SendBiddingPriceforReducedBidding", "Phiên đã kết thúc!", customerId, request.CurrentPrice, request.BidTime);
 
-    ///ket thuc lot dau gia co ng dau gia
     connection.on(
       "AuctionEndedReduceBidding",
       (msg: string, cusid: string, currentPrice: string) => {
         console.log(
-          `Current price updated: ${msg} by ${cusid} with price ${currentPrice}`
+          `AuctionEndedReduceBidding Current price updated: ${msg} by ${cusid} with price ${currentPrice}`
         );
         setWinnerCustomer(cusid);
         setWinnerPrice(currentPrice);
@@ -64,20 +62,25 @@ export function useBiddingMethod4(): UseBiddingResult {
     );
 
     connection.on("SendAmountCustomerBid", (msg: string, amount: string) => {
-      console.log(`Amount customer bid: ${msg} with amount ${amount}`);
+      console.log(
+        `SendAmountCustomerBid Amount customer bid: ${msg} with amount ${amount}`
+      );
       // setResultBidding(amount);
     });
+
     /// end auction nhuwng k co ai dau gia
     connection.on("AuctionEndedWithWinnerReduce", (msg: string) => {
-      console.log(`Auction ended : ${msg}`);
+      console.log(`AuctionEndedWithWinnerReduce Auction ended : ${msg}`);
       setIsEndAuctionMethod4(true);
     });
 
-    //// sau khi mua xong thi het 1 chu ky giam gia la end lai nen can cap nhat lai
+    //// sau khi mua xong hoac co nguoi mua thi het 1 chu ky giam gia la end lai nen can cap nhat lai
     connection.on(
       "SendEndTimeForReduceBidding",
       (msg: string, newEndTime: string) => {
-        console.log(`End time updated for lot : ${newEndTime}`);
+        console.log(
+          `SendEndTimeForReduceBidding End time updated for lot : ${msg} ${newEndTime}`
+        );
         setEndTime(newEndTime);
       }
     );
@@ -85,15 +88,19 @@ export function useBiddingMethod4(): UseBiddingResult {
     connection.on(
       "CurrentPriceForReduceBiddingWhenStartLot",
       (msg: string, currPrice: string, dateNow: string) => {
-        console.log(`${msg} currentPricessssdasdss ${currPrice} at ${dateNow}`);
+        console.log(
+          `CurrentPriceForReduceBiddingWhenStartLot ${msg} ${currPrice} at ${dateNow}`
+        );
         setReducePrice(Number(currPrice));
       }
     );
 
     connection.on(
       "SendCurrentPriceForReduceBidding", // khi moi vao lot
-      (currentPrice: number, dateNow: string) => {
-        console.log(`currentPrice first ${currentPrice} at ${dateNow}`);
+      (currentPrice: number) => {
+        console.log(
+          `SendCurrentPriceForReduceBidding currentPrice first ${currentPrice} `
+        );
         setReducePrice(() => currentPrice);
       }
     );
@@ -101,7 +108,10 @@ export function useBiddingMethod4(): UseBiddingResult {
     connection.on(
       "ReducePriceBidding",
       (mess: string, currentPrice: number, time: string) => {
-        console.log(`${mess} currentPrice ${currentPrice} at ${time}`);
+        /// time của cột mốc
+        console.log(
+          `ReducePriceBidding ${mess} currentPrice ${currentPrice} at ${time}`
+        );
         setReducePrice(() => currentPrice);
       }
     );

@@ -12,13 +12,20 @@ import {
   showErrorMessage,
   showSuccessMessage,
 } from "@/components/FlashMessageHelpers";
+import { BankAccountInfo, getAllCardByCustomerId } from "@/api/cardApi";
+import { useNavigation } from "@react-navigation/native";
 
 const Withdraw: React.FC = () => {
   const [selectedPayment, setSelectedPayment] = useState<string>("momo");
   const [amount, setAmount] = useState<string>("0");
   const [err, setErr] = useState<string>("");
-  const [reload, setReload] = useState<boolean>(false); // Trạng thái reload
+  const [reload, setReload] = useState<boolean>(false);
+  const [existingBankAccounts, setExistingBankAccounts] = useState<
+    BankAccountInfo[]
+  >([]);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
 
+  const navigation = useNavigation<any>();
   const customerId = useSelector(
     (state: RootState) => state.auth.userResponse?.customerDTO.id
   );
@@ -31,14 +38,29 @@ const Withdraw: React.FC = () => {
     (state: RootState) => state.profile.profile?.customerDTO?.walletDTO?.balance
   );
 
-  // Fetch wallet details khi reload
+  // Fetch wallet details and bank accounts
   useEffect(() => {
     setErr("");
     setAmount("0");
-  }, [reload]);
+    setIsLoading(true);
+
+    if (customerId) {
+      getAllCardByCustomerId(customerId)
+        .then((data) => {
+          setExistingBankAccounts(data);
+          setIsLoading(false);
+        })
+        .catch((error) => {
+          console.error("Error fetching bank accounts:", error);
+          setIsLoading(false);
+        });
+    }
+  }, [walletAmount, customerId]);
 
   const isDisabled = (): boolean => {
+    // Disable if no bank accounts, no wallet amount, invalid amount, or no payment method
     if (
+      existingBankAccounts.length === 0 ||
       !walletAmount ||
       Number(amount) <= 0 ||
       Number(amount) > walletAmount ||
@@ -50,19 +72,21 @@ const Withdraw: React.FC = () => {
   };
 
   const validateWithdraw = (): string => {
+    if (existingBankAccounts.length === 0)
+      return "Please add a bank account first";
     if (!walletAmount) return "Wallet balance is unavailable.";
     if (Number(amount) <= 0) return "Amount must be greater than 0.";
     if (Number(amount) > walletAmount)
       return "Amount must be less than your balance.";
-    return ""; // Không có lỗi
+    return ""; // No errors
   };
 
   const handleWithdraw = async () => {
     const errorMessage = validateWithdraw();
-    setErr(errorMessage); // Cập nhật lỗi để hiển thị trên giao diện
+    setErr(errorMessage);
 
     if (errorMessage || isDisabled()) {
-      return; // Dừng nếu có lỗi
+      return;
     }
 
     try {
@@ -74,7 +98,7 @@ const Withdraw: React.FC = () => {
         );
         if (response && response.isSuccess) {
           showSuccessMessage("Withdraw successfully");
-          setReload(!reload); // Reload lại trang
+          setReload(!reload);
         } else {
           showErrorMessage("Unable to request withdraw.");
         }
@@ -82,6 +106,48 @@ const Withdraw: React.FC = () => {
     } catch (error) {
       console.error("Error requesting withdraw:", error);
     }
+  };
+
+  const handleAddBankAccount = () => {
+    navigation.navigate("AddBankAccount");
+  };
+
+  const renderBankAccountSection = () => {
+    if (isLoading) {
+      return <Text>Loading bank accounts...</Text>;
+    }
+
+    if (existingBankAccounts.length === 0) {
+      return (
+        <View className="items-center px-2 mt-4">
+          <Text className="mb-2 text-lg font-semibold text-center">
+            No Bank Account Added
+          </Text>
+          <TouchableOpacity
+            onPress={handleAddBankAccount}
+            className="p-3 bg-blue-500 rounded-lg">
+            <Text className="font-semibold text-white">Add Bank Account</Text>
+          </TouchableOpacity>
+        </View>
+      );
+    }
+
+    return (
+      <View className="px-2">
+        <Text className="mb-2 text-lg font-semibold">2. BANK ACCOUNT</Text>
+        {existingBankAccounts.map((account, index) => (
+          <Card key={index} className="mb-2">
+            <Card.Content className="flex-row items-center">
+              <View className="ml-2">
+                <Text className="font-semibold">{account.bankName}</Text>
+                <Text>{account.bankAccountHolder}</Text>
+                <Text>{account.bankCode}</Text>
+              </View>
+            </Card.Content>
+          </Card>
+        ))}
+      </View>
+    );
   };
 
   return (
@@ -94,62 +160,10 @@ const Withdraw: React.FC = () => {
           err={err}
           validateWithdraw={validateWithdraw}
         />
-        <View className="px-2">
-          <Text className="mb-2 text-lg font-semibold">
-            2. CHOOSE PAYMENT METHOD
-          </Text>
-          <Text className="mb-4 font-semibold text-red-500">
-            Note: After completing indirect payment, take a screenshot of the
-            transaction bill and upload it to JAS.
-          </Text>
-
-          {/* MoMo Payment */}
-          <Card className="mb-4 bg-white">
-            <TouchableOpacity
-              onPress={() => setSelectedPayment("momo")}
-              className="flex-row items-center justify-between p-4">
-              <View className="flex-row items-center">
-                <Avatar.Image
-                  source={require("../../../assets/logo/MoMo_Logo.png")}
-                  size={40}
-                />
-                <View className="ml-3">
-                  <Text className="text-lg font-semibold">MoMo</Text>
-                  <Text>MoMo Wallet Account</Text>
-                </View>
-              </View>
-              <RadioButton
-                value="momo"
-                status={selectedPayment === "momo" ? "checked" : "unchecked"}
-              />
-            </TouchableOpacity>
-          </Card>
-
-          {/* VNPay Payment */}
-          <Card className="mb-4 bg-white">
-            <TouchableOpacity
-              onPress={() => setSelectedPayment("vnpay")}
-              className="flex-row items-center justify-between p-4">
-              <View className="flex-row items-center">
-                <Avatar.Image
-                  source={require("../../../assets/logo/VNpay_Logo.png")}
-                  size={40}
-                />
-                <View className="ml-3">
-                  <Text className="text-lg font-semibold">VNPAY</Text>
-                  <Text>VNPay Wallet Account</Text>
-                </View>
-              </View>
-              <RadioButton
-                value="vnpay"
-                status={selectedPayment === "vnpay" ? "checked" : "unchecked"}
-              />
-            </TouchableOpacity>
-          </Card>
-        </View>
+        {renderBankAccountSection()}
       </ScrollView>
 
-      {/* Nút Withdraw */}
+      {/* Withdraw Button */}
       <View className="absolute bottom-0 left-0 right-0 p-4 bg-white">
         <TouchableOpacity
           onPress={handleWithdraw}

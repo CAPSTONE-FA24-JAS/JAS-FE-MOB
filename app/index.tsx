@@ -35,28 +35,32 @@ const App = () => {
   return (
     <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
       <ImageBackground
-        source={require("../assets/bg-jas/bg1.png")}
+        source={require("../assets/bg-jas/JAS-start.jpg")}
         resizeMode="cover"
-        style={{ flex: 1, width: "100%", height: "100%" }}>
+        style={{ flex: 1, width: "100%", height: "100%" }}
+      >
         <AppGradient colors={["rgba(0,0,0,0)", "rgba(0,0,0,0)"]}>
           <SafeAreaView
             style={{
               flex: 1,
               paddingHorizontal: 8,
               justifyContent: "space-between",
-            }}>
+            }}
+          >
             <Animated.View
               entering={FadeInDown.delay(300)
                 .mass(0.5)
                 .stiffness(80)
-                .springify(20)}></Animated.View>
+                .springify(20)}
+            ></Animated.View>
 
             <Animated.View
               entering={FadeInDown.delay(300)
                 .mass(0.5)
                 .stiffness(80)
                 .springify(20)}
-              style={{ marginBottom: 40, shadowOpacity: 0.8 }}>
+              style={{ marginBottom: 40, shadowOpacity: 0.8 }}
+            >
               <CustomButton
                 onPress={handleExplorePress}
                 title="BẮT ĐẦU KHÁM PHÁ"

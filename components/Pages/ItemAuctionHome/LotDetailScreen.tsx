@@ -668,15 +668,15 @@ const LotDetailScreen = () => {
                     : "N/A"}
                 </Text>
               </View>
-              <View className="flex-row w-full mx-2 justify-between items-start">
-                <Text className="text-base font-bold text-gray-500 w-[60%] ">
+              <View className="flex-row w-full  justify-between items-start">
+                <Text className="text-base font-bold text-gray-500 max-w-[50%] ">
                   Lot #{id} - Type {typeBid ? formatTypeBid(typeBid) : "N/A"}
                 </Text>
-                <View className=" w-[40%] mx-auto">
+                <View className=" max-w-[45%] mx-auto">
                   <Text
                     className={`font-extrabold py-1 px-10 ${getStatusClass(
                       lotDetail?.status ?? ""
-                    )} rounded-md text-base uppercase text-white`}
+                    )} rounded-md text-base text-center uppercase text-white`}
                   >
                     {lotDetail?.status}
                   </Text>
@@ -694,10 +694,14 @@ const LotDetailScreen = () => {
               <Divider bold={true} className="mt-2" />
             </View>
 
-            <Text className="mt-6 font-bold">Summary of Key Jewlery</Text>
-            <Text className="text-gray-700">
-              {lotDetail?.jewelry?.description || "No description available."}
+            <Text className="mt-6 font-bold">
+              Summary of Key Characteristics
             </Text>
+            {lotDetail?.jewelry?.description && (
+              <Text className="text-gray-700">
+                {lotDetail?.jewelry?.description || "No description available."}
+              </Text>
+            )}
             <View className="flex-row  items-center">
               <Text className="text-lg mr-2 text-gray-800">•</Text>
               <Text className="text-gray-700">

@@ -105,6 +105,7 @@ const RisingBidPage: React.FC = () => {
     setResultBidding,
     winnerCustomer,
     winnerPrice,
+    status,
   } = useBiddingMethod3();
 
   useEffect(() => {
@@ -138,6 +139,7 @@ const RisingBidPage: React.FC = () => {
           minPrice={item.startPrice ?? 0}
           maxPrice={item.finalPriceSold ?? 0}
           stepBidIncrement={item.bidIncrement ?? 0}
+          status={status}
         />
       ),
     },
@@ -150,6 +152,7 @@ const RisingBidPage: React.FC = () => {
           bids={messages || []}
           item={item}
           currentCusId={customerId ?? 0}
+          status={status}
         />
       ),
     },
@@ -203,6 +206,7 @@ const RisingBidPage: React.FC = () => {
             setResultBidding={setResultBidding}
             isEndLot={isEndLot}
             bids={Array.isArray(messages) ? messages : []}
+            status={status}
           />
         </View>
       )}

@@ -46,6 +46,13 @@ const BalanceCard: React.FC = () => {
     }
   };
 
+  const handleViewBalance = () => {
+    setIsBalanceVisible(!isBalanceVisible);
+    if (haveWallet) {
+      getWalletBalance(haveWallet);
+    }
+  };
+
   return (
     <View className="p-2">
       <Card className="mb-4 bg-white">
@@ -54,7 +61,7 @@ const BalanceCard: React.FC = () => {
           left={(props) => <Avatar.Icon {...props} icon="credit-card" />}
           right={(props) => (
             <TouchableOpacity
-              onPress={() => setIsBalanceVisible(!isBalanceVisible)}
+              onPress={() => handleViewBalance()}
               className="mt-10 mr-6">
               <Icon
                 name={isBalanceVisible ? "visibility" : "visibility-off"}

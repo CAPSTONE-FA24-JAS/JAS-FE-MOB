@@ -21,25 +21,25 @@ const BidSuccess: React.FC = () => {
   };
 
   return (
-    <View className="flex-1 bg-white pt-10">
+    <View className="flex-1 pt-10 bg-white">
       {/* Title */}
 
       {/* Success Icon */}
-      <View className="justify-center items-center mb-5">
+      <View className="items-center justify-center mb-5">
         <MaterialCommunityIcons name="check-circle" size={100} color="green" />
       </View>
 
       {/* Success Message */}
-      <Text className="text-center text-lg font-bold mb-2">
+      <Text className="mb-2 text-lg font-bold text-center">
         BIDDING SUCCESSFULLY
       </Text>
-      <Text className="text-center text-base font-semibold text-green-600 mb-4  px-8">
+      <Text className="px-8 mb-4 text-base font-semibold text-center text-green-600">
         Congratulations Auction has been successful and you are the winner.
         Please deposit the product, at the latest within 24 hours.
       </Text>
 
       {/* Product Image */}
-      <View className="justify-center items-center ">
+      <View className="items-center justify-center ">
         <Image
           source={require("../../../assets/item-jas/item1.jpg")} // Thay thế bằng hình ảnh của sản phẩm thật
           className="w-40 h-40"
@@ -48,7 +48,7 @@ const BidSuccess: React.FC = () => {
       </View>
 
       {/* Bid Details */}
-      <View className="bg-white rounded-lg py-5 shadow-md mb-5 px-10">
+      <View className="px-10 py-5 mb-5 bg-white rounded-lg shadow-md">
         <View className="flex-row justify-between mb-3">
           <Text className="text-base font-semibold text-gray-600">
             Order Code
@@ -87,7 +87,7 @@ const BidSuccess: React.FC = () => {
           <Text className="text-lg font-bold text-gray-400">35.200.000 VND</Text>
         </View> */}
 
-        <View className="h-px bg-gray-400 my-5" />
+        <View className="h-px my-5 bg-gray-400" />
 
         <View className="flex-row justify-between">
           <Text className="text-base font-semibold text-gray-600">
@@ -98,20 +98,18 @@ const BidSuccess: React.FC = () => {
       </View>
 
       {/* Bottom Buttons */}
-      <View className="flex-row justify-between absolute bottom-0 w-full p-4 bg-white">
+      <View className="absolute bottom-0 flex-row justify-between w-full p-4 bg-white">
         <TouchableOpacity
-          className="flex-1 p-4 bg-gray-500 rounded-lg mr-2"
-          onPress={handleMyBid}
-        >
-          <Text className="text-white text-center text-lg font-bold">
+          className="flex-1 p-4 mr-2 bg-gray-500 rounded-lg"
+          onPress={handleMyBid}>
+          <Text className="text-lg font-bold text-center text-white">
             My Bid
           </Text>
         </TouchableOpacity>
         <TouchableOpacity
-          className="flex-1 p-4 bg-blue-500 rounded-lg ml-2"
-          onPress={handleDeposit}
-        >
-          <Text className="text-white text-center text-lg font-bold">
+          className="flex-1 p-4 ml-2 bg-blue-500 rounded-lg"
+          onPress={handleDeposit}>
+          <Text className="text-lg font-bold text-center text-white">
             ĐẶT CỌC NGAY
           </Text>
         </TouchableOpacity>

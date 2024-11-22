@@ -77,6 +77,7 @@ const ReduceBidPage = () => {
     winnerPrice,
     joinLiveBiddingMethod4,
     sendBidMethod4,
+    status,
   } = useBiddingMethod4();
 
   const accountId = useSelector(
@@ -140,6 +141,7 @@ const ReduceBidPage = () => {
           minPrice={item.startPrice ?? 0}
           maxPrice={item.finalPriceSold ?? 0}
           stepBidIncrement={item.bidIncrement ?? 0}
+          status={status}
         />
       ),
     },
@@ -181,6 +183,7 @@ const ReduceBidPage = () => {
             setResultBidding={setResultBidding}
             onPlaceBidMethod4={sendBidMethod4}
             resultBidding={resultBidding}
+            status={status}
           />
         </View>
       )}

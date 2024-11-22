@@ -9,6 +9,7 @@ interface ProductCardProps {
   typeBid: string;
   maxPrice?: number;
   stepBidIncrement?: number;
+  status?: string;
 }
 
 const ProductCard: React.FC<ProductCardProps> = ({
@@ -19,6 +20,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
   typeBid,
   maxPrice,
   stepBidIncrement,
+  status,
 }) => {
   return (
     <View className="px-4">
@@ -37,6 +39,12 @@ const ProductCard: React.FC<ProductCardProps> = ({
           <Text className="mr-2 text-sm font-medium text-gray-400 mt-">
             Bid Increment Step:
             <Text className="text-blue-500">{stepBidIncrement}$</Text>
+          </Text>
+        </View>
+        <View>
+          <Text className="mr-2 text-sm font-medium text-gray-400 mt-">
+            Status:
+            <Text className="text-blue-500">{status}</Text>
           </Text>
         </View>
       </View>

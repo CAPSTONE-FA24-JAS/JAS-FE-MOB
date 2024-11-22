@@ -26,6 +26,7 @@ interface UseBiddingResult {
   resultBidding: string;
   setResultBidding: React.Dispatch<React.SetStateAction<string>>;
   isEndAuctionMethod4: boolean;
+  status: string;
 }
 
 export function useBiddingMethod4(): UseBiddingResult {
@@ -40,6 +41,7 @@ export function useBiddingMethod4(): UseBiddingResult {
   const [resultBidding, setResultBidding] = useState<string>("");
   const [isEndAuctionMethod4, setIsEndAuctionMethod4] =
     useState<boolean>(false);
+  const [status, setStatus] = useState<string>("");
 
   const connectionRef = useRef<HubConnection | null>(null);
 
@@ -115,6 +117,15 @@ export function useBiddingMethod4(): UseBiddingResult {
         setReducePrice(() => currentPrice);
       }
     );
+    connection.on("StatusBid", (status: string) => {
+      console.log("StatusBid ////////////////////////////", status);
+      setStatus(status);
+    });
+
+    connection.on("UpdateStatusBid", (status: string) => {
+      console.log("UpdateStatusBid", status);
+      setStatus(status);
+    });
   }, []);
 
   const joinLiveBiddingMethod4 = useCallback(
@@ -252,5 +263,6 @@ export function useBiddingMethod4(): UseBiddingResult {
     resultBidding,
     setResultBidding,
     isEndAuctionMethod4,
+    status,
   };
 }

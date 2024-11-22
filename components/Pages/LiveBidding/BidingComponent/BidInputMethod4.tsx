@@ -17,6 +17,7 @@ interface BidInputProps {
   reducePrice?: number;
   resultBidding?: string;
   setResultBidding: React.Dispatch<React.SetStateAction<string>>;
+  status: string;
 }
 
 const BidInputMethod4: React.FC<BidInputProps> = ({
@@ -26,6 +27,7 @@ const BidInputMethod4: React.FC<BidInputProps> = ({
   reducePrice,
   resultBidding,
   setResultBidding,
+  status,
 }) => {
   const [error, setError] = useState<string | null>(null);
   const [loadingMethod4, setLoadingMethod4] = useState<boolean>(false);
@@ -92,21 +94,27 @@ const BidInputMethod4: React.FC<BidInputProps> = ({
             isEndAuctionMethod4 ||
             item.status === "Sold" ||
             loadingMethod4 ||
-            item.status === "Passed"
+            item.status === "Passed" ||
+            status === "Pause" ||
+            status === "Cancel"
           }
           onPress={() => handleSubmitBidMethod4(reducePrice ?? 0)}
           className={
             isEndAuctionMethod4 ||
             item.status === "Sold" ||
             item.status === "Passed" ||
-            loadingMethod4
+            loadingMethod4 ||
+            status === "Pause" ||
+            status === "Cancel"
               ? "w-[50%] flex items-center justify-center h-12 bg-gray-500 rounded-md"
               : "w-[50%] flex items-center justify-center h-12 bg-blue-500 rounded-md"
           }>
           <Text className="text-xl font-semibold text-white">
             {isEndAuctionMethod4 ||
             item.status === "Sold" ||
-            item.status === "Passed"
+            item.status === "Passed" ||
+            status === "Pause" ||
+            status === "Cancel"
               ? "SOLD"
               : "BUY NOW"}
           </Text>

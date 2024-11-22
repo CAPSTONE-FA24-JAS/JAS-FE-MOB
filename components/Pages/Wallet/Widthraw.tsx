@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useCallback } from "react";
 import { ScrollView, Text } from "react-native";
 import { View } from "react-native";
 import BalanceCard from "./component/BalanceCard";
-import { Avatar, Card, RadioButton } from "react-native-paper";
+import { Card } from "react-native-paper";
 import { TouchableOpacity } from "react-native";
 import WithdrawAmount from "./component/WithdrawAmount";
 import { RequestNewWithdraw } from "@/api/walletApi";
@@ -14,11 +14,11 @@ import {
 } from "@/components/FlashMessageHelpers";
 import { BankAccountInfo, getAllCardByCustomerId } from "@/api/cardApi";
 import { useNavigation } from "@react-navigation/native";
+import { useFocusEffect } from "expo-router";
 
 const Withdraw: React.FC = () => {
   const [amount, setAmount] = useState<string>("0");
   const [err, setErr] = useState<string>("");
-  const [reload, setReload] = useState<boolean>(false);
   const [existingBankAccounts, setExistingBankAccounts] = useState<
     BankAccountInfo[]
   >([]);
@@ -34,27 +34,33 @@ const Withdraw: React.FC = () => {
   );
 
   const walletAmount = useSelector(
-    (state: RootState) => state.profile.profile?.customerDTO?.walletDTO?.balance
+    (state: RootState) => state.auth.userResponse?.customerDTO.walletDTO.balance
   );
 
-  // Fetch wallet details and bank accounts
-  useEffect(() => {
-    setErr("");
-    setAmount("0");
-    setIsLoading(true);
+  useFocusEffect(
+    useCallback(() => {
+      setErr("");
+      setAmount("0");
+      setIsLoading(true);
 
-    if (customerId) {
-      getAllCardByCustomerId(customerId)
-        .then((data) => {
-          setExistingBankAccounts(data);
-          setIsLoading(false);
-        })
-        .catch((error) => {
-          console.error("Error fetching bank accounts:", error);
-          setIsLoading(false);
-        });
-    }
-  }, [walletAmount, customerId]);
+      if (customerId) {
+        getAllCardByCustomerId(customerId)
+          .then((data) => {
+            setExistingBankAccounts(data);
+            setIsLoading(false);
+          })
+          .catch((error) => {
+            console.error("Error fetching bank accounts:", error);
+            setIsLoading(false);
+          });
+      }
+    }, [
+      customerId,
+      getAllCardByCustomerId,
+      setExistingBankAccounts,
+      walletAmount,
+    ]) // Dependencies
+  );
 
   const isDisabled = (): boolean => {
     console.log(amount, walletAmount);

@@ -37,6 +37,7 @@ interface UseBiddingResult {
   resultBidding: string;
   setResultBidding: React.Dispatch<React.SetStateAction<string>>;
   isEndLot: boolean;
+  status: string;
 }
 
 export function useBiddingMethod3(): UseBiddingResult {
@@ -51,6 +52,7 @@ export function useBiddingMethod3(): UseBiddingResult {
   const [winnerPrice, setWinnerPrice] = useState<string>("");
   const [resultBidding, setResultBidding] = useState<string>("");
   const [isEndLot, setIsEndLot] = useState<boolean>(false);
+  const [status, setStatus] = useState<string>("");
 
   const connectionRef = useRef<HubConnection | null>(null);
 
@@ -171,6 +173,16 @@ export function useBiddingMethod3(): UseBiddingResult {
         );
       }
     );
+
+    connection.on("StatusBid", (status: string) => {
+      console.log("StatusBid ////////////////////////////", status);
+      setStatus(status);
+    });
+
+    connection.on("UpdateStatusBid", (status: string) => {
+      console.log("UpdateStatusBid", status);
+      setStatus(status);
+    });
 
     // validate price
     // connection.on(
@@ -321,5 +333,6 @@ export function useBiddingMethod3(): UseBiddingResult {
     resultBidding,
     setResultBidding,
     isEndLot,
+    status,
   };
 }

@@ -16,6 +16,7 @@ interface BidsListProps {
   reducePrice?: number;
   isEndAuctionMethod3?: boolean;
   isEndLot?: boolean;
+  status?: string;
 }
 
 const BidsList: React.FC<BidsListProps> = ({
@@ -25,6 +26,7 @@ const BidsList: React.FC<BidsListProps> = ({
   reducePrice,
   isEndAuctionMethod3,
   isEndLot,
+  status,
 }) => {
   // Memoized sorted bids
 
@@ -91,7 +93,9 @@ const BidsList: React.FC<BidsListProps> = ({
       isEndAuctionMethod3 ||
       isEndLot ||
       item.status === "Sold" ||
-      item.status === "Passed";
+      item.status === "Passed" ||
+      status === "Pause" ||
+      status === "Cancel";
 
     return (
       <View className="mb-4">

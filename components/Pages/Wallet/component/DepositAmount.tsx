@@ -16,7 +16,7 @@ const DepositAmount: React.FC<DepositAmountProps> = ({ setAmount }) => {
 
   return (
     <View className="px-2 mb-4">
-      <Text className="text-lg font-bold mb-4">
+      <Text className="mb-4 text-lg font-bold">
         1. Select the amount to deposit (VND)
       </Text>
       <View className="flex-row justify-around mb-4">
@@ -26,13 +26,11 @@ const DepositAmount: React.FC<DepositAmountProps> = ({ setAmount }) => {
             onPress={() => handleAmountChange(amount)}
             className={`flex-1 items-center justify-center py-2 border rounded-lg mx-1 ${
               selectedAmount === amount ? "bg-black" : "bg-white"
-            }`}
-          >
+            }`}>
             <Text
               className={`text-lg font-bold ${
                 selectedAmount === amount ? "text-white" : "text-black"
-              }`}
-            >
+              }`}>
               {amount.toLocaleString("vi-VN")}
             </Text>
           </TouchableOpacity>
@@ -46,7 +44,7 @@ const DepositAmount: React.FC<DepositAmountProps> = ({ setAmount }) => {
         }}
         placeholder="Enter custom amount"
         keyboardType="numeric"
-        className="w-full border rounded-lg p-2 text-lg"
+        className="w-full p-2 text-lg border rounded-lg"
       />
     </View>
   );

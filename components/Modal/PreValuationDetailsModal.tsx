@@ -133,7 +133,9 @@ const PreValuationDetailsModal: React.FC<PreValuationDetailsModalProps> = ({
               <View className="flex-row items-start gap-2">
                 <Text className="text-lg text-gray-800">•</Text>
 
-                <Text className="text-lg font-bold text-gray-700 ">Width:</Text>
+                <Text className="text-lg font-bold text-gray-700 w-[30%]">
+                  Width:
+                </Text>
                 <Text className="text-lg text-gray-800">
                   {" "}
                   {details?.width} cm
@@ -141,7 +143,7 @@ const PreValuationDetailsModal: React.FC<PreValuationDetailsModalProps> = ({
               </View>
               <View className="flex-row items-start gap-2">
                 <Text className="text-lg text-gray-800">•</Text>
-                <Text className="text-lg font-bold text-gray-700 ">
+                <Text className="text-lg font-bold text-gray-700  w-[30%]">
                   Height:
                 </Text>
                 <Text className="text-lg text-gray-800">
@@ -151,7 +153,9 @@ const PreValuationDetailsModal: React.FC<PreValuationDetailsModalProps> = ({
               </View>
               <View className="flex-row items-start gap-2">
                 <Text className="text-lg text-gray-800">•</Text>
-                <Text className="text-lg font-bold text-gray-700 ">Depth:</Text>
+                <Text className="text-lg font-bold text-gray-700  w-[30%]">
+                  Depth:
+                </Text>
                 <Text className="text-lg text-gray-800">
                   {" "}
                   {details?.depth} cm
@@ -159,7 +163,7 @@ const PreValuationDetailsModal: React.FC<PreValuationDetailsModalProps> = ({
               </View>
             </View>
             <View className="flex-row w-full gap-2 my-2">
-              <Text className="text-lg font-bold text-gray-700 w-[100px] ">
+              <Text className="text-lg font-bold text-gray-700 w-[30%] ">
                 Description:
               </Text>
               <Text className="text-lg text-gray-800 w-[70%] ">
@@ -173,12 +177,12 @@ const PreValuationDetailsModal: React.FC<PreValuationDetailsModalProps> = ({
                 Total estimated retail replacement cost:
               </Text>
               {details?.estimatedCost ? (
-                <Text className="text-lg w-[50%] text-[#D80000] font-bold">
+                <Text className="text-lg w-[50%] text-right text-[#D80000] font-bold">
                   {" "}
                   {details?.estimatedCost}
                 </Text>
               ) : (
-                <Text className="text-lg w-[50%]  text-[#D80000] font-bold">
+                <Text className="text-lg w-[50%] text-right  text-[#D80000] font-bold">
                   {" "}
                   $0
                 </Text>

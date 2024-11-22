@@ -24,6 +24,7 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { useNavigation } from "expo-router";
 import PasswordModal from "../Payment/CheckPasswordModal";
 import { ApiError } from "@/api/utils/ApiError";
+import BuyerPremiumInfo from "./FloorFeeInfo";
 
 type RootStackParamList = {
   [x: string]: any;
@@ -84,8 +85,18 @@ const RegisterToBid = () => {
       return;
     }
 
-    if (balance && balance < lotDetail.deposit) {
-      showErrorMessage("Insufficient balance.");
+    if (!balance || balance < lotDetail.deposit) {
+      Alert.alert(
+        "Insufficient Balance",
+        "Your wallet balance is insufficient. Please deposit more money to continue.",
+        [
+          {
+            text: "Deposit Now",
+            onPress: navigateToDeposit, // Điều hướng đến màn hình nạp tiền
+          },
+          { text: "Cancel", style: "cancel" },
+        ]
+      );
       return;
     }
 
@@ -159,7 +170,7 @@ const RegisterToBid = () => {
   };
 
   return (
-    <ScrollView className="flex-1 p-4 bg-white">
+    <ScrollView className="flex-1 p-4  bg-white">
       {/* Hiển thị số dư hiện tại */}
 
       <BalanceCard />
@@ -216,15 +227,6 @@ const RegisterToBid = () => {
 
         <View className="flex-row justify-between mb-2">
           <Text className="text-base font-semibold text-gray-500">
-            Transaction Fees
-          </Text>
-          <Text className="text-base w-[60%] text-gray-700 font-semibold">
-            Free
-          </Text>
-        </View>
-
-        <View className="flex-row justify-between mb-2">
-          <Text className="text-base font-semibold text-gray-500">
             LOT Code
           </Text>
           <Text className="text-base w-[60%] text-gray-700 font-semibold">
@@ -232,6 +234,8 @@ const RegisterToBid = () => {
           </Text>
         </View>
       </View>
+
+      <BuyerPremiumInfo />
 
       {/* Điều khoản và điều kiện */}
       <View className="mt-4">
@@ -257,7 +261,9 @@ const RegisterToBid = () => {
       </View>
 
       <TouchableOpacity
-        className="py-3 bg-blue-500 rounded-sm"
+        className={`py-3 ${
+          !checkedTerms || !checkedAge ? "bg-gray-500" : "bg-blue-500"
+        }  mb-10 rounded-md`}
         onPress={handleRegisterToBid}
         disabled={!checkedTerms || !checkedAge}
       >

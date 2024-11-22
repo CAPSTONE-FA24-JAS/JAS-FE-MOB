@@ -1,16 +1,13 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import {
   View,
   Text,
   TouchableOpacity,
   SafeAreaView,
-  Image,
   TextInput,
-  Switch,
-  Modal,
-  FlatList,
-  ListRenderItem,
   Alert,
+  KeyboardAvoidingView,
+  Platform,
 } from "react-native";
 import { useRoute, RouteProp } from "@react-navigation/native";
 import { useNavigation } from "@react-navigation/native";
@@ -18,6 +15,8 @@ import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { ScrollView } from "react-native-gesture-handler";
 import { LotDetail } from "@/app/types/lot_type";
 import { setAutoBidConfig } from "@/api/lotAPI";
+import DropDownPicker from "react-native-dropdown-picker";
+import { Image } from "react-native";
 
 type RootStackParamList = {
   BidAutomation: BidAutomationRouteParams;
@@ -41,367 +40,301 @@ type BidAutomationScreenNavigationProp = NativeStackNavigationProp<
   "BidAutomation"
 >;
 
-interface SavedConfig {
-  id: number;
-  status: boolean;
-  maxPrice: number;
-  startingPrice: number;
-  nextBidTime: number;
-}
-
-// {
-//   "minPrice": 0,
-//   "maxPrice": 0,
-//   "numberOfPriceStep": 0,
-//   "timeIncrement": 0, // user chọn theo phút
-//   "customerLotId": 0
-// }
-
 const AutoBidSaveConfig: React.FC = () => {
   const navigation = useNavigation<BidAutomationScreenNavigationProp>();
   const route = useRoute<BidAutomationScreenRouteProp>();
-  const { customerLotId, startBid, lotName, estimatedPrice, lotDetail } =
-    route.params;
-  // Initial state dynamically set from route params
-  const [maxPrice, setMaxPrice] = useState<number>(estimatedPrice.min + 300);
+  const { customerLotId, lotName, estimatedPrice, lotDetail } = route.params;
+
   const [startingPrice, setStartingPrice] = useState<number>(
     estimatedPrice.min
   );
-  const [nextBidTime, setNextBidTime] = useState<number>(10); // Default starting time for bid increment
+  const [maxPrice, setMaxPrice] = useState<number>(estimatedPrice.min + 300);
   const [numberOfPriceStep, setNumberOfPriceStep] = useState<number>(1);
+  const [nextBidTime, setNextBidTime] = useState<number>(1); // Default to 1 minute
+  const [step, setStep] = useState<number>(10000); // Default step size
 
-  const [notifyExceeded, setNotifyExceeded] = useState<boolean>(false);
-  const [modalVisible, setModalVisible] = useState<boolean>(false);
+  // Dropdown states for both pickers
+  const [stepMin, setStepMin] = useState<number>(10000);
+  const [dropdownMinOpen, setDropdownMinOpen] = useState<boolean>(false);
+
+  const [stepMax, setStepMax] = useState<number>(10000);
+  const [dropdownMaxOpen, setDropdownMaxOpen] = useState<boolean>(false);
+  const [items, setItems] = useState<{ label: string; value: number }[]>([
+    { label: "50,000", value: 50000 },
+    { label: "100,000", value: 100000 },
+    { label: "200,000", value: 200000 },
+    { label: "500,000", value: 500000 },
+    { label: "1,000,000", value: 1000000 },
+  ]);
 
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
-  const [savedConfigs, setSavedConfigs] = useState<SavedConfig[]>([
-    {
-      id: 1,
-      status: true,
-      maxPrice: 1500,
-      startingPrice: 600,
-      nextBidTime: 15,
-    },
-    {
-      id: 2,
-      status: false,
-      maxPrice: 2000,
-      startingPrice: 800,
-      nextBidTime: 20,
-    },
-    {
-      id: 3,
-      status: true,
-      maxPrice: 2500,
-      startingPrice: 1000,
-      nextBidTime: 25,
-    },
-  ]);
+  const minPrice = estimatedPrice.min;
+  const bidIncrement = lotDetail.bidIncrement;
 
-  // console.log("lotDetail", lotDetail);
-
-  // Update `maxPrice` constraint based on `numberOfPriceStep` change
-  useEffect(() => {
-    const minMaxPrice = estimatedPrice.min + numberOfPriceStep;
-    if (maxPrice < minMaxPrice) {
-      setMaxPrice(minMaxPrice);
-    }
-  }, [numberOfPriceStep, estimatedPrice.min, maxPrice]);
-
-  const handleIncrement = (
-    setter: React.Dispatch<React.SetStateAction<number>>
-  ): void => {
-    setter((prev) => prev + 100);
-  };
-
-  const handleDecrement = (
-    setter: React.Dispatch<React.SetStateAction<number>>,
-    minValue: number
-  ): void => {
-    setter((prev) => Math.max(minValue, prev - 100));
-  };
-
-  // {
-  //   "minPrice": 0,
-  //   "maxPrice": 0,
-  //   "numberOfPriceStep": 0,
-  //   "timeIncrement": 0, // user chọn theo phút
-  //   "customerLotId": 0
-  // }
-
-  // In your handleSubmit function
+  // Validation logic when submitting
   const handleSubmit = async (): Promise<void> => {
-    // Validate conditions
-    if (maxPrice <= startingPrice) {
-      setErrorMessage("Max price must be greater than min price.");
+    if (startingPrice < minPrice) {
+      setErrorMessage(
+        `Min price must be greater than or equal to ${minPrice.toLocaleString(
+          "vi-VN",
+          { style: "currency", currency: "VND" }
+        )}.`
+      );
       return;
     }
-    if (maxPrice < numberOfPriceStep + startingPrice) {
-      setErrorMessage("Max price must be at least min price plus price step.");
+    if (maxPrice < minPrice + (bidIncrement ?? 0) * numberOfPriceStep) {
+      setErrorMessage(
+        `Max price must be greater than or equal to ${(
+          minPrice +
+          (bidIncrement ?? 0) * numberOfPriceStep
+        ).toLocaleString("vi-VN", { style: "currency", currency: "VND" })}.`
+      );
       return;
     }
-    if (numberOfPriceStep > 20) {
-      setErrorMessage("Price step must be at least 20.");
+    if (numberOfPriceStep < 1) {
+      setErrorMessage("Number of price steps must be at least 1.");
       return;
     }
-    if (nextBidTime < 1) {
-      setErrorMessage("Bid time increment must be at least 1 minute.");
+    if (nextBidTime < 1 || nextBidTime > 10) {
+      setErrorMessage("Time increment must be between 1 and 10 minutes.");
       return;
     }
 
-    // Clear any previous error message
     setErrorMessage(null);
     try {
-      console.log("Submitted automation bid", {
-        minPrice: startingPrice,
-        maxPrice: maxPrice,
-        numberOfPriceStep: numberOfPriceStep,
-        timeIncrement: nextBidTime,
-        customerLotId,
-      });
-
-      // Call setAutoBidConfig API
       await setAutoBidConfig(
         startingPrice,
         maxPrice,
         numberOfPriceStep,
         nextBidTime,
-        customerLotId
+        lotDetail.id
       );
-
-      // On success, navigate back
-      navigation.replace("LotDetail", { id: customerLotId });
+      Alert.alert("Success", "Automation bid configuration has been saved!");
+      navigation.goBack();
     } catch (error: any) {
-      // If there's an error, show an alert with the API error message
       Alert.alert(
         "Error",
-        error.message || "Failed to set auto-bid configuration."
+        error.message || "Failed to save auto-bid configuration."
       );
     }
-  };
-  const handleStepChange = (value: string) => {
-    const parsedValue = parseInt(value, 10);
-    if (!isNaN(parsedValue) && parsedValue >= 0 && parsedValue <= 20) {
-      setNumberOfPriceStep(parsedValue);
-    } else {
-      setNumberOfPriceStep(0); // Default to 0 if out of range or invalid
-    }
-  };
-
-  const applyConfig = (config: SavedConfig): void => {
-    setStartingPrice(config.startingPrice);
-    setMaxPrice(config.maxPrice);
-    setNextBidTime(config.nextBidTime);
-    setNotifyExceeded(config.status);
-    setModalVisible(false);
   };
 
   return (
     <SafeAreaView className="flex-1 bg-white">
-      {/* Lot details */}
-      <View className="flex-row p-4 mb-6 bg-slate-100 mx-auto mt-6 rounded-lg w-[90%]">
-        <Image
-          className="w-20 h-20 mr-4 rounded-md"
-          source={{
-            uri:
-              lotDetail?.jewelry?.imageJewelries[0]?.imageLink ||
-              lotDetail.auction.imageLink,
-          }}
-        />
-        <View className="flex-row justify-between w-[70%]">
-          <View className="w-[80%]">
-            <Text className="text-lg font-semibold ">{lotName}</Text>
-            <Text className="text-sm text-gray-600">
-              Min price:{" "}
-              {startBid.toLocaleString("vi-VN", {
-                style: "currency",
-                currency: "VND",
-              })}
-            </Text>
-            <Text className="text-sm text-gray-600">
-              EST:{" "}
-              {estimatedPrice.min.toLocaleString("vi-VN", {
-                style: "currency",
-                currency: "VND",
-              })}{" "}
-              - Increasing
-            </Text>
+      <KeyboardAvoidingView
+        behavior={Platform.OS === "ios" ? "padding" : undefined}
+        style={{ flex: 1 }}
+      >
+        <View style={{ paddingHorizontal: 16 }}>
+          <View className="flex-row p-4 mb-6 bg-slate-100 mx-auto mt-6 rounded-lg w-full">
+            <Image
+              className="w-20 h-20 mr-4 rounded-md"
+              source={{
+                uri:
+                  lotDetail?.jewelry?.imageJewelries[0]?.imageLink ||
+                  lotDetail.auction.imageLink,
+              }}
+            />
+            <View className="flex-row justify-between w-[70%]">
+              <View className="w-[80%]">
+                <Text className="text-lg font-semibold ">{lotName}</Text>
+                <Text className="text-sm text-gray-600">
+                  Min price:{" "}
+                  {estimatedPrice.min.toLocaleString("vi-VN", {
+                    style: "currency",
+                    currency: "VND",
+                  })}
+                </Text>
+                <Text className="text-sm text-gray-600">
+                  EST:{" "}
+                  {estimatedPrice.min.toLocaleString("vi-VN", {
+                    style: "currency",
+                    currency: "VND",
+                  })}{" "}
+                  - Increasing
+                </Text>
+              </View>
+              <Text className="text-base font-bold text-gray-600">
+                #{lotDetail.id}
+              </Text>
+            </View>
           </View>
-          <Text className="text-base font-bold text-gray-600">
-            #{lotDetail.id}
-          </Text>
-        </View>
-      </View>
-
-      {/* Configurations */}
-      <ScrollView className="flex-1 px-6">
-        <Text className="mb-4 text-xl font-semibold">
-          Enter Your Config for Automation Bid
-        </Text>
-        <View className="mx-auto w-[90%]">
-          {/* Min Price input */}
-          <Text className="mt-4 mb-2 text-base font-semibold text-gray-600 uppercase">
-            Min Price (VND) &gt;=
+          {/* Min Price Input */}
+          <Text className="mb-2 text-base mt-2 font-semibold text-gray-600">
+            Min Price (VND)
           </Text>
           <View className="flex-row items-center mb-4">
+            <DropDownPicker
+              open={dropdownMinOpen}
+              value={stepMin}
+              items={items}
+              setOpen={setDropdownMinOpen}
+              onOpen={() => setDropdownMaxOpen(false)} // Close the other dropdown
+              setValue={setStepMin}
+              setItems={setItems}
+              containerStyle={{ width: 120, marginRight: 10 }}
+              placeholder="Step"
+            />
             <TouchableOpacity
               onPress={() =>
-                handleDecrement(setStartingPrice, estimatedPrice.min)
+                setStartingPrice((prev) => Math.max(10000, prev - stepMin))
               }
-              className={`w-12 py-1 bg-gray-200 rounded-l-lg ${
-                startingPrice <= estimatedPrice.min ? "opacity-50" : ""
-              }`}
-              disabled={startingPrice <= estimatedPrice.min}>
-              <Text className="text-4xl text-center">-</Text>
+              className="px-4 py-2 bg-gray-200 rounded-l-lg"
+            >
+              <Text className="text-2xl  h-[35px]">-</Text>
             </TouchableOpacity>
             <TextInput
-              className="flex-1 px-4 py-2 text-lg text-center bg-gray-100"
+              className="flex-1 px-4 py-2 text-center h-[50px] font-semibold text-lg bg-gray-100"
+              keyboardType="numeric"
               value={startingPrice.toString()}
               onChangeText={(value) => {
-                const num = parseInt(value, 10);
-                if (!isNaN(num) && num >= estimatedPrice.min) {
-                  setStartingPrice(num);
-                } else if (value === "") {
-                  setStartingPrice(estimatedPrice.min);
-                }
+                const parsedValue = parseInt(value, 10);
+                setStartingPrice(isNaN(parsedValue) ? 10000 : parsedValue);
               }}
-              keyboardType="numeric"
             />
             <TouchableOpacity
-              onPress={() => handleIncrement(setStartingPrice)}
-              className="w-12 py-1 bg-gray-200 rounded-r-lg">
-              <Text className="text-2xl text-center">+</Text>
+              onPress={() => setStartingPrice((prev) => prev + stepMin)}
+              className="px-4 py-2 bg-gray-200 rounded-r-lg"
+            >
+              <Text className="text-xl h-[35px]">+</Text>
             </TouchableOpacity>
           </View>
 
-          {/* Max Price input */}
-          <Text className="mt-4 mb-2 text-base font-semibold text-gray-600 uppercase">
-            Max Price (VND) &lt;=
+          {/* Max Price Input */}
+          <Text className="mb-2 mt-4 text-base font-semibold text-gray-600">
+            Max Price (VND)
           </Text>
-          <View className="flex-row items-center mb-4">
+          <View
+            className="flex-row items-center mb-4"
+            style={{ zIndex: dropdownMinOpen ? 2 : 1, marginBottom: 10 }}
+          >
+            <DropDownPicker
+              open={dropdownMaxOpen}
+              value={stepMax}
+              items={items}
+              setOpen={setDropdownMaxOpen}
+              onOpen={() => setDropdownMinOpen(false)} // Close the other dropdown
+              setValue={setStepMax}
+              setItems={setItems}
+              containerStyle={{ width: 120, marginRight: 10 }}
+              placeholder="Step"
+            />
+
             <TouchableOpacity
               onPress={() =>
-                handleDecrement(
-                  setMaxPrice,
-                  estimatedPrice.min + numberOfPriceStep
-                )
+                setMaxPrice((prev) => Math.max(startingPrice, prev - stepMax))
               }
-              className={`w-12 py-1 bg-gray-200 rounded-l-lg ${
-                maxPrice <= estimatedPrice.min + numberOfPriceStep
-                  ? "opacity-50"
-                  : ""
-              }`}
-              disabled={maxPrice <= estimatedPrice.min + numberOfPriceStep}>
-              <Text className="text-4xl text-center">-</Text>
+              className="px-4 py-2 bg-gray-200 rounded-l-lg"
+            >
+              <Text className="text-2xl  h-[35px]">-</Text>
             </TouchableOpacity>
             <TextInput
-              className="flex-1 px-4 py-2 text-lg text-center bg-gray-100"
+              className="flex-1 px-4 py-2 text-center font-semibold  h-[50px] text-lg bg-gray-100"
+              keyboardType="numeric"
               value={maxPrice.toString()}
               onChangeText={(value) => {
-                const num = parseInt(value, 10);
-                const minMax = estimatedPrice.min + numberOfPriceStep;
-                if (!isNaN(num) && num >= minMax) {
-                  setMaxPrice(num);
-                } else if (value === "") {
-                  setMaxPrice(minMax);
-                }
+                const parsedValue = parseInt(value, 10);
+                setMaxPrice(isNaN(parsedValue) ? startingPrice : parsedValue);
               }}
-              keyboardType="numeric"
             />
             <TouchableOpacity
-              onPress={() => handleIncrement(setMaxPrice)}
-              className="w-12 py-1 bg-gray-200 rounded-r-lg">
-              <Text className="text-2xl text-center">+</Text>
+              onPress={() => setMaxPrice((prev) => prev + stepMax)}
+              className="px-4 py-2 bg-gray-200 rounded-r-lg"
+            >
+              <Text className="text-xl  h-[35px]">+</Text>
             </TouchableOpacity>
           </View>
 
-          {/* Price Step input */}
-          <Text className="mt-4 mb-2 text-base font-semibold text-gray-600 uppercase">
-            Price Step (VND)
-          </Text>
-          <View className="flex-row items-center mb-4">
-            <TouchableOpacity
-              onPress={() =>
-                setNumberOfPriceStep((prev) => Math.max(0, prev - 1))
-              }
-              className={`w-12 py-1 bg-gray-200 rounded-l-lg ${
-                numberOfPriceStep <= 0 ? "opacity-50" : ""
-              }`}
-              disabled={numberOfPriceStep <= 0}>
-              <Text className="text-4xl text-center">-</Text>
-            </TouchableOpacity>
-            <TextInput
-              className="flex-1 px-4 py-2 text-lg text-center bg-gray-100"
-              value={numberOfPriceStep.toString()}
-              onChangeText={handleStepChange}
-              keyboardType="numeric"
-            />
-            <TouchableOpacity
-              onPress={() =>
-                setNumberOfPriceStep((prev) => Math.min(20, prev + 1))
-              }
-              className="w-12 py-1 bg-gray-200 rounded-r-lg"
-              disabled={numberOfPriceStep >= 20}>
-              <Text className="text-2xl text-center">+</Text>
-            </TouchableOpacity>
-          </View>
-
-          {/* Next Bid Time input */}
-          <Text className="mt-4 mb-2 text-base font-semibold text-gray-600 uppercase">
-            Next Bid Time (Minutes)
+          {/* Time Increment Input */}
+          <Text className="mb-2 text-base  mt-4 font-semibold text-gray-600">
+            Time Increment (1-10 minutes)
           </Text>
           <View className="flex-row items-center mb-4">
             <TouchableOpacity
               onPress={() => setNextBidTime((prev) => Math.max(1, prev - 1))}
-              className={`w-12 py-1 bg-gray-200 rounded-l-lg ${
+              className={`px-4 py-2 bg-gray-300 rounded-l-lg ${
                 nextBidTime <= 1 ? "opacity-50" : ""
               }`}
-              disabled={nextBidTime <= 1}>
-              <Text className="text-4xl text-center">-</Text>
+              disabled={nextBidTime <= 1}
+            >
+              <Text className="text-2xl  h-[35px]">-</Text>
             </TouchableOpacity>
             <TextInput
-              className="flex-1 px-4 py-2 text-lg text-center bg-gray-100"
+              className="flex-1 px-4 py-2  font-semibold  h-[50px] text-lg text-center bg-gray-100"
+              keyboardType="numeric"
               value={nextBidTime.toString()}
               onChangeText={(value) => {
-                const num = parseInt(value, 10);
-                if (!isNaN(num) && num >= 1) {
-                  setNextBidTime(num);
-                } else if (value === "") {
-                  setNextBidTime(1);
-                }
+                const parsedValue = parseInt(value, 10);
+                setNextBidTime(
+                  isNaN(parsedValue)
+                    ? 1
+                    : Math.min(10, Math.max(1, parsedValue))
+                );
               }}
-              keyboardType="numeric"
             />
             <TouchableOpacity
-              onPress={() => setNextBidTime((prev) => prev + 1)}
-              className="w-12 py-1 bg-gray-200 rounded-r-lg">
-              <Text className="text-2xl text-center">+</Text>
+              onPress={() => setNextBidTime((prev) => Math.min(10, prev + 1))}
+              className="px-4 py-2 bg-gray-200 rounded-r-lg"
+            >
+              <Text className="text-xl  h-[35px]">+</Text>
             </TouchableOpacity>
           </View>
-        </View>
 
-        {/* Notify Exceeded Switch */}
-        <View className="flex-row items-center px-4 mb-16">
-          <Switch value={notifyExceeded} onValueChange={setNotifyExceeded} />
-          <Text className="ml-2">
-            Notify me when my maximum bid is exceeded
+          {/* Number of Price Steps */}
+          <Text className="mb-2 text-base mt-4 font-semibold text-gray-600">
+            Number of Price Steps (N x{" "}
+            {bidIncrement?.toLocaleString("vi-VN", {
+              style: "currency",
+              currency: "VND",
+            })}
+            )
           </Text>
-        </View>
-        {errorMessage && (
-          <Text className="mt-4 text-center text-red-500">{errorMessage}</Text>
-        )}
-      </ScrollView>
-      {/* Error Message Display */}
+          <View className="flex-row items-center mb-4">
+            <TouchableOpacity
+              onPress={() =>
+                setNumberOfPriceStep((prev) => Math.max(1, prev - 1))
+              }
+              className={`px-4 py-2 bg-gray-300 rounded-l-lg ${
+                numberOfPriceStep <= 1 ? "opacity-50" : ""
+              }`}
+              disabled={numberOfPriceStep <= 1}
+            >
+              <Text className="text-2xl  h-[35px]">-</Text>
+            </TouchableOpacity>
+            <TextInput
+              className="flex-1 px-4 py-2  font-semibold  h-[50px] text-lg  text-center bg-gray-100"
+              keyboardType="numeric"
+              value={numberOfPriceStep.toString()}
+              onChangeText={(value) => {
+                const parsedValue = parseInt(value, 10);
+                setNumberOfPriceStep(isNaN(parsedValue) ? 1 : parsedValue);
+              }}
+            />
+            <TouchableOpacity
+              onPress={() => setNumberOfPriceStep((prev) => prev + 1)}
+              className="px-4 py-2 bg-gray-200 rounded-r-lg"
+            >
+              <Text className="text-xl  h-[35px]">+</Text>
+            </TouchableOpacity>
+          </View>
 
-      {/* Submit Button */}
-      <TouchableOpacity
-        onPress={handleSubmit}
-        className="absolute bottom-0 left-0 right-0 py-3 bg-blue-500">
-        <Text className="text-lg font-bold text-center text-white">
-          SUBMIT AUTOMATION BID
-        </Text>
-      </TouchableOpacity>
+          {/* Error Message */}
+          {errorMessage && (
+            <Text className="mt-4 text-red-500">{errorMessage}</Text>
+          )}
+
+          {/* Submit Button */}
+          <TouchableOpacity
+            onPress={handleSubmit}
+            className="mt-8 py-3 bg-blue-500 rounded-md"
+          >
+            <Text className="text-lg font-bold text-center text-white">
+              SUBMIT AUTOMATION BID
+            </Text>
+          </TouchableOpacity>
+        </View>
+      </KeyboardAvoidingView>
     </SafeAreaView>
   );
 };

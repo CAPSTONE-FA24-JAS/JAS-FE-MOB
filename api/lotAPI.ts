@@ -189,6 +189,14 @@ export const setAutoBidConfig = async (
   timeIncrement: number,
   customerLotId: number
 ): Promise<void> => {
+  console.log("Setting auto-bid configuration...", {
+    minPrice,
+    maxPrice,
+    numberOfPriceStep,
+    timeIncrement,
+    customerLotId,
+  });
+
   try {
     const response = await axios.post<ApiResponse>(
       `${API_URL}/api/CustomerLots/SetAutoBid`,

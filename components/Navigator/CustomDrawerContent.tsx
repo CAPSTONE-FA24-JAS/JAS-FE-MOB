@@ -23,7 +23,14 @@ const CustomDrawerContent: React.FC<CustomDrawerContentProps> = (props) => {
 
       {/* Auctions Group */}
       <View style={{ paddingHorizontal: 20, marginTop: 10 }}>
-        <Text style={{ fontSize: 18, color: "gray", marginBottom: 10 }}>
+        <Text
+          style={{
+            fontSize: 18,
+            color: "gray",
+            marginBottom: 10,
+            fontWeight: 500,
+          }}
+        >
           Auctions
         </Text>
         <TouchableOpacity
@@ -41,7 +48,16 @@ const CustomDrawerContent: React.FC<CustomDrawerContentProps> = (props) => {
             <View className="w-[30px]  justify-center flex-row">
               <MaterialCommunityIcons name="gavel" size={24} color="#3eaef4" />
             </View>
-            <Text style={{ marginLeft: 20 }}>Home Page</Text>
+            <Text
+              style={{
+                marginLeft: 20,
+                fontSize: 16,
+                fontWeight: 400,
+                color: "#4e5652",
+              }}
+            >
+              Home Page
+            </Text>
           </View>
         </TouchableOpacity>
         <TouchableOpacity
@@ -63,14 +79,30 @@ const CustomDrawerContent: React.FC<CustomDrawerContentProps> = (props) => {
                 color="#3eaef4"
               />
             </View>
-            <Text style={{ marginLeft: 20 }}>Past Auctions</Text>
+            <Text
+              style={{
+                marginLeft: 20,
+                fontSize: 16,
+                fontWeight: 400,
+                color: "#4e5652",
+              }}
+            >
+              Past Auctions
+            </Text>
           </View>
         </TouchableOpacity>
       </View>
 
       {/* My Account Group */}
       <View style={{ paddingHorizontal: 20, marginTop: 20 }}>
-        <Text style={{ fontSize: 18, color: "gray", marginBottom: 10 }}>
+        <Text
+          style={{
+            fontSize: 18,
+            color: "gray",
+            marginBottom: 10,
+            fontWeight: 500,
+          }}
+        >
           My Account
         </Text>
 
@@ -87,10 +119,19 @@ const CustomDrawerContent: React.FC<CustomDrawerContentProps> = (props) => {
               paddingVertical: 10,
             }}
           >
-            <View className="w-[30px]  justify-end flex-row">
+            <View className="w-[30px]  pl-1 flex-row">
               <FontAwesome name="user" size={24} color="#3eaef4" />
             </View>
-            <Text style={{ marginLeft: 20 }}>My Account</Text>
+            <Text
+              style={{
+                marginLeft: 20,
+                fontSize: 16,
+                fontWeight: 400,
+                color: "#4e5652",
+              }}
+            >
+              My Account
+            </Text>
           </View>
         </TouchableOpacity>
 
@@ -109,7 +150,16 @@ const CustomDrawerContent: React.FC<CustomDrawerContentProps> = (props) => {
             <View className="w-[30px] flex-row">
               <MaterialCommunityIcons name="camera" size={24} color="#3eaef4" />
             </View>
-            <Text style={{ marginLeft: 20 }}>Consign An Item</Text>
+            <Text
+              style={{
+                marginLeft: 20,
+                fontSize: 16,
+                fontWeight: 400,
+                color: "#4e5652",
+              }}
+            >
+              Consign An Item
+            </Text>
           </View>
         </TouchableOpacity>
 
@@ -134,7 +184,16 @@ const CustomDrawerContent: React.FC<CustomDrawerContentProps> = (props) => {
                 color="#3eaef4"
               />
             </View>
-            <Text style={{ marginLeft: 20 }}>History Item Consign</Text>
+            <Text
+              style={{
+                marginLeft: 20,
+                fontSize: 16,
+                fontWeight: 400,
+                color: "#4e5652",
+              }}
+            >
+              History Item Consign
+            </Text>
           </View>
         </TouchableOpacity>
 
@@ -153,7 +212,16 @@ const CustomDrawerContent: React.FC<CustomDrawerContentProps> = (props) => {
             <View className="w-[30px]  justify-center flex-row">
               <FontAwesome name="star" size={24} color="#3eaef4" />
             </View>
-            <Text style={{ marginLeft: 20 }}>Watched Jewelry</Text>
+            <Text
+              style={{
+                marginLeft: 20,
+                fontSize: 16,
+                fontWeight: 400,
+                color: "#4e5652",
+              }}
+            >
+              Watched Jewelry
+            </Text>
           </View>
         </TouchableOpacity>
 
@@ -172,7 +240,16 @@ const CustomDrawerContent: React.FC<CustomDrawerContentProps> = (props) => {
             <View className="w-[30px]   flex-row">
               <FontAwesome name="gavel" size={24} color="#3eaef4" />
             </View>
-            <Text style={{ marginLeft: 20 }}>My Bids</Text>
+            <Text
+              style={{
+                marginLeft: 20,
+                fontSize: 16,
+                fontWeight: 400,
+                color: "#4e5652",
+              }}
+            >
+              My Bids
+            </Text>
           </View>
         </TouchableOpacity>
 
@@ -195,7 +272,16 @@ const CustomDrawerContent: React.FC<CustomDrawerContentProps> = (props) => {
                 color="#3eaef4"
               />
             </View>
-            <Text style={{ marginLeft: 20 }}>Invoice List</Text>
+            <Text
+              style={{
+                marginLeft: 20,
+                fontSize: 16,
+                fontWeight: 400,
+                color: "#4e5652",
+              }}
+            >
+              Invoice List
+            </Text>
           </View>
         </TouchableOpacity>
 
@@ -218,14 +304,30 @@ const CustomDrawerContent: React.FC<CustomDrawerContentProps> = (props) => {
                 color="#3eaef4"
               />
             </View>
-            <Text style={{ marginLeft: 20 }}>Finance Proof</Text>
+            <Text
+              style={{
+                marginLeft: 20,
+                fontSize: 16,
+                fontWeight: 400,
+                color: "#4e5652",
+              }}
+            >
+              Finance Proof
+            </Text>
           </View>
         </TouchableOpacity>
       </View>
 
       {/* About Group */}
       <View style={{ paddingHorizontal: 20, marginTop: 20 }}>
-        <Text style={{ fontSize: 18, color: "gray", marginBottom: 10 }}>
+        <Text
+          style={{
+            fontSize: 18,
+            color: "gray",
+            marginBottom: 10,
+            fontWeight: 500,
+          }}
+        >
           About
         </Text>
         <TouchableOpacity
@@ -245,7 +347,16 @@ const CustomDrawerContent: React.FC<CustomDrawerContentProps> = (props) => {
             <View className="w-[30px]  justify-center flex-row">
               <FontAwesome name="file-text" size={24} color="#3eaef4" />
             </View>
-            <Text style={{ marginLeft: 20 }}>Terms & Conditions</Text>
+            <Text
+              style={{
+                marginLeft: 20,
+                fontSize: 16,
+                fontWeight: 400,
+                color: "#4e5652",
+              }}
+            >
+              Terms & Conditions
+            </Text>
           </View>
         </TouchableOpacity>
         <TouchableOpacity
@@ -263,7 +374,16 @@ const CustomDrawerContent: React.FC<CustomDrawerContentProps> = (props) => {
             <View className="w-[30px]  justify-center flex-row">
               <FontAwesome name="info-circle" size={24} color="#3eaef4" />
             </View>
-            <Text style={{ marginLeft: 20 }}>About</Text>
+            <Text
+              style={{
+                marginLeft: 20,
+                fontSize: 16,
+                fontWeight: 400,
+                color: "#4e5652",
+              }}
+            >
+              About
+            </Text>
           </View>
         </TouchableOpacity>
         <TouchableOpacity
@@ -281,7 +401,16 @@ const CustomDrawerContent: React.FC<CustomDrawerContentProps> = (props) => {
             <View className="w-[30px]  flex-row justify-center">
               <FontAwesome name="heart" size={24} color="#3eaef4" />
             </View>
-            <Text style={{ marginLeft: 20 }}>Rate Us</Text>
+            <Text
+              style={{
+                marginLeft: 20,
+                fontSize: 16,
+                fontWeight: 400,
+                color: "#4e5652",
+              }}
+            >
+              Rate Us
+            </Text>
           </View>
         </TouchableOpacity>
       </View>

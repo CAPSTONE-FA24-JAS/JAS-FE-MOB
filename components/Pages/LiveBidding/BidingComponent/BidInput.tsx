@@ -127,7 +127,6 @@ const BidInput: React.FC<BidInputProps> = ({
 
   if (item.lotType === "Public_Auction") {
     const highestBidActual = highestBid ? highestBid : item.startPrice;
-    console.log("highestBidActual", item.startPrice);
 
     const isAuctionEnded =
       isEndAuctionMethod3 ||

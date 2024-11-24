@@ -36,7 +36,7 @@ type ConsignStatus =
   | "FinalValuated"
   | "ManagerApproved"
   | "Authorized"
-  | "RejectedPreliminary";
+  | "Rejected";
 
 const statusTextMap: Record<ConsignStatus, string> = {
   Requested: "Requested",
@@ -48,7 +48,7 @@ const statusTextMap: Record<ConsignStatus, string> = {
   FinalValuated: "Final Valuated",
   ManagerApproved: "Manager Approved",
   Authorized: "Authorized",
-  RejectedPreliminary: "Rejected Preliminary",
+  Rejected: "Rejected",
 };
 const ConsignDetailTimeLine: React.FC = () => {
   const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
@@ -137,7 +137,7 @@ const ConsignDetailTimeLine: React.FC = () => {
         return "bg-green-700";
       case "Authorized":
         return "bg-blue-500";
-      case "RejectedPreliminary":
+      case "Rejected":
         return "bg-red-500";
       default:
         return "bg-gray-500";
@@ -170,7 +170,7 @@ const ConsignDetailTimeLine: React.FC = () => {
       // Cập nhật trạng thái của item trong UI
       setItem((prevItem) => ({
         ...prevItem,
-        status: "RejectedPreliminary",
+        status: "Rejected",
       }));
       setModalVisible(false); // Đóng modal
       setFinalModalVisible(false); // Đóng modal cuối

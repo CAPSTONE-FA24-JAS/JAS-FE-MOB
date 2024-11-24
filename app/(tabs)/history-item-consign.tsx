@@ -31,7 +31,7 @@ const statusTextMap = [
   "Received Jewelry",
   "Manager Approved",
   "Authorized",
-  "Rejected Preliminary",
+  "Rejected",
 ];
 
 const HistoryItemConsign: React.FC = () => {
@@ -149,7 +149,7 @@ const HistoryItemConsign: React.FC = () => {
   //   // "Final Valuated", // ẩn
   //   "Manager Approved",
   //   "Authorized", // cho coi giấy uỷ quyền
-  //   "Rejected Preliminary",
+  //   "Rejected",
   // ];
   // Corresponding status indices to match statusTextMap
   const statusIndices = [0, 1, 3, 4, 5, 7, 8, 9];

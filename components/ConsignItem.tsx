@@ -12,7 +12,7 @@ type ConsignStatus =
   | "FinalValuated"
   | "ManagerApproved"
   | "Authorized"
-  | "RejectedPreliminary";
+  | "Rejected";
 
 // Define the props interface
 export interface ConsignItemProps {
@@ -38,7 +38,7 @@ const statusColors: Record<ConsignStatus, string> = {
   FinalValuated: "text-orange-500",
   ManagerApproved: "text-green-700",
   Authorized: "text-blue-500",
-  RejectedPreliminary: "text-red-500",
+  Rejected: "text-red-500",
 };
 
 const ConsignItem: React.FC<ConsignItemProps> = ({
@@ -65,7 +65,7 @@ const ConsignItem: React.FC<ConsignItemProps> = ({
     FinalValuated: "Final Valuated",
     ManagerApproved: "Manager Approved",
     Authorized: "Authorized",
-    RejectedPreliminary: "Rejected Preliminary",
+    Rejected: "Rejected",
   };
 
   return (

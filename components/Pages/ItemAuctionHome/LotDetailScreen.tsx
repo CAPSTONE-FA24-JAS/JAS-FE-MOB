@@ -183,6 +183,7 @@ const LotDetailScreen = () => {
       if (userId !== undefined && id !== undefined) {
         // First, check if the user is registered for the lot
         const registrationResponse = await checkCustomerInLot(userId, id);
+        console.log("registrationResponse", registrationResponse);
 
         if (registrationResponse) {
           // If the user is registered, set customerLotId and isRegistered
@@ -353,9 +354,12 @@ const LotDetailScreen = () => {
   };
 
   const handlePressAutoBid = () => {
-    if (!lotDetail && customerLotId && lotDetail)
+    if (!lotDetail && !customerLotId && !lotDetail) {
       return showErrorMessage("Invalid lot ID or customerLotId or lotDetail.");
+    }
     if (lotDetail) {
+      console.log("lotDetail", lotDetail, customerLotId);
+
       navigation.navigate("AutoBidSaveConfig", {
         customerLotId: customerLotId ?? 0, // Tạm thời để id LOT
         lotName: lotDetail.jewelry?.name ?? "",
@@ -612,8 +616,7 @@ const LotDetailScreen = () => {
             <Swiper
               showsPagination={true}
               autoplay={true}
-              style={{ height: "100%" }}
-            >
+              style={{ height: "100%" }}>
               {lotDetail?.jewelry?.imageJewelries?.length ?? 0 > 0 ? (
                 lotDetail?.jewelry?.imageJewelries.map((img, index) =>
                   img?.imageLink ? (
@@ -637,8 +640,7 @@ const LotDetailScreen = () => {
             <Text className="font-bold text-gray-400">Follow</Text>
             <TouchableOpacity
               onPress={handleAddWatching}
-              className="flex-row items-center gap-1"
-            >
+              className="flex-row items-center gap-1">
               {isWatching && (
                 <MaterialCommunityIcons name="star" size={24} color="yellow" />
               )}
@@ -668,7 +670,7 @@ const LotDetailScreen = () => {
                     : "N/A"}
                 </Text>
               </View>
-              <View className="flex-row w-full  justify-between items-start">
+              <View className="flex-row items-start justify-between w-full">
                 <Text className="text-base font-bold text-gray-500 max-w-[50%] ">
                   Lot #{id} - Type {typeBid ? formatTypeBid(typeBid) : "N/A"}
                 </Text>
@@ -676,8 +678,7 @@ const LotDetailScreen = () => {
                   <Text
                     className={`font-extrabold py-1 px-10 ${getStatusClass(
                       lotDetail?.status ?? ""
-                    )} rounded-md text-base text-center uppercase text-white`}
-                  >
+                    )} rounded-md text-base text-center uppercase text-white`}>
                     {lotDetail?.status}
                   </Text>
                 </View>
@@ -702,19 +703,19 @@ const LotDetailScreen = () => {
                 {lotDetail?.jewelry?.description || "No description available."}
               </Text>
             )}
-            <View className="flex-row  items-center">
-              <Text className="text-lg mr-2 text-gray-800">•</Text>
+            <View className="flex-row items-center">
+              <Text className="mr-2 text-lg text-gray-800">•</Text>
               <Text className="text-gray-700">
                 For Gender: {lotDetail?.jewelry?.forGender || "Unknow"}
               </Text>
             </View>
             <Text className="mt-6 mb-2 font-bold">LOCATION DESCRIPTION</Text>
-            <Text className="text-gray-700 mb-5">
+            <Text className="mb-5 text-gray-700">
               {lotDetail?.auction?.description ||
                 "No location description available."}
             </Text>
             {/* <Text className="mt-6 mb-2 font-bold">VIEWING INFORMATION</Text>
-            <Text className="text-gray-700 mb-4">
+            <Text className="mb-4 text-gray-700">
               {lotDetail?.auction?.description ||
                 "No viewing information available."}
             </Text> */}
@@ -758,8 +759,7 @@ const LotDetailScreen = () => {
                     typeBid === "Fixed_Price"
                       ? handleBuyNow
                       : handleSecretAuctionBid
-                  }
-                >
+                  }>
                   <Text className="font-semibold text-center text-white uppercase">
                     {typeBid === "Fixed_Price"
                       ? "BUY FIXED BID"
@@ -772,8 +772,7 @@ const LotDetailScreen = () => {
               !bidTimeCheck && (
                 <TouchableOpacity
                   onPress={handlePressAutoBid}
-                  className="mb-3 bg-blue-500 rounded-sm"
-                >
+                  className="mb-3 bg-blue-500 rounded-sm">
                   <Text className="py-3 font-semibold text-center text-white">
                     BID AUTOMATION
                   </Text>
@@ -793,8 +792,7 @@ const LotDetailScreen = () => {
               typeBid === "Auction_Price_GraduallyReduced") && (
               <TouchableOpacity
                 className="py-3 bg-blue-500 rounded-sm"
-                onPress={() => handleJoinToBid(typeBid)}
-              >
+                onPress={() => handleJoinToBid(typeBid)}>
                 <Text className="font-semibold text-center text-white uppercase">
                   {lotDetail?.status === "Passed" ||
                   lotDetail?.status === "Sold"
@@ -812,8 +810,7 @@ const LotDetailScreen = () => {
           !(lotDetail?.status === "Sold") && (
             <TouchableOpacity
               className="py-3 mt-4 bg-blue-500 rounded-sm"
-              onPress={handleRegisterToBid}
-            >
+              onPress={handleRegisterToBid}>
               <Text className="font-semibold text-center text-white uppercase">
                 Register To Bid
               </Text>

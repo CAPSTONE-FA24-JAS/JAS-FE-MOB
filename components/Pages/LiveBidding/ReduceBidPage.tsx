@@ -62,6 +62,7 @@ const ReduceBidPage = () => {
     finalPriceSold: 0,
     bidIncrement: 0,
     currentPrice: 0,
+    currentPriceWinner: 0,
   });
 
   const {

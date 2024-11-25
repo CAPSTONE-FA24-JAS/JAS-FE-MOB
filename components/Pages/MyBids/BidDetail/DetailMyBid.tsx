@@ -348,7 +348,9 @@ const DetailMyBid: React.FC = () => {
 
       {invoiceId ? (
         <View>
-          {itemDetailBid?.status !== "CreateInvoice" ? (
+          {itemDetailBid?.status === "CreateInvoice" ||
+          (itemDetailBid?.status === "PendingPayment" &&
+            !invoiceDetails?.linkBillTransaction) ? (
             <TouchableOpacity
               className="p-3 mx-4 mt-4 bg-blue-500 rounded"
               onPress={handleConfirmInvoice}

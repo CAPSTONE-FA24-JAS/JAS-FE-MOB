@@ -93,9 +93,8 @@ const LotDetailScreen = () => {
     (state: RootState) => state?.profile?.profile?.customerDTO?.walletId
   );
   const route = useRoute();
-  const { id, name, minPrice, maxPrice, price, image, typeBid } = route.params
-    ? (route.params as RouteParams)
-    : {};
+  const { id, name, minPrice, maxPrice, price, image, typeBid, status } =
+    route.params ? (route.params as RouteParams) : {};
 
   const [lotDetail, setLotDetail] = useState<ExtendedLotDetail | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
@@ -711,24 +710,26 @@ const LotDetailScreen = () => {
 
               <Divider bold={true} className="mt-2" />
               {/* Info Section */}
-              {winnerCustomer && winnerCustomer.length > 0 && (
-                <View className="w-full p-4 mb-6 bg-green-50 rounded-xl">
-                  <Text className="text-base font-medium text-center text-gray-600">
-                    Người thắng cuộc với giá:
-                  </Text>
-                  <View className="flex-row items-center justify-center">
-                    <Text className="text-base font-bold text-center text-green-600">
-                      {winnerCustomer?.[0]?.currentPrice.toLocaleString(
-                        "vi-vn",
-                        {
-                          style: "currency",
-                          currency: "VND",
-                        }
-                      ) || "N/A"}
+              {winnerCustomer &&
+                winnerCustomer.length > 0 &&
+                status === "Sold" && (
+                  <View className="w-full p-4 mb-6 bg-green-50 rounded-xl">
+                    <Text className="text-base font-medium text-center text-gray-600">
+                      Người thắng cuộc với giá:
                     </Text>
+                    <View className="flex-row items-center justify-center">
+                      <Text className="text-base font-bold text-center text-green-600">
+                        {winnerCustomer?.[0]?.currentPrice.toLocaleString(
+                          "vi-vn",
+                          {
+                            style: "currency",
+                            currency: "VND",
+                          }
+                        ) || "N/A"}
+                      </Text>
+                    </View>
                   </View>
-                </View>
-              )}
+                )}
             </View>
 
             <Text className="mt-6 font-bold">

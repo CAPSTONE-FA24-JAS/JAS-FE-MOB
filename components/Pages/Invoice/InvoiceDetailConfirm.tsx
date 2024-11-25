@@ -72,6 +72,7 @@ const InvoiceDetailConfirm: React.FC = () => {
   const feePrice = invoiceDetails?.free || 0;
   const feeShipping = invoiceDetails.feeShip || 0;
   const totalPrice = invoiceDetails?.totalPrice || 0;
+  const deposit = invoiceDetails?.myBidDTO?.lotDTO.deposit || 0;
 
   console.log("feeShipping IN InvoiceDetailConfirm:", feeShipping);
 
@@ -230,6 +231,20 @@ const InvoiceDetailConfirm: React.FC = () => {
             <StyledText className="text-base font-medium text-gray-600">
               {(feePrice && typeof feePrice === "number"
                 ? feePrice
+                : 0
+              ).toLocaleString("vi-VN", {
+                style: "currency",
+                currency: "VND",
+              }) || "0 VND"}
+            </StyledText>
+          </StyledView>
+          <StyledView className="flex-row justify-between mb-1">
+            <StyledText className="text-base font-medium text-gray-600">
+              Deposit:
+            </StyledText>
+            <StyledText className="text-base font-medium text-gray-600">
+              {(deposit && typeof deposit === "number"
+                ? deposit
                 : 0
               ).toLocaleString("vi-VN", {
                 style: "currency",

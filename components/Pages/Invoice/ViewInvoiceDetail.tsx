@@ -59,6 +59,7 @@ const ViewInvoiceDetail: React.FC = () => {
   const feePrice = invoiceDetails?.free || 0;
   const feeShipping = invoiceDetails?.feeShip || 0;
   const totalPrice = invoiceDetails?.totalPrice || 0;
+  const deposit = invoiceDetails?.myBidDTO?.lotDTO.deposit || 0;
 
   // Handle back button
   const handleBack = () => {
@@ -182,6 +183,20 @@ const ViewInvoiceDetail: React.FC = () => {
           </StyledView>
           <StyledView className="flex-row justify-between mb-1">
             <StyledText className="text-base font-medium text-gray-600">
+              Deposit:
+            </StyledText>
+            <StyledText className="text-base font-medium text-gray-600">
+              {(deposit && typeof deposit === "number"
+                ? deposit
+                : 0
+              ).toLocaleString("vi-VN", {
+                style: "currency",
+                currency: "VND",
+              }) || "0 VND"}
+            </StyledText>
+          </StyledView>
+          <StyledView className="flex-row justify-between mb-1">
+            <StyledText className="text-base font-medium text-gray-600">
               Shipping Fee
             </StyledText>
             <StyledText className="text-base font-medium text-gray-600">
@@ -223,8 +238,7 @@ const ViewInvoiceDetail: React.FC = () => {
         {/* Back Button */}
         <StyledTouchableOpacity
           onPress={handleBack}
-          className="p-3 mt-5 bg-blue-500 rounded"
-        >
+          className="p-3 mt-5 bg-blue-500 rounded">
           <StyledText className="font-bold text-center text-white">
             BACK
           </StyledText>

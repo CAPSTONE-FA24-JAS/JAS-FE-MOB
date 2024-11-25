@@ -132,6 +132,11 @@ export function useBiddingMethod4(): UseBiddingResult {
       console.log("UpdateStatusBid", status);
       setStatus(status);
     });
+
+    connection.on("CanceledAuctionPublic", (message: string) => {
+      console.log(`${message}`);
+      setIsEndAuctionMethod4(true);
+    });
   }, []);
 
   const joinLiveBiddingMethod4 = useCallback(

@@ -187,6 +187,11 @@ export function useBiddingMethod3(): UseBiddingResult {
     //     setResultBidding(`${message} : ${price}`);
     //   }
     // );
+
+    connection.on("CanceledAuctionPublic", (message: string) => {
+      console.log(`${message}`);
+      setIsEndLot(true);
+    });
   }, []);
 
   const joinLiveBiddingMethod3 = useCallback(

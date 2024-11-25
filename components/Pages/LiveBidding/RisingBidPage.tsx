@@ -18,6 +18,7 @@ import BidInput from "./BidingComponent/BidInput";
 import AuctionResultModal from "@/components/Modal/AuctionResultModal";
 import { useNavigation } from "expo-router";
 import { useBiddingMethod3 } from "@/hooks/useBiddingMethod3";
+import AuctionEndedModal from "@/components/Modal/AuctionEndModal";
 
 type RisingBidPageParams = {
   RisingBidPage: {
@@ -219,6 +220,7 @@ const RisingBidPage: React.FC = () => {
         winningPrice={winnerPrice}
         onClose={onClose}
       />
+      <AuctionEndedModal visible={isEndLot} onClose={onClose} />
     </View>
   );
 };

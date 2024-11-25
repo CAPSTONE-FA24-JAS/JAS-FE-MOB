@@ -4,7 +4,11 @@ import {
   showSuccessMessage,
 } from "@/components/FlashMessageHelpers";
 import apiClient from "./config";
-import { ListLotResponse, LotDetailResponse } from "@/app/types/lot_type";
+import {
+  ListLotResponse,
+  LotDetailResponse,
+  WinnerForLot,
+} from "@/app/types/lot_type";
 import { ApiError, ApiResponse } from "./utils/ApiError";
 import { Response } from "@/app/types/respone_type";
 import { Alert } from "react-native";
@@ -307,5 +311,28 @@ export const getFloorFees = async (): Promise<
       error.response?.data?.code || 500,
       error.response?.data?.message || "Error retrieving floor fees."
     );
+  }
+};
+
+export const getWinnerForLot = async (
+  lotId: number
+): Promise<WinnerForLot[] | []> => {
+  try {
+    const response = await axios.get<Response<WinnerForLot[]>>(
+      `${API_URL}/api/CustomerLots/GetWinnerForLot?lotId=${lotId}`
+    );
+
+    if (response.data.isSuccess && response.data.data) {
+      console.log("Received winner for lot:", response.data.data);
+      return response.data.data || [];
+    } else {
+      throw new Error(
+        response.data.message || "Failed to retrieve winner for lot."
+      );
+    }
+  } catch (error) {
+    console.error("Error retrieving winner for lot:", error);
+    showErrorMessage("Unable to retrieve winner for lot.");
+    throw error;
   }
 };

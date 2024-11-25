@@ -388,3 +388,23 @@ export interface FloorFee {
   deleteBy: string | null;
   isDeleted: boolean;
 }
+
+export interface WinnerForLot {
+  currentPrice: number;
+  isDeposit: boolean;
+  customerId: number;
+  lotId: number;
+  priceLimit: number;
+  isWinner: boolean;
+  isRefunded: boolean;
+  isInvoiced: boolean;
+  expireDateOfBidLimit: string;
+  customer: {
+    id: number;
+    firstName: string;
+    lastName: string;
+    profilePicture: string;
+    gender: string;
+    address: string;
+  };
+}

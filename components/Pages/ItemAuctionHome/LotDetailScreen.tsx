@@ -4,9 +4,10 @@ import {
   checkCustomerInLot,
   getLotDetailById,
   getTotalCustomerInLotFixedPrice,
+  getWinnerForLot,
 } from "@/api/lotAPI";
 import { addNewWatchingForCustomer } from "@/api/watchingApi";
-import { LotDetail } from "@/app/types/lot_type";
+import { LotDetail, WinnerForLot } from "@/app/types/lot_type";
 import CountdownTimerBid from "@/components/CountDown/CountdownTimer";
 
 // Extend LotDetail type to include totalCustomers
@@ -109,6 +110,7 @@ const LotDetailScreen = () => {
   const [confirmBuyNowVisible, setConfirmBuyNowVisible] = useState(false);
   const [secretAuctionBidVisible, setSecretAuctionBidVisible] = useState(false);
   const [customerLotId, setCustomerLotId] = useState<number | null>(null);
+  const [winnerCustomer, setWinnerCustomer] = useState<WinnerForLot[] | []>([]);
 
   // Existing declarations...
   const [currentPriceCheck, setCurrentPriceCheck] = useState<number | null>(
@@ -126,6 +128,20 @@ const LotDetailScreen = () => {
   console.log("====================================");
   console.log("haveWallet", haveWallet);
   console.log("====================================");
+
+  const getWinner = async () => {
+    try {
+      await getWinnerForLot(id || 0).then((res) => {
+        if (Array.isArray(res) && res.length > 0) {
+          setWinnerCustomer(res);
+        } else {
+          setWinnerCustomer([]);
+        }
+      });
+    } catch (error) {
+      console.error("Error fetching winner customer:", error);
+    }
+  };
 
   // Hàm fetchLotDetail
   const fetchLotDetail = useCallback(async () => {
@@ -227,6 +243,7 @@ const LotDetailScreen = () => {
     useCallback(() => {
       fetchLotDetail();
       fetchRegistrationStatus();
+      getWinner();
     }, [fetchLotDetail, fetchRegistrationStatus])
   );
 
@@ -616,8 +633,7 @@ const LotDetailScreen = () => {
             <Swiper
               showsPagination={true}
               autoplay={true}
-              style={{ height: "100%" }}
-            >
+              style={{ height: "100%" }}>
               {lotDetail?.jewelry?.imageJewelries?.length ?? 0 > 0 ? (
                 lotDetail?.jewelry?.imageJewelries.map((img, index) =>
                   img?.imageLink ? (
@@ -641,8 +657,7 @@ const LotDetailScreen = () => {
             <Text className="font-bold text-gray-400">Follow</Text>
             <TouchableOpacity
               onPress={handleAddWatching}
-              className="flex-row items-center gap-1"
-            >
+              className="flex-row items-center gap-1">
               {isWatching && (
                 <MaterialCommunityIcons name="star" size={24} color="yellow" />
               )}
@@ -680,8 +695,7 @@ const LotDetailScreen = () => {
                   <Text
                     className={`font-extrabold py-1 px-10 ${getStatusClass(
                       lotDetail?.status ?? ""
-                    )} rounded-md text-base text-center uppercase text-white`}
-                  >
+                    )} rounded-md text-base text-center uppercase text-white`}>
                     {lotDetail?.status}
                   </Text>
                 </View>
@@ -697,17 +711,20 @@ const LotDetailScreen = () => {
 
               <Divider bold={true} className="mt-2" />
               {/* Info Section */}
-              {lotDetail?.currentPriceWinner && (
+              {winnerCustomer && winnerCustomer.length > 0 && (
                 <View className="w-full p-4 mb-6 bg-green-50 rounded-xl">
                   <Text className="text-base font-medium text-center text-gray-600">
-                    1 Người thắng cuộc với giá:
+                    Người thắng cuộc với giá:
                   </Text>
                   <View className="flex-row items-center justify-center">
                     <Text className="text-base font-bold text-center text-green-600">
-                      {lotDetail?.currentPriceWinner.toLocaleString("vi-VN", {
-                        style: "currency",
-                        currency: "VND",
-                      })}
+                      {winnerCustomer?.[0]?.currentPrice.toLocaleString(
+                        "vi-vn",
+                        {
+                          style: "currency",
+                          currency: "VND",
+                        }
+                      ) || "N/A"}
                     </Text>
                   </View>
                 </View>
@@ -778,8 +795,7 @@ const LotDetailScreen = () => {
                     typeBid === "Fixed_Price"
                       ? handleBuyNow
                       : handleSecretAuctionBid
-                  }
-                >
+                  }>
                   <Text className="font-semibold text-center text-white uppercase">
                     {typeBid === "Fixed_Price"
                       ? "BUY FIXED BID"
@@ -792,8 +808,7 @@ const LotDetailScreen = () => {
               !bidTimeCheck && (
                 <TouchableOpacity
                   onPress={handlePressAutoBid}
-                  className="mb-3 bg-blue-500 rounded-sm"
-                >
+                  className="mb-3 bg-blue-500 rounded-sm">
                   <Text className="py-3 font-semibold text-center text-white">
                     BID AUTOMATION
                   </Text>
@@ -813,11 +828,11 @@ const LotDetailScreen = () => {
               typeBid === "Auction_Price_GraduallyReduced") && (
               <TouchableOpacity
                 className="py-3 bg-blue-500 rounded-sm"
-                onPress={() => handleJoinToBid(typeBid)}
-              >
+                onPress={() => handleJoinToBid(typeBid)}>
                 <Text className="font-semibold text-center text-white uppercase">
                   {lotDetail?.status === "Passed" ||
-                  lotDetail?.status === "Sold"
+                  lotDetail?.status === "Sold" ||
+                  lotDetail?.status === "Canceled"
                     ? "View To Bid"
                     : "Join To Bid"}
                 </Text>
@@ -832,8 +847,7 @@ const LotDetailScreen = () => {
           !(lotDetail?.status === "Sold") && (
             <TouchableOpacity
               className="py-3 mt-4 bg-blue-500 rounded-sm"
-              onPress={handleRegisterToBid}
-            >
+              onPress={handleRegisterToBid}>
               <Text className="font-semibold text-center text-white uppercase">
                 Register To Bid
               </Text>

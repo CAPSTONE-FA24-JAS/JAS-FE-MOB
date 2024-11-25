@@ -46,7 +46,7 @@ const PastAuctions = () => {
 
   if (loading) {
     return (
-      <View className="flex-1 justify-center items-center">
+      <View className="items-center justify-center flex-1">
         <ActivityIndicator size="large" color="#0000ff" />
         <Text className="mt-2">Loading auctions...</Text>
       </View>
@@ -55,10 +55,10 @@ const PastAuctions = () => {
 
   if (error) {
     return (
-      <View className="flex-1 justify-center bg-white items-center">
+      <View className="items-center justify-center flex-1 bg-white">
         <Text className="text-red-500">{error}</Text>
         <TouchableOpacity
-          className="mt-4 px-4 py-2 bg-blue-500 rounded"
+          className="px-4 py-2 mt-4 bg-blue-500 rounded"
           onPress={() => {
             setLoading(true);
             setError(null);
@@ -77,8 +77,7 @@ const PastAuctions = () => {
                 setError("Failed to load auctions.");
               })
               .finally(() => setLoading(false));
-          }}
-        >
+          }}>
           <Text className="text-white">Retry</Text>
         </TouchableOpacity>
       </View>
@@ -105,7 +104,7 @@ const PastAuctions = () => {
         contentContainerStyle={{ padding: 10 }}
         ListEmptyComponent={
           <View className="items-center py-20">
-            <Text className="text-gray-500 font-semibold">
+            <Text className="font-semibold text-gray-500">
               No auctions available.
             </Text>
           </View>

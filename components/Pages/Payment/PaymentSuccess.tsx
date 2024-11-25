@@ -4,7 +4,7 @@ import { MaterialCommunityIcons } from "@expo/vector-icons"; // Sử dụng icon
 import { router, useNavigation } from "expo-router";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { MyBidData } from "@/app/types/bid_type";
-import { RouteProp, useRoute } from "@react-navigation/native";
+import { CommonActions, RouteProp, useRoute } from "@react-navigation/native";
 import { RootState } from "@/redux/store";
 import { useSelector } from "react-redux";
 // Define the types for navigation routes
@@ -36,7 +36,12 @@ const PaymentSuccess: React.FC = () => {
   console.log("====================================");
 
   const handleHome = () => {
-    navigation.navigate("HomePage");
+    navigation.dispatch(
+      CommonActions.reset({
+        index: 0,
+        routes: [{ name: "DrawerLayout", params: { screen: "Auctions" } }],
+      })
+    );
   };
   const handleInvoiceList = () => {
     // Navigate to 'InvoiceList' through 'Account' stack

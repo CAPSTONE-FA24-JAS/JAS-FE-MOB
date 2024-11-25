@@ -616,7 +616,8 @@ const LotDetailScreen = () => {
             <Swiper
               showsPagination={true}
               autoplay={true}
-              style={{ height: "100%" }}>
+              style={{ height: "100%" }}
+            >
               {lotDetail?.jewelry?.imageJewelries?.length ?? 0 > 0 ? (
                 lotDetail?.jewelry?.imageJewelries.map((img, index) =>
                   img?.imageLink ? (
@@ -640,7 +641,8 @@ const LotDetailScreen = () => {
             <Text className="font-bold text-gray-400">Follow</Text>
             <TouchableOpacity
               onPress={handleAddWatching}
-              className="flex-row items-center gap-1">
+              className="flex-row items-center gap-1"
+            >
               {isWatching && (
                 <MaterialCommunityIcons name="star" size={24} color="yellow" />
               )}
@@ -674,11 +676,12 @@ const LotDetailScreen = () => {
                 <Text className="text-base font-bold text-gray-500 max-w-[50%] ">
                   Lot #{id} - Type {typeBid ? formatTypeBid(typeBid) : "N/A"}
                 </Text>
-                <View className=" max-w-[45%] mx-auto">
+                <View className=" max-w-[45%] flex-row justify-end">
                   <Text
                     className={`font-extrabold py-1 px-10 ${getStatusClass(
                       lotDetail?.status ?? ""
-                    )} rounded-md text-base text-center uppercase text-white`}>
+                    )} rounded-md text-base text-center uppercase text-white`}
+                  >
                     {lotDetail?.status}
                   </Text>
                 </View>
@@ -693,6 +696,22 @@ const LotDetailScreen = () => {
               {renderPrice()}
 
               <Divider bold={true} className="mt-2" />
+              {/* Info Section */}
+              {lotDetail?.currentPriceWinner && (
+                <View className="w-full p-4 mb-6 bg-green-50 rounded-xl">
+                  <Text className="text-base font-medium text-center text-gray-600">
+                    1 Người thắng cuộc với giá:
+                  </Text>
+                  <View className="flex-row items-center justify-center">
+                    <Text className="text-base font-bold text-center text-green-600">
+                      {lotDetail?.currentPriceWinner.toLocaleString("vi-VN", {
+                        style: "currency",
+                        currency: "VND",
+                      })}
+                    </Text>
+                  </View>
+                </View>
+              )}
             </View>
 
             <Text className="mt-6 font-bold">
@@ -759,7 +778,8 @@ const LotDetailScreen = () => {
                     typeBid === "Fixed_Price"
                       ? handleBuyNow
                       : handleSecretAuctionBid
-                  }>
+                  }
+                >
                   <Text className="font-semibold text-center text-white uppercase">
                     {typeBid === "Fixed_Price"
                       ? "BUY FIXED BID"
@@ -772,7 +792,8 @@ const LotDetailScreen = () => {
               !bidTimeCheck && (
                 <TouchableOpacity
                   onPress={handlePressAutoBid}
-                  className="mb-3 bg-blue-500 rounded-sm">
+                  className="mb-3 bg-blue-500 rounded-sm"
+                >
                   <Text className="py-3 font-semibold text-center text-white">
                     BID AUTOMATION
                   </Text>
@@ -792,7 +813,8 @@ const LotDetailScreen = () => {
               typeBid === "Auction_Price_GraduallyReduced") && (
               <TouchableOpacity
                 className="py-3 bg-blue-500 rounded-sm"
-                onPress={() => handleJoinToBid(typeBid)}>
+                onPress={() => handleJoinToBid(typeBid)}
+              >
                 <Text className="font-semibold text-center text-white uppercase">
                   {lotDetail?.status === "Passed" ||
                   lotDetail?.status === "Sold"
@@ -810,7 +832,8 @@ const LotDetailScreen = () => {
           !(lotDetail?.status === "Sold") && (
             <TouchableOpacity
               className="py-3 mt-4 bg-blue-500 rounded-sm"
-              onPress={handleRegisterToBid}>
+              onPress={handleRegisterToBid}
+            >
               <Text className="font-semibold text-center text-white uppercase">
                 Register To Bid
               </Text>

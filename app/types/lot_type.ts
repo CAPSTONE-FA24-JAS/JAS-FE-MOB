@@ -19,6 +19,7 @@ export interface Lot {
   deposit: number;
   buyNowPrice?: number;
   floorFeePercent: number;
+  currentPriceWinner: number;
   startTime: string;
   endTime: string;
   actualEndTime: any;
@@ -48,6 +49,8 @@ export interface LotDetail {
   status: string;
   deposit: number;
   floorFeePercent: number;
+  currentPriceWinner: number;
+
   startTime: string;
   endTime: string;
   actualEndTime: any;

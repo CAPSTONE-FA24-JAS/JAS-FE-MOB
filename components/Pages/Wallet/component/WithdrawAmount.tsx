@@ -1,7 +1,5 @@
-import { RootState } from "@/redux/store";
-import React, { useState } from "react";
-import { View, Text, TextInput } from "react-native";
-import { useSelector } from "react-redux";
+import React, { useCallback } from "react";
+import { View, Text, TextInput, Keyboard, Platform } from "react-native";
 
 interface WithdrawAmountProps {
   amount: string;
@@ -16,7 +14,36 @@ const WithdrawAmount: React.FC<WithdrawAmountProps> = ({
   err,
   validateWithdraw,
 }) => {
-  console.log("errr log", err);
+  // Xử lý format số tiền khi người dùng nhập
+  const handleAmountChange = useCallback(
+    (value: string) => {
+      // Loại bỏ tất cả các ký tự không phải số
+      const numericValue = value.replace(/\D/g, "");
+      setAmount(numericValue);
+      validateWithdraw();
+    },
+    [setAmount, validateWithdraw]
+  );
+
+  // Format số hiển thị với dấu phân cách hàng nghìn
+  const getFormattedAmount = useCallback(() => {
+    if (!amount || amount === "0") return "";
+    return Number(amount).toLocaleString("vi-VN");
+  }, [amount]);
+
+  // Handle focus event
+  const handleFocus = useCallback(() => {
+    // Có thể thêm logic khi focus nếu cần
+  }, []);
+
+  // Handle blur event
+  const handleBlur = useCallback(() => {
+    validateWithdraw();
+    // Chỉ tắt bàn phím trên Android
+    if (Platform.OS === "android") {
+      Keyboard.dismiss();
+    }
+  }, [validateWithdraw]);
 
   return (
     <View className="px-2 mb-4">
@@ -24,14 +51,16 @@ const WithdrawAmount: React.FC<WithdrawAmountProps> = ({
         1. Select the amount to withdraw (VND)
       </Text>
       <TextInput
-        value={Number(amount).toLocaleString("vi-VN")}
-        onChangeText={(value) => {
-          setAmount(value.replace(/\D/g, ""));
-          validateWithdraw();
-        }} // Allow only numbers
+        value={getFormattedAmount()}
+        onChangeText={handleAmountChange}
         placeholder="Enter withdraw amount"
         keyboardType="numeric"
         className="w-full p-2 text-lg border rounded-lg"
+        onFocus={handleFocus}
+        onBlur={handleBlur}
+        returnKeyType="done"
+        enablesReturnKeyAutomatically={true}
+        onSubmitEditing={handleBlur}
       />
       {err ? <Text className="text-sm text-red-500">{err}</Text> : null}
     </View>

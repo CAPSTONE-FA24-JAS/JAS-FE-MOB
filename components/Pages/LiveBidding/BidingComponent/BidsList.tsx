@@ -8,6 +8,7 @@ import { Message } from "@/hooks/useBiddingMethod3";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import React, { useMemo } from "react";
 import { View, Text, TouchableOpacity, Alert } from "react-native";
+import PriceTimeline from "./PriceTimeline";
 
 interface BidsListProps {
   item: LotDetail;
@@ -17,6 +18,7 @@ interface BidsListProps {
   isEndAuctionMethod3?: boolean;
   isEndLot?: boolean;
   status?: string;
+  milenstoneReduceTime?: string;
 }
 
 const BidsList: React.FC<BidsListProps> = ({
@@ -27,10 +29,9 @@ const BidsList: React.FC<BidsListProps> = ({
   isEndAuctionMethod3,
   isEndLot,
   status,
+  milenstoneReduceTime,
 }) => {
   // Memoized sorted bids
-
-  console.log("item", item);
 
   // Helper to format time
   const formatTime = (timeString: string) => {
@@ -182,6 +183,16 @@ const BidsList: React.FC<BidsListProps> = ({
         : "0";
     return (
       <View className="p-4">
+        <PriceTimeline
+          startPrice={item.startPrice || 0}
+          currentPrice={reducePrice || 0}
+          bidIncrement={item.bidIncrement || 0}
+          bidIncrementTime={60} // Set this to your desired interval in seconds
+          startTime={item.startTime}
+          milenstoneReduceTime={milenstoneReduceTime} // Add this prop
+          status={status || item.status}
+          finalPriceSold={item.finalPriceSold || 0}
+        />
         <View className="flex-row items-center justify-around p-3 py-6 bg-white border border-gray-300 rounded-md">
           <Text className="text-lg">Current Price:</Text>
           <Text className="text-xl text-gray-600">${reducePrice}</Text>

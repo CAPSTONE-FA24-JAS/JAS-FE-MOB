@@ -103,6 +103,7 @@ const BidInputMethod4: React.FC<BidInputProps> = ({
             isEndAuctionMethod4 ||
             item.status === "Sold" ||
             item.status === "Passed" ||
+            item.status === "Canceled" ||
             loadingMethod4 ||
             status === "Pause" ||
             status === "Cancel"

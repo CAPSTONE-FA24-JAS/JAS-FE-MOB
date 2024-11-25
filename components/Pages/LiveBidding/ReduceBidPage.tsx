@@ -18,6 +18,7 @@ import { useNavigation } from "expo-router";
 import { getLotDetailById } from "@/api/lotAPI";
 import BidInputMethod4 from "./BidingComponent/BidInputMethod4";
 import AuctionResultModal from "@/components/Modal/AuctionResultModal";
+import AuctionEndedModal from "@/components/Modal/AuctionEndModal";
 
 type ReduceBidPageParams = {
   ReduceBidPage: {
@@ -78,6 +79,8 @@ const ReduceBidPage = () => {
     joinLiveBiddingMethod4,
     sendBidMethod4,
     status,
+    endlotwithoutwinner,
+    milenstoneReduceTime,
   } = useBiddingMethod4();
 
   const accountId = useSelector(
@@ -111,6 +114,8 @@ const ReduceBidPage = () => {
   }, [itemId]);
 
   console.log("Item:", item.endTime);
+
+  console.log("milestoneReduceTime////////////////", milenstoneReduceTime);
 
   useEffect(() => {
     if (accountId && itemId) {
@@ -152,6 +157,7 @@ const ReduceBidPage = () => {
           item={item}
           currentCusId={customerId ?? 0}
           reducePrice={reducePrice}
+          milenstoneReduceTime={milenstoneReduceTime}
         />
       ),
     },
@@ -195,6 +201,7 @@ const ReduceBidPage = () => {
         winningPrice={winnerPrice}
         onClose={onClose}
       />
+      <AuctionEndedModal visible={endlotwithoutwinner} onClose={onClose} />
     </View>
   );
 };

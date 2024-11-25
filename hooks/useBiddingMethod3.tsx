@@ -159,18 +159,12 @@ export function useBiddingMethod3(): UseBiddingResult {
     // khi end auction tổng kết kết quả
     connection.on(
       "AuctionEndedWithWinnerPublic",
-      (message: string, customerId: string, price: number) => {
+      (message: string, customerId: string, price: string) => {
         setIsEndAuctionMedthod3(true);
         setWinnerCustomer(customerId);
-        setWinnerPrice(price.toString());
+        setWinnerPrice(price);
         console.log(
-          `${message} customerID ${customerId} at price ${price.toLocaleString(
-            "vi-VN",
-            {
-              style: "currency",
-              currency: "VND",
-            }
-          )}`
+          `AuctionEndedWithWinnerPublic ${message} customerID ${customerId} at price ${price}`
         );
       }
     );

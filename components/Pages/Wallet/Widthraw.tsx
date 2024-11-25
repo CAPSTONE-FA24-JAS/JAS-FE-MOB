@@ -1,20 +1,19 @@
-import React, { useState, useCallback } from "react";
-import { ScrollView, Text } from "react-native";
-import { View } from "react-native";
-import BalanceCard from "./component/BalanceCard";
-import { Card } from "react-native-paper";
-import { TouchableOpacity } from "react-native";
-import WithdrawAmount from "./component/WithdrawAmount";
-import { RequestNewWithdraw } from "@/api/walletApi";
-import { useSelector } from "react-redux";
-import { RootState } from "@/redux/store";
+import { BankAccountInfo, getAllCardByCustomerId } from "@/api/cardApi";
+import { checkWalletBalance, RequestNewWithdraw } from "@/api/walletApi";
 import {
   showErrorMessage,
   showSuccessMessage,
 } from "@/components/FlashMessageHelpers";
-import { BankAccountInfo, getAllCardByCustomerId } from "@/api/cardApi";
+import { RootState } from "@/redux/store";
 import { useNavigation } from "@react-navigation/native";
 import { useFocusEffect } from "expo-router";
+import React, { useCallback, useState } from "react";
+import { ActivityIndicator, Text, TouchableOpacity, View } from "react-native";
+import { Card } from "react-native-paper";
+import { useSelector } from "react-redux";
+import BalanceCard from "./component/BalanceCard";
+import WithdrawAmount from "./component/WithdrawAmount";
+import WithDrawList from "./component/WithDrawList";
 
 const Withdraw: React.FC = () => {
   const [amount, setAmount] = useState<string>("0");
@@ -23,68 +22,64 @@ const Withdraw: React.FC = () => {
     BankAccountInfo[]
   >([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [walletBalance, setWalletBalance] = useState<number>(0);
 
   const navigation = useNavigation<any>();
   const customerId = useSelector(
     (state: RootState) => state.auth.userResponse?.customerDTO.id
   );
-
   const walletId = useSelector(
     (state: RootState) => state.auth.userResponse?.customerDTO.walletId
   );
 
-  const walletAmount = useSelector(
-    (state: RootState) => state.auth.userResponse?.customerDTO.walletDTO.balance
-  );
+  const fetchData = async () => {
+    setIsLoading(true);
+    setErr("");
+    setAmount("0");
+
+    try {
+      // Fetch both wallet balance and bank accounts in parallel
+      const [balanceResponse, bankAccountsResponse] = await Promise.all([
+        walletId
+          ? checkWalletBalance(walletId)
+          : Promise.resolve({ isSuccess: false, data: { balance: 0 } }),
+        customerId ? getAllCardByCustomerId(customerId) : Promise.resolve([]),
+      ]);
+
+      if (balanceResponse && balanceResponse.isSuccess) {
+        setWalletBalance(balanceResponse.data.balance);
+      }
+
+      setExistingBankAccounts(bankAccountsResponse);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+      showErrorMessage("Failed to load data. Please try again.");
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   useFocusEffect(
     useCallback(() => {
-      setErr("");
-      setAmount("0");
-      setIsLoading(true);
-
-      if (customerId) {
-        getAllCardByCustomerId(customerId)
-          .then((data) => {
-            setExistingBankAccounts(data);
-            setIsLoading(false);
-          })
-          .catch((error) => {
-            console.error("Error fetching bank accounts:", error);
-            setIsLoading(false);
-          });
-      }
-    }, [
-      customerId,
-      getAllCardByCustomerId,
-      setExistingBankAccounts,
-      walletAmount,
-    ]) // Dependencies
+      fetchData();
+    }, [customerId, walletId])
   );
 
   const isDisabled = (): boolean => {
-    console.log(amount, walletAmount);
-
-    // Disable if no bank accounts, no wallet amount, invalid amount, or no payment method
-    if (
-      existingBankAccounts.length == 0 ||
-      !walletAmount ||
+    return (
+      existingBankAccounts.length === 0 ||
       Number(amount) <= 0 ||
-      Number(amount) > walletAmount
-    ) {
-      return true;
-    }
-    return false;
+      Number(amount) > walletBalance
+    );
   };
 
   const validateWithdraw = (): string => {
     if (existingBankAccounts.length === 0)
       return "Please add a bank account first";
-    if (!walletAmount) return "Wallet balance is unavailable.";
     if (Number(amount) <= 0) return "Amount must be greater than 0.";
-    if (Number(amount) > walletAmount)
+    if (Number(amount) > walletBalance)
       return "Amount must be less than your balance.";
-    return ""; // No errors
+    return "";
   };
 
   const handleWithdraw = async () => {
@@ -105,13 +100,13 @@ const Withdraw: React.FC = () => {
         if (response && response.isSuccess) {
           showSuccessMessage("Withdraw successfully");
           setAmount("0");
-          navigation.navigate("Wallet");
         } else {
           showErrorMessage("Unable to request withdraw.");
         }
       }
     } catch (error) {
       console.error("Error requesting withdraw:", error);
+      showErrorMessage("Failed to process withdrawal. Please try again.");
     }
   };
 
@@ -120,10 +115,6 @@ const Withdraw: React.FC = () => {
   };
 
   const renderBankAccountSection = () => {
-    if (isLoading) {
-      return <Text>Loading bank accounts...</Text>;
-    }
-
     if (existingBankAccounts.length === 0) {
       return (
         <View className="items-center px-2 mt-4">
@@ -157,10 +148,20 @@ const Withdraw: React.FC = () => {
     );
   };
 
+  if (isLoading) {
+    return (
+      <View className="items-center justify-center flex-1 bg-white">
+        <ActivityIndicator size="large" color="#0000ff" />
+        <Text className="mt-2">Loading...</Text>
+      </View>
+    );
+  }
+
   return (
     <View className="flex-1 bg-white">
-      <ScrollView contentContainerStyle={{ flexGrow: 1 }} className="p-2">
-        <BalanceCard />
+      <BalanceCard />
+
+      <View className="flex-grow p-2">
         <WithdrawAmount
           amount={amount}
           setAmount={setAmount}
@@ -168,9 +169,9 @@ const Withdraw: React.FC = () => {
           validateWithdraw={validateWithdraw}
         />
         {renderBankAccountSection()}
-      </ScrollView>
+      </View>
+      <WithDrawList />
 
-      {/* Withdraw Button */}
       <View className="absolute bottom-0 left-0 right-0 p-4 bg-white">
         <TouchableOpacity
           onPress={handleWithdraw}

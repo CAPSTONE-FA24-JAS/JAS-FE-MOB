@@ -41,4 +41,19 @@ export interface TransactionResponse {
   errorMessages: string[] | null;
 }
 
+export interface Withdraws {
+  id: number;
+  customerId: number;
+  walletId: number;
+  status: string;
+  amount: number;
+  viewCreditCardDTO: {
+    id: number;
+    bankName: string;
+    bankAccountHolder: string;
+    bankCode: string;
+    customerId: number;
+  };
+}
+
 export default {};

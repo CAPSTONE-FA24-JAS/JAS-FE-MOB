@@ -7,6 +7,7 @@ import {
   CreateWalletResponse,
   TransactionResponse,
   WalletBalanceResponse,
+  Withdraws,
 } from "@/app/types/wallet_type";
 import { Response } from "@/app/types/respone_type";
 
@@ -196,6 +197,53 @@ export const RequestNewWithdraw = async (
   } catch (error) {
     console.error("Error requesting withdraw:", error);
     showErrorMessage("Unable to request withdraw.");
+    throw error;
+  }
+};
+
+export const getAllWithdraws = async (
+  customerId: number
+): Promise<Withdraws[] | null> => {
+  try {
+    console.log("Fetching withdraws for customer ID:", customerId);
+
+    const response = await axios.get<Response<Withdraws[] | null>>(
+      `${API_URL}/api/Wallet/ViewListRequestWithdrawForCustomer?customerId=${customerId}`,
+      {
+        params: { customerId },
+      }
+    );
+
+    if (response.data.code === 200 && response.data.isSuccess) {
+      return response.data.data;
+    } else {
+      throw new Error("Failed to retrieve withdraws.");
+    }
+  } catch (error) {
+    console.error("Error fetching withdraws:", error);
+    showErrorMessage("Unable to retrieve withdraws.");
+    throw error;
+  }
+};
+export const cancelWithdraw = async (
+  withdrawId: number,
+  customerId: number
+): Promise<Response<string | null>> => {
+  try {
+    console.log("Cancelling withdraw:", withdrawId);
+
+    const response = await axios.post<Response<string | null>>(
+      `${API_URL}/api/Wallet/CancelRequestNewWithdrawByCustomer?customerId=${customerId}&requestId=${withdrawId}`
+    );
+
+    if (response.data.code === 200 && response.data.isSuccess) {
+      return response.data;
+    } else {
+      throw new Error("Failed to cancel withdraw.");
+    }
+  } catch (error) {
+    console.error("Error cancelling withdraw:", error);
+    showErrorMessage("Unable to cancel withdraw.");
     throw error;
   }
 };

@@ -27,6 +27,8 @@ interface UseBiddingResult {
   setResultBidding: React.Dispatch<React.SetStateAction<string>>;
   isEndAuctionMethod4: boolean;
   status: string;
+  endlotwithoutwinner: boolean;
+  milenstoneReduceTime: string;
 }
 
 export function useBiddingMethod4(): UseBiddingResult {
@@ -41,7 +43,10 @@ export function useBiddingMethod4(): UseBiddingResult {
   const [resultBidding, setResultBidding] = useState<string>("");
   const [isEndAuctionMethod4, setIsEndAuctionMethod4] =
     useState<boolean>(false);
+  const [endlotwithoutwinner, setEndLotWithoutWinner] =
+    useState<boolean>(false);
   const [status, setStatus] = useState<string>("");
+  const [milenstoneReduceTime, setMilensStoneReduceTime] = useState<string>("");
 
   const connectionRef = useRef<HubConnection | null>(null);
 
@@ -73,7 +78,7 @@ export function useBiddingMethod4(): UseBiddingResult {
     /// end auction nhuwng k co ai dau gia
     connection.on("AuctionEndedWithWinnerReduce", (msg: string) => {
       console.log(`AuctionEndedWithWinnerReduce Auction ended : ${msg}`);
-      setIsEndAuctionMethod4(true);
+      setEndLotWithoutWinner(true);
     });
 
     //// sau khi mua xong hoac co nguoi mua thi het 1 chu ky giam gia la end lai nen can cap nhat lai
@@ -115,6 +120,7 @@ export function useBiddingMethod4(): UseBiddingResult {
           `ReducePriceBidding ${mess} currentPrice ${currentPrice} at ${time}`
         );
         setReducePrice(() => currentPrice);
+        setMilensStoneReduceTime(time);
       }
     );
     connection.on("StatusBid", (status: string) => {
@@ -264,5 +270,7 @@ export function useBiddingMethod4(): UseBiddingResult {
     setResultBidding,
     isEndAuctionMethod4,
     status,
+    endlotwithoutwinner,
+    milenstoneReduceTime,
   };
 }

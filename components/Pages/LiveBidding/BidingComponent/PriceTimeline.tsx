@@ -82,31 +82,36 @@ const PriceTimeLine: React.FC<CountdownProps> = ({
       const now = new Date().getTime();
 
       if (milenstoneReduceTime) {
-        // Sử dụng thời gian từ server
+        // Use server-provided milestone time
         const nextReduction =
           new Date(milenstoneReduceTime).getTime() + 1000 * bidIncrementTime;
         const remaining = Math.max(0, nextReduction - now);
         setTimeLeft(remaining);
       } else if (currentMilestone) {
-        // Sử dụng milestone đã tính toán
+        // Use calculated milestones
         const remaining = Math.max(
           0,
           currentMilestone.nextMilestone.getTime() - now
         );
         setTimeLeft(remaining);
 
-        // Kiểm tra nếu đã đến mốc tiếp theo, tính toán lại milestone
+        // Only update milestones when needed
         if (remaining === 0) {
           const newMilestone = calculateCurrentMilestone();
-          setCurrentMilestone(newMilestone);
+          if (
+            !currentMilestone ||
+            currentMilestone.reductionCount !== newMilestone.reductionCount
+          ) {
+            setCurrentMilestone(newMilestone);
+          }
         }
       }
     };
 
-    // Cập nhật lần đầu ngay lập tức
+    // Initial update
     updateTimeLeft();
 
-    // Thiết lập interval
+    // Set up interval
     const timer = setInterval(updateTimeLeft, 1000);
 
     return () => clearInterval(timer);

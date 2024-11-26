@@ -192,9 +192,9 @@ const AddAddress: React.FC<AddAddressProps> = ({ visible, onClose, onAdd }) => {
 
   return (
     <Modal visible={visible} transparent animationType="slide">
-      <View className="flex-1 justify-center items-center bg-black/50">
-        <StyledView className="bg-white p-6 rounded-md w-11/12">
-          <StyledText className="text-lg font-bold mb-4 uppercase">
+      <View className="items-center justify-center flex-1 bg-black/50">
+        <StyledView className="w-11/12 p-6 bg-white rounded-md">
+          <StyledText className="mb-4 text-lg font-bold uppercase">
             Add Address to Ship
           </StyledText>
 
@@ -277,15 +277,15 @@ const AddAddress: React.FC<AddAddressProps> = ({ visible, onClose, onAdd }) => {
             placeholder="Enter detailed address"
             value={deepAddress}
             onChangeText={(text) => setDeepAddress(text)}
-            className="border border-gray-300 p-2 mb-4 rounded-md"
+            className="p-2 mb-4 border border-gray-300 rounded-md"
+            returnKeyType="done"
           />
 
           {/* Buttons */}
           <View className="flex-row justify-end">
             <StyledTouchableOpacity
-              className="bg-gray-400 p-3 rounded mr-2"
-              onPress={onClose}
-            >
+              className="p-3 mr-2 bg-gray-400 rounded"
+              onPress={onClose}>
               <StyledText className="text-white">Cancel</StyledText>
             </StyledTouchableOpacity>
             <StyledTouchableOpacity
@@ -293,8 +293,7 @@ const AddAddress: React.FC<AddAddressProps> = ({ visible, onClose, onAdd }) => {
                 isAddEnabled ? "bg-blue-500" : "bg-blue-300"
               }`}
               onPress={handleAddAddress}
-              disabled={!isAddEnabled}
-            >
+              disabled={!isAddEnabled}>
               <StyledText className="text-white">Save</StyledText>
             </StyledTouchableOpacity>
           </View>

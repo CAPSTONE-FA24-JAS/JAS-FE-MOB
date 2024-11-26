@@ -160,15 +160,13 @@ const HistoryItemConsign: React.FC = () => {
         <ScrollView
           horizontal={true}
           showsHorizontalScrollIndicator={false}
-          className="mb-4"
-        >
+          className="mb-4">
           <View className="flex-row items-center">
             <TouchableOpacity
               className={`px-4 py-2 mr-2 ${
                 selectedStatus === null ? "bg-yellow-500" : "bg-gray-400"
               } rounded`}
-              onPress={() => setSelectedStatus(null)}
-            >
+              onPress={() => setSelectedStatus(null)}>
               <Text className="font-bold text-white uppercase">ALL</Text>
             </TouchableOpacity>
 
@@ -178,8 +176,7 @@ const HistoryItemConsign: React.FC = () => {
                 className={`px-4 py-2 mr-2 ${
                   selectedStatus === status ? "bg-yellow-500" : "bg-gray-400"
                 } rounded`}
-                onPress={() => setSelectedStatus(status)}
-              >
+                onPress={() => setSelectedStatus(status)}>
                 <Text className="font-bold text-white uppercase">
                   {index + 1}. {statusTextMap[index]}
                 </Text>
@@ -194,9 +191,10 @@ const HistoryItemConsign: React.FC = () => {
             placeholder="Search..."
             onChangeText={(text) => setSearchQuery(text)}
             value={searchQuery}
+            returnKeyType="done"
           />
           {searchedItems && searchedItems.length > 0 && (
-            <Text className="font-semibold mb-2 text-base">
+            <Text className="mb-2 text-base font-semibold">
               Total: {searchedItems.length} items
             </Text>
           )}
@@ -232,8 +230,7 @@ const HistoryItemConsign: React.FC = () => {
                     flexDirection: "row",
                     justifyContent: "space-between",
                   }}
-                  className=" bottom-0 w-full "
-                >
+                  className="bottom-0 w-full ">
                   <TouchableOpacity
                     onPress={handleLoadMore}
                     style={{
@@ -243,8 +240,7 @@ const HistoryItemConsign: React.FC = () => {
                       margin: 10,
                       width: "100%",
                     }}
-                    className="mx-auto"
-                  >
+                    className="mx-auto">
                     <Text style={{ color: "#fff", textAlign: "center" }}>
                       Load More
                     </Text>

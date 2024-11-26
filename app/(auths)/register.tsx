@@ -118,12 +118,14 @@ const SignUpScreen = () => {
             placeholder="First Name"
             value={firstName}
             onChangeText={setFirstName}
+            returnKeyType="done"
           />
           <TextInput
             className="w-full h-10 px-2 mb-4 border border-gray-300 rounded"
             placeholder="Last Name"
             value={lastName}
             onChangeText={setLastName}
+            returnKeyType="done"
           />
           <TextInput
             className="w-full h-10 px-2 mb-4 border border-gray-300 rounded"
@@ -131,6 +133,7 @@ const SignUpScreen = () => {
             value={phoneNumber}
             onChangeText={setPhoneNumber}
             keyboardType="email-address"
+            returnKeyType="done"
           />
           <TextInput
             className="w-full h-10 px-2 mb-4 border border-gray-300 rounded"
@@ -138,6 +141,7 @@ const SignUpScreen = () => {
             value={email}
             onChangeText={setEmail}
             keyboardType="email-address"
+            returnKeyType="done"
           />
           <TextInput
             className="w-full h-10 px-2 mb-1 border border-gray-300 rounded"
@@ -145,6 +149,7 @@ const SignUpScreen = () => {
             value={password}
             onChangeText={setPassword}
             secureTextEntry
+            returnKeyType="done"
           />
           <Text className="mb-4 text-xs text-gray-500">
             Must be at least 6 characters and has at least one number
@@ -155,6 +160,7 @@ const SignUpScreen = () => {
             value={retypePassword}
             onChangeText={setRetypePassword}
             secureTextEntry
+            returnKeyType="done"
           />
 
           <TouchableOpacity

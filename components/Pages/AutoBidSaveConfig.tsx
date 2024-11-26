@@ -183,6 +183,7 @@ const AutoBidSaveConfig: React.FC = () => {
               <Text className="text-2xl  h-[35px]">-</Text>
             </TouchableOpacity>
             <TextInput
+              returnKeyType="done"
               className="flex-1 px-4 py-2 text-center h-[50px] font-semibold text-lg bg-gray-100"
               keyboardType="numeric"
               value={startingPrice.toString()}
@@ -225,6 +226,7 @@ const AutoBidSaveConfig: React.FC = () => {
               <Text className="text-2xl  h-[35px]">-</Text>
             </TouchableOpacity>
             <TextInput
+              returnKeyType="done"
               className="flex-1 px-4 py-2 text-center font-semibold  h-[50px] text-lg bg-gray-100"
               keyboardType="numeric"
               value={maxPrice.toString()}
@@ -254,6 +256,7 @@ const AutoBidSaveConfig: React.FC = () => {
               <Text className="text-2xl  h-[35px]">-</Text>
             </TouchableOpacity>
             <TextInput
+              returnKeyType="done"
               className="flex-1 px-4 py-2  font-semibold  h-[50px] text-lg text-center bg-gray-100"
               keyboardType="numeric"
               value={nextBidTime.toString()}
@@ -294,6 +297,7 @@ const AutoBidSaveConfig: React.FC = () => {
               <Text className="text-2xl  h-[35px]">-</Text>
             </TouchableOpacity>
             <TextInput
+              returnKeyType="done"
               className="flex-1 px-4 py-2  font-semibold  h-[50px] text-lg  text-center bg-gray-100"
               keyboardType="numeric"
               value={numberOfPriceStep.toString()}

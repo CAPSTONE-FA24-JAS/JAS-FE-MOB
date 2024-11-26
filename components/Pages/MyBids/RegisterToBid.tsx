@@ -1,29 +1,28 @@
-import React, { useEffect, useState } from "react";
-import {
-  View,
-  ScrollView,
-  Text,
-  TouchableOpacity,
-  TextInput,
-  Modal,
-  Alert,
-} from "react-native";
-import { Checkbox } from "react-native-paper";
-import { useRoute } from "@react-navigation/native";
-import BalanceCard from "../Wallet/component/BalanceCard";
-import { useSelector } from "react-redux";
-import { RootState } from "@/redux/store";
+import { registerToBid } from "@/api/lotAPI";
+import { ApiError } from "@/api/utils/ApiError";
 import { checkPasswordWallet, checkWalletBalance } from "@/api/walletApi";
+import { LotDetail } from "@/app/types/lot_type";
 import {
   showErrorMessage,
   showSuccessMessage,
 } from "@/components/FlashMessageHelpers";
-import { LotDetail } from "@/app/types/lot_type";
-import { registerToBid } from "@/api/lotAPI";
+import { RootState } from "@/redux/store";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { useRoute } from "@react-navigation/native";
 import { useNavigation } from "expo-router";
+import React, { useEffect, useState } from "react";
+import {
+  Alert,
+  Modal,
+  ScrollView,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
+import { Checkbox } from "react-native-paper";
+import { useSelector } from "react-redux";
 import PasswordModal from "../Payment/CheckPasswordModal";
-import { ApiError } from "@/api/utils/ApiError";
+import BalanceCard from "../Wallet/component/BalanceCard";
 import BuyerPremiumInfo from "./FloorFeeInfo";
 
 type RootStackParamList = {
@@ -170,7 +169,7 @@ const RegisterToBid = () => {
   };
 
   return (
-    <ScrollView className="flex-1 p-4  bg-white">
+    <ScrollView className="flex-1 p-4 bg-white">
       {/* Hiển thị số dư hiện tại */}
 
       <BalanceCard />
@@ -265,8 +264,7 @@ const RegisterToBid = () => {
           !checkedTerms || !checkedAge ? "bg-gray-500" : "bg-blue-500"
         }  mb-10 rounded-md`}
         onPress={handleRegisterToBid}
-        disabled={!checkedTerms || !checkedAge}
-      >
+        disabled={!checkedTerms || !checkedAge}>
         <Text className="font-semibold text-center text-white">
           REGISTER TO BID
         </Text>
@@ -284,15 +282,13 @@ const RegisterToBid = () => {
         animationType="slide"
         transparent={true}
         visible={isDepositModalVisible}
-        onRequestClose={() => setIsDepositModalVisible(false)}
-      >
+        onRequestClose={() => setIsDepositModalVisible(false)}>
         <View className="items-center justify-center flex-1 bg-black/50">
           <View className="relative w-10/12 p-6 bg-white rounded-lg">
             {/* Close icon at the top-right corner */}
             <TouchableOpacity
               className="absolute top-2 right-2"
-              onPress={() => setIsDepositModalVisible(false)}
-            >
+              onPress={() => setIsDepositModalVisible(false)}>
               <MaterialCommunityIcons name="close" size={24} color="black" />
             </TouchableOpacity>
 
@@ -303,8 +299,7 @@ const RegisterToBid = () => {
             {/* Deposit Button */}
             <TouchableOpacity
               className="w-full px-4 py-2 bg-blue-500 rounded-lg"
-              onPress={navigateToDeposit}
-            >
+              onPress={navigateToDeposit}>
               <Text className="text-xl font-bold text-center text-white uppercase">
                 Deposit
               </Text>

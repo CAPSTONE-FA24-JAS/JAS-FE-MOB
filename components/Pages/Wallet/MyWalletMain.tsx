@@ -110,7 +110,7 @@ const MyWalletMain: React.FC = () => {
   return (
     <>
       {!IdWallet ? (
-        <View className="flex-1 bg-white justify-center pb-10 px-6 items-center">
+        <View className="items-center justify-center flex-1 px-6 pb-10 bg-white">
           <Text className="text-lg text-center text-gray-500">
             You don't have a wallet yet. Do you want to create your Wallet?
             Click the button below!
@@ -120,12 +120,11 @@ const MyWalletMain: React.FC = () => {
             className={`bg-blue-500 py-2 px-4 mt-4 rounded-lg ${
               loading ? "opacity-50" : ""
             }`}
-            disabled={loading}
-          >
+            disabled={loading}>
             {loading ? (
               <ActivityIndicator size="small" color="#FFFFFF" />
             ) : (
-              <Text className="text-white font-bold text-xl uppercase">
+              <Text className="text-xl font-bold text-white uppercase">
                 Create Wallet
               </Text>
             )}
@@ -136,15 +135,13 @@ const MyWalletMain: React.FC = () => {
             animationType="fade"
             transparent={true}
             visible={isPasswordModalVisible}
-            onRequestClose={() => setIsPasswordModalVisible(false)}
-          >
-            <View className="flex-1 justify-center items-center bg-black/50">
-              <View className="w-10/12 p-6 bg-white rounded-lg relative">
+            onRequestClose={() => setIsPasswordModalVisible(false)}>
+            <View className="items-center justify-center flex-1 bg-black/50">
+              <View className="relative w-10/12 p-6 bg-white rounded-lg">
                 {/* Close icon at the top-right corner */}
                 <TouchableOpacity
                   className="absolute top-2 right-2"
-                  onPress={() => setIsPasswordModalVisible(false)}
-                >
+                  onPress={() => setIsPasswordModalVisible(false)}>
                   <MaterialCommunityIcons
                     name="close"
                     size={24}
@@ -163,13 +160,13 @@ const MyWalletMain: React.FC = () => {
                     secureTextEntry={passwordVisibility}
                     value={password}
                     onChangeText={setPassword}
-                    className="py-2 text-lg ml-2 text-slate-400"
+                    returnKeyType="done"
+                    className="py-2 ml-2 text-lg text-slate-400"
                     style={{ paddingRight: 40 }}
                   />
                   <TouchableOpacity
                     onPress={handlePasswordVisibility}
-                    className="absolute right-4 top-[40%] transform -translate-y-1/2"
-                  >
+                    className="absolute right-4 top-[40%] transform -translate-y-1/2">
                     <MaterialCommunityIcons
                       name={rightIcon}
                       size={24}
@@ -185,13 +182,13 @@ const MyWalletMain: React.FC = () => {
                     secureTextEntry={confirmPasswordVisibility}
                     value={confirmPassword}
                     onChangeText={setConfirmPassword}
-                    className="py-2 text-lg ml-2 text-slate-400"
+                    className="py-2 ml-2 text-lg text-slate-400"
                     style={{ paddingRight: 40 }}
+                    returnKeyType="done"
                   />
                   <TouchableOpacity
                     onPress={handleConfirmPasswordVisibility}
-                    className="absolute right-4 top-[40%] transform -translate-y-1/2"
-                  >
+                    className="absolute right-4 top-[40%] transform -translate-y-1/2">
                     <MaterialCommunityIcons
                       name={confirmRightIcon}
                       size={24}
@@ -206,8 +203,7 @@ const MyWalletMain: React.FC = () => {
                     loading ? "opacity-50" : ""
                   }`}
                   onPress={handleConfirmCreateWallet}
-                  disabled={loading}
-                >
+                  disabled={loading}>
                   <Text className="py-3 text-xl font-semibold text-center text-white uppercase">
                     {loading ? "Creating..." : "Confirm"}
                   </Text>
@@ -217,7 +213,7 @@ const MyWalletMain: React.FC = () => {
           </Modal>
         </View>
       ) : (
-        <ScrollView className="bg-white flex-1 p-2">
+        <ScrollView className="flex-1 p-2 bg-white">
           {/* Balance */}
           <BalanceCard />
           {/* Transaction Buttons */}

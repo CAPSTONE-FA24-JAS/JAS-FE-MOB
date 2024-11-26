@@ -57,47 +57,49 @@ const ChangePassword: React.FC = () => {
   };
 
   return (
-    <View className="p-4 bg-white flex-1">
-      <View className="mb-4 mt-2">
+    <View className="flex-1 p-4 bg-white">
+      <View className="mt-2 mb-4">
         <Text className="text-lg font-semibold">Old Password</Text>
         <TextInput
-          className="border-2 text-base border-gray-400 p-2 rounded mt-1"
+          className="p-2 mt-1 text-base border-2 border-gray-400 rounded"
           secureTextEntry={true}
           placeholder="Enter old password"
           value={oldPassword}
           onChangeText={(text) => setOldPassword(text)}
+          returnKeyType="done"
         />
       </View>
 
       <View className="mb-4">
         <Text className="text-lg font-semibold">New Password</Text>
         <TextInput
-          className="border-2 text-base border-gray-400 p-2 rounded mt-1"
+          className="p-2 mt-1 text-base border-2 border-gray-400 rounded"
           secureTextEntry={true}
           placeholder="Enter new password"
           value={newPassword}
           onChangeText={(text) => setNewPassword(text)}
+          returnKeyType="done"
         />
       </View>
 
       <View className="mb-4">
         <Text className="text-lg font-semibold">Confirm New Password</Text>
         <TextInput
-          className="border-2 text-base border-gray-400 p-2 rounded mt-1"
+          className="p-2 mt-1 text-base border-2 border-gray-400 rounded"
           secureTextEntry={true}
           placeholder="Confirm new password"
           value={confirmPassword}
           onChangeText={(text) => setConfirmPassword(text)}
+          returnKeyType="done"
         />
       </View>
 
-      {error ? <Text className="text-red-500 mb-4">{error}</Text> : null}
+      {error ? <Text className="mb-4 text-red-500">{error}</Text> : null}
 
       <TouchableOpacity
-        className="bg-blue-500 p-3 rounded"
-        onPress={handleChangePassword}
-      >
-        <Text className="text-white text-lg uppercase text-center font-bold">
+        className="p-3 bg-blue-500 rounded"
+        onPress={handleChangePassword}>
+        <Text className="text-lg font-bold text-center text-white uppercase">
           Change Password
         </Text>
       </TouchableOpacity>

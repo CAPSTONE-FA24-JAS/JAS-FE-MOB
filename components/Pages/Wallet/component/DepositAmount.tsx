@@ -43,6 +43,7 @@ const DepositAmount: React.FC<DepositAmountProps> = ({ setAmount }) => {
           handleAmountChange(numericValue);
         }}
         placeholder="Enter custom amount"
+        returnKeyType="done"
         keyboardType="numeric"
         className="w-full p-2 text-lg border rounded-lg"
       />

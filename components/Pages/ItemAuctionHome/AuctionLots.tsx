@@ -52,6 +52,7 @@ const AuctionLots: React.FC<AuctionLotsProps> = ({ dataAuction }) => {
       <View className="flex flex-row justify-around py-3 searchbar">
         <TextInput
           placeholder="Search"
+          returnKeyType="done"
           className="border-[1px] border-slate-300 px-4 rounded-lg text-sm w-7/12 ml-3"
         />
         <TouchableOpacity className="flex items-center justify-center w-2/12 rounded-md bg-slate-200">

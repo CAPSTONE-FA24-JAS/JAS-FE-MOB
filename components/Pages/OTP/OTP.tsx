@@ -205,7 +205,7 @@ const OTP: React.FC = () => {
   return (
     <>
       {Loading && <LoadingOverlay visible={Loading} />}
-      <SafeAreaView className="flex-1 bg-white px-4">
+      <SafeAreaView className="flex-1 px-4 bg-white">
         <KeyboardAvoidingView
           style={{ flex: 1 }}
           behavior={Platform.OS === "ios" ? "padding" : "height"}
@@ -218,8 +218,7 @@ const OTP: React.FC = () => {
               alignItems: "center",
               padding: 20,
             }}
-            keyboardShouldPersistTaps="handled"
-          ></ScrollView>
+            keyboardShouldPersistTaps="handled"></ScrollView>
           <StyledView className="mb-6">
             <Image
               source={require("../../../assets/icons/OTP.png")}
@@ -227,28 +226,29 @@ const OTP: React.FC = () => {
             />
           </StyledView>
 
-          <StyledText className="text-xl font-semibold text-gray-800 mb-4">
+          <StyledText className="mb-4 text-xl font-semibold text-gray-800">
             OTP Verification
           </StyledText>
 
-          <StyledText className=" text-gray-800 mb-4 text-base">
+          <StyledText className="mb-4 text-base text-gray-800 ">
             Enter the OTP sent to{" "}
             <Text className="font-bold">{email ? email : "Your Email"}</Text>
           </StyledText>
 
-          <StyledView className="flex-row justify-between w-full mb-6 px-10">
+          <StyledView className="flex-row justify-between w-full px-10 mb-6">
             {otp.map((digit, index) => (
               <StyledTextInput
                 key={index}
                 ref={(ref: TextInput | null) =>
                   (inputRefs.current[index] = ref)
                 } // Store the reference
-                className="border-b-2 border-gray-400 text-center text-lg w-12"
+                className="w-12 text-lg text-center border-b-2 border-gray-400"
                 maxLength={1}
                 keyboardType="numeric"
                 value={digit}
                 onChangeText={(text) => handleChangeText(text, index)}
                 onKeyPress={(e) => handleKeyPress(e, index)} // Handle Backspace
+                returnKeyType="done"
               />
             ))}
           </StyledView>
@@ -259,14 +259,14 @@ const OTP: React.FC = () => {
                 ? `OTP will expire in ${countdown} seconds`
                 : "OTP has expired"}
             </StyledText>
-            <StyledText className="text-sm text-center  mt-2 text-blue-500">
+            <StyledText className="mt-2 text-sm text-center text-blue-500">
               {LoadingResend ? "Resend OTP Loading..." : "Resend OTP"}
             </StyledText>
           </StyledTouchableOpacity>
 
           <StyledButton
             mode="contained"
-            className="rounded-full w-full mt-10 bg-blue-600"
+            className="w-full mt-10 bg-blue-600 rounded-full"
             onPress={handleVerify}
             disabled={isDisabled} // Disable button if OTP is incomplete
           >

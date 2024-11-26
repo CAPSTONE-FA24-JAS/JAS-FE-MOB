@@ -148,6 +148,7 @@ const Login: React.FC = () => {
                 value={username}
                 onChangeText={setUsername}
                 className="border-[1px] border-slate-300 px-4 py-4 rounded-lg text-lg mx-7"
+                returnKeyType="done"
               />
             </View>
             <View className="px-3 my-3">
@@ -161,6 +162,7 @@ const Login: React.FC = () => {
                   onChangeText={setPassword}
                   className="py-2 ml-3 text-lg text-slate-400 " // Added pr-10 to avoid text overlap with icon
                   style={{ paddingRight: 40 }} // Extra padding to prevent text overlapping with icon
+                  returnKeyType="done"
                 />
                 <TouchableOpacity
                   onPress={handlePasswordVisibility}
@@ -184,8 +186,7 @@ const Login: React.FC = () => {
             <View className="flex-row items-center justify-between mx-10 mt-6 ">
               <TouchableOpacity
                 className="w-[150px]  bg-[#4765F9] rounded-md"
-                onPress={handleLogin}
-              >
+                onPress={handleLogin}>
                 <Text className="py-3 text-xl font-semibold text-center text-white uppercase px-9">
                   Sign in
                 </Text>

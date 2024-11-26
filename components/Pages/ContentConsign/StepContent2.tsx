@@ -53,33 +53,33 @@ const StepContent2: React.FC<StepContent2Props> = ({
   return (
     <ScrollView
       contentContainerStyle={{ paddingVertical: 20 }}
-      className="mb-20"
-    >
+      className="mb-20">
       <View>
         <Text className="text-lg font-semibold">Name Consign</Text>
         <TextInput
-          className="border border-gray-300 rounded-md p-2 my-4"
+          className="p-2 my-4 border border-gray-300 rounded-md"
           placeholder="Enter here..."
           value={localNameConsign}
           onChangeText={setLocalNameConsign}
+          returnKeyType="done"
         />
         <Text className="text-lg font-semibold">Description</Text>
         <TextInput
-          className="border border-gray-300 rounded-md p-2 my-4"
+          className="p-2 my-4 border border-gray-300 rounded-md"
           placeholder="Enter here..."
           value={localDescription}
           onChangeText={setLocalDescription}
+          returnKeyType="done"
         />
 
         <Text className="text-lg font-semibold">Dimensions</Text>
         {/* Toggle for IN/CM */}
-        <View className="flex-row  items-center my-4">
+        <View className="flex-row items-center my-4">
           {/* IN Text */}
           <Text
             className={`text-lg mr-6 ${
               !isMetric ? "font-bold text-black" : "text-gray-400"
-            }`}
-          >
+            }`}>
             IN
           </Text>
 
@@ -97,35 +97,37 @@ const StepContent2: React.FC<StepContent2Props> = ({
           <Text
             className={`text-lg ml-4 ${
               isMetric ? "font-bold text-black" : "text-gray-400"
-            }`}
-          >
+            }`}>
             CM
           </Text>
         </View>
-        <View className="flex-row justify-between items-center my-4 w-full">
+        <View className="flex-row items-center justify-between w-full my-4">
           <Text className="text-lg w-[20%]">Height</Text>
           <TextInput
             className="border border-gray-300 w-[80%] rounded-md p-2"
             placeholder="Enter height..."
             value={localHeight}
             onChangeText={setLocalHeight}
+            returnKeyType="done"
           />
         </View>
-        <View className="flex-row justify-between items-center my-4">
+        <View className="flex-row items-center justify-between my-4">
           <Text className="text-lg w-[20%]">Width</Text>
           <TextInput
             className="border border-gray-300 rounded-md p-2 w-[80%]"
             placeholder="Enter width..."
             value={localWidth}
             onChangeText={setLocalWidth}
+            returnKeyType="done"
           />
         </View>
-        <View className="flex-row justify-between items-center my-4">
+        <View className="flex-row items-center justify-between my-4">
           <Text className="text-lg w-[20%]">Depth</Text>
           <TextInput
             className="border border-gray-300 w-[80%] rounded-md p-2"
             placeholder="Enter depth..."
             value={localDepth}
+            returnKeyType="done"
             onChangeText={setLocalDepth}
           />
         </View>
@@ -133,12 +135,12 @@ const StepContent2: React.FC<StepContent2Props> = ({
           <Text className="text-lg w-[20%] font-bold mb-4">Contact</Text>
           <View className="w-full">
             <TextInput
-              className="border border-gray-300 w-full rounded-md p-2"
+              className="w-full p-2 border border-gray-300 rounded-md"
               placeholder="Enter email..."
               value={email}
               onChangeText={setEmail}
             />
-            <Text className="text-sm mt-2 text-gray-400 font-base">
+            <Text className="mt-2 text-sm text-gray-400 font-base">
               (Your email address based on your login)
             </Text>
           </View>

@@ -34,15 +34,13 @@ const PasswordModal: React.FC<PasswordModalProps> = ({
       animationType="fade"
       transparent={true}
       visible={isVisible}
-      onRequestClose={onClose}
-    >
+      onRequestClose={onClose}>
       <View className="items-center justify-center flex-1 bg-black/50">
         <View className="items-center w-10/12 p-6 bg-white rounded-lg">
           {/* Close icon at the top-right corner */}
           <TouchableOpacity
             className="absolute top-2 right-2"
-            onPress={onClose}
-          >
+            onPress={onClose}>
             <MaterialCommunityIcons name="close" size={24} color="black" />
           </TouchableOpacity>
 
@@ -63,19 +61,18 @@ const PasswordModal: React.FC<PasswordModalProps> = ({
               onChangeText={setPassword}
               className="py-2 ml-2 text-lg text-slate-400"
               style={{ paddingRight: 40 }}
+              returnKeyType="done"
             />
             <TouchableOpacity
               onPress={handlePasswordVisibility}
-              className="absolute right-4 top-[40%] transform -translate-y-1/2"
-            >
+              className="absolute right-4 top-[40%] transform -translate-y-1/2">
               <Feather name={rightIcon} size={24} color="black" />
             </TouchableOpacity>
           </View>
 
           <TouchableOpacity
             className="w-full bg-[#4765F9] rounded-md"
-            onPress={handleConfirm}
-          >
+            onPress={handleConfirm}>
             <Text className="py-3 text-xl font-semibold text-center text-white uppercase">
               Confirm
             </Text>

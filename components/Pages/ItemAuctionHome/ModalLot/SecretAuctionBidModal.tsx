@@ -104,19 +104,19 @@ const SecretAuctionBidModal: React.FC<SecretAuctionBidModalProps> = ({
 
   return (
     <Modal visible={isVisible} transparent animationType="slide">
-      <View className="flex-1 justify-center items-center bg-black/50 bg-opacity-50">
+      <View className="items-center justify-center flex-1 bg-opacity-50 bg-black/50">
         <View className="bg-white p-6 rounded-lg w-[90%]">
-          <Text className="text-lg font-bold mb-4 text-center text-blue-500 uppercase">
+          <Text className="mb-4 text-lg font-bold text-center text-blue-500 uppercase">
             Enter Your Bid
           </Text>
-          <Text className="text-base  font-semibold text-center text-gray-600">
+          <Text className="text-base font-semibold text-center text-gray-600">
             Minimum bid:{" "}
             {minPrice.toLocaleString("vi-VN", {
               style: "currency",
               currency: "VND",
             })}
           </Text>
-          <Text className="text-base mb-4 font-semibold text-center text-gray-600">
+          <Text className="mb-4 text-base font-semibold text-center text-gray-600">
             Maximum bid:{" "}
             {maxPrice.toLocaleString("vi-VN", {
               style: "currency",
@@ -136,20 +136,19 @@ const SecretAuctionBidModal: React.FC<SecretAuctionBidModalProps> = ({
             />
             <TouchableOpacity
               onPress={decreaseBid}
-              className="px-4 py-2 bg-gray-300 rounded"
-            >
+              className="px-4 py-2 bg-gray-300 rounded">
               <Text className="text-black">-</Text>
             </TouchableOpacity>
             <TextInput
               style={styles.input}
               keyboardType="numeric"
               value={String(bidAmount)}
+              returnKeyType="done"
               onChangeText={handleBidChange}
             />
             <TouchableOpacity
               onPress={increaseBid}
-              className="px-4 py-2 bg-gray-300 rounded"
-            >
+              className="px-4 py-2 bg-gray-300 rounded">
               <Text className="text-black">+</Text>
             </TouchableOpacity>
           </View>
@@ -159,9 +158,8 @@ const SecretAuctionBidModal: React.FC<SecretAuctionBidModalProps> = ({
           <View className="flex-row justify-around mt-4">
             <TouchableOpacity
               onPress={onClose}
-              className="px-4 py-2 bg-gray-300 w-[45%] rounded"
-            >
-              <Text className="text-black text-center font-semibold">
+              className="px-4 py-2 bg-gray-300 w-[45%] rounded">
+              <Text className="font-semibold text-center text-black">
                 Cancel
               </Text>
             </TouchableOpacity>
@@ -170,13 +168,11 @@ const SecretAuctionBidModal: React.FC<SecretAuctionBidModalProps> = ({
               className={`px-4 py-2 w-[45%] rounded ${
                 errorMessage ? "bg-gray-300" : "bg-blue-500"
               }`}
-              disabled={!!errorMessage}
-            >
+              disabled={!!errorMessage}>
               <Text
                 className={`text-center font-semibold ${
                   errorMessage ? "text-gray-500" : "text-white"
-                }`}
-              >
+                }`}>
                 Submit
               </Text>
             </TouchableOpacity>

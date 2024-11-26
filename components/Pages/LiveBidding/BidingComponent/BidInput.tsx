@@ -151,6 +151,7 @@ const BidInput: React.FC<BidInputProps> = ({
               value={stepBidIncrement.toLocaleString()}
               onChangeText={(e) => handleBidChangeMethod3(e)}
               keyboardType="numeric"
+              returnKeyType="done"
               className="flex-1 px-2 text-xs font-semibold text-center border-gray-300 h-14 border-x"
             />
           </View>
@@ -160,6 +161,7 @@ const BidInput: React.FC<BidInputProps> = ({
               value={bidValue.toLocaleString()}
               editable={false}
               keyboardType="numeric"
+              returnKeyType="done"
               className="flex-1 px-2 text-lg font-semibold text-center border-gray-300 h-14 border-x"
             />
           </View>

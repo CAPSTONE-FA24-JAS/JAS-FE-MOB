@@ -60,15 +60,13 @@ const PlaceBidModal: React.FC<PlaceBidModalProps> = ({
       visible={visible}
       transparent={true}
       animationType="slide"
-      onRequestClose={onClose}
-    >
+      onRequestClose={onClose}>
       <View className="items-center justify-center flex-1 bg-black/50">
         <View className="w-[90%] bg-white rounded-lg p-4 relative">
           {/* Close button */}
           <TouchableOpacity
             onPress={onClose}
-            className="absolute z-10 top-4 right-4"
-          >
+            className="absolute z-10 top-4 right-4">
             <MaterialCommunityIcons name="close" size={24} color="#000" />
           </TouchableOpacity>
 
@@ -125,8 +123,7 @@ const PlaceBidModal: React.FC<PlaceBidModalProps> = ({
             <Swiper
               showsPagination={true}
               autoplay={true}
-              style={{ height: "100%" }}
-            >
+              style={{ height: "100%" }}>
               <View className="items-center justify-center w-full h-full">
                 {item.typeBid === "Secret_Auction" ? (
                   <Text className="mb-16 text-lg font-bold text-center text-gray-800">
@@ -186,6 +183,7 @@ const PlaceBidModal: React.FC<PlaceBidModalProps> = ({
           <View className="flex-row items-center justify-center mb-6">
             {item.typeBid === "Auction_Price_GraduallyReduced" ? (
               <TextInput
+                returnKeyType="done"
                 value={bidValue.toString()}
                 className="w-40 h-12 px-4 text-xl font-semibold text-center bg-gray-200 border border-gray-300"
                 editable={false} // Disable input for typeBid 4
@@ -194,11 +192,11 @@ const PlaceBidModal: React.FC<PlaceBidModalProps> = ({
               <>
                 <TouchableOpacity
                   onPress={handleDecreaseBid}
-                  className="px-6 py-3 bg-gray-200 rounded-l-lg"
-                >
+                  className="px-6 py-3 bg-gray-200 rounded-l-lg">
                   <Text className="text-xl">-</Text>
                 </TouchableOpacity>
                 <TextInput
+                  returnKeyType="done"
                   value={bidValue.toString()}
                   onChangeText={(text) => {
                     const numericValue = parseInt(text, 10);
@@ -211,8 +209,7 @@ const PlaceBidModal: React.FC<PlaceBidModalProps> = ({
                 />
                 <TouchableOpacity
                   onPress={handleIncreaseBid}
-                  className="px-6 py-3 bg-gray-200 rounded-r-lg"
-                >
+                  className="px-6 py-3 bg-gray-200 rounded-r-lg">
                   <Text className="text-xl">+</Text>
                 </TouchableOpacity>
               </>
@@ -222,8 +219,7 @@ const PlaceBidModal: React.FC<PlaceBidModalProps> = ({
           {/* Submit Button */}
           <TouchableOpacity
             onPress={() => onSubmitBid(bidValue)}
-            className="py-3 bg-blue-500 rounded-lg"
-          >
+            className="py-3 bg-blue-500 rounded-lg">
             <Text className="text-lg font-semibold text-center text-white">
               SUBMIT BID
             </Text>

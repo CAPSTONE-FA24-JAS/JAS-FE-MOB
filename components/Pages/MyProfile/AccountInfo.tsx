@@ -71,10 +71,10 @@ const AccountInfo: React.FC = () => {
   };
 
   return (
-    <View className="p-4 flex-1 bg-white">
+    <View className="flex-1 p-4 bg-white">
       <View>
         {/* Profile Image with Camera Icon */}
-        <View className="mb-4 relative mx-auto">
+        <View className="relative mx-auto mb-4">
           <Image
             source={{ uri: profile.profileImage }}
             className="w-32 h-32 rounded-full"
@@ -83,8 +83,7 @@ const AccountInfo: React.FC = () => {
           {/* Camera Icon positioned at bottom-left */}
           <TouchableOpacity
             className="absolute bottom-0 left-0 p-2 bg-gray-300 rounded-full"
-            onPress={handleChangeProfileImage}
-          >
+            onPress={handleChangeProfileImage}>
             <Icon name="camera" size={20} color="#000" />
           </TouchableOpacity>
         </View>
@@ -94,30 +93,33 @@ const AccountInfo: React.FC = () => {
           value={profile.firstName}
           onChangeText={(value) => handleChange("firstName", value)}
           placeholder="Enter your first name"
-          className="border-b border-gray-400 p-2 mb-4"
+          className="p-2 mb-4 border-b border-gray-400"
         />
         <TextInput
           value={profile.lastName}
           onChangeText={(value) => handleChange("lastName", value)}
           placeholder="Enter your last name"
-          className="border-b border-gray-400 p-2 mb-4"
+          className="p-2 mb-4 border-b border-gray-400"
+          returnKeyType="done"
         />
         <TextInput
           value={profile.phoneNumber}
           onChangeText={(value) => handleChange("phoneNumber", value)}
           placeholder="Enter your phone number"
-          className="border-b border-gray-400 p-2 mb-4"
+          className="p-2 mb-4 border-b border-gray-400"
+          returnKeyType="done"
         />
         <TextInput
           value={profile.email}
           onChangeText={(value) => handleChange("email", value)}
           placeholder="Enter your email"
-          className="border-b border-gray-400 p-2 mb-4"
+          className="p-2 mb-4 border-b border-gray-400"
+          returnKeyType="done"
         />
 
         {/* Save Button */}
-        <TouchableOpacity className="mt-4 p-3 bg-blue-500 rounded-lg">
-          <Text className="text-white text-center text-lg uppercase font-semibold">
+        <TouchableOpacity className="p-3 mt-4 bg-blue-500 rounded-lg">
+          <Text className="text-lg font-semibold text-center text-white uppercase">
             Save Changes
           </Text>
         </TouchableOpacity>
@@ -125,10 +127,9 @@ const AccountInfo: React.FC = () => {
 
       <View>
         <TouchableOpacity
-          className="mt-4 p-3 bg-red-500 rounded-lg"
-          onPress={toggleConfirmModal}
-        >
-          <Text className="text-white text-center text-lg uppercase font-semibold">
+          className="p-3 mt-4 bg-red-500 rounded-lg"
+          onPress={toggleConfirmModal}>
+          <Text className="text-lg font-semibold text-center text-white uppercase">
             Delete My Account
           </Text>
         </TouchableOpacity>

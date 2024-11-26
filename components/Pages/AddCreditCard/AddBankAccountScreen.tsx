@@ -195,6 +195,7 @@ export const AddBankAccountScreen = () => {
           <View className="mb-4">
             <Text className="mb-2 text-gray-700">Tên chủ tài khoản</Text>
             <TextInput
+              returnKeyType="done"
               placeholder="Nhập tên chủ tài khoản"
               value={bankAccount.bankAccountHolder}
               onChangeText={(text) =>
@@ -211,6 +212,7 @@ export const AddBankAccountScreen = () => {
           <View className="mb-4">
             <Text className="mb-2 text-gray-700">Số tài khoản</Text>
             <TextInput
+              returnKeyType="done"
               placeholder="Số tài khoản"
               value={
                 bankAccount.bankCode ? bankAccount.bankCode.toString() : ""
@@ -286,6 +288,7 @@ export const AddBankAccountScreen = () => {
                   value={searchQuery}
                   onChangeText={handleSearchBank}
                   className="flex-1 py-2 text-black"
+                  returnKeyType="done"
                 />
               </View>
             </View>

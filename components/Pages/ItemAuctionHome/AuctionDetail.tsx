@@ -1,9 +1,8 @@
 import { AuctionData } from "@/app/types/auction_type";
-import CountdownTimerBid from "@/components/CountDown/CountdownTimer";
 import AuctionCountdownTimer from "@/components/CountDown/CountdownTimerAuction";
 import moment from "moment-timezone";
 import React, { useEffect, useState } from "react";
-import { View, Text, Image, ScrollView, TouchableOpacity } from "react-native";
+import { Image, ScrollView, Text, TouchableOpacity, View } from "react-native";
 import Swiper from "react-native-swiper";
 
 interface AuctionDetailScreenProps {
@@ -79,8 +78,7 @@ const AuctionDetailScreen: React.FC<AuctionDetailScreenProps> = ({
           onIndexChanged={() => setIsSwiperActive(false)}
           onTouchStart={() => setIsSwiperActive(true)}
           onTouchEnd={() => setIsSwiperActive(false)}
-          style={{ height: "100%" }}
-        >
+          style={{ height: "100%" }}>
           {/* Thay thế các hình ảnh tĩnh bằng ảnh từ API */}
           {dataAuction?.imageLink ? (
             <View>
@@ -107,22 +105,21 @@ const AuctionDetailScreen: React.FC<AuctionDetailScreenProps> = ({
       </View>
       <View className="p-4">
         <View className="flex-row w-[98%] justify-between items-center">
-          <Text className="font-semibold text-base uppercase text-gray-500 ">
+          <Text className="text-base font-semibold text-gray-500 uppercase ">
             Auction #{dataAuction.id}
           </Text>
           <Text
             className={`font-extrabold py-1 px-10 ${getStatusClass(
               dataAuction.status
-            )} rounded-md text-base uppercase text-white`}
-          >
+            )} rounded-md text-base uppercase text-white`}>
             {dataAuction.status}
           </Text>
         </View>
         <Text className="mb-2 text-xl font-bold">
           {dataAuction?.name || "Unnamed Auction"}
         </Text>
-        <Text className=" text-gray-600">Live Bidding Begins: </Text>
-        <Text className="mb-4 text-gray-600 font-semibold">
+        <Text className="text-gray-600 ">Live Bidding Begins: </Text>
+        <Text className="mb-4 font-semibold text-gray-600">
           {moment(dataAuction?.startTime).format("HH:mm A, DD/MM/YYYY")}-{" "}
           {moment(dataAuction?.endTime).format("HH:mm A, DD/MM/YYYY")}
         </Text>

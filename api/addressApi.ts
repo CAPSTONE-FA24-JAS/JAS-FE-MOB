@@ -70,7 +70,7 @@ export const setAddressToShipIsDefault = async (
   customerId: number
 ): Promise<{ isSuccess: boolean; message: string }> => {
   try {
-    const response = await axios.patch(
+    const response = await axios.put(
       `${API_URL}/api/AddressToShip/SetAddressToShipIsDefault`,
       null, // PATCH thường không có body nếu bạn sử dụng query params
       {

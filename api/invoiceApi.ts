@@ -35,7 +35,7 @@ export const uploadBillForInvoice = async (
     const response = await fetch(
       `${API_URL}/api/Invoices/UploadBillForInvoice?InvoiceId=${invoiceId}`,
       {
-        method: "PATCH", // Change to "POST" if the backend expects it
+        method: "put", // Change to "POST" if the backend expects it
         headers: {
           "Content-Type": "multipart/form-data",
         },
@@ -212,7 +212,7 @@ export const updateAddressToShipForInvoice = async (
   console.log("updateAddressToShipForInvoice", invoiceId, addressToShipId);
 
   try {
-    const response = await axios.patch<InvoiceResponse<null>>(
+    const response = await axios.put<InvoiceResponse<null>>(
       `${API_URL}/api/Invoices/UpdateAddressToShipForInvoice`,
       {
         invoiceId,

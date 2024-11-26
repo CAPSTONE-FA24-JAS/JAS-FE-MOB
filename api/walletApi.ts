@@ -231,8 +231,9 @@ export const cancelWithdraw = async (
 ): Promise<Response<string | null>> => {
   try {
     console.log("Cancelling withdraw:", withdrawId);
+    console.log("Customer ID:", customerId);
 
-    const response = await axios.post<Response<string | null>>(
+    const response = await axios.patch<Response<string | null>>(
       `${API_URL}/api/Wallet/CancelRequestNewWithdrawByCustomer?customerId=${customerId}&requestId=${withdrawId}`
     );
 

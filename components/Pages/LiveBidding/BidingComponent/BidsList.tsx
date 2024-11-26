@@ -9,6 +9,8 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 import React, { useMemo } from "react";
 import { View, Text, TouchableOpacity, Alert } from "react-native";
 import PriceTimeline from "./PriceTimeline";
+import { RootState } from "@/redux/store";
+import { useSelector } from "react-redux";
 
 interface BidsListProps {
   item: LotDetail;
@@ -32,6 +34,10 @@ const BidsList: React.FC<BidsListProps> = ({
   milenstoneReduceTime,
 }) => {
   // Memoized sorted bids
+
+  const bidLitmit = useSelector(
+    (state: RootState) => state.auth.userResponse?.customerDTO.priceLimit
+  );
 
   // Helper to format time
   const formatTime = (timeString: string) => {
@@ -77,6 +83,10 @@ const BidsList: React.FC<BidsListProps> = ({
           text: "Yes",
 
           onPress: async () => {
+            if (bidLitmit && item.finalPriceSold > bidLitmit) {
+              showErrorMessage("You have reached the limit price");
+              return;
+            }
             const response = await buyNowMethod3(currentCusId, item.id);
             if (response) {
               showSuccessMessage("Item purchased successfully!");

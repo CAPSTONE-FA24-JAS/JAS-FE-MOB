@@ -150,7 +150,8 @@ export const paymentInvoiceByVnPay = async (
 export const paymentInvoiceByWallet = async (
   walletId: number,
   amount: number,
-  invoiceId: number
+  invoiceId: number,
+  customerId: number
 ): Promise<InvoiceResponse<null> | null> => {
   console.log(walletId, amount, invoiceId);
 
@@ -161,6 +162,7 @@ export const paymentInvoiceByWallet = async (
         walletId,
         amount,
         invoiceId,
+        customerId,
       }
     );
 

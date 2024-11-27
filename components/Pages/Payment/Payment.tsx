@@ -97,6 +97,10 @@ const Payment: React.FC = () => {
   const walletId = useSelector(
     (state: RootState) => state.profile.profile?.customerDTO?.walletDTO?.id
   );
+  const cusid =
+    useSelector(
+      (state: RootState) => state.auth.userResponse?.customerDTO.id
+    ) ?? 0;
   const [selectedPayment, setSelectedPayment] = useState<string>("wallet");
   const [isBalanceVisible, setIsBalanceVisible] = useState<boolean>(false); // State to handle balance visibility
   const [isProcessing, setIsProcessing] = useState<boolean>(false); // State to handle processing
@@ -201,7 +205,8 @@ const Payment: React.FC = () => {
             const response = await paymentInvoiceByWallet(
               walletId,
               totalPrice,
-              invoiceId
+              invoiceId,
+              cusid
             );
 
             if (response?.isSuccess) {
@@ -237,7 +242,7 @@ const Payment: React.FC = () => {
     <View className="flex-1 bg-gray-100">
       <ScrollView className="flex-1">
         <View className="p-4">
-          <Text className="font-bold uppercase my-2 text-lg text-gray-600">
+          <Text className="my-2 text-lg font-bold text-gray-600 uppercase">
             {" "}
             Price need pay:{" "}
             {totalPrice?.toLocaleString("vi-VN", {
@@ -249,21 +254,20 @@ const Payment: React.FC = () => {
           <BalanceCard />
 
           {/* Choose Payment Method */}
-          <Text className="text-lg font-semibold mb-2">
+          <Text className="mb-2 text-lg font-semibold">
             CHOOSE PAYMENT METHOD
           </Text>
 
           <RadioButton.Group
             onValueChange={(newValue) => setSelectedPayment(newValue)}
-            value={selectedPayment}
-          >
+            value={selectedPayment}>
             {/* Direct Payment */}
-            <Text className="text-base font-medium mb-2 text-gray-700">
+            <Text className="mb-2 text-base font-medium text-gray-700">
               Thanh toán trực tiếp
             </Text>
 
             <Card className="mb-4 bg-white">
-              <TouchableOpacity className="flex-row justify-between items-center p-4">
+              <TouchableOpacity className="flex-row items-center justify-between p-4">
                 <View className="flex-row items-center">
                   <Avatar.Icon icon="wallet" size={40} />
                   <View className="ml-3">
@@ -276,17 +280,17 @@ const Payment: React.FC = () => {
             </Card>
 
             {/* Indirect Payment */}
-            <Text className="text-base font-medium mb-2 text-gray-700">
+            <Text className="mb-2 text-base font-medium text-gray-700">
               Thanh toán gián tiếp
             </Text>
-            <Text className="text-red-500  font-semibold mb-4">
+            <Text className="mb-4 font-semibold text-red-500">
               Note: Sau khi thanh toán gián tiếp thành công, bạn cần chụp màn
               hình bill chuyển khoản và upload lên lại app JAS. nha
             </Text>
 
             {/* VNPAY Payment */}
             <Card className="mb-4 bg-white">
-              <TouchableOpacity className="flex-row justify-between items-center p-4">
+              <TouchableOpacity className="flex-row items-center justify-between p-4">
                 <View className="flex-row items-center">
                   <Avatar.Image
                     source={require("../../../assets/logo/VNpay_Logo.png")}
@@ -303,7 +307,7 @@ const Payment: React.FC = () => {
 
             {/* Thêm Card QR PAYMENT */}
             <Card className="mb-4 bg-white">
-              <TouchableOpacity className="flex-row justify-between items-center p-4">
+              <TouchableOpacity className="flex-row items-center justify-between p-4">
                 <View className="flex-row items-center">
                   <Avatar.Image
                     source={require("../../../assets/icons/qr.jpg")}
@@ -325,11 +329,10 @@ const Payment: React.FC = () => {
       <Modal
         visible={isQRModalVisible}
         transparent={true}
-        animationType="slide"
-      >
-        <View className="flex-1 justify-center items-center bg-black/50">
+        animationType="slide">
+        <View className="items-center justify-center flex-1 bg-black/50">
           <View className="w-[80%] p-4 bg-white rounded-lg">
-            <Text className="font-bold text-xl text-gray-800 text-center uppercase">
+            <Text className="text-xl font-bold text-center text-gray-800 uppercase">
               QR PAYMENT WITH{" "}
               {totalPrice.toLocaleString("vi-VN", {
                 style: "currency",
@@ -342,19 +345,17 @@ const Payment: React.FC = () => {
               resizeMode="contain"
             />
             <TouchableOpacity
-              className="p-3 rounded mt-2 bg-blue-500 my-2"
-              onPress={() => downloadImage()}
-            >
-              <Text className="text-white text-center font-semibold">
+              className="p-3 my-2 mt-2 bg-blue-500 rounded"
+              onPress={() => downloadImage()}>
+              <Text className="font-semibold text-center text-white">
                 Download Image
               </Text>
             </TouchableOpacity>
-            <View className="flex-row justify-between items-center">
+            <View className="flex-row items-center justify-between">
               <TouchableOpacity
                 className="p-3 w-[48%] rounded bg-gray-500"
-                onPress={() => setIsQRModalVisible(false)}
-              >
-                <Text className="text-white text-center uppercase font-semibold">
+                onPress={() => setIsQRModalVisible(false)}>
+                <Text className="font-semibold text-center text-white uppercase">
                   Cancel
                 </Text>
               </TouchableOpacity>
@@ -368,9 +369,8 @@ const Payment: React.FC = () => {
                     yourMaxBid,
                     totalPrice,
                   });
-                }}
-              >
-                <Text className="text-white text-center uppercase font-semibold">
+                }}>
+                <Text className="font-semibold text-center text-white uppercase">
                   I have paid
                 </Text>
               </TouchableOpacity>
@@ -393,12 +393,11 @@ const Payment: React.FC = () => {
             isProcessing ? "bg-blue-300" : "bg-blue-500"
           }`}
           onPress={handlePayment}
-          disabled={isProcessing}
-        >
+          disabled={isProcessing}>
           {isProcessing ? (
             <ActivityIndicator color="#fff" />
           ) : (
-            <Text className="text-white text-center text-lg font-bold">
+            <Text className="text-lg font-bold text-center text-white">
               PAYMENT
             </Text>
           )}

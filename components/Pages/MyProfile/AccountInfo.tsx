@@ -32,7 +32,7 @@ const AccountInfo: React.FC = () => {
     lastName: userData.customerDTO.lastName,
     phoneNumber: userData.phoneNumber,
     email: userData.email,
-    biddingLimit: userData.customerDTO.priceLimit ?? 0,
+    biddingLimit: userData.customerDTO?.priceLimit ?? 0,
     profileImage:
       userData.customerDTO.profilePicture ??
       "https://upload.wikimedia.org/wikipedia/commons/thumb/f/fd/Faenza-avatar-default-symbolic.svg/2048px-Faenza-avatar-default-symbolic.svg.png",
@@ -83,7 +83,8 @@ const AccountInfo: React.FC = () => {
           {/* Camera Icon positioned at bottom-left */}
           <TouchableOpacity
             className="absolute bottom-0 left-0 p-2 bg-gray-300 rounded-full"
-            onPress={handleChangeProfileImage}>
+            onPress={handleChangeProfileImage}
+          >
             <Icon name="camera" size={20} color="#000" />
           </TouchableOpacity>
         </View>
@@ -128,7 +129,8 @@ const AccountInfo: React.FC = () => {
       <View>
         <TouchableOpacity
           className="p-3 mt-4 bg-red-500 rounded-lg"
-          onPress={toggleConfirmModal}>
+          onPress={toggleConfirmModal}
+        >
           <Text className="text-lg font-semibold text-center text-white uppercase">
             Delete My Account
           </Text>

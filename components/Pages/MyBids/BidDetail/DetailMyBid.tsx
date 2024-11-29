@@ -301,25 +301,29 @@ const DetailMyBid: React.FC = () => {
             </Text>
           </View>
         )}
-      {invoiceDetails && invoiceDetails.statusInvoiceDTOs && (
-        <View className="mx-4 mt-4">
-          <Text className="mb-2 text-lg font-semibold text-gray-600">
-            Delivered Image:{" "}
-            <Text className="font-bold text-gray-800">
-              (Shipper ID: {invoiceDetails.shipperId})
+      {invoiceDetails &&
+        invoiceDetails.statusInvoiceDTOs &&
+        getDeliveredStatus(invoiceDetails.statusInvoiceDTOs) && (
+          <View className="mx-4 mt-4">
+            <Text className="mb-2 text-lg font-semibold text-gray-600">
+              Delivered Image:{" "}
+              <Text className="font-bold text-gray-800">
+                (Shipper ID: {invoiceDetails.shipperId})
+              </Text>
             </Text>
-          </Text>
-          {getDeliveredStatus(invoiceDetails.statusInvoiceDTOs) ? (
-            <ImageGallery
-              images={invoiceDetails.statusInvoiceDTOs.map(
-                (status) => status.imageLink
-              )}
-            />
-          ) : (
-            <Text className="text-gray-500">No delivered image available.</Text>
-          )}
-        </View>
-      )}
+            {getDeliveredStatus(invoiceDetails.statusInvoiceDTOs) ? (
+              <ImageGallery
+                images={invoiceDetails.statusInvoiceDTOs.map(
+                  (status) => status.imageLink
+                )}
+              />
+            ) : (
+              <Text className="text-gray-500">
+                No delivered image available.
+              </Text>
+            )}
+          </View>
+        )}
 
       {user &&
       isWin &&

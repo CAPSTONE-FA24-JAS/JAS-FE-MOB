@@ -36,7 +36,7 @@ const BidsList: React.FC<BidsListProps> = ({
   // Memoized sorted bids
 
   const bidLitmit = useSelector(
-    (state: RootState) => state.auth.userResponse?.customerDTO.priceLimit
+    (state: RootState) => state.auth.userResponse?.customerDTO?.priceLimit
   );
 
   // Helper to format time
@@ -125,7 +125,8 @@ const BidsList: React.FC<BidsListProps> = ({
               isDisabled ? "bg-gray-400" : "bg-red-600"
             }`}
             onPress={!isDisabled ? handleBuyNow : undefined}
-            disabled={isDisabled}>
+            disabled={isDisabled}
+          >
             <Text className="font-semibold text-center text-white">
               {isDisabled ? "AUCTION ENDED" : "BUY NOW"}
             </Text>
@@ -278,7 +279,8 @@ const MemoizedItem: React.FC<MemoizedItemProps> = React.memo(
             isCurrentUserBid
               ? getStatusBgColor(bid.status)
               : "bg-white border-gray-300 border"
-          }`}>
+          }`}
+        >
           <View>
             <Text className="text-gray-600">{formatTime(bid.bidTime)}</Text>
             {isCurrentUserBid && (
@@ -290,7 +292,8 @@ const MemoizedItem: React.FC<MemoizedItemProps> = React.memo(
           <Text
             className={`font-bold ${
               isCurrentUserBid ? getStatusColor(bid.status) : "text-gray-700"
-            }`}>
+            }`}
+          >
             {(bid.currentPrice ?? 0).toLocaleString("vi-VN", {
               style: "currency",
               currency: "VND",

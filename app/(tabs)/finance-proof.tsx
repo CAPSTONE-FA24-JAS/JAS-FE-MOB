@@ -67,11 +67,11 @@ const FinanceProof = () => {
 
   return (
     <View className="flex flex-col justify-center gap-5 p-2">
-      {userResponse?.customerDTO.priceLimit &&
+      {userResponse?.customerDTO?.priceLimit &&
       userResponse.customerDTO.expireDate ? (
         <View className="items-center p-2">
           <Text className="text-2xl font-bold text-center">
-            Your Approved Bidding Limit: {userResponse?.customerDTO.priceLimit}
+            Your Approved Bidding Limit: {userResponse?.customerDTO?.priceLimit}
           </Text>
           <Text className="text-xl font-bold text-center">
             Expire:
@@ -86,7 +86,8 @@ const FinanceProof = () => {
 
       <TouchableOpacity
         className="self-start w-1/2 p-2 bg-blue-500 rounded-lg"
-        onPress={() => navigation.navigate("CreateFinanceProof")}>
+        onPress={() => navigation.navigate("CreateFinanceProof")}
+      >
         <Text className="text-lg font-bold text-center text-white">
           Create A Finance Proof
         </Text>

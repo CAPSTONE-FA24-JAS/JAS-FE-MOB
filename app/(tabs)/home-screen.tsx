@@ -12,11 +12,14 @@ import { getAuctionsByStatus, viewAuctions } from "@/api/auctionApi";
 import { MaterialIcons } from "@expo/vector-icons";
 import * as signalR from "@microsoft/signalr"; // Import SignalR library
 import { showSuccessMessage } from "@/components/FlashMessageHelpers";
+import { useRouter } from "expo-router";
 
 const API_URL = process.env.EXPO_PUBLIC_API_URL || "http://localhost:7251";
 const HOME_URL = `${API_URL}/notification`; // The SignalR hub URL
 
 const HomeScreen = () => {
+  const router = useRouter(); // Use useRouter for navigation
+
   const [auctions, setAuctions] = useState<AuctionsData[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
@@ -141,7 +144,8 @@ const HomeScreen = () => {
         <Text className="text-red-500">{error}</Text>
         <TouchableOpacity
           className="px-4 py-2 mt-4 bg-blue-500 rounded"
-          onPress={fetchAuctions}>
+          onPress={fetchAuctions}
+        >
           <Text className="text-white">Retry</Text>
         </TouchableOpacity>
       </View>
@@ -156,7 +160,8 @@ const HomeScreen = () => {
       <View className="flex-row items-center justify-end p-4">
         <TouchableOpacity
           onPress={fetchAuctions}
-          className="flex-row items-center px-2 py-1 bg-gray-300 rounded">
+          className="flex-row items-center px-2 py-1 bg-gray-300 rounded"
+        >
           <MaterialIcons name="refresh" size={24} color="black" />
           <Text className="ml-2 font-semibold text-gray-700">Reload</Text>
         </TouchableOpacity>
@@ -172,6 +177,22 @@ const HomeScreen = () => {
           </View>
         }
       />
+
+      {/* <View className="flex-row justify-around p-4">
+        <TouchableOpacity
+          className="bg-green-500 p-3 rounded w-[45%]"
+          onPress={() => router.push("/result-payment?isSuccess=true")}
+        >
+          <Text className="text-white text-center font-bold">Success</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          className="bg-red-500 p-3 rounded w-[45%]"
+          onPress={() => router.push("/result-payment?isSuccess=false")}
+        >
+          <Text className="text-white text-center font-bold">Failure</Text>
+        </TouchableOpacity>
+      </View> */}
     </View>
   );
 };

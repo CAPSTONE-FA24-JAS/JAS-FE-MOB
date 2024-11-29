@@ -54,6 +54,7 @@ type RootStackParamList = {
   RisingBidPage: { item: any } | { itemId: number }; // Update this to expect `item` as a param
   ReduceBidPage: { itemId: number };
   RegisterToBid: LotDetail; // Add this line
+  MyWallet: undefined;
 };
 
 // Define the BidFormRouteParams type
@@ -522,8 +523,25 @@ const LotDetailScreen = () => {
   };
 
   const handleRegisterToBid = () => {
-    if (lotDetail) {
-      navigation.navigate("RegisterToBid", lotDetail);
+    if (haveWallet) {
+      if (lotDetail) {
+        navigation.navigate("RegisterToBid", lotDetail);
+      }
+    } else {
+      Alert.alert(
+        "Notification",
+        "You don't have a wallet on the JAS app. Please register for a wallet to continue.",
+        [
+          {
+            text: "Cancel",
+            style: "cancel",
+          },
+          {
+            text: "Register Wallet",
+            onPress: () => navigation.navigate("MyWallet"),
+          },
+        ]
+      );
     }
   };
 
@@ -544,6 +562,12 @@ const LotDetailScreen = () => {
   const isAuctionActive = lotDetail?.endTime
     ? new Date() < new Date(lotDetail.endTime)
     : false;
+
+  const isAuctionLive =
+    lotDetail?.endTime && lotDetail?.startTime
+      ? new Date(lotDetail.startTime) < new Date() &&
+        new Date() < new Date(lotDetail.endTime)
+      : false;
 
   console.log("isAuctionActive", isAuctionActive);
 
@@ -581,7 +605,8 @@ const LotDetailScreen = () => {
             <Swiper
               showsPagination={true}
               autoplay={true}
-              style={{ height: "100%" }}>
+              style={{ height: "100%" }}
+            >
               {lotDetail?.jewelry?.imageJewelries?.length ?? 0 > 0 ? (
                 lotDetail?.jewelry?.imageJewelries.map((img, index) =>
                   img?.imageLink ? (
@@ -605,7 +630,8 @@ const LotDetailScreen = () => {
             <Text className="font-bold text-gray-400">Follow</Text>
             <TouchableOpacity
               onPress={handleAddWatching}
-              className="flex-row items-center gap-1">
+              className="flex-row items-center gap-1"
+            >
               {isWatching && (
                 <MaterialCommunityIcons name="star" size={24} color="yellow" />
               )}
@@ -643,7 +669,8 @@ const LotDetailScreen = () => {
                   <Text
                     className={`font-extrabold text-sm py-1 px-5 ${getStatusClass(
                       lotDetail?.status ?? ""
-                    )} rounded-md text-sm text-center uppercase text-white`}>
+                    )} rounded-md text-sm text-center uppercase text-white`}
+                  >
                     {lotDetail?.status}
                   </Text>
                 </View>
@@ -684,12 +711,23 @@ const LotDetailScreen = () => {
             <Text className="mt-6 font-bold">
               Summary of Key Characteristics
             </Text>
-            {lotDetail?.jewelry?.description && (
-              <Text className="text-gray-700">
-                {lotDetail?.jewelry?.description || "No description available."}
-              </Text>
+            {lotDetail?.jewelry?.keyCharacteristicDetails && (
+              <View>
+                {lotDetail?.jewelry?.keyCharacteristicDetails.map((item) => (
+                  <View key={item.id} className="flex-row ">
+                    <Text className="mr-2 text-lg text-gray-800">•</Text>
+                    <Text className="text-gray-700">
+                      {item.keyCharacteristic.name}:{" "}
+                      {item.description || "Unknow"}
+                    </Text>
+                  </View>
+                ))}
+              </View>
+              // <Text className="text-gray-700">
+              //   {lotDetail?.jewelry?.description || "No description available."}
+              // </Text>
             )}
-            <View className="flex-row items-center">
+            <View className="flex-row ">
               <Text className="mr-2 text-lg text-gray-800">•</Text>
               <Text className="text-gray-700">
                 For Gender: {lotDetail?.jewelry?.forGender || "Unknow"}
@@ -745,7 +783,8 @@ const LotDetailScreen = () => {
                     typeBid === "Fixed_Price"
                       ? handleBuyNow
                       : handleSecretAuctionBid
-                  }>
+                  }
+                >
                   <Text className="font-semibold text-center text-white uppercase">
                     {typeBid === "Fixed_Price"
                       ? "BUY FIXED BID"
@@ -758,7 +797,8 @@ const LotDetailScreen = () => {
               !bidTimeCheck && (
                 <TouchableOpacity
                   onPress={handlePressAutoBid}
-                  className="mb-3 bg-blue-500 rounded-sm">
+                  className="mb-3 bg-blue-500 rounded-sm"
+                >
                   <Text className="py-3 font-semibold text-center text-white">
                     BID AUTOMATION
                   </Text>
@@ -778,7 +818,8 @@ const LotDetailScreen = () => {
               typeBid === "Auction_Price_GraduallyReduced") && (
               <TouchableOpacity
                 className="py-3 bg-blue-500 rounded-sm"
-                onPress={() => handleJoinToBid(typeBid)}>
+                onPress={() => handleJoinToBid(typeBid)}
+              >
                 <Text className="font-semibold text-center text-white uppercase">
                   {lotDetail?.status === "Passed" ||
                   lotDetail?.status === "Sold" ||
@@ -796,8 +837,12 @@ const LotDetailScreen = () => {
           isAuctionActive &&
           !(lotDetail?.status === "Sold") && (
             <TouchableOpacity
-              className="py-3 mt-4 bg-blue-500 rounded-sm"
-              onPress={handleRegisterToBid}>
+              className={`py-3 mt-4 ${
+                isAuctionLive ? "bg-blue-500" : "bg-gray-500"
+              }  rounded-sm`}
+              onPress={handleRegisterToBid}
+              disabled={!isAuctionLive}
+            >
               <Text className="font-semibold text-center text-white uppercase">
                 Register To Bid
               </Text>

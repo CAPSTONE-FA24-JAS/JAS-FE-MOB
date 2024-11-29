@@ -52,6 +52,7 @@ import { createDrawerNavigator } from "@react-navigation/drawer";
 import AddBankAccountScreen from "@/components/Pages/AddCreditCard/AddBankAccountScreen";
 import { DrawerActions } from "@react-navigation/native";
 import { useNavigation } from "expo-router";
+import ResultPayment from "../result-payment";
 // Declare Drawer and Stack Navigators
 const Drawer = createDrawerNavigator();
 const Stack = createStackNavigator();
@@ -187,7 +188,8 @@ function DrawerLayout() {
         drawerActiveBackgroundColor: "lightgray", // Set background color for active item
         drawerActiveTintColor: Colors.primary, // Set text color for active item
         drawerInactiveTintColor: "black", // Set text color for inactive items
-      }}>
+      }}
+    >
       {/* Parent Categories */}
       <Drawer.Screen
         name="Auctions"
@@ -452,6 +454,14 @@ export default function AppNavigator() {
         component={HistoryItemConsign}
         options={{
           header: () => <CustomHeaderDetail title="History Item Consign" />,
+        }}
+      />
+
+      <Stack.Screen
+        name="ResultPayment"
+        component={ResultPayment}
+        options={{
+          header: () => <CustomHeaderDetail title="Result Payment" />,
         }}
       />
     </Stack.Navigator>

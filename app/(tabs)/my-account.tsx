@@ -84,8 +84,8 @@ const MyAccount = () => {
           showErrorMessage("Incorrect wallet password, please try again.");
         }
       } else {
-        navigation.navigate("MyWallet");
-        // showErrorMessage("Wallet ID is not available.");
+        // navigation.navigate("MyWallet");
+        showErrorMessage("Failed to verify password.");
       }
     } catch (error) {
       showErrorMessage("Failed to verify password.");
@@ -116,8 +116,8 @@ const MyAccount = () => {
               : "https://upload.wikimedia.org/wikipedia/commons/thumb/f/fd/Faenza-avatar-default-symbolic.svg/2048px-Faenza-avatar-default-symbolic.svg.png"
           }
           biddingLimit={
-            userInfo.customerDTO.priceLimit
-              ? userInfo.customerDTO.priceLimit
+            userInfo.customerDTO?.priceLimit
+              ? userInfo.customerDTO?.priceLimit
               : 0
           }
         />
@@ -129,7 +129,8 @@ const MyAccount = () => {
       <View className="mt-4 bg-white rounded-lg shadow">
         <TouchableOpacity
           className="flex-row items-center justify-between p-4 border-b border-gray-200"
-          onPress={() => handleNavigation("AccountInfo")}>
+          onPress={() => handleNavigation("AccountInfo")}
+        >
           <View className="flex-row items-center">
             <MaterialCommunityIcons name="account" size={20} color="black" />
             <Text className="ml-4 text-lg">Account Info</Text>
@@ -144,7 +145,8 @@ const MyAccount = () => {
         </TouchableOpacity>
         <TouchableOpacity
           className="flex-row items-center justify-between p-4 border-b border-gray-200"
-          onPress={() => handleNavigation("ChangePassword")}>
+          onPress={() => handleNavigation("ChangePassword")}
+        >
           <View className="flex-row items-center">
             <MaterialCommunityIcons name="lock-reset" size={20} color="black" />
             <Text className="ml-4 text-lg">Change Password</Text>
@@ -159,7 +161,8 @@ const MyAccount = () => {
         </TouchableOpacity>
         <TouchableOpacity
           className="flex-row items-center justify-between p-4 border-b border-gray-200"
-          onPress={() => handleNavigation("MyWallet")}>
+          onPress={() => handleNavigation("MyWallet")}
+        >
           <View className="flex-row items-center">
             <MaterialCommunityIcons name="lock-reset" size={20} color="black" />
             <Text className="ml-4 text-lg">My Wallet</Text>
@@ -174,7 +177,8 @@ const MyAccount = () => {
         </TouchableOpacity>
         <TouchableOpacity
           className="flex-row items-center justify-between p-4 border-b border-gray-200"
-          onPress={() => handleNavigation("AddBankAccount")}>
+          onPress={() => handleNavigation("AddBankAccount")}
+        >
           <View className="flex-row items-center">
             <MaterialCommunityIcons name="lock-reset" size={20} color="black" />
             <Text className="ml-4 text-lg">Card</Text>
@@ -189,7 +193,8 @@ const MyAccount = () => {
         </TouchableOpacity>
         <TouchableOpacity
           className="flex-row items-center justify-between p-4 border-b border-gray-200"
-          onPress={() => handleNavigation("Help")}>
+          onPress={() => handleNavigation("Help")}
+        >
           <View className="flex-row items-center">
             <MaterialCommunityIcons
               name="help-circle"
@@ -208,7 +213,8 @@ const MyAccount = () => {
         </TouchableOpacity>
         <TouchableOpacity
           className="flex-row items-center justify-between p-4 border-b border-gray-200"
-          onPress={() => handleNavigation("Terms")}>
+          onPress={() => handleNavigation("Terms")}
+        >
           <View className="flex-row items-center">
             <MaterialCommunityIcons
               name="file-document"
@@ -227,7 +233,8 @@ const MyAccount = () => {
         </TouchableOpacity>
         <TouchableOpacity
           className="flex-row items-center p-4"
-          onPress={handleLogout}>
+          onPress={handleLogout}
+        >
           <MaterialCommunityIcons name="logout" size={20} color="black" />
           <Text className="ml-4 text-lg">Log Out</Text>
         </TouchableOpacity>

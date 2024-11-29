@@ -25,6 +25,10 @@ const ConsignStep: React.FC = () => {
 
   const [selectedImages, setSelectedImages] = useState<string[]>([]);
   const [isStep2Valid, setIsStep2Valid] = useState(false); // Track Step 2 validity
+  const [selectedFiles, setSelectedFiles] = useState<string[]>([]);
+
+  // console.log("selectedImages", selectedImages);
+  // console.log("selectedFiles", selectedFiles);
 
   // State để lưu giá trị từ StepContent2
   const [description, setDescription] = useState("");
@@ -47,6 +51,17 @@ const ConsignStep: React.FC = () => {
 
     try {
       if (sellerId !== undefined) {
+        // Chuẩn hóa selectedFiles thành danh sách URL
+        const normalizedFiles = selectedFiles.map(
+          (file: string | { uri: string }) =>
+            typeof file === "string" ? file : file.uri
+        );
+
+        // Gộp selectedImages và normalizedFiles
+        const combinedFiles = [...selectedImages, ...normalizedFiles];
+
+        console.log("Combined Files for API:", combinedFiles);
+
         const response = await consignAnItem(
           sellerId,
           nameConsign,
@@ -54,7 +69,7 @@ const ConsignStep: React.FC = () => {
           Number(width),
           Number(depth),
           description,
-          selectedImages,
+          combinedFiles,
           0
         );
         // Lưu dữ liệu từ response vào state
@@ -147,6 +162,8 @@ const ConsignStep: React.FC = () => {
           <StepContent1
             selectedImages={selectedImages}
             setSelectedImages={setSelectedImages}
+            setSelectedFiles={setSelectedFiles}
+            selectedFiles={selectedFiles}
           />
         )}
         {currentStep === 2 && (
@@ -193,13 +210,15 @@ const ConsignStep: React.FC = () => {
             className={`py-3 px-8 ${
               currentStep === 3 ? "w-full" : "w-[45%]"
             }  flex-row justify-center rounded-lg ${
-              (currentStep === 1 && selectedImages.length === 0) ||
+              (currentStep === 1 &&
+                (selectedImages.length === 0 || selectedFiles.length === 0)) ||
               (currentStep === 2 && !isStep2Valid)
                 ? "bg-gray-300"
                 : "bg-blue-500"
             }`}
             disabled={
-              (currentStep === 1 && selectedImages.length === 0) ||
+              (currentStep === 1 &&
+                (selectedImages.length === 0 || selectedFiles.length === 0)) ||
               (currentStep === 2 && !isStep2Valid)
             }
           >

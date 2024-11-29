@@ -61,7 +61,7 @@ const ConsignDetailTimeLine: React.FC = () => {
   const [modalVisible, setModalVisible] = useState(false);
   const [valuationData, setValuationData] = useState<any | null>(null);
   const [isFinalModalVisible, setFinalModalVisible] = useState(false);
-  // console.log("timelineAK", timeline);
+  console.log("valuationDataNe", valuationData);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -191,7 +191,9 @@ const ConsignDetailTimeLine: React.FC = () => {
       id: item?.id,
       sellerId: item?.seller?.id,
       status: item?.status,
-      images: item?.imageValuations?.map((item) => item?.imageLink),
+      images:
+        item?.jewelry?.imageJewelries.map((item) => item?.imageLink) ??
+        item?.imageValuations?.map((item) => item?.imageLink),
       name: item?.name,
       pricingTime: item?.pricingTime,
       estimatedCost: `${(item?.estimatePriceMin || 0).toLocaleString("vi-VN", {

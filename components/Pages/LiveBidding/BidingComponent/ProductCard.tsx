@@ -23,32 +23,54 @@ const ProductCard: React.FC<ProductCardProps> = ({
   status,
 }) => {
   return (
-    <View className="px-4">
+    <View className="p-2">
       <Image
         source={{ uri: image }}
-        className="w-full h-64 rounded-md shadow-md"
+        className="w-full h-64 p-2 rounded-md shadow-md"
         resizeMode="contain"
       />
       <View className="flex-row items-center justify-between p-2">
-        <Text className="mt-2 text-lg font-bold">Lot {id}</Text>
-        <View>
-          <Text className="mr-2 text-sm font-medium text-gray-400 mt-">
-            Est: {(minPrice ?? 0).toLocaleString()}$ -{" "}
-            {(maxPrice ?? 0).toLocaleString()}$
+        <View className="flex-1 gap-2">
+          <Text className="mt-2 text-lg font-bold">Lot: #{id}</Text>
+          <Text className="text-base font-semibold text-gray-700">{name}</Text>
+          <Text className="text-sm font-medium text-gray-400">
+            Type:{" "}
+            {typeBid === "Public_Auction"
+              ? "Public Auction"
+              : "Reverse Auction"}
           </Text>
-          <Text className="mr-2 text-sm font-medium text-gray-400 mt-">
-            Bid Increment Step:
-            <Text className="text-blue-500">{stepBidIncrement}$</Text>
-          </Text>
-        </View>
-        <View>
-          <Text className="mr-2 text-sm font-medium text-gray-400 mt-">
-            Status:
-            <Text className="text-blue-500">{status}</Text>
-          </Text>
+
+          <View>
+            <Text className="mr-2 text-sm font-medium text-gray-400 mt-">
+              Est:{" "}
+              {(minPrice ?? 0).toLocaleString("vi-vn", {
+                style: "currency",
+                currency: "VND",
+              })}{" "}
+              -{" "}
+              {(maxPrice ?? 0).toLocaleString("vi-vn", {
+                style: "currency",
+                currency: "VND",
+              })}
+            </Text>
+            <View className="flex-row items-center justify-between">
+              <Text className="text-sm font-medium text-gray-400">
+                Bid {typeBid === "Public_Auction" ? "increment" : "decrement"}{" "}
+                step:{" "}
+                <Text className="text-blue-500">
+                  {(stepBidIncrement ?? 0).toLocaleString("vi-vn", {
+                    style: "currency",
+                    currency: "VND",
+                  })}
+                </Text>
+              </Text>
+              <Text className="text-lg font-medium text-gray-400">
+                Status: <Text className="text-blue-500">{status}</Text>
+              </Text>
+            </View>
+          </View>
         </View>
       </View>
-      <Text className="text-base font-semibold text-gray-700 ">{name}</Text>
       {typeBid === "Auction_Price_GraduallyReduced" && (
         <View className="w-full p-2 mt-2 bg-gray-100 rounded-md">
           <Text className="text-xl font-semibold text-center text-gray-800">

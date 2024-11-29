@@ -1,4 +1,4 @@
-import { buyNowMethod3, placeBidFixedPriceAndSecret } from "@/api/bidApi";
+import { placeBidFixedPriceAndSecret } from "@/api/bidApi";
 import {
   checkCustomerHaveBidPrice,
   checkCustomerInLot,
@@ -14,11 +14,13 @@ import CountdownTimerBid from "@/components/CountDown/CountdownTimer";
 interface ExtendedLotDetail extends LotDetail {
   totalCustomers?: number;
 }
+
 import {
   showErrorMessage,
   showSuccessMessage,
 } from "@/components/FlashMessageHelpers";
 import PlaceBidModal from "@/components/Modal/PlaceBidModal";
+import YouTubePlayer from "@/components/YouTubePlayer";
 import { RootState } from "@/redux/store";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import {
@@ -44,8 +46,6 @@ import Swiper from "react-native-swiper";
 import { useSelector } from "react-redux";
 import ConfirmBuyNowModal from "./ModalLot/ConfirmBuyNowModal";
 import SecretAuctionBidModal from "./ModalLot/SecretAuctionBidModal";
-import VideoPlayer from "@/components/VideoPlayer";
-import YouTubePlayer from "@/components/YouTubePlayer";
 
 // Define the navigation param list type
 type RootStackParamList = {
@@ -281,24 +281,6 @@ const LotDetailScreen = () => {
     typeBid,
   };
 
-  // const handleBuyNow = () => {
-  //   // Check if user is logged in and lot details are available
-  //   if (
-  //     userId &&
-  //     lotDetail &&
-  //     typeBid === "Fixed_Price"&&
-  //     lotDetail.buyNowPrice &&
-  //     lotDetail.deposit !== undefined
-  //   ) {
-  //     setPasswordModalVisible(true); // Show the password modal
-  //   } else if(typeBid === "Secret_Auction" && lotDetail && lotDetail.startPrice && lotDetail.deposit !== undefined){
-  //     setPasswordModalVisible(true); // Show the password modal
-  //   } else {
-  //     showErrorMessage("Unable to process 'Buy It Now'.");
-  //     setPasswordModalVisible(true); // Show the password modal
-  //   }
-  // };
-
   const handleBuyNow = () => {
     setConfirmBuyNowVisible(true); // Show confirmation modal
   };
@@ -326,39 +308,6 @@ const LotDetailScreen = () => {
     } finally {
       setSecretAuctionBidVisible(false);
       setConfirmBuyNowVisible(false);
-    }
-  };
-
-  const handlePlaceBid = async () => {
-    if (!lotDetail || !userId) return;
-
-    const currentPrice = lotDetail.buyNowPrice
-      ? lotDetail.buyNowPrice - lotDetail.deposit
-      : 0; // Calculate bid price
-    const lotId = lotDetail.id;
-    console.log("nhap vao place bid", {
-      currentPrice,
-      userId,
-      lotId,
-    });
-
-    try {
-      const response = await placeBidFixedPriceAndSecret(
-        currentPrice,
-        userId,
-        lotId
-      );
-      console.log("responseFixed", response);
-
-      if (response?.isSuccess) {
-        showSuccessMessage("Bid placed successfully!");
-        setPasswordModalVisible(false); // Close the password modal
-        fetchLotDetail(); // Reload the lot details
-      } else {
-        console.log("Bid placement failed.");
-      }
-    } catch (error) {
-      showErrorMessage("Failed to place bid.");
     }
   };
 
@@ -692,9 +641,9 @@ const LotDetailScreen = () => {
                 </Text>
                 <View className=" max-w-[45%] flex-row justify-end">
                   <Text
-                    className={`font-extrabold py-1 px-10 ${getStatusClass(
+                    className={`font-extrabold text-sm py-1 px-5 ${getStatusClass(
                       lotDetail?.status ?? ""
-                    )} rounded-md text-base text-center uppercase text-white`}>
+                    )} rounded-md text-sm text-center uppercase text-white`}>
                     {lotDetail?.status}
                   </Text>
                 </View>

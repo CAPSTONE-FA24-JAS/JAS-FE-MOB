@@ -141,7 +141,11 @@ const BidInput: React.FC<BidInputProps> = ({
     return (
       <View className="w-full p-2">
         <Text className="text-sm font-bold text-center">
-          Highest Price: ${highestBidActual}
+          Highest Price:{" "}
+          {(highestBidActual ?? 0).toLocaleString("vi-VN", {
+            style: "currency",
+            currency: "VND",
+          })}
         </Text>
         <View className="flex-row items-center justify-between gap-2">
           <View className="w-[20%] h-14 border border-gray-300 rounded-md bg-white">

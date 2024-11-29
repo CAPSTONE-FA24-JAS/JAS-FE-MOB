@@ -39,8 +39,7 @@ const ItemAuctionHomePage: React.FC<ItemAuctionHomePageProps> = ({
   return (
     <StyledTouchableOpacity
       className="w-[98%] py-1 mb-4 relative"
-      onPress={goToAuctionDetail}
-    >
+      onPress={goToAuctionDetail}>
       <StyledImage
         className="w-full h-48 rounded-lg"
         source={
@@ -53,22 +52,21 @@ const ItemAuctionHomePage: React.FC<ItemAuctionHomePageProps> = ({
       {/* Lớp phủ gradient */}
       <StyledLinearGradient
         colors={["transparent", "rgba(0,0,0,0.7)"]}
-        className="absolute left-0 right-0 bottom-0 h-36 rounded-lg"
+        className="absolute bottom-0 left-0 right-0 rounded-lg h-36"
       />
       {/* Nội dung văn bản */}
       <StyledView className="absolute bottom-5 left-4 right-4">
-        <StyledText className="text-white text-lg font-bold">
+        <StyledText className="text-lg font-bold text-white">
           {auction?.totalLot || 0} LOT
         </StyledText>
         <View className="flex-row items-center">
           <StyledText
             numberOfLines={1} // Số dòng tối đa
             ellipsizeMode="tail"
-            className="text-white max-w-[85%] text-xl font-bold mb-1"
-          >
+            className="text-white max-w-[85%] text-xl font-bold mb-1">
             #{auction.id} | {auction?.name || "Unnamed Auction"}{" "}
           </StyledText>
-          <StyledText className="text-white text-xl font-bold mb-1">
+          <StyledText className="mb-1 text-xl font-bold text-white">
             - {auction?.status ? auction?.status : "Upcoming"}
           </StyledText>
         </View>

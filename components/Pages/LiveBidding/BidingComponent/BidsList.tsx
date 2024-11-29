@@ -83,7 +83,7 @@ const BidsList: React.FC<BidsListProps> = ({
           text: "Yes",
 
           onPress: async () => {
-            if (bidLitmit && item.finalPriceSold > bidLitmit) {
+            if (item.haveFinancialProof && item.finalPriceSold > bidLitmit) {
               showErrorMessage("You have reached the limit price");
               return;
             }
@@ -205,7 +205,12 @@ const BidsList: React.FC<BidsListProps> = ({
         />
         <View className="flex-row items-center justify-around p-3 py-6 bg-white border border-gray-300 rounded-md">
           <Text className="text-lg">Current Price:</Text>
-          <Text className="text-xl text-gray-600">${reducePrice}</Text>
+          <Text className="text-xl text-gray-600">
+            {(reducePrice ?? 0).toLocaleString("vi-VN", {
+              style: "currency",
+              currency: "VND",
+            })}
+          </Text>
           <View className="flex items-center">
             <Text className="text-lg text-center text-red-700">
               {percentReduce}%
@@ -286,7 +291,10 @@ const MemoizedItem: React.FC<MemoizedItemProps> = React.memo(
             className={`font-bold ${
               isCurrentUserBid ? getStatusColor(bid.status) : "text-gray-700"
             }`}>
-            ${bid.currentPrice}
+            {(bid.currentPrice ?? 0).toLocaleString("vi-VN", {
+              style: "currency",
+              currency: "VND",
+            })}
           </Text>
         </View>
         {showDivider && <View className="h-[1px] bg-gray-200 my-2" />}

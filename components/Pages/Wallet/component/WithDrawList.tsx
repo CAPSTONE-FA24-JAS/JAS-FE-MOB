@@ -45,7 +45,6 @@ const WithDrawList: React.FC<WithdrawListProps> = ({
         setWithdraws(data);
       }
     } catch (error) {
-      showErrorMessage("Failed to load withdraw history");
       console.error("Error loading withdraws:", error);
     } finally {
       setIsLoading(false);
@@ -99,8 +98,6 @@ const WithDrawList: React.FC<WithdrawListProps> = ({
                 if (response && response.isSuccess) {
                   showSuccessMessage("Withdrawal cancelled successfully");
                   fetchWithdraws(); // Refresh the list
-                } else {
-                  showErrorMessage("Failed to cancel withdrawal");
                 }
               } else {
                 showErrorMessage("Customer ID is missing");
@@ -120,7 +117,9 @@ const WithDrawList: React.FC<WithdrawListProps> = ({
       <Card.Content>
         <View className="flex-row justify-between mb-2">
           <Text className="text-lg font-semibold">
-            {item.viewCreditCardDTO.bankName}
+            {item.viewCreditCardDTO?.bankName
+              ? item.viewCreditCardDTO.bankName
+              : "Bank Unknown"}
           </Text>
           <Text className={`font-bold ${getStatusColor(item.status)}`}>
             {item.status}
@@ -130,13 +129,15 @@ const WithDrawList: React.FC<WithdrawListProps> = ({
         <View className="mb-2">
           <Text className="text-gray-600">Account Holder</Text>
           <Text className="font-medium">
-            {item.viewCreditCardDTO.bankAccountHolder}
+            {item.viewCreditCardDTO?.bankAccountHolder || "Not Available"}
           </Text>
         </View>
 
         <View className="mb-2">
           <Text className="text-gray-600">Account Number</Text>
-          <Text className="font-medium">{item.viewCreditCardDTO.bankCode}</Text>
+          <Text className="font-medium">
+            {item.viewCreditCardDTO?.bankCode || "Not Available"}
+          </Text>
         </View>
 
         <View className="pt-2 border-t border-gray-200">

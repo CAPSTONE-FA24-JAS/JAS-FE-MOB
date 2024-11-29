@@ -97,91 +97,89 @@ const SignUpScreen = () => {
   };
 
   return (
-    <SafeAreaView className="flex-1 bg-white">
-      <View className="flex-1">
-        <ImageBackground
-          source={require("../../assets/Vector-11.png")}
-          className="relative justify-end w-full h-64">
-          <Text className="absolute mb-4 ml-4 text-3xl font-bold text-white top-20 left-40">
-            JAS
-          </Text>
-          <Image
-            className="absolute bottom-0 w-32 h-32 top-28 right-32"
-            source={require("../../assets/Mask Group.png")}
-          />
-        </ImageBackground>
-        <View className="flex-1 px-4 pt-6">
-          <Text className="mb-4 text-xl font-bold">Sign up</Text>
-          <Text className="mb-2 font-bold">Account Details</Text>
-          <TextInput
-            className="w-full h-10 px-2 mb-4 border border-gray-300 rounded"
-            placeholder="First Name"
-            value={firstName}
-            onChangeText={setFirstName}
-            returnKeyType="done"
-          />
-          <TextInput
-            className="w-full h-10 px-2 mb-4 border border-gray-300 rounded"
-            placeholder="Last Name"
-            value={lastName}
-            onChangeText={setLastName}
-            returnKeyType="done"
-          />
-          <TextInput
-            className="w-full h-10 px-2 mb-4 border border-gray-300 rounded"
-            placeholder="Phone Number"
-            value={phoneNumber}
-            onChangeText={setPhoneNumber}
-            keyboardType="email-address"
-            returnKeyType="done"
-          />
-          <TextInput
-            className="w-full h-10 px-2 mb-4 border border-gray-300 rounded"
-            placeholder="E-Mail Address"
-            value={email}
-            onChangeText={setEmail}
-            keyboardType="email-address"
-            returnKeyType="done"
-          />
-          <TextInput
-            className="w-full h-10 px-2 mb-1 border border-gray-300 rounded"
-            placeholder="Password"
-            value={password}
-            onChangeText={setPassword}
-            secureTextEntry
-            returnKeyType="done"
-          />
-          <Text className="mb-4 text-xs text-gray-500">
-            Must be at least 6 characters and has at least one number
-          </Text>
-          <TextInput
-            className="w-full h-10 px-2 mb-4 border border-gray-300 rounded"
-            placeholder="Re-type Password"
-            value={retypePassword}
-            onChangeText={setRetypePassword}
-            secureTextEntry
-            returnKeyType="done"
-          />
+    <View className="flex-1">
+      <ImageBackground
+        source={require("../../assets/Vector-11.png")}
+        className="relative justify-end w-full h-64">
+        <Text className="absolute mb-4 ml-4 text-3xl font-bold text-white top-20 left-40">
+          JAS
+        </Text>
+        <Image
+          className="absolute bottom-0 w-32 h-32 top-28 right-32"
+          source={require("../../assets/Mask Group.png")}
+        />
+      </ImageBackground>
+      <View className="flex-1 px-4 pt-6">
+        <Text className="mb-4 text-xl font-bold">Sign up</Text>
+        <Text className="mb-2 font-bold">Account Details</Text>
+        <TextInput
+          className="w-full h-10 px-2 mb-4 border border-gray-300 rounded"
+          placeholder="First Name"
+          value={firstName}
+          onChangeText={setFirstName}
+          returnKeyType="done"
+        />
+        <TextInput
+          className="w-full h-10 px-2 mb-4 border border-gray-300 rounded"
+          placeholder="Last Name"
+          value={lastName}
+          onChangeText={setLastName}
+          returnKeyType="done"
+        />
+        <TextInput
+          className="w-full h-10 px-2 mb-4 border border-gray-300 rounded"
+          placeholder="Phone Number"
+          value={phoneNumber}
+          onChangeText={setPhoneNumber}
+          keyboardType="email-address"
+          returnKeyType="done"
+        />
+        <TextInput
+          className="w-full h-10 px-2 mb-4 border border-gray-300 rounded"
+          placeholder="E-Mail Address"
+          value={email}
+          onChangeText={setEmail}
+          keyboardType="email-address"
+          returnKeyType="done"
+        />
+        <TextInput
+          className="w-full h-10 px-2 mb-1 border border-gray-300 rounded"
+          placeholder="Password"
+          value={password}
+          onChangeText={setPassword}
+          secureTextEntry
+          returnKeyType="done"
+        />
+        <Text className="mb-4 text-xs text-gray-500">
+          Must be at least 6 characters and has at least one number
+        </Text>
+        <TextInput
+          className="w-full h-10 px-2 mb-4 border border-gray-300 rounded"
+          placeholder="Re-type Password"
+          value={retypePassword}
+          onChangeText={setRetypePassword}
+          secureTextEntry
+          returnKeyType="done"
+        />
 
-          <TouchableOpacity
-            disabled={isLoading} // Disable button when loading
-            className={`w-full py-3 mt-4 bg-blue-500 rounded ${
-              isLoading ? "opacity-50" : ""
-            }`}
-            onPress={handleRegister}>
-            <Text className="text-base font-bold text-center text-white">
-              Create Account
-            </Text>
+        <TouchableOpacity
+          disabled={isLoading} // Disable button when loading
+          className={`w-full py-3 mt-4 bg-blue-500 rounded ${
+            isLoading ? "opacity-50" : ""
+          }`}
+          onPress={handleRegister}>
+          <Text className="text-base font-bold text-center text-white">
+            Create Account
+          </Text>
+        </TouchableOpacity>
+
+        <Link href="/(auths)/login" asChild>
+          <TouchableOpacity className="mt-4">
+            <Text className="text-center text-blue-500">Log in instead</Text>
           </TouchableOpacity>
-
-          <Link href="/(auths)/login" asChild>
-            <TouchableOpacity className="mt-4">
-              <Text className="text-center text-blue-500">Log in instead</Text>
-            </TouchableOpacity>
-          </Link>
-        </View>
+        </Link>
       </View>
-    </SafeAreaView>
+    </View>
   );
 };
 

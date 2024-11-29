@@ -153,6 +153,7 @@ const BiddingAuction = () => {
             <AuctionDetailScreen
               setIsSwiperActive={setIsSwiperActive}
               dataAuction={auctionDetails}
+              setIndex={setIndex}
             />
           )}
         </TabView.Item>

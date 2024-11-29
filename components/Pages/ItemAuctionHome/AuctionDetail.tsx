@@ -8,11 +8,13 @@ import Swiper from "react-native-swiper";
 interface AuctionDetailScreenProps {
   setIsSwiperActive: React.Dispatch<React.SetStateAction<boolean>>;
   dataAuction: AuctionData;
+  setIndex: React.Dispatch<React.SetStateAction<number>>;
 }
 
 const AuctionDetailScreen: React.FC<AuctionDetailScreenProps> = ({
   setIsSwiperActive,
   dataAuction,
+  setIndex,
 }) => {
   const [countdown, setCountdown] = useState<string>("");
 
@@ -124,7 +126,9 @@ const AuctionDetailScreen: React.FC<AuctionDetailScreenProps> = ({
           {moment(dataAuction?.endTime).format("HH:mm A, DD/MM/YYYY")}
         </Text>
         <Text className="mb-4 text-gray-600">Viet Nam</Text>
-        <TouchableOpacity className="py-3 mb-3 bg-blue-500 rounded-sm">
+        <TouchableOpacity
+          onPress={() => setIndex(1)}
+          className="py-3 mb-3 bg-blue-500 rounded-sm">
           <Text className="font-semibold text-center text-white">
             VIEW LOTS
           </Text>

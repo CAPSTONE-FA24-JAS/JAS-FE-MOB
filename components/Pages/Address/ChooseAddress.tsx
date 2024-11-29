@@ -44,6 +44,17 @@ const ChooseAddress: React.FC<ChooseAddressProps> = ({
   const [localSelectedAddress, setLocalSelectedAddress] =
     useState<AddressListData | null>(selectedAddress);
 
+  // Địa chỉ công ty mặc định
+  const companyAddress: AddressListData = {
+    id: 32,
+    addressLine:
+      "Lô E2a-7, Đường D1, Đ. D1, Long Thạnh Mỹ, Thành Phố Thủ Đức, Hồ Chí Minh 700000",
+    isDefault: false,
+  };
+
+  // Combine user addresses with the company address
+  const combinedAddresses = [companyAddress, ...addresses];
+
   // Handle selecting an address
   const handleSelectAddress = (address: AddressListData) => {
     setLocalSelectedAddress(address);
@@ -76,8 +87,8 @@ const ChooseAddress: React.FC<ChooseAddressProps> = ({
           )}
         </View>
 
-        <ScrollView className="mb-4 ">
-          {addresses.map((address) => (
+        <ScrollView className="mb-4">
+          {combinedAddresses.map((address) => (
             <View className="flex-row items-center mb-4" key={address.id}>
               <RadioButton
                 value={address.id.toString()}
@@ -96,6 +107,13 @@ const ChooseAddress: React.FC<ChooseAddressProps> = ({
                     : "border-gray-400"
                 } border-2 rounded-md px-3 py-2 w-[86%]`}
               >
+                {address.id === 32 ? (
+                  <View>
+                    <Text className="font-semibold text-red-600 mb-2">
+                      If you choose company address, shipping will be free!
+                    </Text>
+                  </View>
+                ) : null}
                 {address.isDefault === true ? (
                   <Text className="text-red-700 mb-2 font-semibold">
                     Mặc định

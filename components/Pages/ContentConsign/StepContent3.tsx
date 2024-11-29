@@ -3,10 +3,7 @@ import { View, Text, Image } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 
 interface StepContent3Props {
-  apiResponseData: {
-    $id: string;
-    $values: string[];
-  }; // Nhận URLs của hình ảnh từ ConsignStep
+  apiResponseData: string[]; // Nhận URLs của hình ảnh từ ConsignStep
   height: string;
   width: string;
   depth: string;
@@ -35,12 +32,12 @@ const StepContent3: React.FC<StepContent3Props> = ({
       <Text className="text-xl font-bold my-4">Review:</Text>
       <View className="mx-2">
         {/* Hiển thị các hình ảnh từ phản hồi API */}
-        {apiResponseData?.$values?.length > 0 && (
+        {apiResponseData?.length > 0 && (
           <View className="flex-row flex-wrap justify-around gap-2">
-            {apiResponseData?.$values?.map((imageUrl, index) => (
+            {apiResponseData.map((image, index) => (
               <Image
                 key={index}
-                source={{ uri: imageUrl }}
+                source={{ uri: image }}
                 className="w-40 h-40  rounded-lg shadow-md"
               />
             ))}

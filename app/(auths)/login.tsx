@@ -6,6 +6,8 @@ import {
   showSuccessMessage,
 } from "@/components/FlashMessageHelpers";
 import LoadingOverlay from "@/components/LoadingOverlay";
+import { logout } from "@/redux/slices/authSlice";
+import { resetNotifications } from "@/redux/slices/notificationSlice";
 import { fetchProfile } from "@/redux/slices/profileSlice";
 import { AppDispatch, RootState } from "@/redux/store";
 import { Feather } from "@expo/vector-icons";
@@ -13,6 +15,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Link, useRouter } from "expo-router";
 import React, { useEffect, useState } from "react";
 import {
+  Alert,
   Image,
   ScrollView,
   Text,
@@ -52,35 +55,59 @@ const Login: React.FC = () => {
       setLoading(true);
 
       const userData = await LoginApi(username, password, dispatch);
-      setIsLoginSuccessful(true);
-      showSuccessMessage("Login successful! Redirecting...");
-      setLoading(false);
 
-      if (rememberMe) {
-        // Save credentials
-        await AsyncStorage.setItem("rememberedEmail", username);
-        await AsyncStorage.setItem("rememberedPassword", password);
-      } else {
-        // Clear saved credentials
-        await AsyncStorage.removeItem("rememberedEmail");
-        await AsyncStorage.removeItem("rememberedPassword");
-      }
-      // Dispatch fetchProfile with the userId
-      if (userData && userData.id) {
-        // Ensure userData and id exist
-        await dispatch(fetchProfile(userData.id));
-        console.log("Profile fetched successfully.");
-      } else {
-        console.warn("User data or ID is missing.");
-      }
+      if (userData?.roleId === 1) {
+        setIsLoginSuccessful(true);
+        showSuccessMessage("Login successful! Redirecting...");
 
-      router.replace("/home-screen");
-      console.log("Login successful, navigating to home..."); // Debug log
+        if (rememberMe) {
+          // Save credentials
+          await AsyncStorage.setItem("rememberedEmail", username);
+          await AsyncStorage.setItem("rememberedPassword", password);
+        } else {
+          // Clear saved credentials
+          await AsyncStorage.removeItem("rememberedEmail");
+          await AsyncStorage.removeItem("rememberedPassword");
+        }
+
+        // Fetch user profileMi
+        if (userData?.id) {
+          await dispatch(fetchProfile(userData.id));
+          console.log("Profile fetched successfully.");
+        }
+
+        router.replace("/home-screen"); // Redirect to home screen
+      } else {
+        // Role is not 1, perform logout
+        Alert.alert(
+          "You are not a customer of JAS. Please log in with a customer account."
+        );
+
+        handleLogout(); // Call the logout handler
+      }
     } catch (error) {
       showErrorMessage("Invalid username or password.");
       console.error("Login error:", error);
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
+  };
+
+  const handleLogout = async () => {
+    try {
+      // Clear saved credentials
+      await AsyncStorage.removeItem("rememberedEmail");
+      await AsyncStorage.removeItem("rememberedPassword");
+
+      // Dispatch logout and reset notifications
+      dispatch(logout());
+      dispatch(resetNotifications());
+
+      // Redirect to login page
+      router.replace("/login");
+    } catch (error) {
+      console.error("Error during logout:", error);
+    }
   };
 
   useEffect(() => {
@@ -186,7 +213,8 @@ const Login: React.FC = () => {
             <View className="flex-row items-center justify-between mx-10 mt-6 ">
               <TouchableOpacity
                 className="w-[150px]  bg-[#4765F9] rounded-md"
-                onPress={handleLogin}>
+                onPress={handleLogin}
+              >
                 <Text className="py-3 text-xl font-semibold text-center text-white uppercase px-9">
                   Sign in
                 </Text>

@@ -10,7 +10,7 @@ export type AddressListResponse = {
 export type AddressListData = {
   id: number;
   addressLine: string;
-  customerId: number;
+  customerId?: number;
   isDefault: boolean | null;
 };
 

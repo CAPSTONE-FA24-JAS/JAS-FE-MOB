@@ -34,7 +34,7 @@ const BidInputMethod4: React.FC<BidInputProps> = ({
 
   const isFinancialProof = item.haveFinancialProof;
   const priceLimitofCustomer = useSelector(
-    (state: RootState) => state.auth.userResponse?.customerDTO.priceLimit
+    (state: RootState) => state.auth.userResponse?.customerDTO?.priceLimit
   );
 
   useEffect(() => {
@@ -109,7 +109,8 @@ const BidInputMethod4: React.FC<BidInputProps> = ({
             status === "Cancel"
               ? "w-[50%] flex items-center justify-center h-12 bg-gray-500 rounded-md"
               : "w-[50%] flex items-center justify-center h-12 bg-blue-500 rounded-md"
-          }>
+          }
+        >
           <Text className="text-xl font-semibold text-white">
             {isEndAuctionMethod4 ||
             item.status === "Sold" ||

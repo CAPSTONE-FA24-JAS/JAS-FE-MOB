@@ -45,12 +45,12 @@ const BidInput: React.FC<BidInputProps> = ({
   const [loading, setLoading] = useState<boolean>(false);
 
   const priceLimit = useSelector(
-    (store: RootState) => store.auth.userResponse?.customerDTO.priceLimit
+    (store: RootState) => store.auth.userResponse?.customerDTO?.priceLimit
   );
 
   const isFinancialProof = item.haveFinancialProof;
   const priceLimitofCustomer = useSelector(
-    (state: RootState) => state.auth.userResponse?.customerDTO.priceLimit
+    (state: RootState) => state.auth.userResponse?.customerDTO?.priceLimit
   );
 
   const cusid = useSelector(
@@ -194,7 +194,8 @@ const BidInput: React.FC<BidInputProps> = ({
               status === "Cancel"
                 ? "w-[20%] flex items-center justify-center h-14 bg-gray-500 rounded-md"
                 : "w-[20%] flex items-center justify-center h-14 bg-blue-500 rounded-md "
-            }>
+            }
+          >
             <Text className="text-xs font-semibold text-white">BIDDING</Text>
           </TouchableOpacity>
         </View>

@@ -221,7 +221,6 @@ export const getAllWithdraws = async (
     }
   } catch (error) {
     console.error("Error fetching withdraws:", error);
-    showErrorMessage("Unable to retrieve withdraws.");
     throw error;
   }
 };

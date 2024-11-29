@@ -133,17 +133,18 @@ const Withdraw: React.FC = () => {
     return (
       <View className="px-2">
         <Text className="mb-2 text-lg font-semibold">2. BANK ACCOUNT</Text>
-        {existingBankAccounts.map((account, index) => (
-          <Card key={index} className="mb-2">
-            <Card.Content className="flex-row items-center">
-              <View className="ml-2">
-                <Text className="font-semibold">{account.bankName}</Text>
-                <Text>{account.bankAccountHolder}</Text>
-                <Text>{account.bankCode}</Text>
-              </View>
-            </Card.Content>
-          </Card>
-        ))}
+        {existingBankAccounts &&
+          existingBankAccounts.map((account, index) => (
+            <Card key={index} className="mb-2">
+              <Card.Content className="flex-row items-center">
+                <View className="ml-2">
+                  <Text className="font-semibold">{account.bankName}</Text>
+                  <Text>{account.bankAccountHolder}</Text>
+                  <Text>{account.bankCode}</Text>
+                </View>
+              </Card.Content>
+            </Card>
+          ))}
       </View>
     );
   };
@@ -170,7 +171,7 @@ const Withdraw: React.FC = () => {
         />
         {renderBankAccountSection()}
       </View>
-      <WithDrawList />
+      {existingBankAccounts ? <WithDrawList /> : ""}
 
       <View className="absolute bottom-0 left-0 right-0 p-4 bg-white">
         <TouchableOpacity

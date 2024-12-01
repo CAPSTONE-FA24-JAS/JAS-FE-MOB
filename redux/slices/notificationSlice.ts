@@ -1,6 +1,7 @@
 // redux/slices/notificationSlice.ts
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { Notification } from "@/app/types/notification_type";
+import { getNotificationByAccountId } from "@/api/notificationApi";
 
 interface NotificationState {
   notifications: Notification[];
@@ -15,6 +16,30 @@ const initialState: NotificationState = {
   loading: false,
   loadingMark: false,
 };
+
+export const fetchNotifications = createAsyncThunk(
+  "notifications/fetchNotifications",
+  async (
+    args: { accountId: number; page: number; pageSize: number },
+    thunkAPI
+  ) => {
+    const { accountId, page, pageSize } = args;
+    try {
+      const response = await getNotificationByAccountId(
+        accountId,
+        page,
+        pageSize
+      );
+      return {
+        notifications: response.dataResponse || [],
+        totalItems: response.totalItemRepsone || 0,
+      };
+    } catch (error) {
+      console.error("Failed to fetch notifications:", error);
+      return thunkAPI.rejectWithValue("Failed to fetch notifications");
+    }
+  }
+);
 
 const notificationSlice = createSlice({
   name: "Notification",

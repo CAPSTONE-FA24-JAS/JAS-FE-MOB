@@ -3,16 +3,16 @@ import { View, Text, Image, TouchableOpacity } from "react-native";
 
 // Define the status type
 type ConsignStatus =
-  | "Requested"
-  | "Assigned"
-  | "RequestedPreliminary"
-  | "Preliminary"
-  | "ApprovedPreliminary"
-  | "RecivedJewelry"
-  | "FinalValuated"
-  | "ManagerApproved"
-  | "Authorized"
-  | "Rejected";
+  | "Requested" //0
+  | "Assigned" //1
+  | "RequestedPreliminary" //2
+  | "Preliminary" //3
+  | "ApprovedPreliminary" //4
+  | "RecivedJewelry" //5
+  | "FinalValuated" //6
+  | "ManagerApproved" //7
+  | "Authorized" //8
+  | "Rejected"; //9
 
 // Define the props interface
 export interface ConsignItemProps {

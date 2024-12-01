@@ -7,7 +7,10 @@ import {
 } from "@/components/FlashMessageHelpers";
 import LoadingOverlay from "@/components/LoadingOverlay";
 import { logout } from "@/redux/slices/authSlice";
-import { resetNotifications } from "@/redux/slices/notificationSlice";
+import {
+  fetchNotifications,
+  resetNotifications,
+} from "@/redux/slices/notificationSlice";
 import { fetchProfile } from "@/redux/slices/profileSlice";
 import { AppDispatch, RootState } from "@/redux/store";
 import { Feather } from "@expo/vector-icons";
@@ -74,6 +77,17 @@ const Login: React.FC = () => {
         if (userData?.id) {
           await dispatch(fetchProfile(userData.id));
           console.log("Profile fetched successfully.");
+        }
+
+        // Fetch notifications
+        if (userData?.id) {
+          dispatch(
+            fetchNotifications({
+              accountId: userData.id,
+              page: 1,
+              pageSize: 10,
+            }) // Fetch notifications with user ID
+          );
         }
 
         router.replace("/home-screen"); // Redirect to home screen

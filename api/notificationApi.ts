@@ -5,9 +5,9 @@ import axios from "axios";
 const API_URL = process.env.EXPO_PUBLIC_API_URL || "http://localhost:7251";
 
 export const getNotificationByAccountId = async (
-  accountId: string,
-  pageIndex: string,
-  pageSize: string
+  accountId: number,
+  pageIndex: number,
+  pageSize: number
 ) => {
   try {
     console.log(

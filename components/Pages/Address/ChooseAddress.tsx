@@ -55,6 +55,20 @@ const ChooseAddress: React.FC<ChooseAddressProps> = ({
   // Combine user addresses with the company address
   const combinedAddresses = [companyAddress, ...addresses];
 
+  const uniqueAddresses = combinedAddresses.reduce<AddressListData[]>(
+    (unique, current) => {
+      const isDuplicate = unique.some(
+        (item) =>
+          item.id === current.id && item.addressLine === current.addressLine
+      );
+      if (!isDuplicate) {
+        unique.push(current);
+      }
+      return unique;
+    },
+    []
+  );
+
   // Handle selecting an address
   const handleSelectAddress = (address: AddressListData) => {
     setLocalSelectedAddress(address);
@@ -88,7 +102,7 @@ const ChooseAddress: React.FC<ChooseAddressProps> = ({
         </View>
 
         <ScrollView className="mb-4">
-          {combinedAddresses.map((address) => (
+          {uniqueAddresses.map((address) => (
             <View className="flex-row items-center mb-4" key={address.id}>
               <RadioButton
                 value={address.id.toString()}

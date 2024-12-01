@@ -9,6 +9,7 @@ import {
 } from "@/app/types/consign_type";
 import { Response } from "@/app/types/respone_type";
 import apiClient from "./config";
+import { Alert } from "react-native";
 
 const API_URL = process.env.EXPO_PUBLIC_API_URL || "http://localhost:7251";
 
@@ -68,11 +69,19 @@ export const consignAnItem = async (
       showSuccessMessage("Đã ký gửi vật phẩm thành công.");
       return response.data;
     } else {
-      throw new Error(response.data.message || "Lỗi khi ký gửi vật phẩm.");
+      const errorMessage =
+        response.data.errorMessages?.join(", ") ||
+        response.data.message ||
+        "Lỗi khi ký gửi vật phẩm.";
+      Alert.alert(errorMessage);
+      throw new Error(errorMessage);
     }
-  } catch (error) {
-    console.error("Lỗi khi ký gửi vật phẩm:", error);
-    showErrorMessage("Không thể ký gửi vật phẩm.");
+  } catch (error: any) {
+    const apiErrorMessage =
+      error.response?.data?.errorMessages?.join(", ") || error.message;
+
+    console.error("Lỗi khi ký gửi vật phẩm:", apiErrorMessage);
+    Alert.alert(apiErrorMessage); // Hiển thị thông báo lỗi từ API
     throw error;
   }
 };

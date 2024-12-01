@@ -87,16 +87,17 @@ const HistoryItemConsign: React.FC = () => {
           sellerId,
           pageSize,
           page,
-          selectedStatus !== null ? selectedStatus : undefined
+          tab ? tab : selectedStatus !== null ? selectedStatus : undefined
         );
 
         if (response?.dataResponse) {
-          setItems((prevItems) =>
-            page === 1
-              ? response.dataResponse
-              : [...prevItems, ...response.dataResponse]
+          setItems(
+            (prevItems) =>
+              page === 1
+                ? response.dataResponse // Nếu là trang đầu, thay thế danh sách
+                : [...prevItems, ...response.dataResponse] // Nếu không, nối dữ liệu mới
           );
-          setHasMore(response.dataResponse.length === pageSize);
+          setHasMore(response.dataResponse.length === pageSize); // Kiểm tra còn dữ liệu không
         } else {
           setHasMore(false);
         }
@@ -106,7 +107,7 @@ const HistoryItemConsign: React.FC = () => {
     } catch (error) {
       console.error("Lỗi khi lấy lịch sử ký gửi:", error);
     } finally {
-      setIsFetching(false); // Kết thúc tải
+      setIsFetching(false);
       setLoading(false);
     }
   }, [sellerId, selectedStatus, page, pageSize, isFetching]);
@@ -122,6 +123,7 @@ const HistoryItemConsign: React.FC = () => {
   useEffect(() => {
     setPage(1); // Reset về trang đầu tiên
     setItems([]); // Xóa danh sách cũ
+    fetchConsignmentHistory(); // Gọi API để cập nhật danh sách theo trạng thái mới
   }, [selectedStatus]);
 
   useEffect(() => {
@@ -156,17 +158,24 @@ const HistoryItemConsign: React.FC = () => {
 
   return (
     <View className="flex-1 bg-gray-100">
-      <View className="relative px-4 py-2">
+      <View className="relative  px-4 py-2">
         <ScrollView
           horizontal={true}
           showsHorizontalScrollIndicator={false}
-          className="mb-4">
+          className={`mb-4 ${
+            (searchedItems && searchedItems.length === 0 && !loading) ||
+            noConsignmentMessage
+              ? null
+              : "h-[150px]"
+          } `}
+        >
           <View className="flex-row items-center">
             <TouchableOpacity
               className={`px-4 py-2 mr-2 ${
                 selectedStatus === null ? "bg-yellow-500" : "bg-gray-400"
               } rounded`}
-              onPress={() => setSelectedStatus(null)}>
+              onPress={() => setSelectedStatus(null)}
+            >
               <Text className="font-bold text-white uppercase">ALL</Text>
             </TouchableOpacity>
 
@@ -176,7 +185,8 @@ const HistoryItemConsign: React.FC = () => {
                 className={`px-4 py-2 mr-2 ${
                   selectedStatus === status ? "bg-yellow-500" : "bg-gray-400"
                 } rounded`}
-                onPress={() => setSelectedStatus(status)}>
+                onPress={() => setSelectedStatus(status)}
+              >
                 <Text className="font-bold text-white uppercase">
                   {index + 1}. {statusTextMap[index]}
                 </Text>
@@ -230,7 +240,8 @@ const HistoryItemConsign: React.FC = () => {
                     flexDirection: "row",
                     justifyContent: "space-between",
                   }}
-                  className="bottom-0 w-full ">
+                  className="bottom-0 w-full "
+                >
                   <TouchableOpacity
                     onPress={handleLoadMore}
                     style={{
@@ -240,7 +251,8 @@ const HistoryItemConsign: React.FC = () => {
                       margin: 10,
                       width: "100%",
                     }}
-                    className="mx-auto">
+                    className="mx-auto"
+                  >
                     <Text style={{ color: "#fff", textAlign: "center" }}>
                       Load More
                     </Text>

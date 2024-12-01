@@ -19,8 +19,17 @@ import {
 import { getInvoicesByStatusForCustomer } from "@/api/invoiceApi";
 import { DataCurentBidResponse } from "../types/bid_type";
 import { showErrorMessage } from "@/components/FlashMessageHelpers";
+import { RouteProp, useRoute } from "@react-navigation/native";
+
+type InvoiceListRouteParams = {
+  params: {
+    status?: number; // Giá trị trạng thái để chọn tab
+  };
+};
 
 const InvoiceList: React.FC = () => {
+  const route = useRoute<RouteProp<InvoiceListRouteParams, "params">>();
+
   // Lấy userId từ state
   const userId = useSelector(
     (state: RootState) => state.auth.userResponse?.customerDTO?.id
@@ -31,6 +40,12 @@ const InvoiceList: React.FC = () => {
   const [selectedStatus, setSelectedStatus] = useState<number>(2);
   const [loading, setLoading] = useState<boolean>(false);
 
+  // Cập nhật `selectedStatus` khi nhận `status` từ `params`
+  useEffect(() => {
+    if (route.params?.status) {
+      setSelectedStatus(route.params.status);
+    }
+  }, [route.params]);
   // console.log("invoiceList", invoiceList);
 
   // Gọi API khi thay đổi trạng thái

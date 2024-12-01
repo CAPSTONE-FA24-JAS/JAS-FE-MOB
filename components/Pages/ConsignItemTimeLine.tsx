@@ -105,7 +105,7 @@ const ConsignDetailTimeLine: React.FC = () => {
       description: item?.description,
       note: "Preliminary pricing is considered based on the images and dimensions you provide.",
       owner: item?.seller?.lastName + " " + item?.seller.firstName,
-      artist: item?.appraiser?.lastName + " " + item?.appraiser?.firstName,
+      artist: item?.jewelry?.artist?.name || "N/A",
       category: item?.jewelry?.category?.name || "N/A",
 
       creationDate: item?.creationDate,

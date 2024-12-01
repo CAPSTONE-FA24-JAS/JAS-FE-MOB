@@ -11,6 +11,8 @@ import { consignAnItem } from "@/api/consignAnItemApi";
 import { setLoading } from "@/redux/slices/notificationSlice";
 import LoadingOverlay from "../LoadingOverlay";
 
+import * as DocumentPicker from "expo-document-picker";
+
 // Define the types for navigation routes
 type RootStackParamList = {
   HomePage: undefined;
@@ -25,7 +27,9 @@ const ConsignStep: React.FC = () => {
 
   const [selectedImages, setSelectedImages] = useState<string[]>([]);
   const [isStep2Valid, setIsStep2Valid] = useState(false); // Track Step 2 validity
-  const [selectedFiles, setSelectedFiles] = useState<string[]>([]);
+  const [selectedFiles, setSelectedFiles] = useState<
+    { uri: string; name: string; type: string }[]
+  >([]);
 
   // console.log("selectedImages", selectedImages);
   // console.log("selectedFiles", selectedFiles);
@@ -52,13 +56,10 @@ const ConsignStep: React.FC = () => {
     try {
       if (sellerId !== undefined) {
         // Chuẩn hóa selectedFiles thành danh sách URL
-        const normalizedFiles = selectedFiles.map(
-          (file: string | { uri: string }) =>
-            typeof file === "string" ? file : file.uri
-        );
+        // Chuẩn hóa danh sách file
+        const combinedFiles = selectedFiles.map((file) => file.uri);
 
-        // Gộp selectedImages và normalizedFiles
-        const combinedFiles = [...selectedImages, ...normalizedFiles];
+        console.log("Combined Files for API:", combinedFiles);
 
         console.log("Combined Files for API:", combinedFiles);
 
@@ -211,14 +212,16 @@ const ConsignStep: React.FC = () => {
               currentStep === 3 ? "w-full" : "w-[45%]"
             }  flex-row justify-center rounded-lg ${
               (currentStep === 1 &&
-                (selectedImages.length === 0 || selectedFiles.length === 0)) ||
+                (selectedImages?.length === 0 ||
+                  selectedFiles?.length === 0)) ||
               (currentStep === 2 && !isStep2Valid)
                 ? "bg-gray-300"
                 : "bg-blue-500"
             }`}
             disabled={
               (currentStep === 1 &&
-                (selectedImages.length === 0 || selectedFiles.length === 0)) ||
+                (selectedImages?.length === 0 ||
+                  selectedFiles?.length === 0)) ||
               (currentStep === 2 && !isStep2Valid)
             }
           >

@@ -12,9 +12,9 @@ import { TouchableOpacity } from "react-native-gesture-handler";
 import { useDispatch } from "react-redux";
 
 type RootStackParamList = {
-  InvoiceList: undefined;
-  MyBids: { tab: string };
-  HistoryItemConsign: { tab: number };
+  InvoiceList: { status?: number }; // InvoiceList có thể nhận tham số 'status'
+  MyBids: { tab?: string };
+  HistoryItemConsign: { tab?: number };
 };
 
 const NotificationItem = ({ item }: { item: Notification }) => {
@@ -44,39 +44,66 @@ const NotificationItem = ({ item }: { item: Notification }) => {
     }
   };
 
+  const statusMapping = [
+    { label: "Requested", value: 1, screen: "HistoryItemConsign", tab: 0 },
+    { label: "Assigned", value: 2, screen: "HistoryItemConsign", tab: 1 },
+    {
+      label: "RequestedPreliminary",
+      value: 3,
+      screen: "HistoryItemConsign",
+      tab: undefined,
+    },
+    { label: "Preliminary", value: 4, screen: "HistoryItemConsign", tab: 3 },
+    {
+      label: "ApprovedPreliminary",
+      value: 5,
+      screen: "HistoryItemConsign",
+      tab: 4,
+    },
+    { label: "RecivedJewelry", value: 6, screen: "HistoryItemConsign", tab: 5 },
+    {
+      label: "FinalValuated",
+      value: 7,
+      screen: "HistoryItemConsign",
+      tab: undefined,
+    },
+    {
+      label: "ManagerApproved",
+      value: 8,
+      screen: "HistoryItemConsign",
+      tab: 7,
+    },
+    { label: "Authorized", value: 9, screen: "HistoryItemConsign", tab: 8 },
+    { label: "Rejected", value: 10, screen: "HistoryItemConsign", tab: 9 },
+    { label: "CreateInvoice", value: 11, screen: "InvoiceList", status: 2 },
+    { label: "PendingPayment", value: 12, screen: "InvoiceList", status: 3 },
+    { label: "Paid", value: 13, screen: "InvoiceList", status: 4 },
+    { label: "Delivering", value: 14, screen: "InvoiceList", status: 5 },
+    { label: "Delivered", value: 15, screen: "InvoiceList", status: 6 },
+    { label: "Finished", value: 17, screen: "InvoiceList", status: 8 },
+    { label: "Refunded", value: 18, screen: "InvoiceList", status: 9 },
+    { label: "Cancelled", value: 19, screen: "InvoiceList", status: 10 },
+    { label: "Closed", value: 20, screen: "InvoiceList", status: 11 },
+  ];
+
   const handleNavigate = () => {
-    if (
-      item.notifi_Type === "Customerlot" ||
-      item.title.includes("Đấu giá thắng") ||
-      item.title.includes("Bidding win")
-    ) {
-      console.log("Navigate to invoice list");
-      // navigation.navigate("InvoiceDetail", { item: item.id });
-      navigation.navigate("InvoiceList");
+    const notificationStatus = statusMapping.find(
+      (status) => status.label === item.notifi_Type
+    );
 
-      // router.push("/invoice-list");
-    } else if (
-      item.notifi_Type === "Customerlot" ||
-      item.title.includes("Đấu giá thua") ||
-      item.title.includes("Bidding lose")
-    ) {
-      console.log("Navigating to Account", { screen: "MyBids" });
+    if (!notificationStatus) {
+      console.warn("Unknown notification type:", item.notifi_Type);
+      return;
+    }
 
-      // navigation.navigate("ValuationDetail", { item: item.id });
-      navigation.navigate("MyBids", { tab: "past" });
-
-      // router.push("/invoice-list");
-    } else if (item.notifi_Type === "Valuation") {
-      console.log("Navigate to valuation");
-      // navigation.navigate("ValuationDetail", { item: item.id });
-      navigation.navigate("HistoryItemConsign", { tab: 3 });
-    } else if (item.notifi_Type === "Preliminary") {
-      console.log("Navigate to valuation");
-      // navigation.navigate("ValuationDetail", { item: item.id });
-      navigation.navigate("HistoryItemConsign", { tab: 3 });
+    // Điều hướng đến màn hình và tab tương ứng
+    const { screen, tab, status } = notificationStatus;
+    if (screen === "HistoryItemConsign" && tab !== undefined) {
+      navigation.navigate(screen, { tab });
+    } else if (screen === "InvoiceList" && status !== undefined) {
+      navigation.navigate(screen, { status });
     }
   };
-
   const handleMarkAsRead = async () => {
     if (item.is_Read === true) return handleNavigate(); // Nếu đã đọc rồi thì không cần gọi API
 

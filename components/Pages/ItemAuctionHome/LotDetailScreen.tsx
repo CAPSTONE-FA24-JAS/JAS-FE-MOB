@@ -778,12 +778,15 @@ const LotDetailScreen = () => {
               !bidTimeCheck &&
               isAuctionActive && (
                 <TouchableOpacity
-                  className="py-3 mb-3 bg-blue-500 rounded-sm"
+                  className={`py-3 mb-3  ${
+                    isAuctionLive ? "bg-blue-500" : "bg-gray-500"
+                  } rounded-sm`}
                   onPress={
                     typeBid === "Fixed_Price"
                       ? handleBuyNow
                       : handleSecretAuctionBid
                   }
+                  disabled={!isAuctionLive}
                 >
                   <Text className="font-semibold text-center text-white uppercase">
                     {typeBid === "Fixed_Price"
@@ -794,10 +797,14 @@ const LotDetailScreen = () => {
               )}
             {typeBid === "Public_Auction" &&
               !currentPriceCheck &&
+              isAuctionLive &&
               !bidTimeCheck && (
                 <TouchableOpacity
                   onPress={handlePressAutoBid}
-                  className="mb-3 bg-blue-500 rounded-sm"
+                  className={`mb-3  ${
+                    isAuctionLive ? "bg-blue-500" : "bg-gray-500"
+                  } rounded-sm`}
+                  disabled={!isAuctionLive}
                 >
                   <Text className="py-3 font-semibold text-center text-white">
                     BID AUTOMATION
@@ -814,34 +821,52 @@ const LotDetailScreen = () => {
                   </Text>
                 </TouchableOpacity>
               )} */}
-            {(typeBid === "Public_Auction" ||
-              typeBid === "Auction_Price_GraduallyReduced") && (
-              <TouchableOpacity
-                className="py-3 bg-blue-500 rounded-sm"
-                onPress={() => handleJoinToBid(typeBid)}
-              >
-                <Text className="font-semibold text-center text-white uppercase">
-                  {lotDetail?.status === "Passed" ||
-                  lotDetail?.status === "Sold" ||
-                  lotDetail?.status === "Canceled"
-                    ? "View To Bid"
-                    : "Join To Bid"}
-                </Text>
-              </TouchableOpacity>
+
+            {lotDetail?.status === "Passed" ||
+            lotDetail?.status === "Sold" ||
+            lotDetail?.status === "Canceled" ? (
+              <View>
+                {(typeBid === "Public_Auction" ||
+                  typeBid === "Auction_Price_GraduallyReduced") && (
+                  <TouchableOpacity
+                    className={`py-3
+                               bg-blue-500  rounded-sm`}
+                    onPress={() => handleJoinToBid(typeBid)}
+                  >
+                    <Text className="font-semibold text-center text-white uppercase">
+                      View To Bid
+                    </Text>
+                  </TouchableOpacity>
+                )}
+              </View>
+            ) : (
+              <View>
+                {(typeBid === "Public_Auction" ||
+                  typeBid === "Auction_Price_GraduallyReduced") &&
+                  isAuctionLive && (
+                    <TouchableOpacity
+                      className={`py-3 ${
+                        isAuctionLive ? "bg-blue-500" : "bg-gray-500"
+                      }  rounded-sm`}
+                      onPress={() => handleJoinToBid(typeBid)}
+                      disabled={!isAuctionLive}
+                    >
+                      <Text className="font-semibold text-center text-white uppercase">
+                        Join To Bid
+                      </Text>
+                    </TouchableOpacity>
+                  )}
+              </View>
             )}
           </View>
         )}
 
         {!isRegistered &&
           !(lotDetail?.status === "Passed") &&
-          isAuctionActive &&
           !(lotDetail?.status === "Sold") && (
             <TouchableOpacity
-              className={`py-3 mt-4 ${
-                isAuctionLive ? "bg-blue-500" : "bg-gray-500"
-              }  rounded-sm`}
+              className={`py-3 mt-4 bg-blue-500  rounded-sm`}
               onPress={handleRegisterToBid}
-              disabled={!isAuctionLive}
             >
               <Text className="font-semibold text-center text-white uppercase">
                 Register To Bid

@@ -19,7 +19,7 @@ import { RouteProp, useFocusEffect, useRoute } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { useNavigation } from "expo-router";
 import React, { useCallback, useState } from "react";
-import { ActivityIndicator, Modal, Text, View } from "react-native";
+import { ActivityIndicator, Alert, Modal, Text, View } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { useSelector } from "react-redux";
 import ChooseAddress from "../../Address/ChooseAddress";
@@ -46,7 +46,7 @@ type RootStackParamList = {
     invoiceId?: number;
   };
   InvoiceDetail: {
-    addressData: AddressListData;
+    addressData?: AddressListData;
     itemDetailBid: MyBidData;
     invoiceId: number;
     yourMaxBid: number;
@@ -202,9 +202,8 @@ const DetailMyBid: React.FC = () => {
     );
   }
   const handleViewInvoice = () => {
-    if (defaultAddress && itemDetailBid && invoiceId && invoiceDetails) {
+    if (itemDetailBid && invoiceId && invoiceDetails) {
       navigation.navigate("InvoiceDetail", {
-        addressData: defaultAddress,
         itemDetailBid: itemDetailBid,
         invoiceId: invoiceId,
         yourMaxBid: yourMaxBid ?? 0,
@@ -213,6 +212,8 @@ const DetailMyBid: React.FC = () => {
           invoiceDetails?.linkBillTransaction ||
           "https://thongkehaiphong.gov.vn/uploads/no-image.jpg",
       });
+    } else {
+      Alert.alert("No default address selected.");
     }
   };
 
@@ -329,6 +330,7 @@ const DetailMyBid: React.FC = () => {
       isWin &&
       invoiceId &&
       itemDetailBid &&
+      !invoiceDetails?.linkBillTransaction &&
       (itemDetailBid.status === "CreateInvoice" ||
         itemDetailBid?.status === "PendingPayment") ? (
         <AddressInfo

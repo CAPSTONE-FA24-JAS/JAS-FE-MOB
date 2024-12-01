@@ -108,7 +108,7 @@ const ViewInvoiceDetail: React.FC = () => {
               Address
             </StyledText>
             <StyledText className="text-base font-medium text-gray-600 w-[70%] text-right">
-              {addressData?.addressLine || "No Address"}
+              {addressData?.addressLine ?? invoiceDetails?.addressToShip}
             </StyledText>
           </View>
         </StyledView>
@@ -238,7 +238,8 @@ const ViewInvoiceDetail: React.FC = () => {
         {/* Back Button */}
         <StyledTouchableOpacity
           onPress={handleBack}
-          className="p-3 mt-5 bg-blue-500 rounded">
+          className="p-3 mt-5 bg-blue-500 rounded"
+        >
           <StyledText className="font-bold text-center text-white">
             BACK
           </StyledText>

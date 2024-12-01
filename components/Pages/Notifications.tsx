@@ -65,9 +65,9 @@ const Notifications: React.FC = () => {
     try {
       dispatch(setLoading(true));
       const response = await getNotificationByAccountId(
-        accountId.toString(),
-        page.toString(),
-        pageSize.toString()
+        accountId,
+        page,
+        pageSize
       );
       console.log("responseNOti", response);
 

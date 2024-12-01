@@ -139,7 +139,7 @@ export function useBiddingMethod4(): UseBiddingResult {
       console.log(
         `SendAmountCustomerBid Amount customer bid: ${msg} with amount ${amount}`
       );
-      setResultBidding(amount);
+      setAmoutCustomerBid(amount);
     });
 
     connection.on("CanceledAuctionPublic", (message: string) => {

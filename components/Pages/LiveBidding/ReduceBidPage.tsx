@@ -82,6 +82,7 @@ const ReduceBidPage = () => {
     status,
     endlotwithoutwinner,
     milenstoneReduceTime,
+    amoutCustomerBid,
   } = useBiddingMethod4();
 
   const accountId = useSelector(
@@ -159,6 +160,7 @@ const ReduceBidPage = () => {
           currentCusId={customerId ?? 0}
           reducePrice={reducePrice}
           milenstoneReduceTime={milenstoneReduceTime}
+          amountCustomerBid={amoutCustomerBid ? amoutCustomerBid : "0"}
         />
       ),
     },

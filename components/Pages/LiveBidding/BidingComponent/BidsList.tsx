@@ -21,6 +21,7 @@ interface BidsListProps {
   isEndLot?: boolean;
   status?: string;
   milenstoneReduceTime?: string;
+  amountCustomerBid?: string;
 }
 
 const BidsList: React.FC<BidsListProps> = ({
@@ -32,6 +33,7 @@ const BidsList: React.FC<BidsListProps> = ({
   isEndLot,
   status,
   milenstoneReduceTime,
+  amountCustomerBid,
 }) => {
   // Memoized sorted bids
 
@@ -115,18 +117,20 @@ const BidsList: React.FC<BidsListProps> = ({
             Buy Now Price
           </Text>
           <Text className="mb-2 text-2xl font-bold text-center text-red-600">
-            {item.finalPriceSold.toLocaleString("vi-VN", {
-              style: "currency",
-              currency: "VND",
-            })}
+            {(item.finalPriceSold ? item.finalPriceSold : 0).toLocaleString(
+              "vi-VN",
+              {
+                style: "currency",
+                currency: "VND",
+              }
+            )}
           </Text>
           <TouchableOpacity
             className={`px-4 py-3 rounded-md ${
               isDisabled ? "bg-gray-400" : "bg-red-600"
             }`}
             onPress={!isDisabled ? handleBuyNow : undefined}
-            disabled={isDisabled}
-          >
+            disabled={isDisabled}>
             <Text className="font-semibold text-center text-white">
               {isDisabled ? "AUCTION ENDED" : "BUY NOW"}
             </Text>
@@ -144,7 +148,7 @@ const BidsList: React.FC<BidsListProps> = ({
       return (
         <View className="p-4">
           <Text>No bids available</Text>
-          {buyNow()}
+          {item.finalPriceSold && buyNow()}
         </View>
       );
     }
@@ -167,7 +171,7 @@ const BidsList: React.FC<BidsListProps> = ({
     }, [bids, currentCusId]);
     return (
       <View className="p-4">
-        {buyNow()}
+        {item.finalPriceSold && buyNow()}
         {sortedBids.length > 0 ? (
           sortedBids.map((bid, index) => (
             <MemoizedItem
@@ -204,7 +208,21 @@ const BidsList: React.FC<BidsListProps> = ({
           status={status || item.status}
           finalPriceSold={item.finalPriceSold || 0}
         />
-        <View className="flex-row items-center justify-around p-3 py-6 bg-white border border-gray-300 rounded-md">
+        <View className="flex-row items-center justify-between pt-4 border-t border-gray-200">
+          <View className="flex-row items-center">
+            <MaterialCommunityIcons
+              name="account-group"
+              size={24}
+              color="#4B5563"
+              className="mr-2"
+            />
+            <Text className="text-base text-gray-600">Participants:</Text>
+          </View>
+          <Text className="text-lg font-semibold text-blue-600">
+            {amountCustomerBid || 0} people
+          </Text>
+        </View>
+        <View className="flex-row items-center justify-around p-3 py-4 bg-white border border-gray-300 rounded-md">
           <Text className="text-lg">Current Price:</Text>
           <Text className="text-xl text-gray-600">
             {(reducePrice ?? 0).toLocaleString("vi-VN", {
@@ -279,8 +297,7 @@ const MemoizedItem: React.FC<MemoizedItemProps> = React.memo(
             isCurrentUserBid
               ? getStatusBgColor(bid.status)
               : "bg-white border-gray-300 border"
-          }`}
-        >
+          }`}>
           <View>
             <Text className="text-gray-600">{formatTime(bid.bidTime)}</Text>
             {isCurrentUserBid && (
@@ -292,8 +309,7 @@ const MemoizedItem: React.FC<MemoizedItemProps> = React.memo(
           <Text
             className={`font-bold ${
               isCurrentUserBid ? getStatusColor(bid.status) : "text-gray-700"
-            }`}
-          >
+            }`}>
             {(bid.currentPrice ?? 0).toLocaleString("vi-VN", {
               style: "currency",
               currency: "VND",

@@ -29,6 +29,7 @@ interface UseBiddingResult {
   status: string;
   endlotwithoutwinner: boolean;
   milenstoneReduceTime: string;
+  amoutCustomerBid: string;
 }
 
 export function useBiddingMethod4(): UseBiddingResult {
@@ -47,6 +48,7 @@ export function useBiddingMethod4(): UseBiddingResult {
     useState<boolean>(false);
   const [status, setStatus] = useState<string>("");
   const [milenstoneReduceTime, setMilensStoneReduceTime] = useState<string>("");
+  const [amoutCustomerBid, setAmoutCustomerBid] = useState<string>("");
 
   const connectionRef = useRef<HubConnection | null>(null);
 
@@ -72,7 +74,7 @@ export function useBiddingMethod4(): UseBiddingResult {
       console.log(
         `SendAmountCustomerBid Amount customer bid: ${msg} with amount ${amount}`
       );
-      // setResultBidding(amount);
+      setAmoutCustomerBid(amount);
     });
 
     /// end auction nhuwng k co ai dau gia
@@ -131,6 +133,13 @@ export function useBiddingMethod4(): UseBiddingResult {
     connection.on("UpdateStatusBid", (status: string) => {
       console.log("UpdateStatusBid", status);
       setStatus(status);
+    });
+
+    connection.on("SendAmountCustomerBid", (msg: string, amount: string) => {
+      console.log(
+        `SendAmountCustomerBid Amount customer bid: ${msg} with amount ${amount}`
+      );
+      setResultBidding(amount);
     });
 
     connection.on("CanceledAuctionPublic", (message: string) => {
@@ -277,5 +286,6 @@ export function useBiddingMethod4(): UseBiddingResult {
     status,
     endlotwithoutwinner,
     milenstoneReduceTime,
+    amoutCustomerBid,
   };
 }

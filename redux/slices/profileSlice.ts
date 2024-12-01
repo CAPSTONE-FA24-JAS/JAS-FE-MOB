@@ -32,10 +32,12 @@ export const modifyProfile = createAsyncThunk(
   "profile/modifyProfile",
   async (
     { userId, profileData }: { userId: number; profileData: any },
-    { rejectWithValue }
+    { rejectWithValue, dispatch }
   ) => {
     try {
       const response = await updateProfile(userId, profileData);
+      // After update, dispatch fetchProfile to reload the profile data
+      await dispatch(fetchProfile(userId));
       return response.data;
     } catch (error: any) {
       return rejectWithValue(error.message || "Failed to update profile");

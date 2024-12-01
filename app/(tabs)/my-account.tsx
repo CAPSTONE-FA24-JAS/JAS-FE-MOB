@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { View, Text, TouchableOpacity } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import ProfileCard from "@/components/Pages/MyProfile/ProfileCard";
-import { router, useNavigation } from "expo-router";
+import { router, useFocusEffect, useNavigation } from "expo-router";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/redux/store";
@@ -37,20 +37,22 @@ const MyAccount = () => {
   const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
   console.log("haveWalletMyprofile", haveWallet);
 
-  useEffect(() => {
-    const fetchUserProfile = async () => {
-      if (userId) {
-        try {
-          const profileData: ProfileResponse = await getProfile(userId);
-          setUserInfo(profileData.data);
-        } catch (error) {
-          console.error("Lỗi khi lấy thông tin người dùng:", error);
+  useFocusEffect(
+    React.useCallback(() => {
+      const fetchUserProfile = async () => {
+        if (userId) {
+          try {
+            const profileData: ProfileResponse = await getProfile(userId);
+            setUserInfo(profileData.data);
+          } catch (error) {
+            console.error("Lỗi khi lấy thông tin người dùng:", error);
+          }
         }
-      }
-    };
+      };
 
-    fetchUserProfile();
-  }, [userId]);
+      fetchUserProfile();
+    }, [userId]) // Only re-run when `userId` changes
+  );
 
   const handleNavigation = (screen: keyof RootStackParamList) => {
     if (screen === "AccountInfo" && userInfo) {

@@ -9,6 +9,7 @@ import LoadingOverlay from "../LoadingOverlay";
 import StepContent1 from "./ContentConsign/StepContent1";
 import StepContent2 from "./ContentConsign/StepContent2";
 import StepContent3 from "./ContentConsign/StepContent3";
+import * as DocumentPicker from "expo-document-picker";
 
 // Define the types for navigation routes
 type RootStackParamList = {
@@ -23,6 +24,9 @@ const ConsignStep: React.FC = () => {
   const [isConfirmModalVisible, setConfirmModalVisible] = useState(false);
 
   const [selectedImages, setSelectedImages] = useState<string[]>([]);
+  const [fileValuation, setFileValuation] = useState<
+    DocumentPicker.DocumentPickerAsset[] | null
+  >([]);
   const [isStep2Valid, setIsStep2Valid] = useState(false); // Track Step 2 validity
   const [selectedFiles, setSelectedFiles] = useState<
     { uri: string; name: string; type: string }[]
@@ -48,18 +52,8 @@ const ConsignStep: React.FC = () => {
   );
 
   const handleConsignItem = async () => {
-    console.log("sellerIdnha", sellerId);
-
     try {
       if (sellerId !== undefined) {
-        // Chuẩn hóa selectedFiles thành danh sách URL
-        // Chuẩn hóa danh sách file
-        const combinedFiles = selectedFiles.map((file) => file.uri);
-
-        console.log("Combined Files for API:", combinedFiles);
-
-        console.log("Combined Files for API:", combinedFiles);
-
         const response = await consignAnItem(
           sellerId,
           nameConsign,
@@ -67,18 +61,15 @@ const ConsignStep: React.FC = () => {
           Number(width),
           Number(depth),
           description,
-          combinedFiles,
+          selectedImages,
+          fileValuation,
           0
         );
-        // Lưu dữ liệu từ response vào state
         setApiResponseData(response.data);
-        // navigation.navigate("HistoryItemConsign");
-      } else {
-        console.error("Error: sellerId is undefined");
       }
     } catch (error) {
       console.error("Error consigning item:", error);
-      throw error; // Ném lỗi để có thể bắt được trong confirmNext
+      throw error;
     }
   };
 
@@ -159,6 +150,8 @@ const ConsignStep: React.FC = () => {
             setSelectedImages={setSelectedImages}
             setSelectedFiles={setSelectedFiles}
             selectedFiles={selectedFiles}
+            setFileValuation={setFileValuation}
+            fileValuation={fileValuation}
           />
         )}
         {currentStep === 2 && (
@@ -203,18 +196,14 @@ const ConsignStep: React.FC = () => {
             onPress={goNext}
             className={`py-3 px-8 ${
               currentStep === 3 ? "w-full" : "w-[45%]"
-            }  flex-row justify-center rounded-lg ${
-              (currentStep === 1 &&
-                (selectedImages?.length === 0 ||
-                  selectedFiles?.length === 0)) ||
+            } flex-row justify-center rounded-lg ${
+              (currentStep === 1 && selectedImages?.length === 0) ||
               (currentStep === 2 && !isStep2Valid)
                 ? "bg-gray-300"
                 : "bg-blue-500"
             }`}
             disabled={
-              (currentStep === 1 &&
-                (selectedImages?.length === 0 ||
-                  selectedFiles?.length === 0)) ||
+              (currentStep === 1 && selectedImages?.length === 0) ||
               (currentStep === 2 && !isStep2Valid)
             }>
             <Text className="w-full text-lg font-semibold text-center text-white">

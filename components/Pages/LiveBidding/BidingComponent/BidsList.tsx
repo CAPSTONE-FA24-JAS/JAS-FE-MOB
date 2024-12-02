@@ -9,8 +9,8 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 import React, { useMemo } from "react";
 import { View, Text, TouchableOpacity, Alert } from "react-native";
 import PriceTimeline from "./PriceTimeline";
-import { RootState } from "@/redux/store";
 import { useSelector } from "react-redux";
+import { AppDispatch, RootState } from "@/redux/store";
 
 interface BidsListProps {
   item: LotDetail;

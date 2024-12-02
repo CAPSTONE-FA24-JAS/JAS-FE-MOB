@@ -15,7 +15,6 @@ interface SecretAuctionBidModalProps {
   isVisible: boolean;
   onClose: () => void;
   minPrice: number;
-  maxPrice: number;
   onSubmit: (bidAmount: number) => void;
 }
 
@@ -24,9 +23,7 @@ const SecretAuctionBidModal: React.FC<SecretAuctionBidModalProps> = ({
   onClose,
   minPrice,
   onSubmit,
-  maxPrice,
 }) => {
-  console.log("SecretAuctionBidModalProps", minPrice, maxPrice);
   const [step, setStep] = useState<number>(10000); // Default step
   const [open, setOpen] = useState<boolean>(false);
   const [items, setItems] = useState<{ label: string; value: number }[]>([
@@ -44,10 +41,8 @@ const SecretAuctionBidModal: React.FC<SecretAuctionBidModalProps> = ({
     const numericValue = Number(value);
     if (!isNaN(numericValue)) {
       setBidAmount(numericValue); // Keep string input for edge cases
-      if (numericValue < minPrice || numericValue > maxPrice) {
-        setErrorMessage(
-          `Số tiền cần nằm trong khoảng ${minPrice} và ${maxPrice}.`
-        );
+      if (numericValue < minPrice) {
+        setErrorMessage(`Số tiền cần nằm trong khoảng ${minPrice}.`);
       } else {
         setErrorMessage(""); // Clear error if valid
       }
@@ -58,7 +53,7 @@ const SecretAuctionBidModal: React.FC<SecretAuctionBidModalProps> = ({
 
   const increaseBid = () => {
     const nextBid = bidAmount + step;
-    if (nextBid <= maxPrice) {
+    if (nextBid) {
       setBidAmount(nextBid);
       setErrorMessage(""); // Clear error
     } else {
@@ -66,10 +61,7 @@ const SecretAuctionBidModal: React.FC<SecretAuctionBidModalProps> = ({
         `Số tiền cần nằm trong khoảng ${minPrice.toLocaleString("vi-VN", {
           style: "currency",
           currency: "VND",
-        })} và ${maxPrice.toLocaleString("vi-VN", {
-          style: "currency",
-          currency: "VND",
-        })}.`
+        })} .`
       );
     }
   };
@@ -84,10 +76,7 @@ const SecretAuctionBidModal: React.FC<SecretAuctionBidModalProps> = ({
         `Số tiền cần nằm trong khoảng ${minPrice.toLocaleString("vi-VN", {
           style: "currency",
           currency: "VND",
-        })} và ${maxPrice.toLocaleString("vi-VN", {
-          style: "currency",
-          currency: "VND",
-        })}.`
+        })}`
       );
     }
   };
@@ -96,8 +85,7 @@ const SecretAuctionBidModal: React.FC<SecretAuctionBidModalProps> = ({
     if (
       !errorMessage &&
       typeof bidAmount === "number" &&
-      bidAmount >= minPrice &&
-      bidAmount <= maxPrice
+      bidAmount >= minPrice
     ) {
       onSubmit(Number(bidAmount));
       setBidAmount(minPrice); // Reset to minPrice after submission

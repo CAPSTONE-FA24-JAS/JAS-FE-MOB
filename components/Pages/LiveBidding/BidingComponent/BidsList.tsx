@@ -245,7 +245,7 @@ const BidsList: React.FC<BidsListProps> = ({
     );
   }
 
-  return <Text>abnbbbbbbbbbbbbbbbb</Text>;
+  return <Text>Loading...</Text>;
 };
 
 export default BidsList;

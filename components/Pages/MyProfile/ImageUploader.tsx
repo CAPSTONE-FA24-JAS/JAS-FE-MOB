@@ -1,7 +1,7 @@
-import React, { useState } from "react";
-import { View, TouchableOpacity, Text, Image, Alert } from "react-native";
-import * as ImagePicker from "expo-image-picker";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
+import * as ImagePicker from "expo-image-picker";
+import React from "react";
+import { Alert, Image, Text, TouchableOpacity, View } from "react-native";
 
 interface ImageUploaderProps {
   imageUri: string | null;
@@ -63,22 +63,20 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({
       {/* Display Current Image */}
       <Image
         source={{ uri: imageUri || defaultAvatar }}
-        className="w-32 h-32 rounded-full border-2 border-gray-400"
+        className="w-32 h-32 border-2 border-gray-400 rounded-full"
       />
 
       {/* Buttons */}
-      <View className="flex-row space-x-4 mt-4">
+      <View className="flex-row mt-4 space-x-4">
         <TouchableOpacity
           onPress={pickImageFromCamera}
-          className="p-3 bg-gray-200 rounded-lg flex-row items-center"
-        >
+          className="flex-row items-center p-3 bg-gray-200 rounded-lg">
           <MaterialCommunityIcons name="camera" size={24} color="gray" />
           <Text className="ml-2 font-semibold text-gray-700">Chụp ảnh</Text>
         </TouchableOpacity>
         <TouchableOpacity
           onPress={pickImageFromGallery}
-          className="p-3 bg-gray-200 rounded-lg flex-row items-center"
-        >
+          className="flex-row items-center p-3 bg-gray-200 rounded-lg">
           <MaterialCommunityIcons name="image" size={24} color="gray" />
           <Text className="ml-2 font-semibold text-gray-700">Upload ảnh</Text>
         </TouchableOpacity>

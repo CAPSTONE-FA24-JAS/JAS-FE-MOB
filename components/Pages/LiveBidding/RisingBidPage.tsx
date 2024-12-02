@@ -126,7 +126,10 @@ const RisingBidPage: React.FC = () => {
   };
 
   const mainContent = [
-    { key: "timer", component: <CountDownTimer endTime={endTime ?? ""} /> },
+    {
+      key: "timer",
+      component: <CountDownTimer endTime={endTime ?? ""} status={status} />,
+    },
     {
       key: "product",
       component: (
@@ -142,6 +145,7 @@ const RisingBidPage: React.FC = () => {
           maxPrice={item.finalPriceSold ?? 0}
           stepBidIncrement={item.bidIncrement ?? 0}
           status={status}
+          item={item}
         />
       ),
     },

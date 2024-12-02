@@ -1,58 +1,56 @@
 import React from "react";
 
-import { FontAwesome, MaterialCommunityIcons } from "@expo/vector-icons";
-import Colors from "@/constants/Colors";
 import CustomHeader from "@/components/CustomHeader";
-import HomeScreen from "./home-screen";
-import PastAuctions from "./past-auctions";
-import MyAccount from "./my-account";
-import Consign from "./consign";
-import HistoryItemConsign from "./history-item-consign";
-import WatchedLots from "./watched-lots";
-import MyBids from "./my-bids";
-import FinanceProof from "./finance-proof";
-import TermsConditions from "./terms-conditions";
-import AboutScreen from "./about";
-import RateUs from "./rate-us";
-import CustomDrawerContent from "@/components/Navigator/CustomDrawerContent";
-import ConsignStep from "@/components/Pages/ConsignStep";
 import CustomHeaderDetail from "@/components/CustomHeaderDetail";
-import BiddingAuction from "@/components/Pages/ItemAuctionHome/BiddingAuction";
-import LotDetailScreen from "@/components/Pages/ItemAuctionHome/LotDetailScreen";
-import CreateFinanceProof from "@/components/Pages/CreateFinanceProof";
-import Terms from "@/components/Pages/MyProfile/Terms";
-import ChangePassword from "@/components/Pages/MyProfile/ChangePassword";
-import AccountInfo from "@/components/Pages/MyProfile/AccountInfo";
-import Help from "@/components/Pages/MyProfile/Help";
-import Login from "../(auths)/login";
-import PlaceBid from "@/components/Pages/PlaceBid";
+import CustomDrawerContent from "@/components/Navigator/CustomDrawerContent";
+import AddBankAccountScreen from "@/components/Pages/AddCreditCard/AddBankAccountScreen";
+import EditAddress from "@/components/Pages/Address/EditAddress.";
 import AutoBidSaveConfig from "@/components/Pages/AutoBidSaveConfig";
 import ConsignDetailTimeLine from "@/components/Pages/ConsignItemTimeLine";
-import RisingBidPage from "@/components/Pages/LiveBidding/RisingBidPage";
-import InvoiceList from "./invoice-list";
-import DetailMyBid from "@/components/Pages/MyBids/BidDetail/DetailMyBid";
+import ConsignStep from "@/components/Pages/ConsignStep";
+import CreateFinanceProof from "@/components/Pages/CreateFinanceProof";
+import PowerOfAttorney from "@/components/Pages/Documents/PowerOfAttorney";
 import InvoiceDetailConfirm from "@/components/Pages/Invoice/InvoiceDetailConfirm";
 import ViewInvoiceDetail from "@/components/Pages/Invoice/ViewInvoiceDetail";
-import Payment from "@/components/Pages/Payment/Payment";
-import PaymentUpload from "@/components/Pages/Payment/PaymentUpload";
-import PaymentSuccess from "@/components/Pages/Payment/PaymentSuccess";
-import { Text, View } from "react-native";
-import BidSuccess from "@/components/Pages/MyBids/BidSuccess";
-import PowerOfAttorney from "@/components/Pages/Documents/PowerOfAttorney";
-import OTP from "@/components/Pages/OTP/OTP";
-import MyWalletMain from "@/components/Pages/Wallet/MyWalletMain";
-import Deposit from "@/components/Pages/Wallet/Deposit";
-import Withdraw from "@/components/Pages/Wallet/Widthraw";
-import RegisterToBid from "@/components/Pages/MyBids/RegisterToBid";
-import EditAddress from "@/components/Pages/Address/EditAddress.";
+import BiddingAuction from "@/components/Pages/ItemAuctionHome/BiddingAuction";
+import LotDetailScreen from "@/components/Pages/ItemAuctionHome/LotDetailScreen";
 import ReduceBidPage from "@/components/Pages/LiveBidding/ReduceBidPage";
-import Notification from "../../components/Pages/Notifications";
-import { createStackNavigator } from "@react-navigation/stack";
+import RisingBidPage from "@/components/Pages/LiveBidding/RisingBidPage";
+import DetailMyBid from "@/components/Pages/MyBids/BidDetail/DetailMyBid";
+import BidSuccess from "@/components/Pages/MyBids/BidSuccess";
+import RegisterToBid from "@/components/Pages/MyBids/RegisterToBid";
+import AccountInfo from "@/components/Pages/MyProfile/AccountInfo";
+import ChangePassword from "@/components/Pages/MyProfile/ChangePassword";
+import Help from "@/components/Pages/MyProfile/Help";
+import Terms from "@/components/Pages/MyProfile/Terms";
+import OTP from "@/components/Pages/OTP/OTP";
+import Payment from "@/components/Pages/Payment/Payment";
+import PaymentSuccess from "@/components/Pages/Payment/PaymentSuccess";
+import PaymentUpload from "@/components/Pages/Payment/PaymentUpload";
+import PlaceBid from "@/components/Pages/PlaceBid";
+import Deposit from "@/components/Pages/Wallet/Deposit";
+import MyWalletMain from "@/components/Pages/Wallet/MyWalletMain";
+import Withdraw from "@/components/Pages/Wallet/Widthraw";
+import Colors from "@/constants/Colors";
+import { FontAwesome, MaterialCommunityIcons } from "@expo/vector-icons";
 import { createDrawerNavigator } from "@react-navigation/drawer";
-import AddBankAccountScreen from "@/components/Pages/AddCreditCard/AddBankAccountScreen";
-import { DrawerActions } from "@react-navigation/native";
+import { createStackNavigator } from "@react-navigation/stack";
 import { useNavigation } from "expo-router";
+import { Text } from "react-native";
+import Notification from "../../components/Pages/Notifications";
 import ResultPayment from "../result-payment";
+import AboutScreen from "./about";
+import Consign from "./consign";
+import FinanceProof from "./finance-proof";
+import HistoryItemConsign from "./history-item-consign";
+import HomeScreen from "./home-screen";
+import InvoiceList from "./invoice-list";
+import MyAccount from "./my-account";
+import MyBids from "./my-bids";
+import PastAuctions from "./past-auctions";
+import RateUs from "./rate-us";
+import TermsConditions from "./terms-conditions";
+import WatchedLots from "./watched-lots";
 // Declare Drawer and Stack Navigators
 const Drawer = createDrawerNavigator();
 const Stack = createStackNavigator();
@@ -188,8 +186,7 @@ function DrawerLayout() {
         drawerActiveBackgroundColor: "lightgray", // Set background color for active item
         drawerActiveTintColor: Colors.primary, // Set text color for active item
         drawerInactiveTintColor: "black", // Set text color for inactive items
-      }}
-    >
+      }}>
       {/* Parent Categories */}
       <Drawer.Screen
         name="Auctions"

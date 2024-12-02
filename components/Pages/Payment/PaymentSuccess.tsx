@@ -1,11 +1,11 @@
-import React from "react";
-import { View, Text, TouchableOpacity } from "react-native";
-import { MaterialCommunityIcons } from "@expo/vector-icons"; // Sử dụng icon checkmark
-import { router, useNavigation } from "expo-router";
-import { StackNavigationProp } from "@react-navigation/stack";
 import { MyBidData } from "@/app/types/bid_type";
-import { CommonActions, RouteProp, useRoute } from "@react-navigation/native";
 import { RootState } from "@/redux/store";
+import { MaterialCommunityIcons } from "@expo/vector-icons"; // Sử dụng icon checkmark
+import { CommonActions, RouteProp, useRoute } from "@react-navigation/native";
+import { StackNavigationProp } from "@react-navigation/stack";
+import { useNavigation } from "expo-router";
+import React from "react";
+import { Text, TouchableOpacity, View } from "react-native";
 import { useSelector } from "react-redux";
 // Define the types for navigation routes
 type RootStackParamList = {
@@ -51,20 +51,20 @@ const PaymentSuccess: React.FC = () => {
   // Calculate the total price
 
   return (
-    <View className="flex-1 bg-white pt-20 ">
+    <View className="flex-1 pt-20 bg-white ">
       {/* Payment Success Title */}
-      {/* <Text className="text-center text-2xl font-bold mb-5">
+      {/* <Text className="mb-5 text-2xl font-bold text-center">
         Payment Success
       </Text> */}
 
       {/* Success Icon */}
-      <View className="justify-center items-center mb-5">
+      <View className="items-center justify-center mb-5">
         <MaterialCommunityIcons name="check-circle" size={100} color="green" />
       </View>
 
       {/* Payment Details */}
-      <View className="bg-white rounded-lg py-5 shadow-md mb-5 px-10    ">
-        <Text className="text-center text-lg font-bold mb-5">
+      <View className="px-10 py-5 mb-5 bg-white rounded-lg shadow-md ">
+        <Text className="mb-5 text-lg font-bold text-center">
           PAYMENT SUCCESSFULLY
         </Text>
 
@@ -118,7 +118,7 @@ const PaymentSuccess: React.FC = () => {
           <Text className="text-base font-bold text-black">Chưa cập nhật</Text>
         </View>
 
-        <View className="h-px bg-gray-400 my-5" />
+        <View className="h-px my-5 bg-gray-400" />
 
         <View className="flex-row justify-between">
           <Text className="text-base font-semibold text-gray-600">Total</Text>
@@ -132,18 +132,16 @@ const PaymentSuccess: React.FC = () => {
       </View>
 
       {/* Bottom Buttons */}
-      <View className="flex-row justify-between absolute bottom-0 w-full p-4 bg-white">
+      <View className="absolute bottom-0 flex-row justify-between w-full p-4 bg-white">
         <TouchableOpacity
-          className="flex-1 p-4 bg-gray-500 rounded-lg mr-2"
-          onPress={handleHome}
-        >
-          <Text className="text-white text-center text-lg font-bold">HOME</Text>
+          className="flex-1 p-4 mr-2 bg-gray-500 rounded-lg"
+          onPress={handleHome}>
+          <Text className="text-lg font-bold text-center text-white">HOME</Text>
         </TouchableOpacity>
         <TouchableOpacity
-          className="flex-1 p-4 bg-blue-500 rounded-lg ml-2"
-          onPress={handleInvoiceList}
-        >
-          <Text className="text-white text-center text-lg font-bold">
+          className="flex-1 p-4 ml-2 bg-blue-500 rounded-lg"
+          onPress={handleInvoiceList}>
+          <Text className="text-lg font-bold text-center text-white">
             INVOICE LIST
           </Text>
         </TouchableOpacity>

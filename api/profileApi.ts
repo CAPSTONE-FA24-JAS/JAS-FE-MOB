@@ -1,14 +1,12 @@
-import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from "axios";
-import {
-  showErrorMessage,
-  showSuccessMessage,
-} from "@/components/FlashMessageHelpers";
 import {
   DeleteAccountResponse,
   ProfileResponse,
 } from "@/app/types/profilte_type";
-import { useDispatch } from "react-redux";
-import { logout } from "@/redux/slices/authSlice";
+import {
+  showErrorMessage,
+  showSuccessMessage,
+} from "@/components/FlashMessageHelpers";
+import axios from "axios";
 
 const API_URL = process.env.EXPO_PUBLIC_API_URL || "http://localhost:7251";
 

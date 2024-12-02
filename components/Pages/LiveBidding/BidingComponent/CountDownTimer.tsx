@@ -3,9 +3,10 @@ import { Text, View } from "react-native";
 
 interface CountDownTimerProps {
   endTime: string; // ISO 8601 format recommended
+  status: string;
 }
 
-const CountDownTimer: React.FC<CountDownTimerProps> = ({ endTime }) => {
+const CountDownTimer: React.FC<CountDownTimerProps> = ({ endTime, status }) => {
   const [timeLeft, setTimeLeft] = useState({
     days: 0,
     hours: 0,
@@ -56,7 +57,9 @@ const CountDownTimer: React.FC<CountDownTimerProps> = ({ endTime }) => {
 
     return days + hours + minutes + seconds === 0
       ? "Time's up!"
-      : `Estimate Time: ${days}d ${hours}h ${minutes}m ${seconds}s left`;
+      : status === "Cancelled"
+      ? "Cancelled"
+      : `Ends in ${days}d ${hours}h ${minutes}m ${seconds}s`;
   }, [timeLeft]);
 
   return (

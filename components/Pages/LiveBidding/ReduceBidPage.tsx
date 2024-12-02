@@ -15,7 +15,7 @@ import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
 import { RouteProp, useRoute } from "@react-navigation/native";
 import { useNavigation } from "expo-router";
-import { getLotDetailById } from "@/api/lotAPI";
+import { checkPlaceBidReduceAuction, getLotDetailById } from "@/api/lotAPI";
 import BidInputMethod4 from "./BidingComponent/BidInputMethod4";
 import AuctionResultModal from "@/components/Modal/AuctionResultModal";
 import AuctionEndedModal from "@/components/Modal/AuctionEndModal";
@@ -30,6 +30,7 @@ const ReduceBidPage = () => {
   const route = useRoute<RouteProp<ReduceBidPageParams, "ReduceBidPage">>();
   const { itemId } = route.params ?? {};
   const navigation = useNavigation();
+  const [isPlaceBidCus, setIsPlaceBidCus] = useState(false);
   const [item, setItem] = useState<LotDetail>({
     buyNowPrice: undefined,
     id: 0,
@@ -98,8 +99,21 @@ const ReduceBidPage = () => {
     navigation.goBack();
   };
 
+  const isPlaceBid = async () => {
+    if (customerId !== undefined) {
+      try {
+        const response = await checkPlaceBidReduceAuction(itemId, customerId);
+        return response;
+      } catch (error) {
+        console.error("Error checking place bid:", error);
+        return false;
+      }
+    }
+    return false;
+  };
+
   useEffect(() => {
-    const fetchLotDetail = async () => {
+    const fetchData = async () => {
       if (!itemId) return;
 
       try {
@@ -107,17 +121,16 @@ const ReduceBidPage = () => {
         if (response?.isSuccess && response.data) {
           setItem(response.data);
         }
+
+        const isPlace = await isPlaceBid();
+        setIsPlaceBidCus(isPlace);
       } catch (error) {
-        console.error("Error fetching lot detail:", error);
+        console.error("Error in fetching data:", error);
       }
     };
 
-    fetchLotDetail();
+    fetchData();
   }, [itemId]);
-
-  console.log("Item:", item.endTime);
-
-  console.log("milestoneReduceTime////////////////", milenstoneReduceTime);
 
   useEffect(() => {
     if (accountId && itemId) {
@@ -132,7 +145,9 @@ const ReduceBidPage = () => {
   const mainContent = [
     {
       key: "timer",
-      component: <CountDownTimer endTime={endTime || item.endTime} />,
+      component: (
+        <CountDownTimer endTime={endTime || item.endTime} status={status} />
+      ),
     },
     {
       key: "product",
@@ -149,6 +164,7 @@ const ReduceBidPage = () => {
           maxPrice={item.finalPriceSold ?? 0}
           stepBidIncrement={item.bidIncrement ?? 0}
           status={status}
+          item={item}
         />
       ),
     },
@@ -166,22 +182,42 @@ const ReduceBidPage = () => {
     },
   ];
 
+  if (!itemId || !accountId) {
+    return (
+      <View className="items-center justify-center flex-1 bg-white">
+        <Text>Missing required parameters</Text>
+      </View>
+    );
+  }
+
+  if (error) {
+    console.error("Bidding error:", error);
+  }
+
+  if (!item) {
+    return (
+      <View className="items-center justify-center flex-1 bg-white">
+        <Text>Loading...</Text>
+      </View>
+    );
+  }
+
   return (
     <View className="flex-1 bg-white">
-      {isConnected ? (
-        <FlatList
-          data={mainContent}
-          renderItem={({ item }) => (
-            <View className="mb-2">{item.component}</View>
-          )}
-          keyExtractor={(item) => item.key}
-          ListFooterComponent={<View className="h-24" />}
-        />
-      ) : (
-        <View className="absolute top-0 left-0 right-0 p-2 bg-red-500">
+      {!isConnected && (
+        <View className="absolute top-0 left-0 right-0 z-50 p-2 bg-red-500">
           <Text className="text-center text-white">Reconnecting...</Text>
         </View>
       )}
+
+      <FlatList
+        data={mainContent}
+        renderItem={({ item }) => (
+          <View className="mb-2">{item.component}</View>
+        )}
+        keyExtractor={(item) => item.key}
+        ListFooterComponent={<View className="h-24" />}
+      />
 
       {isConnected && (
         <View className="absolute bottom-0 left-0 right-0 bg-white shadow-lg">
@@ -193,6 +229,8 @@ const ReduceBidPage = () => {
             onPlaceBidMethod4={sendBidMethod4}
             resultBidding={resultBidding}
             status={status}
+            isPlaceBidCus={isPlaceBidCus}
+            isLoading={isConnected}
           />
         </View>
       )}
@@ -204,7 +242,10 @@ const ReduceBidPage = () => {
         winningPrice={winnerPrice}
         onClose={onClose}
       />
-      <AuctionEndedModal visible={endlotwithoutwinner} onClose={onClose} />
+      <AuctionEndedModal
+        visible={endlotwithoutwinner || status === "Cancelled"}
+        onClose={onClose}
+      />
     </View>
   );
 };

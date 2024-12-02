@@ -1,13 +1,13 @@
-import React, { useState } from "react";
-import { View, Text, ScrollView, TouchableOpacity } from "react-native";
-import { TextInput, Checkbox, Button } from "react-native-paper";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { useNavigation } from "expo-router";
-import { StackNavigationProp } from "@react-navigation/stack";
-import { RouteProp, useRoute } from "@react-navigation/native";
 import { requestOTPMail } from "@/api/OTPApi";
 import { showSuccessMessage } from "@/components/FlashMessageHelpers";
 import LoadingOverlay from "@/components/LoadingOverlay";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { RouteProp, useRoute } from "@react-navigation/native";
+import { StackNavigationProp } from "@react-navigation/stack";
+import { useNavigation } from "expo-router";
+import React, { useState } from "react";
+import { ScrollView, Text, TouchableOpacity, View } from "react-native";
+import { Checkbox } from "react-native-paper";
 
 interface BenUyQuyen {
   hoTen: string;
@@ -102,15 +102,15 @@ const PowerOfAttorney: React.FC = () => {
     <>
       {loading && <LoadingOverlay visible={loading} />}
       <View className="flex-1 bg-gray-100 ">
-        <ScrollView className=" bg-white px-4">
-          <Text className="text-center text-lg font-bold mb-4">
+        <ScrollView className="px-4 bg-white ">
+          <Text className="mb-4 text-lg font-bold text-center">
             CỘNG HOÀ XÃ HỘI CHỦ NGHĨA VIỆT NAM{"\n"}Độc lập - Tự do - Hạnh phúc
           </Text>
 
-          <Text className="text-center text-xl font-bold mb-2">
+          <Text className="mb-2 text-xl font-bold text-center">
             GIẤY UỶ QUYỀN
           </Text>
-          <Text className="text-center italic mb-4">(Dành cho cá nhân)</Text>
+          <Text className="mb-4 italic text-center">(Dành cho cá nhân)</Text>
 
           <Text className="mb-2">
             - Căn cứ Bộ Luật Dân sự nước Cộng hoà xã hội chủ nghĩa Việt Nam.
@@ -122,21 +122,21 @@ const PowerOfAttorney: React.FC = () => {
           </Text>
 
           {/* Section I: BÊN UỶ QUYỀN */}
-          <Text className="font-bold text-lg mb-2">I. BÊN UỶ QUYỀN</Text>
+          <Text className="mb-2 text-lg font-bold">I. BÊN UỶ QUYỀN</Text>
           <View className="flex-row mb-2">
-            <Text className=" mr-2">Họ tên:</Text>
+            <Text className="mr-2 ">Họ tên:</Text>
             <Text className="font-semibold text-gray-800 ">
               {details?.owner || "Không xác định"}
             </Text>
           </View>
           <View className="flex-row mb-2">
-            <Text className=" mr-2">Địa chỉ:</Text>
+            <Text className="mr-2 ">Địa chỉ:</Text>
             <Text className="font-semibold text-gray-800 ">
               {details?.address || "Không xác định"}
             </Text>
           </View>
           <View className="flex-row mb-2">
-            <Text className=" mr-2">Số CCCD:</Text>
+            <Text className="mr-2 ">Số CCCD:</Text>
             <Text className="font-semibold text-gray-800 ">
               {details?.CCCD || "Không xác định"}
             </Text>
@@ -144,7 +144,7 @@ const PowerOfAttorney: React.FC = () => {
 
           <View className="flex-row ">
             <View className="flex-row mb-2 mr-10">
-              <Text className=" mr-2">Ngày cấp:</Text>
+              <Text className="mr-2 ">Ngày cấp:</Text>
               <Text className="font-semibold text-gray-800 ">
                 {details?.idIssuanceDate
                   ? new Date(details.idIssuanceDate).toLocaleDateString("vi-VN")
@@ -152,7 +152,7 @@ const PowerOfAttorney: React.FC = () => {
               </Text>
             </View>
             <View className="flex-row mb-2">
-              <Text className=" mr-2">Quốc tịch:</Text>
+              <Text className="mr-2 ">Quốc tịch:</Text>
               <Text className="font-semibold text-gray-800 ">
                 {details?.country || "Không xác định"}
               </Text>
@@ -160,7 +160,7 @@ const PowerOfAttorney: React.FC = () => {
           </View>
 
           {/* Section II: BÊN ĐƯỢC UỶ QUYỀN */}
-          <Text className="font-bold text-lg mb-2">II. BÊN ĐƯỢC UỶ QUYỀN</Text>
+          <Text className="mb-2 text-lg font-bold">II. BÊN ĐƯỢC UỶ QUYỀN</Text>
           <Text className="mb-2">
             Họ tên: <Text className="font-bold">Nguyễn Văn B</Text>
           </Text>
@@ -174,7 +174,7 @@ const PowerOfAttorney: React.FC = () => {
           <Text className="mb-4">Quốc tịch: Việt Nam</Text>
 
           {/* Section III: NỘI DUNG UỶ QUYỀN */}
-          <Text className="font-bold text-lg mb-2">III. NỘI DUNG UỶ QUYỀN</Text>
+          <Text className="mb-2 text-lg font-bold">III. NỘI DUNG UỶ QUYỀN</Text>
           <Text className="mb-4">
             Bên Uỷ quyền đồng ý ủy quyền cho Bên Nhận Ủy quyền thực hiện các
             hành vi sau đây:
@@ -187,7 +187,7 @@ const PowerOfAttorney: React.FC = () => {
           </Text>
 
           {/* Section IV: CAM KẾT */}
-          <Text className="font-bold text-lg mb-2">IV. CAM KẾT</Text>
+          <Text className="mb-2 text-lg font-bold">IV. CAM KẾT</Text>
           <Text className="mb-4">
             - Hai bên cam kết sẽ hoàn toàn chịu trách nhiệm trước Pháp luật về
             mọi thông tin uỷ quyền ở trên{"\n"}- Mọi tranh chấp phát sinh giữa
@@ -195,16 +195,16 @@ const PowerOfAttorney: React.FC = () => {
           </Text>
 
           {/* Signatures */}
-          <View className="flex-row justify-around items-center mb-6">
+          <View className="flex-row items-center justify-around mb-6">
             <View className="items-center">
               <Text className="text-lg font-semibold">BÊN ỦY QUYỀN</Text>
-              <Text className="text-sm mb-8 italic">(Ký, họ tên)</Text>
+              <Text className="mb-8 text-sm italic">(Ký, họ tên)</Text>
               {isOTP ? (
-                <Text className="text-green-800 text-center text-lg font-bold">
+                <Text className="text-lg font-bold text-center text-green-800">
                   {details?.owner}
                 </Text>
               ) : (
-                <Text className="text-gray-800 text-center text-lg font-bold">
+                <Text className="text-lg font-bold text-center text-gray-800">
                   Ký xác nhận OTP
                 </Text>
               )}
@@ -212,22 +212,22 @@ const PowerOfAttorney: React.FC = () => {
               <Text className="mt-6">Nguyễn Văn A</Text>
             </View>
             <View className="items-center">
-              <Text className="text-lg font-semibold mt-1">
+              <Text className="mt-1 text-lg font-semibold">
                 BÊN ĐƯỢC ỦY QUYỀN
               </Text>
-              <Text className="text-sm mb-8 italic">(Ký, họ tên)</Text>
+              <Text className="mb-8 text-sm italic">(Ký, họ tên)</Text>
               <MaterialCommunityIcons
                 name="signature-freehand"
                 size={48}
                 color="black"
               />
-              <Text className=" mt-6">Nguyễn Văn B</Text>
+              <Text className="mt-6 ">Nguyễn Văn B</Text>
             </View>
           </View>
           {/* Checkbox for terms and conditions */}
-          <View className=" pb-4">
+          <View className="pb-4 ">
             {isOTP ? (
-              <Text className=" ml-2">
+              <Text className="ml-2 ">
                 Tôi đã đọc các điều khoản chính sách của JAS và đồng ý với các
                 điều khoản
               </Text>
@@ -242,7 +242,7 @@ const PowerOfAttorney: React.FC = () => {
                     }))
                   }
                 />
-                <Text className=" ml-2">
+                <Text className="ml-2 ">
                   Tôi đã đọc các điều khoản chính sách của JAS và đồng ý với các
                   điều khoản
                 </Text>
@@ -251,10 +251,9 @@ const PowerOfAttorney: React.FC = () => {
           </View>
           {isOTP ? (
             <TouchableOpacity
-              className="p-3 rounded bg-blue-500 mb-4"
-              onPress={() => navigation.navigate("HistoryItemConsign")}
-            >
-              <Text className="text-white text-center text-lg font-bold uppercase">
+              className="p-3 mb-4 bg-blue-500 rounded"
+              onPress={() => navigation.navigate("HistoryItemConsign")}>
+              <Text className="text-lg font-bold text-center text-white uppercase">
                 History Consign
               </Text>
             </TouchableOpacity>
@@ -264,9 +263,8 @@ const PowerOfAttorney: React.FC = () => {
                 formData.agreeTerms ? "bg-blue-500" : "bg-gray-500"
               }  mb-4`}
               onPress={handleOTP}
-              disabled={!formData.agreeTerms}
-            >
-              <Text className="text-white text-center text-lg font-bold">
+              disabled={!formData.agreeTerms}>
+              <Text className="text-lg font-bold text-center text-white">
                 OTP CONFIRM
               </Text>
             </TouchableOpacity>

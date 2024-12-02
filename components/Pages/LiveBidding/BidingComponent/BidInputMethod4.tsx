@@ -9,6 +9,7 @@ import {
 import { LotDetail } from "@/app/types/lot_type";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
+import { isLoading } from "expo-font";
 
 interface BidInputProps {
   isEndAuctionMethod4: boolean;
@@ -18,6 +19,8 @@ interface BidInputProps {
   resultBidding?: string;
   setResultBidding: React.Dispatch<React.SetStateAction<string>>;
   status: string;
+  isPlaceBidCus: boolean;
+  isLoading: boolean;
 }
 
 const BidInputMethod4: React.FC<BidInputProps> = ({
@@ -28,6 +31,8 @@ const BidInputMethod4: React.FC<BidInputProps> = ({
   resultBidding,
   setResultBidding,
   status,
+  isPlaceBidCus,
+  isLoading,
 }) => {
   const [error, setError] = useState<string | null>(null);
   const [loadingMethod4, setLoadingMethod4] = useState<boolean>(false);
@@ -44,7 +49,6 @@ const BidInputMethod4: React.FC<BidInputProps> = ({
         ToastAndroid.LONG,
         ToastAndroid.BOTTOM
       );
-
       setResultBidding("");
     }
   }, [resultBidding]);
@@ -60,13 +64,12 @@ const BidInputMethod4: React.FC<BidInputProps> = ({
       }
     }
 
-    // Hiển thị alert để xác nhận
     Alert.alert(
-      "Xác nhận đặt giá",
-      `Bạn có chắc chắn muốn đặt giá ${price.toLocaleString()} cho món này không?`,
+      "Confirm Bid",
+      `Are you sure you want to place a bid of ${price.toLocaleString()} for this item?`,
       [
         {
-          text: "Hủy",
+          text: "Cancel",
           style: "cancel",
         },
         {
@@ -86,38 +89,51 @@ const BidInputMethod4: React.FC<BidInputProps> = ({
     );
   };
 
+  const getButtonText = () => {
+    if (isEndAuctionMethod4 || item.status === "Sold") {
+      return "SOLD";
+    }
+    if (item.status === "Passed") {
+      return "PASSED";
+    }
+    if (status === "Pause") {
+      return "PAUSED";
+    }
+    if (status === "Cancel") {
+      return "CANCELLED";
+    }
+    if (isPlaceBidCus) {
+      return "YOU HAVE PLACED A BID";
+    }
+    if (loadingMethod4) {
+      return "PROCESSING...";
+    }
+    return "BUY NOW";
+  };
+
+  const isDisabled =
+    isEndAuctionMethod4 ||
+    item.status === "Sold" ||
+    loadingMethod4 ||
+    item.status === "Passed" ||
+    status === "Pause" ||
+    status === "Cancel" ||
+    isPlaceBidCus ||
+    isLoading;
+
   return (
     <View className="w-full p-3">
       <View className="flex items-center justify-between">
         <TouchableOpacity
-          disabled={
-            isEndAuctionMethod4 ||
-            item.status === "Sold" ||
-            loadingMethod4 ||
-            item.status === "Passed" ||
-            status === "Pause" ||
-            status === "Cancel"
-          }
+          disabled={isDisabled}
           onPress={() => handleSubmitBidMethod4(reducePrice ?? 0)}
           className={
-            isEndAuctionMethod4 ||
-            item.status === "Sold" ||
-            item.status === "Passed" ||
-            item.status === "Canceled" ||
-            loadingMethod4 ||
-            status === "Pause" ||
-            status === "Cancel"
+            isDisabled
               ? "w-[50%] flex items-center justify-center h-12 bg-gray-500 rounded-md"
               : "w-[50%] flex items-center justify-center h-12 bg-blue-500 rounded-md"
           }>
           <Text className="text-xl font-semibold text-white">
-            {isEndAuctionMethod4 ||
-            item.status === "Sold" ||
-            item.status === "Passed" ||
-            status === "Pause" ||
-            status === "Cancel"
-              ? "SOLD"
-              : "BUY NOW"}
+            {getButtonText()}
           </Text>
         </TouchableOpacity>
         {error && (

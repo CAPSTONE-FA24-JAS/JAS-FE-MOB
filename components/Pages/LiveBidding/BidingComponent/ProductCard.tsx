@@ -1,3 +1,4 @@
+import { LotDetail } from "@/app/types/lot_type";
 import React from "react";
 import { View, Text, Image } from "react-native";
 
@@ -10,6 +11,7 @@ interface ProductCardProps {
   maxPrice?: number;
   stepBidIncrement?: number;
   status?: string;
+  item: LotDetail;
 }
 
 const ProductCard: React.FC<ProductCardProps> = ({
@@ -21,6 +23,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
   maxPrice,
   stepBidIncrement,
   status,
+  item,
 }) => {
   return (
     <View className="p-2">
@@ -43,12 +46,12 @@ const ProductCard: React.FC<ProductCardProps> = ({
           <View>
             <Text className="mr-2 text-sm font-medium text-gray-400 mt-">
               Est:{" "}
-              {(minPrice ?? 0).toLocaleString("vi-vn", {
+              {(item.jewelry.estimatePriceMin ?? 0).toLocaleString("vi-vn", {
                 style: "currency",
                 currency: "VND",
               })}{" "}
               -{" "}
-              {(maxPrice ?? 0).toLocaleString("vi-vn", {
+              {(item.jewelry.estimatePriceMax ?? 0).toLocaleString("vi-vn", {
                 style: "currency",
                 currency: "VND",
               })}

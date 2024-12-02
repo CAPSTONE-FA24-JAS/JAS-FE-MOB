@@ -1,7 +1,7 @@
 import { getHistoryConsign } from "@/api/consignAnItemApi";
 import ConsignItem, { ConsignItemProps } from "@/components/ConsignItem";
 import { RootState } from "@/redux/store";
-import { RouteProp, useFocusEffect, useRoute } from "@react-navigation/native";
+import { RouteProp, useRoute } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { useNavigation } from "expo-router";
 import React, { useCallback, useEffect, useState } from "react";
@@ -158,7 +158,7 @@ const HistoryItemConsign: React.FC = () => {
 
   return (
     <View className="flex-1 bg-gray-100">
-      <View className="relative  px-4 py-2">
+      <View className="relative px-4 py-2">
         <ScrollView
           horizontal={true}
           showsHorizontalScrollIndicator={false}
@@ -167,15 +167,13 @@ const HistoryItemConsign: React.FC = () => {
             noConsignmentMessage
               ? null
               : "h-[150px]"
-          } `}
-        >
+          } `}>
           <View className="flex-row items-center">
             <TouchableOpacity
               className={`px-4 py-2 mr-2 ${
                 selectedStatus === null ? "bg-yellow-500" : "bg-gray-400"
               } rounded`}
-              onPress={() => setSelectedStatus(null)}
-            >
+              onPress={() => setSelectedStatus(null)}>
               <Text className="font-bold text-white uppercase">ALL</Text>
             </TouchableOpacity>
 
@@ -185,8 +183,7 @@ const HistoryItemConsign: React.FC = () => {
                 className={`px-4 py-2 mr-2 ${
                   selectedStatus === status ? "bg-yellow-500" : "bg-gray-400"
                 } rounded`}
-                onPress={() => setSelectedStatus(status)}
-              >
+                onPress={() => setSelectedStatus(status)}>
                 <Text className="font-bold text-white uppercase">
                   {index + 1}. {statusTextMap[index]}
                 </Text>
@@ -240,8 +237,7 @@ const HistoryItemConsign: React.FC = () => {
                     flexDirection: "row",
                     justifyContent: "space-between",
                   }}
-                  className="bottom-0 w-full "
-                >
+                  className="bottom-0 w-full ">
                   <TouchableOpacity
                     onPress={handleLoadMore}
                     style={{
@@ -251,8 +247,7 @@ const HistoryItemConsign: React.FC = () => {
                       margin: 10,
                       width: "100%",
                     }}
-                    className="mx-auto"
-                  >
+                    className="mx-auto">
                     <Text style={{ color: "#fff", textAlign: "center" }}>
                       Load More
                     </Text>

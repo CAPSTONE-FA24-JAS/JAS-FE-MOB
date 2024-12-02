@@ -1,18 +1,17 @@
 import { getLotsByAuctionId } from "@/api/lotAPI";
 import { AuctionData } from "@/app/types/auction_type";
 import { Lot } from "@/app/types/lot_type";
-import CountdownTimerBid from "@/components/CountDown/CountdownTimer";
 import AuctionCountdownTimer from "@/components/CountDown/CountdownTimerAuction";
 import ItemLots from "@/components/ItemLots";
 import { useFocusEffect } from "expo-router";
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useState } from "react";
 import {
-  View,
-  Text,
+  ActivityIndicator,
   ScrollView,
+  Text,
   TextInput,
   TouchableOpacity,
-  ActivityIndicator,
+  View,
 } from "react-native";
 
 interface AuctionLotsProps {

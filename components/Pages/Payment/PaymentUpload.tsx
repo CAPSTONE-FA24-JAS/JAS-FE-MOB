@@ -1,25 +1,24 @@
-import React, { useState } from "react";
-import {
-  View,
-  Text,
-  Image,
-  TouchableOpacity,
-  Alert,
-  ActivityIndicator,
-  StyleSheet,
-  Dimensions,
-} from "react-native";
-import * as ImagePicker from "expo-image-picker"; // Import ImagePicker from Expo
-import { Checkbox } from "react-native-paper";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { useNavigation, useRoute, RouteProp } from "@react-navigation/native";
-import { StackNavigationProp } from "@react-navigation/stack";
-import {
-  showSuccessMessage,
-  showErrorMessage,
-} from "@/components/FlashMessageHelpers";
 import { uploadBillForInvoice } from "@/api/invoiceApi"; // Import the API function
 import { MyBidData } from "@/app/types/bid_type";
+import {
+  showErrorMessage,
+  showSuccessMessage,
+} from "@/components/FlashMessageHelpers";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { RouteProp, useNavigation, useRoute } from "@react-navigation/native";
+import { StackNavigationProp } from "@react-navigation/stack";
+import * as ImagePicker from "expo-image-picker"; // Import ImagePicker from Expo
+import React, { useState } from "react";
+import {
+  ActivityIndicator,
+  Alert,
+  Image,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
+import { Checkbox } from "react-native-paper";
 
 // Define the types for navigation routes
 type RootStackParamList = {
@@ -131,8 +130,7 @@ const PaymentUpload: React.FC = () => {
       <View style={styles.uploadSection}>
         <TouchableOpacity
           onPress={pickImageFromGallery}
-          style={styles.uploadButton}
-        >
+          style={styles.uploadButton}>
           {image ? (
             <Image
               source={{ uri: image }}
@@ -151,8 +149,7 @@ const PaymentUpload: React.FC = () => {
         {image && (
           <TouchableOpacity
             onPress={pickImageFromGallery}
-            style={styles.reselectButton}
-          >
+            style={styles.reselectButton}>
             <Text style={styles.reselectButtonText}>Reselect</Text>
           </TouchableOpacity>
         )}
@@ -176,8 +173,7 @@ const PaymentUpload: React.FC = () => {
         <TouchableOpacity
           style={styles.saveButton}
           onPress={handleSave}
-          disabled={uploading}
-        >
+          disabled={uploading}>
           {uploading ? (
             <ActivityIndicator color="#fff" />
           ) : (

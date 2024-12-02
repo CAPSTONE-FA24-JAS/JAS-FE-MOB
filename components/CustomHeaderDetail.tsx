@@ -2,7 +2,6 @@ import React from "react";
 import { View, Text, TouchableOpacity } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
-import { styled } from "nativewind";
 
 interface CustomHeaderDetailProps {
   title: string;
@@ -26,15 +25,14 @@ const CustomHeaderDetail: React.FC<CustomHeaderDetailProps> = ({ title }) => {
         shadowOpacity: 0.25, // Độ mờ của shadow
         shadowRadius: 3.84, // Bán kính của shadow
         elevation: 5, // Độ cao của shadow (Android)
-      }}
-    >
+      }}>
       {/* Back Button */}
       <TouchableOpacity onPress={() => router.back()} className="mr-4">
         <MaterialCommunityIcons name="arrow-left" size={30} color="black" />
       </TouchableOpacity>
 
       {/* Title */}
-      <View className="flex-1 items-center">
+      <View className="items-center flex-1">
         <Text className="text-2xl font-bold text-black ">{title}</Text>
       </View>
 

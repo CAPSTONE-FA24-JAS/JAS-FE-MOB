@@ -1,18 +1,18 @@
-import React, { useEffect, useState } from "react";
-import { View, Text, TouchableOpacity } from "react-native";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
-import ProfileCard from "@/components/Pages/MyProfile/ProfileCard";
-import { router, useFocusEffect, useNavigation } from "expo-router";
-import { StackNavigationProp } from "@react-navigation/stack";
-import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch, RootState } from "@/redux/store";
-import { ProfileResponse, UserInfo } from "../types/profilte_type";
 import { getProfile } from "@/api/profileApi";
-import { logout } from "@/redux/slices/authSlice";
-import { showErrorMessage } from "@/components/FlashMessageHelpers";
 import { checkPasswordWallet } from "@/api/walletApi";
+import { showErrorMessage } from "@/components/FlashMessageHelpers";
+import ProfileCard from "@/components/Pages/MyProfile/ProfileCard";
 import PasswordModal from "@/components/Pages/Payment/CheckPasswordModal";
+import { logout } from "@/redux/slices/authSlice";
 import { resetNotifications } from "@/redux/slices/notificationSlice";
+import { AppDispatch, RootState } from "@/redux/store";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { StackNavigationProp } from "@react-navigation/stack";
+import { router, useFocusEffect, useNavigation } from "expo-router";
+import React, { useState } from "react";
+import { Text, TouchableOpacity, View } from "react-native";
+import { useDispatch, useSelector } from "react-redux";
+import { ProfileResponse, UserInfo } from "../types/profilte_type";
 
 type RootStackParamList = {
   ChangePassword: undefined;
@@ -131,8 +131,7 @@ const MyAccount = () => {
       <View className="mt-4 bg-white rounded-lg shadow">
         <TouchableOpacity
           className="flex-row items-center justify-between p-4 border-b border-gray-200"
-          onPress={() => handleNavigation("AccountInfo")}
-        >
+          onPress={() => handleNavigation("AccountInfo")}>
           <View className="flex-row items-center">
             <MaterialCommunityIcons name="account" size={20} color="black" />
             <Text className="ml-4 text-lg">Account Info</Text>
@@ -147,8 +146,7 @@ const MyAccount = () => {
         </TouchableOpacity>
         <TouchableOpacity
           className="flex-row items-center justify-between p-4 border-b border-gray-200"
-          onPress={() => handleNavigation("ChangePassword")}
-        >
+          onPress={() => handleNavigation("ChangePassword")}>
           <View className="flex-row items-center">
             <MaterialCommunityIcons name="lock-reset" size={20} color="black" />
             <Text className="ml-4 text-lg">Change Password</Text>
@@ -163,8 +161,7 @@ const MyAccount = () => {
         </TouchableOpacity>
         <TouchableOpacity
           className="flex-row items-center justify-between p-4 border-b border-gray-200"
-          onPress={() => handleNavigation("MyWallet")}
-        >
+          onPress={() => handleNavigation("MyWallet")}>
           <View className="flex-row items-center">
             <MaterialCommunityIcons name="lock-reset" size={20} color="black" />
             <Text className="ml-4 text-lg">My Wallet</Text>
@@ -179,8 +176,7 @@ const MyAccount = () => {
         </TouchableOpacity>
         <TouchableOpacity
           className="flex-row items-center justify-between p-4 border-b border-gray-200"
-          onPress={() => handleNavigation("AddBankAccount")}
-        >
+          onPress={() => handleNavigation("AddBankAccount")}>
           <View className="flex-row items-center">
             <MaterialCommunityIcons name="lock-reset" size={20} color="black" />
             <Text className="ml-4 text-lg">Card</Text>
@@ -195,8 +191,7 @@ const MyAccount = () => {
         </TouchableOpacity>
         <TouchableOpacity
           className="flex-row items-center justify-between p-4 border-b border-gray-200"
-          onPress={() => handleNavigation("Help")}
-        >
+          onPress={() => handleNavigation("Help")}>
           <View className="flex-row items-center">
             <MaterialCommunityIcons
               name="help-circle"
@@ -215,8 +210,7 @@ const MyAccount = () => {
         </TouchableOpacity>
         <TouchableOpacity
           className="flex-row items-center justify-between p-4 border-b border-gray-200"
-          onPress={() => handleNavigation("Terms")}
-        >
+          onPress={() => handleNavigation("Terms")}>
           <View className="flex-row items-center">
             <MaterialCommunityIcons
               name="file-document"
@@ -235,8 +229,7 @@ const MyAccount = () => {
         </TouchableOpacity>
         <TouchableOpacity
           className="flex-row items-center p-4"
-          onPress={handleLogout}
-        >
+          onPress={handleLogout}>
           <MaterialCommunityIcons name="logout" size={20} color="black" />
           <Text className="ml-4 text-lg">Log Out</Text>
         </TouchableOpacity>

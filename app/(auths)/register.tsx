@@ -1,23 +1,22 @@
-import { Link } from "expo-router";
-import React, { useState } from "react";
-import {
-  View,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  Image,
-  ImageBackground,
-} from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
-import { SignUpUser } from "../types/signup_type";
-import { useAppDispatch } from "@/redux/store";
+import { registerApi } from "@/api/authApi";
 import {
   showErrorMessage,
   showSuccessMessage,
 } from "@/components/FlashMessageHelpers";
-import { registerApi } from "@/api/authApi";
+import { useAppDispatch } from "@/redux/store";
 import axios from "axios";
+import { Link } from "expo-router";
+import React, { useState } from "react";
+import {
+  Image,
+  ImageBackground,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import { Response } from "../types/respone_type";
+import { SignUpUser } from "../types/signup_type";
 
 const SignUpScreen = () => {
   const dispatch = useAppDispatch();

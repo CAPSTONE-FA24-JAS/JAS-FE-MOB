@@ -1,9 +1,7 @@
 // AddressInfo.tsx
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { StackNavigationProp } from "@react-navigation/stack";
-import { useNavigation } from "expo-router";
 import React from "react";
-import { View, Text, TouchableOpacity } from "react-native";
+import { Text, TouchableOpacity, View } from "react-native";
 
 interface AddressInfoProps {
   user: {
@@ -23,7 +21,7 @@ const AddressInfo: React.FC<AddressInfoProps> = ({ user, onChooseAddress }) => {
   return (
     <View className="p-4 mx-4 bg-white rounded-md shadow-lg">
       <View className="flex-row justify-between">
-        <Text className="text-xl font-bold mb-2 text-gray-900">
+        <Text className="mb-2 text-xl font-bold text-gray-900">
           Address Information
         </Text>
         <TouchableOpacity onPress={onChooseAddress}>

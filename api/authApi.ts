@@ -3,8 +3,7 @@
 import { Data } from "@/app/types/login_type";
 import { Response } from "@/app/types/respone_type";
 import { DataSignUpResponse, SignUpUser } from "@/app/types/signup_type";
-import { showErrorMessage } from "@/components/FlashMessageHelpers";
-import { login, register } from "@/redux/slices/authSlice";
+import { login } from "@/redux/slices/authSlice";
 import { AppDispatch } from "@/redux/store";
 import axios from "axios";
 import { router } from "expo-router";

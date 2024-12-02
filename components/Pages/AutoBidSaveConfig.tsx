@@ -1,22 +1,20 @@
+import { setAutoBidConfig } from "@/api/lotAPI";
+import { LotDetail } from "@/app/types/lot_type";
+import { RouteProp, useNavigation, useRoute } from "@react-navigation/native";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import React, { useState } from "react";
 import {
-  View,
-  Text,
-  TouchableOpacity,
-  SafeAreaView,
-  TextInput,
   Alert,
+  Image,
   KeyboardAvoidingView,
   Platform,
+  SafeAreaView,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
 } from "react-native";
-import { useRoute, RouteProp } from "@react-navigation/native";
-import { useNavigation } from "@react-navigation/native";
-import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import { ScrollView } from "react-native-gesture-handler";
-import { LotDetail } from "@/app/types/lot_type";
-import { setAutoBidConfig } from "@/api/lotAPI";
 import DropDownPicker from "react-native-dropdown-picker";
-import { Image } from "react-native";
 
 type RootStackParamList = {
   BidAutomation: BidAutomationRouteParams;

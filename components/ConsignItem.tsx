@@ -70,7 +70,7 @@ const ConsignItem: React.FC<ConsignItemProps> = ({
 
   return (
     <View className="p-4 mb-2 bg-white rounded-lg shadow">
-      <Text className=" py-1 px-2 bg-blue-400 font-semibold z-40 text-white rounded-full absolute top-1 left-2">
+      <Text className="absolute z-40 px-2 py-1 font-semibold text-white bg-blue-400 rounded-full  top-1 left-2">
         {index + 1}
       </Text>
       <View className="flex-row items-center">
@@ -111,8 +111,7 @@ const ConsignItem: React.FC<ConsignItemProps> = ({
             </Text>
             <TouchableOpacity
               onPress={onViewDetails}
-              className="w-[45%] p-2 mt-2 bg-gray-600 rounded"
-            >
+              className="w-[45%] p-2 mt-2 bg-gray-600 rounded">
               <Text className="font-semibold text-center text-white">
                 XEM CHI TIẾT
               </Text>

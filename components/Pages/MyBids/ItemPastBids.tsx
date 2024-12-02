@@ -1,14 +1,10 @@
-import { StackNavigationProp } from "@react-navigation/stack";
-import { useNavigation } from "@react-navigation/native";
-import React from "react";
-import { View, Image, Text, TouchableOpacity } from "react-native";
-import moment from "moment-timezone";
 import { DataCurentBidResponse } from "@/app/types/bid_type";
-import {
-  InvoiceData,
-  InvoiceDetailResponse,
-  MyBidDTO,
-} from "@/app/types/invoice_type";
+import { InvoiceData } from "@/app/types/invoice_type";
+import { useNavigation } from "@react-navigation/native";
+import { StackNavigationProp } from "@react-navigation/stack";
+import moment from "moment-timezone";
+import React from "react";
+import { Image, Text, TouchableOpacity, View } from "react-native";
 
 interface ItemPastBidsProps {
   invoiceId?: number;
@@ -205,8 +201,7 @@ const ItemPastBids: React.FC<ItemPastBidsProps> = ({
           invoiceId: invoiceId ?? 0,
         });
       }}
-      className="flex-row flex-1 gap-2 border-2 border-gray-200 p-4 my-1 bg-white rounded-lg shadow-lg"
-    >
+      className="flex-row flex-1 gap-2 p-4 my-1 bg-white border-2 border-gray-200 rounded-lg shadow-lg">
       <View className="flex items-center w-[40%]">
         <Image
           className="w-[160px] h-[200px] rounded-lg"
@@ -221,8 +216,7 @@ const ItemPastBids: React.FC<ItemPastBidsProps> = ({
             isWin
               ? "bg-[#98C583] p-2 mt-2 rounded-md w-[100%]"
               : "bg-[#C5838F] p-2 mt-2 rounded-md w-[100%]"
-          }
-        >
+          }>
           <Text className="text-lg font-bold text-center text-white">
             {isWin ? "You Win !!!" : "You Lose !!!"}
           </Text>
@@ -235,18 +229,16 @@ const ItemPastBids: React.FC<ItemPastBidsProps> = ({
             className={` rounded px-4 py-1 justify-center mr-4 flex-row items-center`}
             style={{
               backgroundColor: getStatusColorInvoice(statusInvoice ?? "N/A"),
-            }}
-          >
-            <Text className="text-base text-center font-semibold text-white uppercase">
+            }}>
+            <Text className="text-base font-semibold text-center text-white uppercase">
               {formatStatusInvoice(statusInvoice ?? "N/A")}
             </Text>
           </TouchableOpacity>
         ) : (
           <TouchableOpacity
             className={` rounded px-4 py-1 justify-center mr-4 flex-row items-center`}
-            style={{ backgroundColor: getStatusColor(statusLot) }}
-          >
-            <Text className="text-base text-center font-semibold text-white uppercase">
+            style={{ backgroundColor: getStatusColor(statusLot) }}>
+            <Text className="text-base font-semibold text-center text-white uppercase">
               {formatStatus(statusLot)}
             </Text>
           </TouchableOpacity>

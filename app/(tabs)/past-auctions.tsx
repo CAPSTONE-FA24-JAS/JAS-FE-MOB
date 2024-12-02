@@ -1,15 +1,13 @@
+import { viewAuctions } from "@/api/auctionApi";
+import PastAuctionCard from "@/components/Pages/PastAuction/PastAuctionCard";
 import React, { useEffect, useState } from "react";
 import {
-  View,
-  ScrollView,
-  Text,
-  Image,
   ActivityIndicator,
-  TouchableOpacity,
   FlatList,
+  Text,
+  TouchableOpacity,
+  View,
 } from "react-native";
-import PastAuctionCard from "@/components/Pages/PastAuction/PastAuctionCard";
-import { viewAuctions } from "@/api/auctionApi";
 import { AuctionsData } from "../types/auction_type";
 
 const PastAuctions = () => {

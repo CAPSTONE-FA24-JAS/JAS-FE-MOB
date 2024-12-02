@@ -3,11 +3,11 @@ import { Notification } from "@/app/types/notification_type";
 import { markNotificationAsRead } from "@/redux/slices/notificationSlice";
 import { FontAwesome } from "@expo/vector-icons";
 import { StackNavigationProp } from "@react-navigation/stack";
-import { router, useNavigation } from "expo-router";
+import { useNavigation } from "expo-router";
 import moment from "moment-timezone";
 // components/NotificationItem.tsx
 import React from "react";
-import { View, Text, Image } from "react-native";
+import { Image, Text, View } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { useDispatch } from "react-redux";
 
@@ -153,7 +153,7 @@ const NotificationItem = ({ item }: { item: Notification }) => {
       } `}
       key={item.id} // Ensuring key is unique
     >
-      <Text className="font-semibold text-gray-600 mb-2">
+      <Text className="mb-2 font-semibold text-gray-600">
         {moment(item.creationDate).format("HH:mm A, DD/MM/YYYY")}
       </Text>
       <View className="flex-row items-center">
@@ -172,17 +172,18 @@ const NotificationItem = ({ item }: { item: Notification }) => {
             {item.notifi_Type !== null && (
               <View className={`px-2 py-0.5 rounded ${getTypeColor(item)}`}>
                 <Text
-                  className={`text-base font-medium  ${getTypeColorText(item)}`}
-                >
+                  className={`text-base font-medium  ${getTypeColorText(
+                    item
+                  )}`}>
                   {item.notifi_Type}
                 </Text>
               </View>
             )}
           </View>
-          <Text className="mb-1 text-lg font-bold ml-1">
+          <Text className="mb-1 ml-1 text-lg font-bold">
             {formatTitleText(item.title)}
           </Text>
-          <Text className="text-sm ml-1 text-gray-600">{item.description}</Text>
+          <Text className="ml-1 text-sm text-gray-600">{item.description}</Text>
         </View>
       </View>
       {item.is_Read === false ? (

@@ -1,6 +1,6 @@
 import React from "react";
 import { View, FlatList, ListRenderItem } from "react-native";
-import { ItemWatched, WatchedItem } from "./ItemWatched";
+import { ItemWatched } from "./ItemWatched";
 import { WatchingData } from "@/app/types/watching_type";
 
 interface ItemWatchedCurrentProps {
@@ -15,7 +15,7 @@ const ItemWatchedCurrent: React.FC<ItemWatchedCurrentProps> = ({
   );
 
   return (
-    <View className="flex-1 bg-white p-2">
+    <View className="flex-1 p-2 bg-white">
       <FlatList
         data={watching}
         renderItem={renderItem}

@@ -1,13 +1,11 @@
+import { getAllWatchingsByCustomerId } from "@/api/watchingApi";
+import ItemWatchedCurrent from "@/components/ItemWatchedCurrernt";
+import { RootState } from "@/redux/store";
 import { Tab, TabView } from "@rneui/base";
 import React, { useEffect, useState } from "react";
-import PastBids from "@/components/Pages/MyBids/PastBids";
-import CurrentBids from "@/components/Pages/MyBids/CurrentBids";
-import ItemWatchedCurrent from "@/components/ItemWatchedCurrernt";
-import { WatchingData } from "../types/watching_type";
-import { useSelector } from "react-redux";
-import { RootState } from "@/redux/store";
-import { getAllWatchingsByCustomerId } from "@/api/watchingApi";
 import { ActivityIndicator, Text } from "react-native";
+import { useSelector } from "react-redux";
+import { WatchingData } from "../types/watching_type";
 
 export default function WatchedLots() {
   const [index, setIndex] = React.useState(0);

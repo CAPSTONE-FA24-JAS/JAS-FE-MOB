@@ -1,13 +1,12 @@
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import React, { useEffect, useState } from "react";
 import {
-  View,
-  Text,
-  Modal,
   Image,
-  TouchableOpacity,
-  ScrollView,
+  Modal,
+  Text,
   TextInput,
+  TouchableOpacity,
+  View,
 } from "react-native";
 import Swiper from "react-native-swiper";
 

@@ -1,10 +1,6 @@
+import { showSuccessMessage } from "@/components/FlashMessageHelpers";
 import React, { useState } from "react";
-import { View, Text, TextInput, TouchableOpacity, Alert } from "react-native";
-import { MaterialIcons } from "@expo/vector-icons";
-import {
-  showErrorMessage,
-  showSuccessMessage,
-} from "@/components/FlashMessageHelpers";
+import { Text, TextInput, TouchableOpacity, View } from "react-native";
 
 const ChangePassword: React.FC = () => {
   const [oldPassword, setOldPassword] = useState("");

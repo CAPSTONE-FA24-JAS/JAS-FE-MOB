@@ -4,7 +4,7 @@ import { StackNavigationProp } from "@react-navigation/stack";
 import { useNavigation } from "expo-router";
 import moment from "moment-timezone";
 import React from "react";
-import { View, Text, StyleSheet, Image, TouchableOpacity } from "react-native";
+import { Image, Text, TouchableOpacity, View } from "react-native";
 
 interface ItemBidCardProps {
   isWin: boolean;
@@ -175,12 +175,11 @@ const ItemBidCard: React.FC<ItemBidCardProps> = ({
     }
   };
   return (
-    <View className="p-4  bg-white border-2 border-gray-200 my-2 mx-4 rounded-lg shadow">
-      <View className="flex-row mb-2 justify-between">
+    <View className="p-4 mx-4 my-2 bg-white border-2 border-gray-200 rounded-lg shadow">
+      <View className="flex-row justify-between mb-2">
         <Text
-          className="text-base text-center text-white px-2 rounded-md font-semibold  uppercase"
-          style={{ backgroundColor: getStatusColor(itemDetailBid?.status) }}
-        >
+          className="px-2 text-base font-semibold text-center text-white uppercase rounded-md"
+          style={{ backgroundColor: getStatusColor(itemDetailBid?.status) }}>
           {formatStatus(itemDetailBid?.status)}
         </Text>
         <Text className={`  font-semibold py-1 px-2 uppercase text-center`}>
@@ -198,7 +197,7 @@ const ItemBidCard: React.FC<ItemBidCardProps> = ({
         )}
 
         <View className="flex-1">
-          <View className="flex flex-row items-center justify-between  ">
+          <View className="flex flex-row items-center justify-between ">
             <Text className=" text-sm  text-[#8f8f8f] ">
               {moment(startTime).format(" DD/MM/YYYY")} -{" "}
               {moment(endTime).format(" DD/MM/YYYY")}
@@ -210,8 +209,7 @@ const ItemBidCard: React.FC<ItemBidCardProps> = ({
           <View>
             <View className="flex flex-row items-center gap-2 ">
               <Text
-                className={`${statusColor} uppercase font-semibold text-sm `}
-              >
+                className={`${statusColor} uppercase font-semibold text-sm `}>
                 {isWin ? "You Win" : "You Loose"}
               </Text>
               <Text className={`text-gray-600 font-semibold text-sm `}>
@@ -219,8 +217,7 @@ const ItemBidCard: React.FC<ItemBidCardProps> = ({
               </Text>
               {!isWin && (
                 <Text
-                  className={`${statusColor} uppercase font-semibold text-sm `}
-                >
+                  className={`${statusColor} uppercase font-semibold text-sm `}>
                   {yourMaxBid.toLocaleString("vi-VN", {
                     style: "currency",
                     currency: "VND",
@@ -230,8 +227,7 @@ const ItemBidCard: React.FC<ItemBidCardProps> = ({
 
               {invoiceDetails ? (
                 <Text
-                  className={`${statusColor} uppercase font-semibold text-sm `}
-                >
+                  className={`${statusColor} uppercase font-semibold text-sm `}>
                   {isWin
                     ? invoiceDetails.price.toLocaleString("vi-VN", {
                         style: "currency",
@@ -244,8 +240,7 @@ const ItemBidCard: React.FC<ItemBidCardProps> = ({
                 </Text>
               ) : (
                 <Text
-                  className={`${statusColor} uppercase font-semibold text-sm `}
-                >
+                  className={`${statusColor} uppercase font-semibold text-sm `}>
                   {isWin &&
                     (yourMaxBid.toLocaleString("vi-VN", {
                       style: "currency",
@@ -294,20 +289,18 @@ const ItemBidCard: React.FC<ItemBidCardProps> = ({
               </View>
             )}
           </View>
-          <View className="justify-between mt-4  flex-row">
+          <View className="flex-row justify-between mt-4">
             <Text
-              className="text-base text-center font-semibold  uppercase"
+              className="text-base font-semibold text-center uppercase"
               style={{
                 color: getStatusLotColor(itemDetailBid.lotDTO.status),
-              }}
-            >
+              }}>
               {formatStatusLot(itemDetailBid.lotDTO.status ?? "N/A")}
             </Text>
             <TouchableOpacity
               onPress={goToAuctionDetail}
-              className="px-3  py-1 bg-gray-600 rounded"
-            >
-              <Text className="text-center text-white font-semibold">
+              className="px-3 py-1 bg-gray-600 rounded">
+              <Text className="font-semibold text-center text-white">
                 XEM CHI TIẾT
               </Text>
             </TouchableOpacity>

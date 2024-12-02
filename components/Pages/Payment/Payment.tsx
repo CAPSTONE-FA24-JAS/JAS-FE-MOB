@@ -1,36 +1,35 @@
-import { StackNavigationProp } from "@react-navigation/stack";
-import { useNavigation } from "expo-router";
-import { Asset } from "expo-asset";
-import React, { useState } from "react";
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  ScrollView,
-  ActivityIndicator,
-  Modal,
-  Image,
-} from "react-native";
-import { RadioButton, Appbar, Card, Avatar } from "react-native-paper";
-import Icon from "react-native-vector-icons/MaterialIcons"; // Import Material Icons
-import BalanceCard from "../Wallet/component/BalanceCard";
-import { RouteProp, useRoute } from "@react-navigation/native";
-import { useSelector } from "react-redux";
-import { RootState } from "@/redux/store";
-import {
-  showErrorMessage,
-  showSuccessMessage,
-} from "@/components/FlashMessageHelpers";
 import {
   paymentInvoiceByBankTransfer,
   paymentInvoiceByVnPay,
   paymentInvoiceByWallet,
 } from "@/api/invoiceApi";
-import { Linking } from "react-native";
+import { checkPasswordWallet } from "@/api/walletApi";
 import { MyBidData } from "@/app/types/bid_type";
+import {
+  showErrorMessage,
+  showSuccessMessage,
+} from "@/components/FlashMessageHelpers";
+import { RootState } from "@/redux/store";
+import { RouteProp, useRoute } from "@react-navigation/native";
+import { StackNavigationProp } from "@react-navigation/stack";
+import { Asset } from "expo-asset";
 import * as FileSystem from "expo-file-system"; // Import Expo FileSystem
 import * as MediaLibrary from "expo-media-library"; // Import Expo MediaLibrary for saving images
-import { checkPasswordWallet } from "@/api/walletApi";
+import { useNavigation } from "expo-router";
+import React, { useState } from "react";
+import {
+  ActivityIndicator,
+  Image,
+  Linking,
+  Modal,
+  ScrollView,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
+import { Avatar, Card, RadioButton } from "react-native-paper";
+import { useSelector } from "react-redux";
+import BalanceCard from "../Wallet/component/BalanceCard";
 import PasswordModal from "./CheckPasswordModal";
 
 // Define the types for navigation routes

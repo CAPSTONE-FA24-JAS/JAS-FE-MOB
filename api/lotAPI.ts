@@ -336,3 +336,27 @@ export const getWinnerForLot = async (
     throw error;
   }
 };
+
+export const checkPlaceBidReduceAuction = async (
+  lotId: number,
+  customerId: number
+): Promise<boolean> => {
+  try {
+    const response = await axios.get<Response<boolean>>(
+      `${API_URL}/api/BidPrices/checkPlacebidForReduceBidding?customerId=${customerId}&lotId=${lotId}`
+    );
+
+    if (response.data.isSuccess && response.data.data !== null) {
+      console.log("Check place bid reduce auction:", response.data.data);
+      return response.data.data;
+    } else {
+      throw new Error(
+        response.data.message || "Failed to check place bid reduce auction."
+      );
+    }
+  } catch (error) {
+    console.error("Error checking place bid reduce auction:", error);
+    showErrorMessage("Unable to check place bid reduce auction.");
+    throw error;
+  }
+};

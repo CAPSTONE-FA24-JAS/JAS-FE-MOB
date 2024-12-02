@@ -1,18 +1,14 @@
 import React from "react";
-import { View, StyleSheet } from "react-native";
-import {
-    SafeAreaView,
-    useSafeAreaInsets,
-} from "react-native-safe-area-context";
+import { StyleSheet, View } from "react-native";
 
 const AppScreen = ({ children }: any) => {
-    return <View style={[styles.container]}>{children}</View>;
+  return <View style={[styles.container]}>{children}</View>;
 };
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-    },
+  container: {
+    flex: 1,
+  },
 });
 
 export default AppScreen;

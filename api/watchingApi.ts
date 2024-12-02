@@ -1,11 +1,10 @@
-import axios from "axios";
+import { WatchingResponse } from "@/app/types/watching_type";
 import {
   showErrorMessage,
   showSuccessMessage,
 } from "@/components/FlashMessageHelpers";
-import apiClient from "./config";
+import axios from "axios";
 import { ApiResponse } from "./utils/ApiError";
-import { WatchingResponse } from "@/app/types/watching_type";
 
 const API_URL = process.env.EXPO_PUBLIC_API_URL || "http://localhost:7251";
 

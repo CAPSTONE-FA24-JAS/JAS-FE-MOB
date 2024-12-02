@@ -1,16 +1,15 @@
+import { LotDetail } from "@/app/types/lot_type";
+import { Message } from "@/hooks/useBiddingMethod3";
+import { RootState } from "@/redux/store";
 import React, { useEffect, useState } from "react";
 import {
-  View,
-  TextInput,
-  TouchableOpacity,
   Text,
-  Alert,
+  TextInput,
   ToastAndroid,
+  TouchableOpacity,
+  View,
 } from "react-native";
-import { LotDetail } from "@/app/types/lot_type";
 import { useSelector } from "react-redux";
-import { RootState } from "@/redux/store";
-import { Message } from "@/hooks/useBiddingMethod3";
 
 interface BidInputProps {
   highestBid: number;
@@ -194,8 +193,7 @@ const BidInput: React.FC<BidInputProps> = ({
               status === "Cancel"
                 ? "w-[20%] flex items-center justify-center h-14 bg-gray-500 rounded-md"
                 : "w-[20%] flex items-center justify-center h-14 bg-blue-500 rounded-md "
-            }
-          >
+            }>
             <Text className="text-xs font-semibold text-white">BIDDING</Text>
           </TouchableOpacity>
         </View>

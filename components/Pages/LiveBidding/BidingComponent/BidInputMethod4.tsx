@@ -118,8 +118,7 @@ const BidInputMethod4: React.FC<BidInputProps> = ({
     item.status === "Passed" ||
     status === "Pause" ||
     status === "Cancel" ||
-    isPlaceBidCus ||
-    isLoading;
+    isPlaceBidCus;
 
   return (
     <View className="w-full p-3">

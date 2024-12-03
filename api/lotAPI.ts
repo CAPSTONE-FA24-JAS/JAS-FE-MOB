@@ -21,7 +21,7 @@ export const getLotsByAuctionId = async (
 ): Promise<ListLotResponse | null> => {
   try {
     const response = await axios.get<ListLotResponse>(
-      `${API_URL}/api/Lot/ViewListLotByAuction`,
+      `${API_URL}/api/Lot/ViewListLotInAuction`,
       { params: { auctionId } }
     );
 

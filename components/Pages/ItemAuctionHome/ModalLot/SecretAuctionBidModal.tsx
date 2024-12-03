@@ -1,5 +1,7 @@
 // components/Modals/SecretAuctionBidModal.tsx
 
+import { LotDetail } from "@/app/types/lot_type";
+import { RootState } from "@/redux/store";
 import React, { useState } from "react";
 import {
   View,
@@ -10,12 +12,14 @@ import {
   StyleSheet,
 } from "react-native";
 import DropDownPicker from "react-native-dropdown-picker";
+import { useSelector } from "react-redux";
 
 interface SecretAuctionBidModalProps {
   isVisible: boolean;
   onClose: () => void;
   minPrice: number;
-  onSubmit: (bidAmount: number) => void;
+  onSubmit: (bidAmount: number) => Promise<void>;
+  item: LotDetail;
 }
 
 const SecretAuctionBidModal: React.FC<SecretAuctionBidModalProps> = ({
@@ -23,6 +27,7 @@ const SecretAuctionBidModal: React.FC<SecretAuctionBidModalProps> = ({
   onClose,
   minPrice,
   onSubmit,
+  item,
 }) => {
   const [step, setStep] = useState<number>(10000); // Default step
   const [open, setOpen] = useState<boolean>(false);
@@ -36,18 +41,17 @@ const SecretAuctionBidModal: React.FC<SecretAuctionBidModalProps> = ({
 
   const [bidAmount, setBidAmount] = useState<number>(minPrice);
   const [errorMessage, setErrorMessage] = useState<string>("");
+  const priceLimit = useSelector(
+    (state: RootState) => state.auth.userResponse?.customerDTO?.priceLimit
+  );
 
   const handleBidChange = (value: string) => {
     const numericValue = Number(value);
     if (!isNaN(numericValue)) {
       setBidAmount(numericValue); // Keep string input for edge cases
-      if (numericValue < minPrice) {
-        setErrorMessage(`Số tiền cần nằm trong khoảng ${minPrice}.`);
-      } else {
-        setErrorMessage(""); // Clear error if valid
-      }
     } else {
-      setErrorMessage("Vui lòng nhập một số hợp lệ."); // Error if not a number
+      setBidAmount(minPrice);
+      setErrorMessage("Invalid input");
     }
   };
 
@@ -56,38 +60,31 @@ const SecretAuctionBidModal: React.FC<SecretAuctionBidModalProps> = ({
     if (nextBid) {
       setBidAmount(nextBid);
       setErrorMessage(""); // Clear error
-    } else {
-      setErrorMessage(
-        `Số tiền cần nằm trong khoảng ${minPrice.toLocaleString("vi-VN", {
-          style: "currency",
-          currency: "VND",
-        })} .`
-      );
     }
   };
 
   const decreaseBid = () => {
     const nextBid = bidAmount - step;
-    if (nextBid >= minPrice) {
+    if (nextBid >= 0) {
       setBidAmount(nextBid);
       setErrorMessage(""); // Clear error
-    } else {
-      setErrorMessage(
-        `Số tiền cần nằm trong khoảng ${minPrice.toLocaleString("vi-VN", {
-          style: "currency",
-          currency: "VND",
-        })}`
-      );
+    }
+    if (nextBid < minPrice) {
+      setBidAmount(minPrice);
+      setErrorMessage("Bid must be greater than start price");
     }
   };
 
   const handleSubmit = () => {
-    if (
+    if (item.haveFinancialProof && bidAmount > priceLimit) {
+      setErrorMessage("Bid must be lower than your price limit");
+      return;
+    } else if (
       !errorMessage &&
       typeof bidAmount === "number" &&
       bidAmount >= minPrice
     ) {
-      onSubmit(Number(bidAmount));
+      onSubmit(Number(bidAmount)).then(() => onClose());
       setBidAmount(minPrice); // Reset to minPrice after submission
     }
   };

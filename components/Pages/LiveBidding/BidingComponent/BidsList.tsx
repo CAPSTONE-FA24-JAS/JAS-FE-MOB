@@ -198,7 +198,7 @@ const BidsList: React.FC<BidsListProps> = ({
         : "0";
     return (
       <View className="p-4">
-        <PriceTimeline
+        {/* <PriceTimeline
           startPrice={item.startPrice || 0}
           currentPrice={reducePrice || 0}
           bidIncrement={item.bidIncrement || 0}
@@ -207,7 +207,7 @@ const BidsList: React.FC<BidsListProps> = ({
           milenstoneReduceTime={milenstoneReduceTime} // Add this prop
           status={status || item.status}
           finalPriceSold={item.finalPriceSold || 0}
-        />
+        /> */}
         <View className="flex-row items-center justify-between pt-4 border-t border-gray-200">
           <View className="flex-row items-center">
             <MaterialCommunityIcons

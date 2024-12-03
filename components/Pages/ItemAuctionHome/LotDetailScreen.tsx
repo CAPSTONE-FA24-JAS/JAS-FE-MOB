@@ -900,6 +900,7 @@ const LotDetailScreen = () => {
             onClose={() => setSecretAuctionBidVisible(false)}
             minPrice={lotDetail.startPrice}
             onSubmit={handleSubmitBidType12}
+            item={lotDetail}
           />
         )}
     </SafeAreaView>

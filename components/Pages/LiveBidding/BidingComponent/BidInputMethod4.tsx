@@ -9,7 +9,6 @@ import {
 import { LotDetail } from "@/app/types/lot_type";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
-import { isLoading } from "expo-font";
 
 interface BidInputProps {
   isEndAuctionMethod4: boolean;
@@ -99,7 +98,7 @@ const BidInputMethod4: React.FC<BidInputProps> = ({
     if (status === "Pause") {
       return "PAUSED";
     }
-    if (status === "Cancel") {
+    if (status === "Canceled") {
       return "CANCELLED";
     }
     if (isPlaceBidCus) {
@@ -117,7 +116,7 @@ const BidInputMethod4: React.FC<BidInputProps> = ({
     loadingMethod4 ||
     item.status === "Passed" ||
     status === "Pause" ||
-    status === "Cancel" ||
+    status === "Canceled" ||
     isPlaceBidCus;
 
   return (

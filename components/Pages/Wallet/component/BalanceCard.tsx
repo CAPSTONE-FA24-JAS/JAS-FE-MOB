@@ -10,9 +10,10 @@ import {
   showSuccessMessage,
 } from "@/components/FlashMessageHelpers";
 import { fetchProfile } from "@/redux/slices/profileSlice";
+import { WalletDto } from "@/app/types/profilte_type";
 
 const BalanceCard: React.FC = () => {
-  const [balance, setBalance] = useState<number | null>(null);
+  const [balanceData, setBalanceData] = useState<WalletDto | null>(null);
   const [isBalanceVisible, setIsBalanceVisible] = useState<boolean>(false);
 
   const dispatch: AppDispatch = useDispatch();
@@ -23,22 +24,26 @@ const BalanceCard: React.FC = () => {
     (state: RootState) => state.profile.profile?.customerDTO?.walletDTO?.id
   );
 
-  // Fetch the wallet balance inside BalanceCard
   useEffect(() => {
     if (!haveWallet && accountId !== undefined) {
-      // Fetch profile to get wallet info if not available
       dispatch(fetchProfile(accountId));
     } else if (haveWallet) {
-      // Fetch wallet balance
       getWalletBalance(haveWallet);
     }
   }, [dispatch, accountId, haveWallet]);
+
+  const formatCurrency = (amount: number) => {
+    return amount.toLocaleString("vi-VN", {
+      style: "currency",
+      currency: "VND",
+    });
+  };
 
   const getWalletBalance = async (walletId: number) => {
     try {
       const response = await checkWalletBalance(walletId);
       if (response && response.isSuccess) {
-        setBalance(response.data.balance);
+        setBalanceData(response.data);
         showSuccessMessage("Wallet balance retrieved successfully.");
       }
     } catch (error) {
@@ -71,16 +76,36 @@ const BalanceCard: React.FC = () => {
           )}
         />
         <Card.Content>
-          <Text className="text-3xl font-bold text-gray-800">
-            {isBalanceVisible
-              ? `${
-                  Number(balance).toLocaleString("vi-VN", {
-                    style: "currency",
-                    currency: "VND",
-                  }) || "0"
-                }`
-              : "******** đ"}
-          </Text>
+          <View className="space-y-2">
+            <View>
+              <Text className="text-sm text-gray-600">Total Balance</Text>
+              <Text className="text-3xl font-bold text-gray-800">
+                {isBalanceVisible
+                  ? formatCurrency(balanceData?.balance || 0)
+                  : "******** đ"}
+              </Text>
+            </View>
+
+            <View className="flex-row justify-between pt-2">
+              <View>
+                <Text className="text-sm text-gray-600">Available</Text>
+                <Text className="text-lg font-semibold text-green-600">
+                  {isBalanceVisible
+                    ? formatCurrency(balanceData?.availableBalance || 0)
+                    : "******** đ"}
+                </Text>
+              </View>
+
+              <View>
+                <Text className="text-sm text-gray-600">Frozen</Text>
+                <Text className="text-lg font-semibold text-blue-600">
+                  {isBalanceVisible
+                    ? formatCurrency(balanceData?.frozenBalance || 0)
+                    : "******** đ"}
+                </Text>
+              </View>
+            </View>
+          </View>
         </Card.Content>
       </Card>
     </View>

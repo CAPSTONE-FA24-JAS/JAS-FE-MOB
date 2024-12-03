@@ -40,6 +40,7 @@ export interface WalletDto {
   id: number;
   balance: number;
   availableBalance: number;
+  frozenBalance: number;
   customerDTO: any;
 }
 

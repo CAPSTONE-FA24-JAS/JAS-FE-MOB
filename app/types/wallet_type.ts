@@ -1,16 +1,12 @@
+import { WalletDto } from "./profilte_type";
+
 // Type definitions for the responses
 export interface WalletBalanceResponse {
   code: number;
   message: string;
   isSuccess: boolean;
-  data: DataBalance;
+  data: WalletDto;
   errorMessages: any;
-}
-
-export interface DataBalance {
-  id: number;
-  balance: number;
-  customerDTO: any;
 }
 
 export interface CreateWalletResponse {

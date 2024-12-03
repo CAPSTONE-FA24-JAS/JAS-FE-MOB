@@ -37,7 +37,9 @@ export interface CustomerDTO {
 
 interface walletDTO {
   id: number;
-  balance: number;
+  balance: number | null;
+  availableBalance: number | null;
+  frozenBalance: number | null;
   customerDTO: any;
 }
 

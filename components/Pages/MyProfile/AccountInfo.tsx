@@ -272,25 +272,14 @@ const AccountInfo: React.FC = () => {
           </View>
 
           <View className="mb-4">
-            <Text className="mb-1 font-semibold text-gray-700">Address</Text>
-            <TextInput
-              value={profile.address}
-              onChangeText={(value) => handleChange("address", value)}
-              placeholder="Enter your address"
-              className="p-2 border-b border-gray-400"
-            />
-          </View>
-
-          <View className="mb-4">
             <Text className="mb-1 font-semibold text-gray-700">Gender</Text>
             <View className="flex-row justify-between">
               <TouchableOpacity
                 onPress={() => setProfile({ ...profile, gender: "Male" })}
                 className={`flex-1 p-2 mr-2 rounded ${
                   profile.gender === "Male" ? "bg-blue-500" : "bg-gray-200"
-                }`}
-              >
-                <Text className="text-center font-semibold text-white">
+                }`}>
+                <Text className="font-semibold text-center text-white">
                   Male
                 </Text>
               </TouchableOpacity>
@@ -298,9 +287,8 @@ const AccountInfo: React.FC = () => {
                 onPress={() => setProfile({ ...profile, gender: "Female" })}
                 className={`flex-1 p-2 ml-2 rounded ${
                   profile.gender === "Female" ? "bg-pink-500" : "bg-gray-200"
-                }`}
-              >
-                <Text className="text-center font-semibold text-white">
+                }`}>
+                <Text className="font-semibold text-center text-white">
                   Female
                 </Text>
               </TouchableOpacity>
@@ -322,6 +310,19 @@ const AccountInfo: React.FC = () => {
                 <Icon name="calendar" size={24} color="#000" />
               </TouchableOpacity>
             </View>
+          </View>
+          <View className="mb-4">
+            <Text className="mb-1 font-semibold text-gray-700">
+              Citizen ID Card
+            </Text>
+            <TextInput
+              value={profile.citizenIdentificationCard}
+              onChangeText={(value) =>
+                handleChange("citizenIdentificationCard", value)
+              }
+              placeholder="Enter your Citizen ID Card"
+              className="p-2 border-b border-gray-400"
+            />
           </View>
 
           <View className="mb-4">
@@ -361,16 +362,14 @@ const AccountInfo: React.FC = () => {
           {/* Save Button */}
           <TouchableOpacity
             className="p-3 mt-4 bg-blue-500 rounded-lg"
-            onPress={handleSaveChanges}
-          >
+            onPress={handleSaveChanges}>
             <Text className="text-lg font-semibold text-center text-white uppercase">
               {isLoading ? "Save ..." : "Save Changes"}
             </Text>
           </TouchableOpacity>
           <TouchableOpacity
             className="p-3 mt-4 bg-red-500 rounded-lg"
-            onPress={toggleConfirmModal}
-          >
+            onPress={toggleConfirmModal}>
             <Text className="text-lg font-semibold text-center text-white uppercase">
               Delete My Account
             </Text>

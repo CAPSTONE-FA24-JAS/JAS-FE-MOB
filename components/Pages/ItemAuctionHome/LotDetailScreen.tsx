@@ -797,14 +797,11 @@ const LotDetailScreen = () => {
               )}
             {typeBid === "Public_Auction" &&
               !currentPriceCheck &&
-              isAuctionLive &&
               !bidTimeCheck && (
                 <TouchableOpacity
                   onPress={handlePressAutoBid}
-                  className={`mb-3  ${
-                    isAuctionLive ? "bg-blue-500" : "bg-gray-500"
-                  } rounded-sm`}
-                  disabled={!isAuctionLive}
+                  className={`mb-3  bg-blue-500
+                   rounded-sm`}
                 >
                   <Text className="py-3 font-semibold text-center text-white">
                     BID AUTOMATION

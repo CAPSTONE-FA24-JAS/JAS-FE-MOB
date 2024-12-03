@@ -157,8 +157,8 @@ const InvoiceDetailConfirm: React.FC = () => {
               Address
             </StyledText>
             <Text className="text-base text-right w-[70%] font-semibold">
-              {/* {addressData?.addressLine} */}
-              {invoiceDetails?.addressToShip}
+              {addressData?.addressLine}
+              {/* {invoiceDetails?.addressToShip} */}
             </Text>
           </View>
         </StyledView>
@@ -298,9 +298,8 @@ const InvoiceDetailConfirm: React.FC = () => {
         <StyledTouchableOpacity
           disabled={!isChecked}
           onPress={handleConfirm} // Show password modal
-          className={`p-3 rounded ${
-            isChecked ? "bg-blue-500" : "bg-gray-300"
-          }`}>
+          className={`p-3 rounded ${isChecked ? "bg-blue-500" : "bg-gray-300"}`}
+        >
           <StyledText className="font-bold text-center text-white">
             CONFIRM
           </StyledText>

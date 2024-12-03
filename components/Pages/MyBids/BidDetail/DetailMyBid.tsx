@@ -99,6 +99,10 @@ const DetailMyBid: React.FC = () => {
     null
   );
 
+  const [addressCompany, setAddressCompany] = useState<AddressListData | null>(
+    null
+  );
+
   // State to control the visibility of the EditAddress modal
   const [addresses, setAddresses] = useState<AddressListData[]>([]); // Add addresses state
   const [isChooseModalVisible, setChooseModalVisible] =
@@ -220,10 +224,23 @@ const DetailMyBid: React.FC = () => {
   const handleConfirmInvoice = async () => {
     if (defaultAddress && itemDetailBid && invoiceId && invoiceDetails) {
       setIsLoading(true);
+      // Check if addressCompany has data, otherwise use defaultAddress
+      const addressToUse = addressCompany ? addressCompany : defaultAddress;
+      console.log("addressToUse", addressToUse);
+
+      // Check if a valid address exists
+      if (!addressToUse) {
+        showErrorMessage("No valid address selected.");
+        setIsLoading(false);
+        return;
+      }
+
+      const isReceiveAtCompany = addressToUse.id === 32; // Address ID 32 is for company
       try {
         const response = await updateAddressToShipForInvoice(
           invoiceId,
-          defaultAddress.id
+          defaultAddress.id,
+          isReceiveAtCompany
         );
 
         if (response && response.isSuccess) {
@@ -233,7 +250,7 @@ const DetailMyBid: React.FC = () => {
           if (updatedInvoiceResponse && updatedInvoiceResponse.isSuccess) {
             // Proceed with navigation with updated invoice details
             navigation.navigate("InvoiceDetailConfirm", {
-              addressData: defaultAddress,
+              addressData: addressToUse,
               itemDetailBid: itemDetailBid,
               invoiceId: invoiceId,
               yourMaxBid: yourMaxBid ?? 0,
@@ -243,7 +260,7 @@ const DetailMyBid: React.FC = () => {
             // If refetching invoice fails, navigate with original invoice details
             showErrorMessage("Failed to retrieve updated invoice details.");
             navigation.navigate("InvoiceDetailConfirm", {
-              addressData: defaultAddress,
+              addressData: addressToUse,
               itemDetailBid: itemDetailBid,
               invoiceId: invoiceId,
               yourMaxBid: yourMaxBid ?? 0,
@@ -253,7 +270,7 @@ const DetailMyBid: React.FC = () => {
         } else {
           // If updateAddressToShipForInvoice fails, navigate with original details
           navigation.navigate("InvoiceDetailConfirm", {
-            addressData: defaultAddress,
+            addressData: addressToUse,
             itemDetailBid: itemDetailBid,
             invoiceId: invoiceId,
             yourMaxBid: yourMaxBid ?? 0,
@@ -344,6 +361,7 @@ const DetailMyBid: React.FC = () => {
               "Don't have default address to ship",
           }}
           onChooseAddress={handleChooseAddress} // Pass the function to trigger the modal
+          setAddressCompany={setAddressCompany}
         />
       ) : null}
 

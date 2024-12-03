@@ -209,9 +209,14 @@ export const paymentInvoiceByWallet = async (
 // Function to update the shipping address for an invoice
 export const updateAddressToShipForInvoice = async (
   invoiceId: number,
-  addressToShipId: number
+  addressToShipId: number,
+  isReceiveAtCompany: boolean
 ): Promise<InvoiceResponse<null> | null> => {
-  console.log("updateAddressToShipForInvoice", invoiceId, addressToShipId);
+  console.log("updateAddressToShipForInvoice", {
+    invoiceId,
+    addressToShipId,
+    isReceiveAtCompany,
+  });
 
   try {
     const response = await axios.put<InvoiceResponse<null>>(
@@ -219,6 +224,7 @@ export const updateAddressToShipForInvoice = async (
       {
         invoiceId,
         addressToShipId,
+        isReceiveAtCompany,
       }
     );
 

@@ -793,7 +793,6 @@ const LotDetailScreen = () => {
               )}
             {typeBid === "Public_Auction" &&
               !currentPriceCheck &&
-              isAuctionLive &&
               !bidTimeCheck && (
                 <TouchableOpacity
                   onPress={handlePressAutoBid}

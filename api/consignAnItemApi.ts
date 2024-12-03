@@ -10,6 +10,7 @@ import {
 import { Response } from "@/app/types/respone_type";
 import apiClient from "./config";
 import { Alert } from "react-native";
+import { DocumentPickerAsset } from "expo-document-picker";
 
 const API_URL = process.env.EXPO_PUBLIC_API_URL || "http://localhost:7251";
 
@@ -21,6 +22,7 @@ export const consignAnItem = async (
   depth: number,
   description: string,
   images: string[],
+  documents: DocumentPickerAsset[] | null,
   status: number
 ) => {
   try {
@@ -33,15 +35,21 @@ export const consignAnItem = async (
     formData.append("Depth", depth.toString());
     formData.append("Description", description);
 
-    // Thêm các hình ảnh vào FormData
     images.forEach((imageUri) => {
       const filename = imageUri.split("/").pop();
-      const type = "image/jpeg"; // Bạn có thể thay đổi nếu cần thiết
       formData.append("ImageValuation", {
         uri: imageUri,
         name: filename,
-        type: type,
-      } as any); // Chuyển uri trực tiếp, không cần Blob
+        type: "image/jpeg",
+      } as any);
+    });
+
+    documents?.forEach((document) => {
+      formData.append("DocumentGemstone", {
+        uri: document.uri,
+        name: document.name,
+        type: document.mimeType || "application/octet-stream",
+      } as any);
     });
 
     const response = await axios.post(
@@ -64,24 +72,17 @@ export const consignAnItem = async (
     );
 
     if (response.data.isSuccess) {
-      console.log("Ký gửi vật phẩm thành công:", response.data);
-
       showSuccessMessage("Đã ký gửi vật phẩm thành công.");
       return response.data;
     } else {
-      const errorMessage =
-        response.data.errorMessages?.join(", ") ||
-        response.data.message ||
-        "Lỗi khi ký gửi vật phẩm.";
-      Alert.alert(errorMessage);
-      throw new Error(errorMessage);
+      throw new Error(
+        response.data.errorMessages?.join(", ") || response.data.message
+      );
     }
   } catch (error: any) {
     const apiErrorMessage =
       error.response?.data?.errorMessages?.join(", ") || error.message;
-
-    console.error("Lỗi khi ký gửi vật phẩm:", apiErrorMessage);
-    Alert.alert(apiErrorMessage); // Hiển thị thông báo lỗi từ API
+    Alert.alert(apiErrorMessage);
     throw error;
   }
 };

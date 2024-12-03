@@ -10,6 +10,10 @@ interface StepContent1Props {
   setSelectedImages: (images: string[]) => void;
   selectedFiles: any[];
   setSelectedFiles: (files: any[]) => void;
+  setFileValuation: React.Dispatch<
+    React.SetStateAction<DocumentPicker.DocumentPickerAsset[] | null>
+  >;
+  fileValuation: DocumentPicker.DocumentPickerAsset[] | null;
 }
 
 const StepContent1: React.FC<StepContent1Props> = ({
@@ -17,6 +21,8 @@ const StepContent1: React.FC<StepContent1Props> = ({
   setSelectedImages,
   selectedFiles,
   setSelectedFiles,
+  setFileValuation,
+  fileValuation,
 }) => {
   useEffect(() => {
     const getPermission = async () => {
@@ -57,26 +63,6 @@ const StepContent1: React.FC<StepContent1Props> = ({
     }
   };
 
-  // Handle File Picker
-  const pickFile = async () => {
-    try {
-      const result = await DocumentPicker.getDocumentAsync({
-        type: ["image/jpeg", "image/png", "application/pdf"],
-        copyToCacheDirectory: false,
-        multiple: false,
-      });
-
-      if (!(result.canceled = false)) {
-        setSelectedFiles(result.assets);
-      } else {
-        Alert.alert("File picking cancelled.");
-      }
-    } catch (error) {
-      console.error("Error picking file:", error);
-      Alert.alert("Error", "There was an error selecting file.");
-    }
-  };
-
   // Handle Image Picker from Gallery
   const pickImageFromGallery = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
@@ -99,6 +85,25 @@ const StepContent1: React.FC<StepContent1Props> = ({
   const removeFile = (index: number) => {
     const updatedFiles = selectedFiles.filter((_, i) => i !== index);
     setSelectedFiles(updatedFiles);
+  };
+
+  const pickFileValu = async () => {
+    try {
+      const result = await DocumentPicker.getDocumentAsync({
+        type: ["application/pdf"],
+        copyToCacheDirectory: false,
+        multiple: false,
+      });
+
+      if (!result.canceled && result.assets && result.assets.length > 0) {
+        const fileUri = result.assets[0].uri;
+        const filename = result.assets[0].name;
+        setFileValuation([{ uri: fileUri, name: filename }]);
+      }
+    } catch (error) {
+      console.error("Error picking file:", error);
+      Alert.alert("Error", "There was an error selecting the document.");
+    }
   };
 
   return (
@@ -153,9 +158,7 @@ const StepContent1: React.FC<StepContent1Props> = ({
             <View
               key={index}
               className="flex-row items-center justify-between px-4 py-4 mt-2 border-2 border-blue-200 rounded-md">
-              <Text className="text-base w-[80%] text-gray-600">
-                {file.name}
-              </Text>
+              <Text className="text-base w-[80%] text-gray-600">{file}</Text>
               <TouchableOpacity onPress={() => removeFile(index)}>
                 <MaterialCommunityIcons name="delete" size={26} color="red" />
               </TouchableOpacity>
@@ -168,10 +171,10 @@ const StepContent1: React.FC<StepContent1Props> = ({
 
       <View className="w-full mx-auto mt-4">
         <TouchableOpacity
-          onPress={pickFile}
+          onPress={pickFileValu}
           className="flex-row items-center justify-center w-full h-16 bg-gray-200 rounded-lg">
           <Text className="mr-2 text-lg font-semibold text-gray-700">
-            {selectedFiles.length > 0 ? "Change File" : "Upload File"}
+            {fileValuation ? "Change File" : "Upload File"}
           </Text>
           <MaterialCommunityIcons name="upload" size={30} color="gray" />
         </TouchableOpacity>
@@ -179,6 +182,24 @@ const StepContent1: React.FC<StepContent1Props> = ({
           (Upload minimum 1 files Your Gemstone: PDF, DOC, DOCX.)
         </Text>
       </View>
+
+      {fileValuation && (
+        <View className="mt-6 mb-3">
+          <Text className="text-lg font-semibold">Uploaded File:</Text>
+          {fileValuation.map((file, index) => (
+            <View
+              key={index}
+              className="flex-row items-center justify-between px-4 py-4 mt-2 border-2 border-blue-200 rounded-md">
+              <Text className="text-base w-[80%] text-gray-600">
+                {file.name}
+              </Text>
+              <TouchableOpacity onPress={() => setFileValuation([])}>
+                <MaterialCommunityIcons name="delete" size={26} color="red" />
+              </TouchableOpacity>
+            </View>
+          ))}
+        </View>
+      )}
     </View>
   );
 };

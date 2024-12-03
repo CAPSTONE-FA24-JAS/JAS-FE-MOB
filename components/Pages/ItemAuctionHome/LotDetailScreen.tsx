@@ -605,8 +605,7 @@ const LotDetailScreen = () => {
             <Swiper
               showsPagination={true}
               autoplay={true}
-              style={{ height: "100%" }}
-            >
+              style={{ height: "100%" }}>
               {lotDetail?.jewelry?.imageJewelries?.length ?? 0 > 0 ? (
                 lotDetail?.jewelry?.imageJewelries.map((img, index) =>
                   img?.imageLink ? (
@@ -630,8 +629,7 @@ const LotDetailScreen = () => {
             <Text className="font-bold text-gray-400">Follow</Text>
             <TouchableOpacity
               onPress={handleAddWatching}
-              className="flex-row items-center gap-1"
-            >
+              className="flex-row items-center gap-1">
               {isWatching && (
                 <MaterialCommunityIcons name="star" size={24} color="yellow" />
               )}
@@ -669,8 +667,7 @@ const LotDetailScreen = () => {
                   <Text
                     className={`font-extrabold text-sm py-1 px-5 ${getStatusClass(
                       lotDetail?.status ?? ""
-                    )} rounded-md text-sm text-center uppercase text-white`}
-                  >
+                    )} rounded-md text-sm text-center uppercase text-white`}>
                     {lotDetail?.status}
                   </Text>
                 </View>
@@ -786,8 +783,7 @@ const LotDetailScreen = () => {
                       ? handleBuyNow
                       : handleSecretAuctionBid
                   }
-                  disabled={!isAuctionLive}
-                >
+                  disabled={!isAuctionLive}>
                   <Text className="font-semibold text-center text-white uppercase">
                     {typeBid === "Fixed_Price"
                       ? "BUY FIXED BID"
@@ -801,8 +797,7 @@ const LotDetailScreen = () => {
                 <TouchableOpacity
                   onPress={handlePressAutoBid}
                   className={`mb-3  bg-blue-500
-                   rounded-sm`}
-                >
+                   rounded-sm`}>
                   <Text className="py-3 font-semibold text-center text-white">
                     BID AUTOMATION
                   </Text>
@@ -828,8 +823,7 @@ const LotDetailScreen = () => {
                   <TouchableOpacity
                     className={`py-3
                                bg-blue-500  rounded-sm`}
-                    onPress={() => handleJoinToBid(typeBid)}
-                  >
+                    onPress={() => handleJoinToBid(typeBid)}>
                     <Text className="font-semibold text-center text-white uppercase">
                       View To Bid
                     </Text>
@@ -846,8 +840,7 @@ const LotDetailScreen = () => {
                         isAuctionLive ? "bg-blue-500" : "bg-gray-500"
                       }  rounded-sm`}
                       onPress={() => handleJoinToBid(typeBid)}
-                      disabled={!isAuctionLive}
-                    >
+                      disabled={!isAuctionLive}>
                       <Text className="font-semibold text-center text-white uppercase">
                         Join To Bid
                       </Text>
@@ -863,8 +856,7 @@ const LotDetailScreen = () => {
           !(lotDetail?.status === "Sold") && (
             <TouchableOpacity
               className={`py-3 mt-4 bg-blue-500  rounded-sm`}
-              onPress={handleRegisterToBid}
-            >
+              onPress={handleRegisterToBid}>
               <Text className="font-semibold text-center text-white uppercase">
                 Register To Bid
               </Text>
@@ -907,7 +899,6 @@ const LotDetailScreen = () => {
             isVisible={secretAuctionBidVisible}
             onClose={() => setSecretAuctionBidVisible(false)}
             minPrice={lotDetail.startPrice}
-            maxPrice={lotDetail.finalPriceSold}
             onSubmit={handleSubmitBidType12}
           />
         )}

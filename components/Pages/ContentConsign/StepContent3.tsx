@@ -1,9 +1,12 @@
 import React from "react";
-import { View, Text, Image } from "react-native";
+import { View, Text, Image, TouchableOpacity, Linking } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 
 interface StepContent3Props {
-  apiResponseData: string[]; // Nhận URLs của hình ảnh từ ConsignStep
+  apiResponseData: {
+    doucment: string[];
+    images: string[];
+  }; // Nhận URLs của hình ảnh từ ConsignStep
   height: string;
   width: string;
   depth: string;
@@ -32,14 +35,34 @@ const StepContent3: React.FC<StepContent3Props> = ({
       <Text className="text-xl font-bold my-4">Review:</Text>
       <View className="mx-2">
         {/* Hiển thị các hình ảnh từ phản hồi API */}
-        {apiResponseData?.length > 0 && (
-          <View className="flex-row flex-wrap justify-around gap-2">
-            {apiResponseData.map((image, index) => (
+        {apiResponseData?.images?.length > 0 && (
+          <View className="flex-row flex-wrap mb-4 justify-around gap-2">
+            {apiResponseData.images.map((image, index) => (
               <Image
                 key={index}
                 source={{ uri: image }}
                 className="w-40 h-40  rounded-lg shadow-md"
               />
+            ))}
+          </View>
+        )}
+
+        {/* Hiển thị các hình ảnh từ phản hồi API */}
+        {apiResponseData?.doucment?.length > 0 && (
+          <View className="w-1/2  justify-around gap-2">
+            {apiResponseData.doucment.map((image, index) => (
+              <TouchableOpacity
+                key={index}
+                onPress={() => {
+                  Linking.openURL(image);
+                }}
+                className="bg-blue-500 p-2 rounded-md shadow-md"
+              >
+                <Text className="font-semibold text-center text-base text-white">
+                  {" "}
+                  File Gemstone
+                </Text>
+              </TouchableOpacity>
             ))}
           </View>
         )}

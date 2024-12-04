@@ -69,6 +69,7 @@ export interface ImageValuation {
   id: number;
   imageLink: string;
   valuationId: number;
+  defaultImage?: string;
 }
 export interface Seller {
   id: number;

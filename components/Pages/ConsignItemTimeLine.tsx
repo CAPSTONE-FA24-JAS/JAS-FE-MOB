@@ -20,6 +20,7 @@ import FinalValuationDetailsModal from "../Modal/FinalValuationDetailsModal";
 import moment from "moment-timezone";
 import { StackNavigationProp } from "@react-navigation/stack";
 import LoadingOverlay from "../LoadingOverlay";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 // Define the types for navigation routes
 type RootStackParamList = {
@@ -316,6 +317,27 @@ const ConsignDetailTimeLine: React.FC = () => {
           <ImageGallery
             images={item?.imageValuations?.map((img) => img.imageLink)}
           />
+          {item?.imageValuations
+            ?.filter((item) => item?.defaultImage === "PDF")
+            .map((document, index) => (
+              <TouchableOpacity
+                key={index}
+                onPress={() => {
+                  Linking.openURL(document.imageLink);
+                }}
+                className="bg-blue-800 flex-row justify-center p-2 rounded-md shadow-md"
+              >
+                <Text className="font-semibold text-center mr-2 text-base text-white">
+                  {" "}
+                  File Gemstone
+                </Text>
+                <MaterialCommunityIcons
+                  name="arrow-collapse-down"
+                  size={24}
+                  color={"white"}
+                />
+              </TouchableOpacity>
+            ))}
         </View>
 
         <View className="mt-4">

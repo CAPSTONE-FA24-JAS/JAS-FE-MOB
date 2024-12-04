@@ -85,6 +85,7 @@ const StepContent1: React.FC<StepContent1Props> = ({
   const removeFile = (index: number) => {
     const updatedFiles = selectedFiles.filter((_, i) => i !== index);
     setSelectedFiles(updatedFiles);
+    setFileValuation(updatedFiles);
   };
 
   const pickFileValu = async () => {
@@ -120,7 +121,8 @@ const StepContent1: React.FC<StepContent1Props> = ({
             <Image source={{ uri }} className="w-24 h-24 rounded-lg" />
             <TouchableOpacity
               onPress={() => removeImage(index)}
-              className="absolute top-0 right-0 items-center justify-center w-6 h-6 bg-gray-700 rounded-full">
+              className="absolute top-0 right-0 items-center justify-center w-6 h-6 bg-gray-700 rounded-full"
+            >
               <Text className="font-bold text-white">X</Text>
             </TouchableOpacity>
           </View>
@@ -131,14 +133,16 @@ const StepContent1: React.FC<StepContent1Props> = ({
           <View className="flex-row space-x-4">
             <TouchableOpacity
               onPress={pickImageFromCamera}
-              className="items-center justify-center w-24 h-24 bg-gray-200 rounded-lg">
+              className="items-center justify-center w-24 h-24 bg-gray-200 rounded-lg"
+            >
               <Text className="text-lg text-gray-500">
                 <MaterialCommunityIcons name="camera" size={30} color="gray" />
               </Text>
             </TouchableOpacity>
             <TouchableOpacity
               onPress={pickImageFromGallery}
-              className="items-center justify-center w-24 h-24 bg-gray-200 rounded-lg">
+              className="items-center justify-center w-24 h-24 bg-gray-200 rounded-lg"
+            >
               <MaterialCommunityIcons name="upload" size={30} color="gray" />
             </TouchableOpacity>
           </View>
@@ -157,7 +161,8 @@ const StepContent1: React.FC<StepContent1Props> = ({
           {selectedFiles.map((file, index) => (
             <View
               key={index}
-              className="flex-row items-center justify-between px-4 py-4 mt-2 border-2 border-blue-200 rounded-md">
+              className="flex-row items-center justify-between px-4 py-4 mt-2 border-2 border-blue-200 rounded-md"
+            >
               <Text className="text-base w-[80%] text-gray-600">{file}</Text>
               <TouchableOpacity onPress={() => removeFile(index)}>
                 <MaterialCommunityIcons name="delete" size={26} color="red" />
@@ -172,7 +177,8 @@ const StepContent1: React.FC<StepContent1Props> = ({
       <View className="w-full mx-auto mt-4">
         <TouchableOpacity
           onPress={pickFileValu}
-          className="flex-row items-center justify-center w-full h-16 bg-gray-200 rounded-lg">
+          className="flex-row items-center justify-center w-full h-16 bg-gray-200 rounded-lg"
+        >
           <Text className="mr-2 text-lg font-semibold text-gray-700">
             {fileValuation ? "Change File" : "Upload File"}
           </Text>
@@ -189,7 +195,8 @@ const StepContent1: React.FC<StepContent1Props> = ({
           {fileValuation.map((file, index) => (
             <View
               key={index}
-              className="flex-row items-center justify-between px-4 py-4 mt-2 border-2 border-blue-200 rounded-md">
+              className="flex-row items-center justify-between px-4 py-4 mt-2 border-2 border-blue-200 rounded-md"
+            >
               <Text className="text-base w-[80%] text-gray-600">
                 {file.name}
               </Text>

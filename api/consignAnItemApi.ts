@@ -26,6 +26,18 @@ export const consignAnItem = async (
   status: number
 ) => {
   try {
+    console.log("consignAnItem", {
+      sellerId,
+      name,
+      height,
+      width,
+      depth,
+      description,
+      images,
+      documents,
+      status,
+    });
+
     const formData = new FormData();
 
     formData.append("SellerId", sellerId.toString());

@@ -72,12 +72,14 @@ const PreValuationDetailsModal: React.FC<PreValuationDetailsModalProps> = ({
       visible={isVisible}
       animationType="slide"
       transparent={true}
-      onRequestClose={onClose}>
+      onRequestClose={onClose}
+    >
       <View className="items-center justify-center flex-1 bg-black/50">
         <View className="w-11/12 bg-[#FBFBFB] rounded-lg p-4">
           <TouchableOpacity
             onPress={onClose}
-            className="absolute pb-2 top-4 right-4">
+            className="absolute pb-2 top-4 right-4"
+          >
             <MaterialCommunityIcons name="close" size={24} color="#000" />
           </TouchableOpacity>
           {/* Modal Title */}
@@ -111,20 +113,28 @@ const PreValuationDetailsModal: React.FC<PreValuationDetailsModalProps> = ({
                 {details?.owner}
               </Text>
             </View>
-
-            <View className="flex-row gap-2 mb-2">
-              <Text className="text-lg font-bold text-gray-700 ">Artist:</Text>
-              <Text className="text-lg text-gray-800"> {details?.artist}</Text>
-            </View>
-            <View className="flex-row gap-2 mb-2">
-              <Text className="text-lg font-bold text-gray-700 ">
-                Category:
-              </Text>
-              <Text className="text-lg text-gray-800">
-                {" "}
-                {details?.category}
-              </Text>
-            </View>
+            {details?.artist && (
+              <View className="flex-row gap-2 mb-2">
+                <Text className="text-lg font-bold text-gray-700 ">
+                  Artist:
+                </Text>
+                <Text className="text-lg text-gray-800">
+                  {" "}
+                  {details?.artist}
+                </Text>
+              </View>
+            )}
+            {details?.category && (
+              <View className="flex-row gap-2 mb-2">
+                <Text className="text-lg font-bold text-gray-700 ">
+                  Category:
+                </Text>
+                <Text className="text-lg text-gray-800">
+                  {" "}
+                  {details?.category}
+                </Text>
+              </View>
+            )}
 
             <View className="ml-4">
               <View className="flex-row items-start gap-2">
@@ -194,12 +204,14 @@ const PreValuationDetailsModal: React.FC<PreValuationDetailsModalProps> = ({
             <View className="flex-row justify-around mt-4">
               <TouchableOpacity
                 className="px-8 py-3 bg-red-500 rounded-lg"
-                onPress={() => setRejectReasonModalVisible(true)}>
+                onPress={() => setRejectReasonModalVisible(true)}
+              >
                 <Text className="font-bold text-white">REJECT</Text>
               </TouchableOpacity>
               <TouchableOpacity
                 className="px-8 py-3 bg-green-500 rounded-lg"
-                onPress={onApprove}>
+                onPress={onApprove}
+              >
                 <Text className="font-bold text-white">APPROVE</Text>
               </TouchableOpacity>
             </View>
@@ -212,7 +224,8 @@ const PreValuationDetailsModal: React.FC<PreValuationDetailsModalProps> = ({
         visible={rejectReasonModalVisible}
         animationType="slide"
         transparent
-        onRequestClose={() => setRejectReasonModalVisible(false)}>
+        onRequestClose={() => setRejectReasonModalVisible(false)}
+      >
         <View className="items-center justify-center flex-1 bg-black/50">
           <View className="w-11/12 p-4 bg-white rounded-lg">
             <Text className="mb-4 text-lg font-bold">Select a Reason</Text>
@@ -223,7 +236,8 @@ const PreValuationDetailsModal: React.FC<PreValuationDetailsModalProps> = ({
                   className={`flex-row items-center mb-2 p-3 rounded-lg ${
                     selectedReason === reason ? "bg-blue-100" : "bg-gray-100"
                   }`}
-                  onPress={() => setSelectedReason(reason)}>
+                  onPress={() => setSelectedReason(reason)}
+                >
                   <View className="flex items-center justify-center w-5 h-5 mr-4 border-2 border-blue-600 rounded-full">
                     {selectedReason === reason && (
                       <View className="h-2.5 w-2.5 bg-blue-600 rounded-full" />
@@ -244,14 +258,16 @@ const PreValuationDetailsModal: React.FC<PreValuationDetailsModalProps> = ({
             <View className="flex-row justify-between mt-6">
               <TouchableOpacity
                 className="flex-1 py-3 mr-2 bg-gray-300 rounded-lg"
-                onPress={() => setRejectReasonModalVisible(false)}>
+                onPress={() => setRejectReasonModalVisible(false)}
+              >
                 <Text className="font-bold text-center text-gray-700">
                   Cancel
                 </Text>
               </TouchableOpacity>
               <TouchableOpacity
                 className="flex-1 py-3 ml-2 bg-red-500 rounded-lg"
-                onPress={handleConfirmReject}>
+                onPress={handleConfirmReject}
+              >
                 <Text className="font-bold text-center text-white">
                   Confirm
                 </Text>

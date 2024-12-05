@@ -166,20 +166,29 @@ const FinalValuationDetailsModal: React.FC<FinalValuationDetailsModalProps> = ({
                 {details?.owner}
               </Text>
             </View>
+            {details?.artist && (
+              <View className="flex-row gap-2 mb-2">
+                <Text className="text-lg font-bold text-gray-700 ">
+                  Artist:
+                </Text>
+                <Text className="text-lg text-gray-800">
+                  {" "}
+                  {details?.artist}
+                </Text>
+              </View>
+            )}
 
-            <View className="flex-row gap-2 mb-2">
-              <Text className="text-lg font-bold text-gray-700 ">Artist:</Text>
-              <Text className="text-lg text-gray-800"> {details?.artist}</Text>
-            </View>
-            <View className="flex-row gap-2 mb-2">
-              <Text className="text-lg font-bold text-gray-700 ">
-                Category:
-              </Text>
-              <Text className="text-lg text-gray-800">
-                {" "}
-                {details?.category}
-              </Text>
-            </View>
+            {details?.category && (
+              <View className="flex-row gap-2 mb-2">
+                <Text className="text-lg font-bold text-gray-700 ">
+                  Category:
+                </Text>
+                <Text className="text-lg text-gray-800">
+                  {" "}
+                  {details?.category}
+                </Text>
+              </View>
+            )}
 
             <View className="ml-4">
               <View className="flex-row items-start gap-2">

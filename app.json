@@ -9,7 +9,7 @@
     "userInterfaceStyle": "light",
     "newArchEnabled": true,
     "splash": {
-      "image": "./assets/JAS.jpg",
+      "image": "./assets/JAS.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
@@ -19,7 +19,7 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/JAS.jpg",
+        "foregroundImage": "./assets/JAS.png",
         "backgroundColor": "#ffffff"
       },
       "package": "com.tptnam.myapp"

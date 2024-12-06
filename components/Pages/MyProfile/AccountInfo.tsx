@@ -1,32 +1,30 @@
-import React, { useEffect, useState } from "react";
-import {
-  View,
-  TextInput,
-  Image,
-  TouchableOpacity,
-  Text,
-  ScrollView,
-} from "react-native";
-import { useRoute } from "@react-navigation/native";
-import Icon from "react-native-vector-icons/FontAwesome"; // Using FontAwesome for camera icon
 import { deleteAccount, updateProfile } from "@/api/profileApi";
-import { RootState } from "@/redux/store";
-import { useDispatch, useSelector } from "react-redux";
-import ConfirmModal from "@/components/Modal/ConfirmModalProps ";
-import { logout } from "@/redux/slices/authSlice";
-import { useNavigation } from "expo-router";
-import { StackNavigationProp } from "@react-navigation/stack";
 import { UserInfo } from "@/app/types/profilte_type";
-import { resetNotifications } from "@/redux/slices/notificationSlice";
-import DateTimePickerModal from "react-native-modal-datetime-picker";
-import moment from "moment-timezone";
-import ImageUploader from "./ImageUploader";
 import {
   showErrorMessage,
   showSuccessMessage,
 } from "@/components/FlashMessageHelpers";
 import LoadingOverlay from "@/components/LoadingOverlay";
-import { router } from "expo-router";
+import ConfirmModal from "@/components/Modal/ConfirmModalProps ";
+import { logout } from "@/redux/slices/authSlice";
+import { resetNotifications } from "@/redux/slices/notificationSlice";
+import { RootState } from "@/redux/store";
+import { useRoute } from "@react-navigation/native";
+import { StackNavigationProp } from "@react-navigation/stack";
+import { router, useNavigation } from "expo-router";
+import moment from "moment-timezone";
+import React, { useEffect, useState } from "react";
+import {
+  ScrollView,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from "react-native";
+import DateTimePickerModal from "react-native-modal-datetime-picker";
+import Icon from "react-native-vector-icons/FontAwesome"; // Using FontAwesome for camera icon
+import { useDispatch, useSelector } from "react-redux";
+import ImageUploader from "./ImageUploader";
 
 type RouteParams = {
   userData: UserInfo;
@@ -391,7 +389,7 @@ const AccountInfo: React.FC = () => {
           mode={datePickerType === "dob" ? "date" : "date"}
           onConfirm={handleDateConfirm}
           onCancel={hideDatePicker}
-          display="spinner"
+          themeVariant="light"
         />
       </View>
     </>

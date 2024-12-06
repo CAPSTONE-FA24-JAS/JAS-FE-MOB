@@ -111,13 +111,6 @@ const PaymentSuccess: React.FC = () => {
           </Text>
         </View>
 
-        <View className="flex-row justify-between mb-3">
-          <Text className="text-base font-semibold text-gray-600">
-            Type of production
-          </Text>
-          <Text className="text-base font-bold text-black">Chưa cập nhật</Text>
-        </View>
-
         <View className="h-px my-5 bg-gray-400" />
 
         <View className="flex-row justify-between">

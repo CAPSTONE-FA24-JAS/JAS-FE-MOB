@@ -118,8 +118,8 @@ const InvoiceDetailConfirm: React.FC = () => {
   };
 
   return (
-    <StyledView className="flex-1 p-4 bg-white">
-      <ScrollView>
+    <View className="flex-1 bg-white">
+      <ScrollView className="flex-1 p-4 bg-white">
         {/* Customer Information */}
         <StyledText className="mb-2 text-lg font-bold">
           CUSTOMER INFORMATION
@@ -167,7 +167,7 @@ const InvoiceDetailConfirm: React.FC = () => {
         <StyledText className="mt-4 mb-2 text-lg font-bold">
           ORDER INFORMATION
         </StyledText>
-        <StyledView className="py-3 mb-3 border-t border-b border-gray-300">
+        <StyledView className="gap-2 py-3 mb-3 border-t border-b border-gray-300">
           <StyledView className="flex-row justify-between mb-1">
             <StyledText className="text-base font-medium text-gray-600">
               Invoice Code
@@ -184,14 +184,6 @@ const InvoiceDetailConfirm: React.FC = () => {
               #{itemDetailBid.lotId}
             </StyledText>
           </StyledView>
-          <StyledView className="flex-row justify-between mb-1">
-            <StyledText className="text-base font-medium text-gray-600">
-              Customer Lot Code
-            </StyledText>
-            <StyledText className="text-base font-medium text-gray-600">
-              #{itemDetailBid.id}
-            </StyledText>
-          </StyledView>
 
           <StyledView className="flex-row justify-between mb-1">
             <StyledText className="text-base font-medium text-gray-600">
@@ -199,14 +191,6 @@ const InvoiceDetailConfirm: React.FC = () => {
             </StyledText>
             <StyledText className="w-1/2 text-base font-medium text-right text-gray-600">
               {itemDetailBid.lotDTO.title}
-            </StyledText>
-          </StyledView>
-          <StyledView className="flex-row justify-between mb-1">
-            <StyledText className="text-base font-medium text-gray-600">
-              Type of production
-            </StyledText>
-            <StyledText className="text-base font-medium text-gray-600">
-              Chưa cập nhật
             </StyledText>
           </StyledView>
 
@@ -238,13 +222,15 @@ const InvoiceDetailConfirm: React.FC = () => {
               }) || "0 VND"}
             </StyledText>
           </StyledView>
+
           <StyledView className="flex-row justify-between mb-1">
             <StyledText className="text-base font-medium text-gray-600">
-              Deposit:
+              Shipping Fee
             </StyledText>
             <StyledText className="text-base font-medium text-gray-600">
-              {(deposit && typeof deposit === "number"
-                ? deposit
+              {(invoiceDetails.feeShip &&
+              typeof invoiceDetails.feeShip === "number"
+                ? invoiceDetails.feeShip
                 : 0
               ).toLocaleString("vi-VN", {
                 style: "currency",
@@ -254,12 +240,12 @@ const InvoiceDetailConfirm: React.FC = () => {
           </StyledView>
           <StyledView className="flex-row justify-between mb-1">
             <StyledText className="text-base font-medium text-gray-600">
-              Shipping Fee
+              Deposit:
             </StyledText>
             <StyledText className="text-base font-medium text-gray-600">
-              {(invoiceDetails.feeShip &&
-              typeof invoiceDetails.feeShip === "number"
-                ? invoiceDetails.feeShip
+              -{" "}
+              {(deposit && typeof deposit === "number"
+                ? deposit
                 : 0
               ).toLocaleString("vi-VN", {
                 style: "currency",
@@ -295,15 +281,18 @@ const InvoiceDetailConfirm: React.FC = () => {
         </StyledView>
 
         {/* Confirm Button */}
-        <StyledTouchableOpacity
-          disabled={!isChecked}
-          onPress={handleConfirm} // Show password modal
-          className={`p-3 rounded ${isChecked ? "bg-blue-500" : "bg-gray-300"}`}
-        >
-          <StyledText className="font-bold text-center text-white">
-            CONFIRM
-          </StyledText>
-        </StyledTouchableOpacity>
+        <StyledView className="border-t border-gray-200 py-14 ">
+          <StyledTouchableOpacity
+            disabled={!isChecked}
+            onPress={handleConfirm}
+            className={`p-3 rounded ${
+              isChecked ? "bg-blue-500" : "bg-gray-300"
+            }`}>
+            <StyledText className="font-bold text-center text-white">
+              CONFIRM
+            </StyledText>
+          </StyledTouchableOpacity>
+        </StyledView>
       </ScrollView>
       {/* Password Confirmation Modal */}
       <PasswordModal
@@ -312,7 +301,7 @@ const InvoiceDetailConfirm: React.FC = () => {
         onConfirm={handlePasswordConfirm}
         amount={totalPrice}
       />
-    </StyledView>
+    </View>
   );
 };
 

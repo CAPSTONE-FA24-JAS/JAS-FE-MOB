@@ -239,12 +239,11 @@ const Payment: React.FC = () => {
 
   return (
     <View className="flex-1 bg-gray-100">
-      <ScrollView className="flex-1">
-        <View className="p-4">
+      <ScrollView className="flex-1 mb-20">
+        <View className="p-2 mx-2">
           <Text className="my-2 text-lg font-bold text-gray-600 uppercase">
-            {" "}
             Price need pay:{" "}
-            {totalPrice?.toLocaleString("vi-VN", {
+            {(totalPrice ? totalPrice : 0).toLocaleString("vi-VN", {
               style: "currency",
               currency: "VND",
             })}
@@ -260,32 +259,18 @@ const Payment: React.FC = () => {
           <RadioButton.Group
             onValueChange={(newValue) => setSelectedPayment(newValue)}
             value={selectedPayment}>
-            {/* Direct Payment */}
-            <Text className="mb-2 text-base font-medium text-gray-700">
-              Thanh toán trực tiếp
-            </Text>
-
             <Card className="mb-4 bg-white">
               <TouchableOpacity className="flex-row items-center justify-between p-4">
                 <View className="flex-row items-center">
                   <Avatar.Icon icon="wallet" size={40} />
                   <View className="ml-3">
                     <Text className="text-lg font-semibold">MY WALLET</Text>
-                    <Text>Thanh toán trực tiếp ví của tôi</Text>
+                    <Text>Payment by Wallet</Text>
                   </View>
                 </View>
                 <RadioButton value="wallet" />
               </TouchableOpacity>
             </Card>
-
-            {/* Indirect Payment */}
-            <Text className="mb-2 text-base font-medium text-gray-700">
-              Thanh toán gián tiếp
-            </Text>
-            <Text className="mb-4 font-semibold text-red-500">
-              Note: Sau khi thanh toán gián tiếp thành công, bạn cần chụp màn
-              hình bill chuyển khoản và upload lên lại app JAS. nha
-            </Text>
 
             {/* VNPAY Payment */}
             <Card className="mb-4 bg-white">
@@ -297,12 +282,20 @@ const Payment: React.FC = () => {
                   />
                   <View className="ml-3">
                     <Text className="text-lg font-semibold">VNPAY</Text>
-                    <Text>Tài khoản ví VNPAY</Text>
+                    <Text>VNPAY</Text>
                   </View>
                 </View>
                 <RadioButton value="vnpay" />
               </TouchableOpacity>
             </Card>
+            {/* Indirect Payment */}
+            <Text className="mx-2 mb-2 text-sm font-medium text-gray-700">
+              Indirect Payment
+            </Text>
+            <Text className="mx-2 mb-2 font-semibold text-red-500 ">
+              Note: After successful indirect payment, please take a screenshot
+              of the transfer receipt and upload it to the app.
+            </Text>
 
             {/* Thêm Card QR PAYMENT */}
             <Card className="mb-4 bg-white">
@@ -314,7 +307,7 @@ const Payment: React.FC = () => {
                   />
                   <View className="ml-3">
                     <Text className="text-lg font-semibold">QR PAYMENT</Text>
-                    <Text>Thanh toán QR PAYMENT</Text>
+                    <Text>QR PAYMENT</Text>
                   </View>
                 </View>
                 <RadioButton value="qr" />

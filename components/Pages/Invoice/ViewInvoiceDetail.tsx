@@ -151,14 +151,7 @@ const ViewInvoiceDetail: React.FC = () => {
               {itemDetailBid?.lotDTO.title}
             </StyledText>
           </StyledView>
-          <StyledView className="flex-row justify-between mb-1">
-            <StyledText className="text-base font-medium text-gray-600">
-              Type of Production
-            </StyledText>
-            <StyledText className="text-base font-medium text-gray-600">
-              {itemDetailBid?.lotDTO.lotType || "Not Updated"}
-            </StyledText>
-          </StyledView>
+
           <StyledView className="flex-row justify-between mb-1">
             <StyledText className="text-base font-medium text-gray-600">
               Your Bid Price
@@ -238,8 +231,7 @@ const ViewInvoiceDetail: React.FC = () => {
         {/* Back Button */}
         <StyledTouchableOpacity
           onPress={handleBack}
-          className="p-3 mt-5 bg-blue-500 rounded"
-        >
+          className="p-3 mt-5 bg-blue-500 rounded">
           <StyledText className="font-bold text-center text-white">
             BACK
           </StyledText>

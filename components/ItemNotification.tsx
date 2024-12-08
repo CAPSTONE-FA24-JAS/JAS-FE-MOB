@@ -62,7 +62,7 @@ const NotificationItem = ({ item }: { item: Notification }) => {
     },
     { label: "RecivedJewelry", value: 6, screen: "HistoryItemConsign", tab: 5 },
     {
-      label: "FinalValuated",
+      label: "Evaluated",
       value: 7,
       screen: "HistoryItemConsign",
       tab: undefined,
@@ -172,9 +172,8 @@ const NotificationItem = ({ item }: { item: Notification }) => {
             {item.notifi_Type !== null && (
               <View className={`px-2 py-0.5 rounded ${getTypeColor(item)}`}>
                 <Text
-                  className={`text-base font-medium  ${getTypeColorText(
-                    item
-                  )}`}>
+                  className={`text-base font-medium  ${getTypeColorText(item)}`}
+                >
                   {item.notifi_Type}
                 </Text>
               </View>

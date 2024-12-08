@@ -301,3 +301,50 @@ export const paymentInvoiceByBankTransfer = async (
     throw error; // Tiếp tục ném lỗi nếu bạn muốn xử lý ở nơi gọi hàm này
   }
 };
+
+// Function to cancel an invoice by the buyer
+export const cancelInvoiceByBuyer = async (
+  invoiceId: number,
+  reason: string
+): Promise<InvoiceResponse<null> | null> => {
+  console.log("cancelInvoiceByBuyer", { invoiceId, reason });
+
+  try {
+    const response = await axios.put<InvoiceResponse<null>>(
+      `${API_URL}/api/Invoices/CancelledInvoiceByBuyer`,
+      null, // Body is null since the parameters are sent via query
+      {
+        params: {
+          invoiceId,
+          reason,
+        },
+      }
+    );
+
+    if (response.data.isSuccess) {
+      console.log("Invoice cancelled successfully:", response.data);
+      showSuccessMessage("Invoice cancelled successfully.");
+      return response.data;
+    } else {
+      console.error(
+        "Failed to cancel invoice:",
+        response.data.message || "Unknown error"
+      );
+      showErrorMessage(response.data.message || "Failed to cancel invoice.");
+      return null;
+    }
+  } catch (error) {
+    console.error("Error cancelling invoice:", error);
+
+    // Kiểm tra xem lỗi có từ phía server không và có message cụ thể
+    if (axios.isAxiosError(error) && error.response) {
+      const serverMessage = error.response.data.message;
+      showErrorMessage(serverMessage || "Unable to cancel invoice.");
+    } else {
+      // Lỗi không phải từ server hoặc không có phản hồi
+      showErrorMessage("Unable to cancel invoice.");
+    }
+
+    throw error; // Ném lỗi nếu cần xử lý thêm
+  }
+};

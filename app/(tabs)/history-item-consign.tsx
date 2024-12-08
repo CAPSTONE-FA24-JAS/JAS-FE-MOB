@@ -3,7 +3,7 @@ import ConsignItem, { ConsignItemProps } from "@/components/ConsignItem";
 import { RootState } from "@/redux/store";
 import { RouteProp, useRoute } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
-import { useNavigation } from "expo-router";
+import { useFocusEffect, useNavigation } from "expo-router";
 import React, { useCallback, useEffect, useState } from "react";
 import {
   ActivityIndicator,
@@ -126,9 +126,11 @@ const HistoryItemConsign: React.FC = () => {
     fetchConsignmentHistory(); // Gọi API để cập nhật danh sách theo trạng thái mới
   }, [selectedStatus]);
 
-  useEffect(() => {
-    fetchConsignmentHistory();
-  }, [page, selectedStatus]);
+  useFocusEffect(
+    useCallback(() => {
+      fetchConsignmentHistory();
+    }, [page, selectedStatus])
+  );
 
   // Hàm xử lý tìm kiếm
   const searchedItems = items?.filter((item) =>
@@ -148,7 +150,7 @@ const HistoryItemConsign: React.FC = () => {
   //   "Preliminary",
   //   "Approved Preliminary",
   //   "Recived Jewelry", // hiện biên bản xác nhận
-  //   // "Final Valuated", // ẩn
+  //   // "Evaluated", // ẩn
   //   "Manager Approved",
   //   "Authorized", // cho coi giấy uỷ quyền
   //   "Rejected",
@@ -167,13 +169,15 @@ const HistoryItemConsign: React.FC = () => {
             noConsignmentMessage
               ? null
               : "h-[150px]"
-          } `}>
+          } `}
+        >
           <View className="flex-row items-center">
             <TouchableOpacity
               className={`px-4 py-2 mr-2 ${
                 selectedStatus === null ? "bg-yellow-500" : "bg-gray-400"
               } rounded`}
-              onPress={() => setSelectedStatus(null)}>
+              onPress={() => setSelectedStatus(null)}
+            >
               <Text className="font-bold text-white uppercase">ALL</Text>
             </TouchableOpacity>
 
@@ -183,7 +187,8 @@ const HistoryItemConsign: React.FC = () => {
                 className={`px-4 py-2 mr-2 ${
                   selectedStatus === status ? "bg-yellow-500" : "bg-gray-400"
                 } rounded`}
-                onPress={() => setSelectedStatus(status)}>
+                onPress={() => setSelectedStatus(status)}
+              >
                 <Text className="font-bold text-white uppercase">
                   {index + 1}. {statusTextMap[index]}
                 </Text>
@@ -204,6 +209,11 @@ const HistoryItemConsign: React.FC = () => {
             <Text className="mb-2 text-base font-semibold">
               Total: {searchedItems.length} items
             </Text>
+          )}
+          {loading && (
+            <View style={{ padding: 10 }}>
+              <ActivityIndicator size={26} color="#0000ff" />
+            </View>
           )}
           {(searchedItems && searchedItems.length === 0 && !loading) ||
           noConsignmentMessage ? (
@@ -237,7 +247,8 @@ const HistoryItemConsign: React.FC = () => {
                     flexDirection: "row",
                     justifyContent: "space-between",
                   }}
-                  className="bottom-0 w-full ">
+                  className="bottom-0 w-full "
+                >
                   <TouchableOpacity
                     onPress={handleLoadMore}
                     style={{
@@ -247,16 +258,12 @@ const HistoryItemConsign: React.FC = () => {
                       margin: 10,
                       width: "100%",
                     }}
-                    className="mx-auto">
+                    className="mx-auto"
+                  >
                     <Text style={{ color: "#fff", textAlign: "center" }}>
                       Load More
                     </Text>
                   </TouchableOpacity>
-                </View>
-              )}
-              {loading && (
-                <View style={{ padding: 10 }}>
-                  <ActivityIndicator size={26} color="#0000ff" />
                 </View>
               )}
             </View>

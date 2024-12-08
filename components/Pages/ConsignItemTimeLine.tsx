@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { View, Text, Image, ScrollView, Linking } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { useRoute } from "@react-navigation/native";
@@ -15,12 +15,14 @@ import {
   rejectForValuations,
   updateStatusForValuation,
 } from "@/api/consignAnItemApi";
-import { useNavigation } from "expo-router";
+import { useFocusEffect, useNavigation } from "expo-router";
 import FinalValuationDetailsModal from "../Modal/FinalValuationDetailsModal";
 import moment from "moment-timezone";
 import { StackNavigationProp } from "@react-navigation/stack";
 import LoadingOverlay from "../LoadingOverlay";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { getValuationById } from "@/api/OTPApi";
+import { DataConsignDetail } from "@/app/types/consign_detail_type";
 
 // Define the types for navigation routes
 type RootStackParamList = {
@@ -34,7 +36,7 @@ type ConsignStatus =
   | "Preliminary"
   | "ApprovedPreliminary"
   | "RecivedJewelry"
-  | "FinalValuated"
+  | "Evaluated"
   | "ManagerApproved"
   | "Authorized"
   | "Rejected";
@@ -46,7 +48,7 @@ const statusTextMap: Record<ConsignStatus, string> = {
   Preliminary: "Preliminary",
   ApprovedPreliminary: "Approved Preliminary",
   RecivedJewelry: "Recived Jewelry",
-  FinalValuated: "Final Valuated",
+  Evaluated: "Evaluated",
   ManagerApproved: "Manager Approved",
   Authorized: "Authorized",
   Rejected: "Rejected",
@@ -55,19 +57,54 @@ const ConsignDetailTimeLine: React.FC = () => {
   const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
 
   const route = useRoute();
-  const { item: routeItem } = route.params as { item: dataResponseConsignList }; // Lấy params
-  const [item, setItem] = useState(routeItem); // Create a local state for the item
+  const { item: routeItem } = route.params as {
+    item: dataResponseConsignList;
+  }; // Lấy params
+  const [itemValua, setItemValua] = useState(routeItem); // Create a local state for the item
+  const [item, setItem] = useState<DataConsignDetail | null>(null);
   const [timeline, setTimeline] = useState<TimeLineConsignment[]>([]);
   const [expanded, setExpanded] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
   const [valuationData, setValuationData] = useState<any | null>(null);
   const [isFinalModalVisible, setFinalModalVisible] = useState(false);
-  console.log("valuationDataNe", valuationData);
+  console.log("itemValua", itemValua);
+  console.log("item Detail Value", item);
   const [loading, setLoading] = useState(false);
 
+  const fetchItemDetails = async (id: number) => {
+    setLoading(true);
+    try {
+      const response = await getValuationById(id);
+      if (!response) {
+        console.error("No valuation data found.");
+        setItem(null);
+      } else {
+        setItem(response);
+        console.log("Fetched valuation details:", response);
+      }
+    } catch (error) {
+      console.error("Error in fetching valuation details:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Dùng useFocusEffect để gọi lại API khi màn hình được focus
+  useFocusEffect(
+    useCallback(() => {
+      if (itemValua?.id) {
+        fetchItemDetails(itemValua.id);
+      }
+    }, [itemValua?.id])
+  );
+
   useEffect(() => {
-    fetchTimelineData(item?.id);
-  }, [item]);
+    if (itemValua?.id) {
+      fetchItemDetails(itemValua.id);
+
+      fetchTimelineData(itemValua?.id);
+    }
+  }, [itemValua]);
 
   const toggleExpanded = () => setExpanded(!expanded);
 
@@ -127,12 +164,12 @@ const ConsignDetailTimeLine: React.FC = () => {
       case "RequestedPreliminary":
         return "bg-yellow-500";
       case "Preliminary":
-        return "bg-brown-500";
+        return "bg-pink-500";
       case "ApprovedPreliminary":
         return "bg-green-500";
       case "RecivedJewelry":
         return "bg-purple-500";
-      case "FinalValuated":
+      case "Evaluated":
         return "bg-orange-500";
       case "ManagerApproved":
         return "bg-green-700";
@@ -144,13 +181,14 @@ const ConsignDetailTimeLine: React.FC = () => {
         return "bg-gray-500";
     }
   };
+  console.log("item?.status", item?.status);
 
   const handleApprove = async () => {
     setLoading(true); // Bắt đầu loading
     try {
-      await updateStatusForValuation(item?.id, 4);
+      await updateStatusForValuation(itemValua?.id, 4);
       // Update the item status locally
-      setItem((prevItem) => ({
+      setItemValua((prevItem) => ({
         ...prevItem,
         status: "Preliminary",
       }));
@@ -167,9 +205,9 @@ const ConsignDetailTimeLine: React.FC = () => {
   const handleReject = async (reason: string) => {
     setLoading(true); // Bắt đầu loading
     try {
-      await rejectForValuations(item?.id, 9, reason); // Gọi API rejectForValuations
+      await rejectForValuations(itemValua?.id, 9, reason); // Gọi API rejectForValuations
       // Cập nhật trạng thái của item trong UI
-      setItem((prevItem) => ({
+      setItemValua((prevItem) => ({
         ...prevItem,
         status: "Rejected",
       }));
@@ -255,7 +293,7 @@ const ConsignDetailTimeLine: React.FC = () => {
           <View className="w-[60%]">
             <Text
               className={`uppercase ${getStatusColor(
-                item?.status
+                item?.status ?? "default"
               )} px-2 py-1 rounded-md text-white text-center mb-2 text-base font-semibold uppercase`}
             >
               {statusTextMap[item?.status as ConsignStatus]}
@@ -315,7 +353,7 @@ const ConsignDetailTimeLine: React.FC = () => {
         {/* Tạo list ảnh hàng ngang nhỏ, ấn vào thì show modal ảnh phỏng lớn */}
         <View>
           <ImageGallery
-            images={item?.imageValuations?.map((img) => img.imageLink)}
+            images={item?.imageValuations?.map((img) => img.imageLink) || []}
           />
           {item?.imageValuations
             ?.filter((item) => item?.defaultImage === "PDF")
@@ -399,13 +437,13 @@ const ConsignDetailTimeLine: React.FC = () => {
                         {/* đoạn này đang kh biết tải hẳn luôn ha là mở modal */}
                       </TouchableOpacity>
                     )}
-                    {event?.statusName == "FinalValuated" && ( // chưa biết cái nào hiển thị tài liệu nên để đây
+                    {event?.statusName == "Evaluated" && ( // chưa biết cái nào hiển thị tài liệu nên để đây
                       <TouchableOpacity
                         className="p-2 mt-1 bg-gray-200 rounded w-[140px] "
                         onPress={handleViewFinalValuation}
                       >
                         <Text className="font-semibold text-center text-gray-700">
-                          View Final Valuated
+                          View Evaluated
                         </Text>
                         {/* đoạn này đang kh biết tải hẳn luôn ha là mở modal */}
                       </TouchableOpacity>
@@ -437,8 +475,14 @@ const ConsignDetailTimeLine: React.FC = () => {
           isVisible={modalVisible}
           onClose={() => setModalVisible(false)}
           details={valuationData} // Dữ liệu thực từ ConsignResponse đã chuyển đổi
-          onApprove={handleApprove}
-          onReject={(reason: string) => handleReject(reason)}
+          onApprove={async () => {
+            await handleApprove(); // Thực hiện hành động
+            fetchItemDetails(itemValua.id); // Gọi lại API để cập nhật
+          }}
+          onReject={async (reason: string) => {
+            await handleReject(reason); // Thực hiện hành động
+            fetchItemDetails(itemValua.id); // Gọi lại API để cập nhật
+          }}
         />
       )}
       {
@@ -446,9 +490,9 @@ const ConsignDetailTimeLine: React.FC = () => {
           isVisible={isFinalModalVisible}
           onClose={() => setFinalModalVisible(false)}
           details={valuationData}
-          onApprove={() => {
-            showSuccessMessage("Approved");
-            setFinalModalVisible(false);
+          onApprove={async () => {
+            await handleApprove(); // Thực hiện hành động
+            fetchItemDetails(itemValua.id); // Gọi lại API để cập nhật
           }}
         />
       }

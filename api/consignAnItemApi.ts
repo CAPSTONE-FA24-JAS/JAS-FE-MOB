@@ -233,3 +233,46 @@ export const rejectForValuations = async (
     throw error;
   }
 };
+
+export const rejectJewelryByOwner = async (
+  jewelryId: number,
+  status: number,
+  reason: string
+): Promise<any> => {
+  console.log("Rejecting jewelry by owner:", { jewelryId, status, reason });
+
+  try {
+    const response = await axios.put(
+      `${API_URL}/api/Jewelrys/RejectByOwner`,
+      null, // No body required for this PUT request
+      {
+        params: {
+          jewelryId, // ID of the jewelry item
+          status, // Status to update
+          reason, // Reason for rejection
+        },
+        headers: {
+          "Content-Type": "application/json", // Ensure proper headers
+        },
+      }
+    );
+
+    if (response.data.isSuccess) {
+      console.log("Jewelry rejected successfully:", response.data);
+      showSuccessMessage(
+        response.data.message || "Jewelry rejection completed successfully."
+      );
+      return response.data;
+    } else {
+      throw new Error(response.data.message || "Failed to reject jewelry.");
+    }
+  } catch (error: any) {
+    const errorMessage =
+      error.response?.data?.message ||
+      error.message ||
+      "Error occurred while rejecting jewelry.";
+    console.error("Error rejecting jewelry:", error);
+    showErrorMessage(errorMessage);
+    throw error;
+  }
+};

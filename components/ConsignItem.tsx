@@ -9,7 +9,7 @@ type ConsignStatus =
   | "Preliminary" //3
   | "ApprovedPreliminary" //4
   | "RecivedJewelry" //5
-  | "FinalValuated" //6
+  | "Evaluated" //6
   | "ManagerApproved" //7
   | "Authorized" //8
   | "Rejected"; //9
@@ -32,10 +32,10 @@ const statusColors: Record<ConsignStatus, string> = {
   Requested: "text-blue-500",
   Assigned: "text-indigo-500",
   RequestedPreliminary: "text-yellow-500",
-  Preliminary: "text-brown-500",
+  Preliminary: "text-pink-500",
   ApprovedPreliminary: "text-green-500",
   RecivedJewelry: "text-purple-500",
-  FinalValuated: "text-orange-500",
+  Evaluated: "text-orange-500",
   ManagerApproved: "text-green-700",
   Authorized: "text-blue-500",
   Rejected: "text-red-500",
@@ -62,7 +62,7 @@ const ConsignItem: React.FC<ConsignItemProps> = ({
     Preliminary: "Preliminary",
     ApprovedPreliminary: "Approved Preliminary",
     RecivedJewelry: "Recived Jewelry",
-    FinalValuated: "Final Valuated",
+    Evaluated: "Evaluated",
     ManagerApproved: "Manager Approved",
     Authorized: "Authorized",
     Rejected: "Rejected",
@@ -111,7 +111,8 @@ const ConsignItem: React.FC<ConsignItemProps> = ({
             </Text>
             <TouchableOpacity
               onPress={onViewDetails}
-              className="w-[45%] p-2 mt-2 bg-gray-600 rounded">
+              className="w-[45%] p-2 mt-2 bg-gray-600 rounded"
+            >
               <Text className="font-semibold text-center text-white">
                 XEM CHI TIẾT
               </Text>

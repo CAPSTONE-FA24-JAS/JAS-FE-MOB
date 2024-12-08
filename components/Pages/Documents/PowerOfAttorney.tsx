@@ -1,12 +1,20 @@
+import { rejectJewelryByOwner } from "@/api/consignAnItemApi";
 import { requestOTPMail } from "@/api/OTPApi";
 import { showSuccessMessage } from "@/components/FlashMessageHelpers";
 import LoadingOverlay from "@/components/LoadingOverlay";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { RouteProp, useRoute } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
-import { useNavigation } from "expo-router";
+import { useNavigation, useRouter } from "expo-router";
 import React, { useState } from "react";
-import { ScrollView, Text, TouchableOpacity, View } from "react-native";
+import {
+  Modal,
+  ScrollView,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import { Checkbox } from "react-native-paper";
 
 interface BenUyQuyen {
@@ -27,6 +35,7 @@ interface FormData {
 type RootStackParamList = {
   OTP: { valuationId: number; sellerId: number; email: string; details: any };
   HistoryItemConsign: undefined;
+  DrawerLayout: { screen: string };
 };
 
 interface RouteParams {
@@ -35,12 +44,24 @@ interface RouteParams {
 }
 
 const PowerOfAttorney: React.FC = () => {
+  const router = useRouter();
+
   const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
   const route = useRoute<RouteProp<{ params: RouteParams }, "params">>();
   const { details, isOTP } = route.params;
+  const [rejectReasonModalVisible, setRejectReasonModalVisible] =
+    useState(false);
+  const [selectedReason, setSelectedReason] = useState<string | null>(null);
+  const [otherReason, setOtherReason] = useState<string>("");
   const [loading, setLoading] = useState(false); // Trạng thái loading
 
-  console.log("detailsaknha", details);
+  console.log("detailsaknha", JSON.stringify(details));
+  const suggestedReasons = [
+    "Not interested anymore",
+    "Found a better option",
+    "Incorrect details",
+    "Other",
+  ];
 
   const [formData, setFormData] = useState<FormData>({
     benUyQuyen: {
@@ -70,8 +91,32 @@ const PowerOfAttorney: React.FC = () => {
     }
   };
 
-  const handleConfirm = () => {
-    console.log("Form Data:", formData);
+  const handleReject = async (reason: string) => {
+    const jewelryId = details?.descriptionCharacteristicDetails[0]?.jewelryId; // Replace with actual `jewelryId`
+    const status = 9; // Status for rejection
+
+    try {
+      setLoading(true);
+      const response = await rejectJewelryByOwner(jewelryId, status, reason);
+      console.log("Rejection successful:", response);
+      router.back();
+    } catch (error) {
+      console.error("Error rejecting jewelry:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleConfirmReject = () => {
+    const reason =
+      selectedReason === "Other" ? otherReason : selectedReason || "";
+    if (reason.trim() === "") {
+      alert("Please provide a reason for rejection.");
+      return;
+    }
+
+    setRejectReasonModalVisible(false);
+    handleReject(reason);
   };
 
   const handleOTP = async () => {
@@ -129,12 +174,14 @@ const PowerOfAttorney: React.FC = () => {
               {details?.owner || "Không xác định"}
             </Text>
           </View>
-          <View className="flex-row mb-2">
-            <Text className="mr-2 ">Địa chỉ:</Text>
-            <Text className="font-semibold text-gray-800 ">
-              {details?.address || "Không xác định"}
-            </Text>
-          </View>
+          {details?.address && (
+            <View className="flex-row mb-2">
+              <Text className="mr-2 ">Địa chỉ:</Text>
+              <Text className="font-semibold text-gray-800 ">
+                {details?.address || "Không xác định"}
+              </Text>
+            </View>
+          )}
           <View className="flex-row mb-2">
             <Text className="mr-2 ">Số CCCD:</Text>
             <Text className="font-semibold text-gray-800 ">
@@ -162,12 +209,13 @@ const PowerOfAttorney: React.FC = () => {
           {/* Section II: BÊN ĐƯỢC UỶ QUYỀN */}
           <Text className="mb-2 text-lg font-bold">II. BÊN ĐƯỢC UỶ QUYỀN</Text>
           <Text className="mb-2">
-            Họ tên: <Text className="font-bold">Nguyễn Văn B</Text>
+            Công ty: <Text className="font-bold">Công ty JAS</Text>
           </Text>
           <Text className="mb-2">
             Địa chỉ: S1.01 Vinhomes Grand Park, Tp. Thủ Đức, TP. Hồ Chí Minh
           </Text>
-          <Text className="mb-2">Số CMND: 9876545678 cấp ngày: 21/01/2018</Text>
+          <Text className="mb-2">Số CMND: 9876545678 </Text>
+          <Text className="mb-2">Ngày cấp: 21/01/2018</Text>
           <Text className="mb-2">
             Nơi cấp: tại Công an tỉnh Tp. Hồ Chí Minh
           </Text>
@@ -209,7 +257,7 @@ const PowerOfAttorney: React.FC = () => {
                 </Text>
               )}
 
-              <Text className="mt-6">Nguyễn Văn A</Text>
+              <Text className="mt-6">{details?.owner || "Nguyễn Văn A"}</Text>
             </View>
             <View className="items-center">
               <Text className="mt-1 text-lg font-semibold">
@@ -221,7 +269,7 @@ const PowerOfAttorney: React.FC = () => {
                 size={48}
                 color="black"
               />
-              <Text className="mt-6 ">Nguyễn Văn B</Text>
+              <Text className="mt-6 ">JAS COMPANY</Text>
             </View>
           </View>
           {/* Checkbox for terms and conditions */}
@@ -252,26 +300,111 @@ const PowerOfAttorney: React.FC = () => {
           {isOTP ? (
             <TouchableOpacity
               className="p-3 mb-4 bg-blue-500 rounded"
-              onPress={() => navigation.navigate("HistoryItemConsign")}>
+              onPress={() => navigation.navigate("HistoryItemConsign")}
+            >
               <Text className="text-lg font-bold text-center text-white uppercase">
                 History Consign
               </Text>
             </TouchableOpacity>
           ) : (
+            <View className="flex-row justify-between">
+              <TouchableOpacity
+                className={`p-3 rounded w-[45%] bg-red-500 mb-4`}
+                onPress={() => setRejectReasonModalVisible(true)}
+              >
+                <Text className="text-lg font-bold text-center uppercase text-white">
+                  Reject{" "}
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                className={`p-3  w-[45%] rounded ${
+                  formData.agreeTerms ? "bg-blue-500" : "bg-gray-500"
+                }  mb-4`}
+                onPress={handleOTP}
+                disabled={!formData.agreeTerms}
+              >
+                <Text className="text-lg font-bold text-center text-white">
+                  OTP CONFIRM
+                </Text>
+              </TouchableOpacity>
+            </View>
+          )}
+
+          {isOTP && (
             <TouchableOpacity
-              className={`p-3 rounded ${
-                formData.agreeTerms ? "bg-blue-500" : "bg-gray-500"
-              }  mb-4`}
-              onPress={handleOTP}
-              disabled={!formData.agreeTerms}>
-              <Text className="text-lg font-bold text-center text-white">
-                OTP CONFIRM
+              className="p-3 mb-4 bg-white border-2 border-blue-500 rounded"
+              onPress={() =>
+                navigation.navigate("DrawerLayout", {
+                  screen: "HomePage",
+                })
+              }
+            >
+              <Text className="text-lg font-bold text-center text-blue-500 uppercase">
+                Home
               </Text>
             </TouchableOpacity>
           )}
         </ScrollView>
         {/* <View className="absolute bottom-0 w-full p-4 bg-white"> */}
         {/* </View> */}
+
+        {/* Reject Reason Modal */}
+        <Modal
+          visible={rejectReasonModalVisible}
+          animationType="slide"
+          transparent
+          onRequestClose={() => setRejectReasonModalVisible(false)}
+        >
+          <View className="items-center justify-center flex-1 bg-black/50">
+            <View className="w-11/12 p-4 bg-white rounded-lg">
+              <Text className="mb-4 text-lg font-bold">Select a Reason</Text>
+              <ScrollView className="max-h-[60%]">
+                {suggestedReasons.map((reason, index) => (
+                  <TouchableOpacity
+                    key={index}
+                    className={`flex-row items-center mb-2 p-3 rounded-lg ${
+                      selectedReason === reason ? "bg-blue-100" : "bg-gray-100"
+                    }`}
+                    onPress={() => setSelectedReason(reason)}
+                  >
+                    <View className="flex items-center justify-center w-5 h-5 mr-4 border-2 border-blue-600 rounded-full">
+                      {selectedReason === reason && (
+                        <View className="h-2.5 w-2.5 bg-blue-600 rounded-full" />
+                      )}
+                    </View>
+                    <Text className="text-base text-gray-700">{reason}</Text>
+                  </TouchableOpacity>
+                ))}
+                {selectedReason === "Other" && (
+                  <TextInput
+                    className="p-3 mt-4 border border-gray-300 rounded-lg"
+                    placeholder="Enter your reason"
+                    value={otherReason}
+                    onChangeText={setOtherReason}
+                  />
+                )}
+              </ScrollView>
+              <View className="flex-row justify-between mt-6">
+                <TouchableOpacity
+                  className="flex-1 py-3 mr-2 bg-gray-300 rounded-lg"
+                  onPress={() => setRejectReasonModalVisible(false)}
+                >
+                  <Text className="font-bold text-center text-gray-700">
+                    Cancel
+                  </Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  className="flex-1 py-3 ml-2 bg-red-500 rounded-lg"
+                  onPress={handleConfirmReject}
+                >
+                  <Text className="font-bold text-center text-white">
+                    Confirm
+                  </Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </View>
+        </Modal>
       </View>
     </>
   );

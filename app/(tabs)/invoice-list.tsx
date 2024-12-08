@@ -3,7 +3,7 @@ import { showErrorMessage } from "@/components/FlashMessageHelpers";
 import ItemPastBids from "@/components/Pages/MyBids/ItemPastBids";
 import { RootState } from "@/redux/store";
 import { RouteProp, useRoute } from "@react-navigation/native";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import {
   ActivityIndicator,
   FlatList,
@@ -16,6 +16,7 @@ import {
 import { useSelector } from "react-redux";
 import { DataCurentBidResponse } from "../types/bid_type";
 import { InvoiceData } from "../types/invoice_type";
+import { useFocusEffect } from "expo-router";
 
 type InvoiceListRouteParams = {
   params: {
@@ -43,14 +44,6 @@ const InvoiceList: React.FC = () => {
     }
   }, [route.params]);
   // console.log("invoiceList", invoiceList);
-
-  // Gọi API khi thay đổi trạng thái
-  useEffect(() => {
-    if (userId) {
-      fetchInvoices();
-    }
-  }, [selectedStatus, userId]);
-
   // Hàm gọi API
   const fetchInvoices = async () => {
     if (!userId) return;
@@ -99,6 +92,15 @@ const InvoiceList: React.FC = () => {
       setLoading(false);
     }
   };
+
+  // Gọi API khi thay đổi trạng thái
+  useFocusEffect(
+    useCallback(() => {
+      if (userId) {
+        fetchInvoices();
+      }
+    }, [selectedStatus, userId])
+  );
 
   // console.log("selectedStatus", selectedStatus, "invoiceList", invoiceList);
 
@@ -161,7 +163,8 @@ const InvoiceList: React.FC = () => {
         <ScrollView
           horizontal
           showsHorizontalScrollIndicator={false}
-          contentContainerStyle={{ paddingHorizontal: 16 }}>
+          contentContainerStyle={{ paddingHorizontal: 16 }}
+        >
           <View className="flex-row gap-2">
             {statusTabs.map((tab) => (
               <TouchableOpacity
@@ -169,11 +172,13 @@ const InvoiceList: React.FC = () => {
                 onPress={() => setSelectedStatus(tab.value ?? 2)}
                 className={`px-4 py-2 rounded ${
                   selectedStatus === tab.value ? "bg-yellow-500" : "bg-gray-300"
-                }`}>
+                }`}
+              >
                 <Text
                   className={`text-sm font-bold ${
                     selectedStatus === tab.value ? "text-white" : "text-black"
-                  }`}>
+                  }`}
+                >
                   {tab.label}
                 </Text>
               </TouchableOpacity>

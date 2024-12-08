@@ -186,7 +186,8 @@ function DrawerLayout() {
         drawerActiveBackgroundColor: "lightgray", // Set background color for active item
         drawerActiveTintColor: Colors.primary, // Set text color for active item
         drawerInactiveTintColor: "black", // Set text color for inactive items
-      }}>
+      }}
+    >
       {/* Parent Categories */}
       <Drawer.Screen
         name="Auctions"
@@ -230,7 +231,6 @@ export default function AppNavigator() {
         component={DrawerLayout}
         options={{ headerShown: false }}
       />
-      {/* Additional Stack Screens */}
 
       <Stack.Screen
         name="BiddingAuction"
@@ -387,9 +387,10 @@ export default function AppNavigator() {
         component={OTP}
         options={{
           header: () => (
-            <Text className="pt-20 text-2xl font-bold text-center uppercase bg-white">
-              OTP Verification
-            </Text>
+            <CustomHeaderDetail title="OTP Verification" />
+            // <Text className="pt-20 text-2xl font-bold text-center uppercase bg-white">
+            //   OTP Verification
+            // </Text>
           ),
         }}
       />

@@ -1,27 +1,38 @@
 // api.js hoặc api.ts (nếu bạn dùng TypeScript)
+import { DataConsignDetail } from "@/app/types/consign_detail_type";
+import { dataResponseConsignList } from "@/app/types/consign_type";
+import { Response } from "@/app/types/respone_type";
+import {
+  showErrorMessage,
+  showSuccessMessage,
+} from "@/components/FlashMessageHelpers";
 import axios from "axios";
+import apiClient from "./config";
 
 const API_URL = process.env.EXPO_PUBLIC_API_URL || "http://localhost:7251";
 
-export const getValuationById = async (valuationId: number) => {
+// Function to fetch valuation details for a specific valuation ID
+export const getValuationById = async (
+  valuationId: number
+): Promise<DataConsignDetail | null> => {
   try {
-    const response = await axios.get(
-      `${API_URL}/Valuations/getValuationById?valuationId=${valuationId}`,
-      {
-        params: {
-          valuationId: valuationId,
-        },
-      }
+    const response = await apiClient.get<Response<DataConsignDetail>>(
+      `/api/Valuations/getValuationById?valuationId=${valuationId}`
     );
+    console.log("valuationId", valuationId);
 
-    if (response.data.code === 200 && response.data.isSuccess) {
+    if (response.data.isSuccess) {
+      showSuccessMessage("Fetched valuation details successfully.");
       return response.data.data;
     } else {
-      throw new Error("Failed to fetch valuation");
+      throw new Error(
+        response.data.message || "Failed to fetch valuation details."
+      );
     }
   } catch (error) {
-    console.error("Error fetching valuation by ID:", error);
-    throw error;
+    console.error("Error fetching valuation details:", error);
+    showErrorMessage("Unable to fetch valuation details.");
+    return null;
   }
 };
 
@@ -55,7 +66,8 @@ export const checkOTP = async (
 ) => {
   try {
     const response = await axios.put(
-      `${API_URL}/api/Jewelrys/VerifyOTPForAuthorizedBySeller?valuationId=${valuationId}&sellerId=${sellerId}&opt=${opt}`,
+      `${API_URL}/api/Jewelrys/VerifyOTPForAuthorizedBySeller`,
+      {}, // PUT request thường có body, nếu không cần gửi dữ liệu, gửi {} hoặc null
       {
         params: {
           valuationId: valuationId,
@@ -68,9 +80,33 @@ export const checkOTP = async (
     if (response.data.isSuccess) {
       return response.data;
     } else {
-      throw new Error("Failed to fetch valuation");
+      // Xử lý khi isSuccess là false
+      showErrorMessage("OTP không hợp lệ. Vui lòng thử lại.");
+      throw new Error("Failed to verify OTP");
     }
-  } catch (error) {
+  } catch (error: any) {
+    if (axios.isAxiosError(error)) {
+      if (error.response) {
+        if (error.response.status === 400) {
+          // Hiển thị toast khi lỗi là 400
+          showErrorMessage("OTP sai. Vui lòng kiểm tra và thử lại.");
+        } else {
+          // Xử lý các lỗi khác
+          showErrorMessage("Có lỗi xảy ra. Vui lòng thử lại sau.");
+        }
+      } else if (error.request) {
+        // Xử lý khi không nhận được phản hồi từ server
+        showErrorMessage(
+          "Không nhận được phản hồi từ server. Vui lòng kiểm tra kết nối."
+        );
+      } else {
+        // Xử lý các lỗi khác
+        showErrorMessage("Đã xảy ra lỗi. Vui lòng thử lại.");
+      }
+    } else {
+      // Xử lý các lỗi không phải là AxiosError
+      showErrorMessage("Đã xảy ra lỗi không xác định. Vui lòng thử lại.");
+    }
     console.error("Error fetching valuation by ID:", error);
     throw error;
   }

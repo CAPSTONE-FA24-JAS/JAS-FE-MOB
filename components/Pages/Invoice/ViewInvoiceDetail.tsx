@@ -66,6 +66,8 @@ const ViewInvoiceDetail: React.FC = () => {
     navigation.goBack();
   };
 
+  console.log("invoiceDetailsView", JSON.stringify(invoiceDetails, null, 2));
+
   return (
     <StyledView className="flex-1 p-4 bg-white">
       <ScrollView>
@@ -211,7 +213,7 @@ const ViewInvoiceDetail: React.FC = () => {
           </StyledView>
         </StyledView>
 
-        {imagePayment && (
+        {imagePayment && invoiceDetails?.myBidDTO?.status !== "Cancelled" && (
           <View className="mt-2 mb-4">
             <StyledText className="mb-2 text-lg font-bold uppercase">
               Bill Payment Image
@@ -222,16 +224,25 @@ const ViewInvoiceDetail: React.FC = () => {
           </View>
         )}
         {/* Payment Section */}
-        <StyledView className="flex-row justify-center mt-3">
-          <StyledText className="text-xl font-bold text-green-500">
-            PAYMENT
-          </StyledText>
-        </StyledView>
+        {invoiceDetails?.myBidDTO?.status !== "Cancelled" ? (
+          <StyledView className="flex-row justify-center mt-3">
+            <StyledText className="text-xl font-bold text-green-500">
+              PAYMENT
+            </StyledText>
+          </StyledView>
+        ) : (
+          <StyledView className="flex-row justify-center mt-3">
+            <StyledText className="text-xl font-bold text-red-500">
+              CANCELLED
+            </StyledText>
+          </StyledView>
+        )}
 
         {/* Back Button */}
         <StyledTouchableOpacity
           onPress={handleBack}
-          className="p-3 mt-5 bg-blue-500 rounded">
+          className="p-3 mt-5 bg-blue-500 rounded"
+        >
           <StyledText className="font-bold text-center text-white">
             BACK
           </StyledText>

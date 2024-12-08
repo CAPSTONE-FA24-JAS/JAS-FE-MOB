@@ -122,7 +122,8 @@ const AutoBidSaveConfig: React.FC = () => {
     <SafeAreaView className="flex-1 bg-white">
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : undefined}
-        style={{ flex: 1 }}>
+        style={{ flex: 1 }}
+      >
         <View style={{ paddingHorizontal: 16 }}>
           <View className="flex-row w-full p-4 mx-auto mt-6 mb-6 rounded-lg bg-slate-100">
             <Image
@@ -177,7 +178,8 @@ const AutoBidSaveConfig: React.FC = () => {
               onPress={() =>
                 setStartingPrice((prev) => Math.max(10000, prev - stepMin))
               }
-              className="px-4 py-2 bg-gray-200 rounded-l-lg">
+              className="px-4 py-2 bg-gray-200 rounded-l-lg"
+            >
               <Text className="text-2xl  h-[35px]">-</Text>
             </TouchableOpacity>
             <TextInput
@@ -192,7 +194,8 @@ const AutoBidSaveConfig: React.FC = () => {
             />
             <TouchableOpacity
               onPress={() => setStartingPrice((prev) => prev + stepMin)}
-              className="px-4 py-2 bg-gray-200 rounded-r-lg">
+              className="px-4 py-2 bg-gray-200 rounded-r-lg"
+            >
               <Text className="text-xl h-[35px]">+</Text>
             </TouchableOpacity>
           </View>
@@ -203,7 +206,8 @@ const AutoBidSaveConfig: React.FC = () => {
           </Text>
           <View
             className="flex-row items-center mb-4"
-            style={{ zIndex: dropdownMinOpen ? 2 : 1, marginBottom: 10 }}>
+            style={{ zIndex: dropdownMinOpen ? 2 : 1, marginBottom: 10 }}
+          >
             <DropDownPicker
               open={dropdownMaxOpen}
               value={stepMax}
@@ -220,7 +224,8 @@ const AutoBidSaveConfig: React.FC = () => {
               onPress={() =>
                 setMaxPrice((prev) => Math.max(startingPrice, prev - stepMax))
               }
-              className="px-4 py-2 bg-gray-200 rounded-l-lg">
+              className="px-4 py-2 bg-gray-200 rounded-l-lg"
+            >
               <Text className="text-2xl  h-[35px]">-</Text>
             </TouchableOpacity>
             <TextInput
@@ -235,14 +240,15 @@ const AutoBidSaveConfig: React.FC = () => {
             />
             <TouchableOpacity
               onPress={() => setMaxPrice((prev) => prev + stepMax)}
-              className="px-4 py-2 bg-gray-200 rounded-r-lg">
+              className="px-4 py-2 bg-gray-200 rounded-r-lg"
+            >
               <Text className="text-xl  h-[35px]">+</Text>
             </TouchableOpacity>
           </View>
 
           {/* Time Increment Input */}
           <Text className="mt-4 mb-2 text-base font-semibold text-gray-600">
-            Time Increment (1-10 minutes)
+            Time Increment (Seconds)
           </Text>
           <View className="flex-row items-center mb-4">
             <TouchableOpacity
@@ -250,7 +256,8 @@ const AutoBidSaveConfig: React.FC = () => {
               className={`px-4 py-2 bg-gray-300 rounded-l-lg ${
                 nextBidTime <= 1 ? "opacity-50" : ""
               }`}
-              disabled={nextBidTime <= 1}>
+              disabled={nextBidTime <= 1}
+            >
               <Text className="text-2xl  h-[35px]">-</Text>
             </TouchableOpacity>
             <TextInput
@@ -269,7 +276,8 @@ const AutoBidSaveConfig: React.FC = () => {
             />
             <TouchableOpacity
               onPress={() => setNextBidTime((prev) => Math.min(10, prev + 1))}
-              className="px-4 py-2 bg-gray-200 rounded-r-lg">
+              className="px-4 py-2 bg-gray-200 rounded-r-lg"
+            >
               <Text className="text-xl  h-[35px]">+</Text>
             </TouchableOpacity>
           </View>
@@ -291,7 +299,8 @@ const AutoBidSaveConfig: React.FC = () => {
               className={`px-4 py-2 bg-gray-300 rounded-l-lg ${
                 numberOfPriceStep <= 1 ? "opacity-50" : ""
               }`}
-              disabled={numberOfPriceStep <= 1}>
+              disabled={numberOfPriceStep <= 1}
+            >
               <Text className="text-2xl  h-[35px]">-</Text>
             </TouchableOpacity>
             <TextInput
@@ -306,7 +315,8 @@ const AutoBidSaveConfig: React.FC = () => {
             />
             <TouchableOpacity
               onPress={() => setNumberOfPriceStep((prev) => prev + 1)}
-              className="px-4 py-2 bg-gray-200 rounded-r-lg">
+              className="px-4 py-2 bg-gray-200 rounded-r-lg"
+            >
               <Text className="text-xl  h-[35px]">+</Text>
             </TouchableOpacity>
           </View>
@@ -319,7 +329,8 @@ const AutoBidSaveConfig: React.FC = () => {
           {/* Submit Button */}
           <TouchableOpacity
             onPress={handleSubmit}
-            className="py-3 mt-8 bg-blue-500 rounded-md">
+            className="py-3 mt-8 bg-blue-500 rounded-md"
+          >
             <Text className="text-lg font-bold text-center text-white">
               SUBMIT AUTOMATION BID
             </Text>

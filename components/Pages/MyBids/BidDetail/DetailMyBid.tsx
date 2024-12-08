@@ -26,6 +26,7 @@ import ChooseAddress from "../../Address/ChooseAddress";
 import AddressInfo from "./AddressInfo";
 import ItemBidCard from "./ItemBidCard";
 import TimeLineBid from "./TimeLineBid";
+import CancelInvoiceModal from "../CancelInvoiceModal/CancelInvoiceModal";
 
 type RootStackParamList = {
   DetailMyBid: {
@@ -91,7 +92,7 @@ const DetailMyBid: React.FC = () => {
   );
   const statusColor = isWin ? "text-green-600" : "text-red-600";
   const [isLoading, setIsLoading] = useState(false); // Add loading state
-
+  const [isCancelModalVisible, setCancelModalVisible] = useState(false);
   const [itemDetailBid, setItemDetailBid] = useState<MyBidData | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
 
@@ -196,6 +197,15 @@ const DetailMyBid: React.FC = () => {
   const handleSaveSelectedAddress = (address: AddressListData) => {
     setDefaultAddress(address);
     setChooseModalVisible(false);
+  };
+
+  const handleOpenCancelModal = () => setCancelModalVisible(true);
+
+  const handleCloseCancelModal = () => setCancelModalVisible(false);
+
+  const handleCancelSuccess = () => {
+    // Refresh or navigate to the desired screen after successful cancellation
+    fetchBidDetails(); // Re-fetch the bid details or handle as needed
   };
 
   if (loading) {
@@ -375,14 +385,24 @@ const DetailMyBid: React.FC = () => {
           {itemDetailBid?.status === "CreateInvoice" ||
           (itemDetailBid?.status === "PendingPayment" &&
             !invoiceDetails?.linkBillTransaction) ? (
-            <TouchableOpacity
-              className="p-3 mx-4 mt-4 bg-blue-500 rounded"
-              onPress={handleConfirmInvoice}
-            >
-              <Text className="text-base font-semibold text-center text-white uppercase">
-                Confirm Invoice
-              </Text>
-            </TouchableOpacity>
+            <View className=" mx-2">
+              <TouchableOpacity
+                className="p-3 bg-blue-500 rounded "
+                onPress={handleConfirmInvoice}
+              >
+                <Text className="text-sm font-bold text-center uppercase text-white">
+                  Confirm Invoice
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                className="p-3 bg-red-500 rounded mx-2 mt-4"
+                onPress={handleOpenCancelModal}
+              >
+                <Text className="text-sm font-bold text-center uppercase text-white">
+                  Cancel Invoice
+                </Text>
+              </TouchableOpacity>
+            </View>
           ) : (
             <TouchableOpacity
               className="p-3 mx-4 my-4 bg-blue-500 rounded"
@@ -422,6 +442,14 @@ const DetailMyBid: React.FC = () => {
           onCancel={() => setChooseModalVisible(false)}
         />
       </Modal>
+
+      {isCancelModalVisible && invoiceId !== undefined && (
+        <CancelInvoiceModal
+          invoiceId={invoiceId}
+          onClose={handleCloseCancelModal}
+          onSuccess={handleCancelSuccess}
+        />
+      )}
     </View>
   );
 };

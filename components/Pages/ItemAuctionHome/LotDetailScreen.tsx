@@ -46,6 +46,100 @@ import Swiper from "react-native-swiper";
 import { useSelector } from "react-redux";
 import ConfirmBuyNowModal from "./ModalLot/ConfirmBuyNowModal";
 import SecretAuctionBidModal from "./ModalLot/SecretAuctionBidModal";
+import {
+  MainDiamond,
+  MainShaphy,
+  SecondaryDiamond,
+  SecondaryShaphy,
+} from "@/app/types/consign_type";
+
+interface DiamondInfo {
+  mainDiamonds: {
+    name?: string;
+    color?: string;
+    cut?: string;
+    clarity?: string;
+    quantity: number;
+    settingType?: string;
+    dimension?: string;
+    shape?: string;
+    certificate?: string;
+    fluorescence?: string;
+    lengthWidthRatio?: string;
+    type?: string;
+    documents?: Array<{
+      documentLink: string;
+      documentTitle: string;
+    }>;
+    images?: Array<{
+      imageLink: string;
+    }>;
+  }[];
+  secondaryDiamonds: {
+    name?: string;
+    color?: string;
+    cut?: string;
+    clarity?: string;
+    quantity: number;
+    settingType?: string;
+    dimension?: string;
+    shape?: string;
+    certificate?: string;
+    fluorescence?: string;
+    lengthWidthRatio?: string;
+    type?: string;
+    documents?: Array<{
+      documentLink: string;
+      documentTitle: string;
+    }>;
+    images?: Array<{
+      imageLink: string;
+    }>;
+  }[];
+}
+
+// Gemstone Info Interface
+interface GemstoneInfo {
+  mainGemstones: {
+    name?: string;
+    color: string;
+    carat?: string;
+    enhancementType?: string;
+    quantity: number;
+    settingType?: string;
+    dimension: string;
+    documents?: Array<{
+      documentLink: string;
+      documentTitle: string;
+    }>;
+    images?: Array<{
+      imageLink: string;
+    }>;
+  }[];
+  secondaryGemstones: {
+    name?: string;
+    color: string;
+    carat?: string;
+    enhancementType?: string;
+    quantity: number;
+    settingType?: string;
+    dimension?: string;
+    documents?: Array<{
+      documentLink: string;
+      documentTitle: string;
+    }>;
+    images?: Array<{
+      imageLink: string;
+    }>;
+  }[];
+}
+
+// Extend LotDetail type to include jewelry information
+interface ExtendedLotDetail extends LotDetail {
+  totalCustomers?: number;
+  diamondInfo?: DiamondInfo;
+  gemstoneInfo?: GemstoneInfo;
+}
 
 // Define the navigation param list type
 type RootStackParamList = {
@@ -93,6 +187,13 @@ const LotDetailScreen = () => {
   const haveWallet = useSelector(
     (state: RootState) => state?.profile?.profile?.customerDTO?.walletId
   );
+  const [jewelryDetails, setJewelryDetails] = useState<{
+    diamondInfo: DiamondInfo | null;
+    gemstoneInfo: GemstoneInfo | null;
+  }>({
+    diamondInfo: null,
+    gemstoneInfo: null,
+  });
   const route = useRoute();
   const { id, name, minPrice, maxPrice, price, image, typeBid, status } =
     route.params ? (route.params as RouteParams) : {};
@@ -119,6 +220,110 @@ const LotDetailScreen = () => {
   const [bidTimeCheck, setBidTimeCheck] = useState<string | null>(null);
 
   const [isWatching, setWatching] = useState(false);
+
+  //////////////////////////////////////////////
+  const extractDiamondInfo = (
+    mainDiamonds?: MainDiamond[],
+    secondaryDiamonds?: SecondaryDiamond[]
+  ): DiamondInfo => {
+    const processedMainDiamonds =
+      mainDiamonds?.map((diamond) => ({
+        name: diamond.name || undefined,
+        color: diamond.color || undefined,
+        cut: diamond.cut || undefined,
+        clarity: diamond.clarity || undefined,
+        quantity: diamond.quantity,
+        settingType: diamond.settingType || undefined,
+        dimension: diamond.dimension || undefined,
+        shape: diamond.shape || undefined,
+        certificate: diamond.certificate || undefined,
+        fluorescence: diamond.fluorescence || undefined,
+        lengthWidthRatio: diamond.lengthWidthRatio || undefined,
+        type: diamond.type || undefined,
+        documents:
+          diamond.documentDiamonds?.length > 0
+            ? diamond.documentDiamonds
+            : undefined,
+        images:
+          diamond.imageDiamonds?.length > 0 ? diamond.imageDiamonds : undefined,
+      })) || [];
+
+    const processedSecondaryDiamonds =
+      secondaryDiamonds?.map((diamond) => ({
+        name: diamond.name || undefined,
+        color: diamond.color || undefined,
+        cut: diamond.cut || undefined,
+        clarity: diamond.clarity || undefined,
+        quantity: diamond.quantity,
+        settingType: diamond.settingType || undefined,
+        dimension: diamond.dimension || undefined,
+        shape: diamond.shape || undefined,
+        certificate: diamond.certificate || undefined,
+        fluorescence: diamond.fluorescence || undefined,
+        lengthWidthRatio: diamond.lengthWidthRatio || undefined,
+        type: diamond.type || undefined,
+        documents:
+          diamond.documentDiamonds?.length > 0
+            ? diamond.documentDiamonds
+            : undefined,
+        images:
+          diamond.imageDiamonds?.length > 0 ? diamond.imageDiamonds : undefined,
+      })) || [];
+
+    return {
+      mainDiamonds: processedMainDiamonds,
+      secondaryDiamonds: processedSecondaryDiamonds,
+    };
+  };
+
+  // Gemstone Info Extractor
+  const extractGemstoneInfo = (
+    mainGemstones?: MainShaphy[],
+    secondaryGemstones?: SecondaryShaphy[]
+  ): GemstoneInfo => {
+    const processedMainGemstones =
+      mainGemstones?.map((gemstone) => ({
+        name: gemstone.name || undefined,
+        color: gemstone.color,
+        carat: gemstone.carat || undefined,
+        enhancementType: gemstone.enhancementType || undefined,
+        quantity: gemstone.quantity,
+        settingType: gemstone.settingType || undefined,
+        dimension: gemstone.dimension,
+        documents:
+          gemstone.documentShaphies?.length > 0
+            ? gemstone.documentShaphies
+            : undefined,
+        images:
+          gemstone.imageShaphies?.length > 0
+            ? gemstone.imageShaphies
+            : undefined,
+      })) || [];
+
+    const processedSecondaryGemstones =
+      secondaryGemstones?.map((gemstone) => ({
+        name: gemstone.name || undefined,
+        color: gemstone.color,
+        carat: gemstone.carat || undefined,
+        enhancementType: gemstone.enhancementType || undefined,
+        quantity: gemstone.quantity,
+        settingType: gemstone.settingType || undefined,
+        dimension: gemstone.dimension || undefined,
+        documents:
+          gemstone.documentShaphies?.length > 0
+            ? gemstone.documentShaphies
+            : undefined,
+        images:
+          gemstone.imageShaphies?.length > 0
+            ? gemstone.imageShaphies
+            : undefined,
+      })) || [];
+
+    return {
+      mainGemstones: processedMainGemstones,
+      secondaryGemstones: processedSecondaryGemstones,
+    };
+  };
 
   // Fetch lot details when the component mounts
   // useEffect(() => {
@@ -151,6 +356,24 @@ const LotDetailScreen = () => {
         const data = await getLotDetailById(id);
 
         if (data?.isSuccess) {
+          // Extract jewelry details if available
+          if (data.data.jewelry) {
+            const diamondInfo = extractDiamondInfo(
+              data.data.jewelry.mainDiamonds,
+              data.data.jewelry.secondaryDiamonds
+            );
+
+            const gemstoneInfo = extractGemstoneInfo(
+              data.data.jewelry.mainShaphies,
+              data.data.jewelry.secondaryShaphies
+            );
+
+            setJewelryDetails({
+              diamondInfo,
+              gemstoneInfo,
+            });
+          }
+
           // Kiểm tra nếu loại lô là Fixed_Price
           if (data.data.lotType === "Fixed_Price") {
             try {
@@ -336,6 +559,195 @@ const LotDetailScreen = () => {
     } else {
       showErrorMessage("Lot details are not available.");
     }
+  };
+
+  const renderJewelryDetails = () => {
+    // Only render property if it exists and has a value
+    const renderPropertyRow = (
+      label: string,
+      value: string | number | undefined | null
+    ) => {
+      if (value === undefined || value === null || value === "") return null;
+      return (
+        <View className="flex-row py-1 border-b border-gray-100">
+          <Text className="w-1/3 text-sm font-medium text-gray-500">
+            {label}
+          </Text>
+          <Text className="flex-1 text-sm text-gray-700">{value}</Text>
+        </View>
+      );
+    };
+
+    // Only render diamond card if it has at least one non-empty property
+    const renderDiamondCard = (
+      diamond: any,
+      index: number,
+      isMain: boolean = true
+    ) => {
+      const hasContent = Object.entries(diamond).some(
+        ([key, value]) =>
+          value !== undefined &&
+          value !== null &&
+          value !== "" &&
+          key !== "documents" &&
+          key !== "images"
+      );
+
+      if (!hasContent) return null;
+
+      return (
+        <View
+          key={index}
+          className="p-3 mb-3 bg-white border border-gray-200 rounded-lg shadow-sm">
+          <Text className="mb-2 text-base font-semibold text-gray-800">
+            {isMain ? "Main" : "Secondary"} Diamond #{index + 1}
+          </Text>
+          {renderPropertyRow("Name", diamond.name)}
+          {renderPropertyRow("Color", diamond.color)}
+          {renderPropertyRow("Cut", diamond.cut)}
+          {renderPropertyRow("Clarity", diamond.clarity)}
+          {renderPropertyRow("Quantity", diamond.quantity)}
+          {renderPropertyRow("Setting Type", diamond.settingType)}
+          {renderPropertyRow("Dimension", diamond.dimension)}
+          {renderPropertyRow("Shape", diamond.shape)}
+          {renderPropertyRow("Certificate", diamond.certificate)}
+          {renderPropertyRow("Fluorescence", diamond.fluorescence)}
+        </View>
+      );
+    };
+
+    // Only render gemstone card if it has at least one non-empty property
+    const renderGemstoneCard = (
+      gemstone: any,
+      index: number,
+      isMain: boolean = true
+    ) => {
+      const hasContent = Object.entries(gemstone).some(
+        ([key, value]) =>
+          value !== undefined &&
+          value !== null &&
+          value !== "" &&
+          key !== "documents" &&
+          key !== "images"
+      );
+
+      if (!hasContent) return null;
+
+      return (
+        <View
+          key={index}
+          className="p-3 mb-3 bg-white border border-gray-200 rounded-lg shadow-sm">
+          <Text className="mb-2 text-base font-semibold text-gray-800">
+            {isMain ? "Main" : "Secondary"} Gemstone #{index + 1}
+          </Text>
+          {renderPropertyRow("Name", gemstone.name)}
+          {renderPropertyRow("Color", gemstone.color)}
+          {renderPropertyRow("Carat", gemstone.carat)}
+          {renderPropertyRow("Enhancement", gemstone.enhancementType)}
+          {renderPropertyRow("Quantity", gemstone.quantity)}
+          {renderPropertyRow("Setting Type", gemstone.settingType)}
+          {renderPropertyRow("Dimension", gemstone.dimension)}
+        </View>
+      );
+    };
+
+    // Only render section if it has valid items with content
+    const renderSection = (
+      title: string,
+      items: any[] | undefined,
+      renderCard: (
+        item: any,
+        index: number,
+        isMain: boolean
+      ) => React.ReactNode | null,
+      isMain: boolean = true
+    ) => {
+      if (!items || items.length === 0) return null;
+
+      const validItems = items
+        .map((item, index) => renderCard(item, index, isMain))
+        .filter(Boolean);
+
+      if (validItems.length === 0) return null;
+
+      return (
+        <View className="mb-6">
+          <View className="pb-2 mb-3 border-b border-gray-200">
+            <Text className="text-lg font-bold text-gray-900">{title}</Text>
+          </View>
+          {validItems}
+        </View>
+      );
+    };
+
+    // Check if we have any jewelry details at all
+    const hasDiamonds =
+      jewelryDetails.diamondInfo?.mainDiamonds?.some((d) =>
+        Object.values(d).some((v) => v)
+      ) ||
+      false ||
+      jewelryDetails.diamondInfo?.secondaryDiamonds?.some((d) =>
+        Object.values(d).some((v) => v)
+      ) ||
+      false;
+
+    const hasGemstones =
+      jewelryDetails.gemstoneInfo?.mainGemstones?.some((g) =>
+        Object.values(g).some((v) => v)
+      ) ||
+      false ||
+      jewelryDetails.gemstoneInfo?.secondaryGemstones?.some((g) =>
+        Object.values(g).some((v) => v)
+      ) ||
+      false;
+
+    if (!hasDiamonds && !hasGemstones) return null;
+
+    return (
+      <View className="px-1 mt-6">
+        {/* Diamonds Section */}
+        {hasDiamonds && (
+          <View className="mb-8">
+            <Text className="mb-4 text-xl font-bold text-gray-900">
+              Diamond Details
+            </Text>
+            {renderSection(
+              "Main Diamonds",
+              jewelryDetails.diamondInfo?.mainDiamonds,
+              renderDiamondCard,
+              true
+            )}
+            {renderSection(
+              "Secondary Diamonds",
+              jewelryDetails.diamondInfo?.secondaryDiamonds,
+              renderDiamondCard,
+              false
+            )}
+          </View>
+        )}
+
+        {/* Gemstones Section */}
+        {hasGemstones && (
+          <View className="mb-8">
+            <Text className="mb-4 text-xl font-bold text-gray-900">
+              Gemstone Details
+            </Text>
+            {renderSection(
+              "Main Gemstones",
+              jewelryDetails.gemstoneInfo?.mainGemstones,
+              renderGemstoneCard,
+              true
+            )}
+            {renderSection(
+              "Secondary Gemstones",
+              jewelryDetails.gemstoneInfo?.secondaryGemstones,
+              renderGemstoneCard,
+              false
+            )}
+          </View>
+        )}
+      </View>
+    );
   };
 
   if (loading) {
@@ -730,6 +1142,8 @@ const LotDetailScreen = () => {
                 For Gender: {lotDetail?.jewelry?.forGender || "Unknow"}
               </Text>
             </View>
+            {renderJewelryDetails()}
+
             <Text className="mt-6 mb-2 font-bold">LOCATION DESCRIPTION</Text>
             <Text className="mb-5 text-gray-700">
               {lotDetail?.auction?.description ||

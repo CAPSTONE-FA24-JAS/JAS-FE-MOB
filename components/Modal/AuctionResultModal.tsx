@@ -17,6 +17,9 @@ const AuctionResultModal: React.FC<AuctionResultModalProps> = ({
   winningPrice,
   currentUser,
 }) => {
+  console.log("userWinner", userWinner);
+  console.log("currentUser", currentUser);
+
   return (
     <Modal
       visible={visible}
@@ -27,15 +30,15 @@ const AuctionResultModal: React.FC<AuctionResultModalProps> = ({
         <View className="items-center w-full p-6 bg-white shadow-lg rounded-3xl">
           {/* Icon Section */}
           <Icon
-            name={currentUser === userWinner ? "trophy" : "information"}
+            name={currentUser == userWinner ? "trophy" : "information"}
             size={60}
-            color={currentUser === userWinner ? "#FFD700" : "#4A90E2"}
+            color={currentUser == userWinner ? "#FFD700" : "#4A90E2"}
             className="mb-4"
           />
 
           {/* Title Section */}
           <Text className="mb-6 text-2xl font-bold text-center text-gray-800">
-            {currentUser === userWinner
+            {currentUser == userWinner
               ? "Chúc mừng bạn đã thắng!"
               : "Phiên đấu giá đã kết thúc"}
           </Text>
@@ -50,6 +53,17 @@ const AuctionResultModal: React.FC<AuctionResultModalProps> = ({
                 {currentUser === userWinner ? "Bạn" : userWinner}
               </Text>
             </View>
+
+            {currentUser == userWinner ? null : (
+              <View className="flex-row items-center justify-between mb-2">
+                <Text className="text-base font-medium text-gray-600">
+                  Giá thắng:
+                </Text>
+                <Text className="text-base font-bold text-green-600">
+                  {winningPrice}
+                </Text>
+              </View>
+            )}
 
             <View className="flex-row items-center justify-between">
               <Text className="text-base font-medium text-gray-600">

@@ -993,7 +993,7 @@ const LotDetailScreen = () => {
         return "bg-[#FFD700]";
       case "Sold":
         return "bg-[#4CAF50]";
-      case "Canceled":
+      case "Cancelled":
         return "bg-[#FF0000]";
       case "Passed": // Passed
         return "bg-[#0000FF]";
@@ -1230,7 +1230,7 @@ const LotDetailScreen = () => {
 
             {lotDetail?.status === "Passed" ||
             lotDetail?.status === "Sold" ||
-            lotDetail?.status === "Canceled" ? (
+            lotDetail?.status === "Cancelled" ? (
               <View>
                 {(typeBid === "Public_Auction" ||
                   typeBid === "Auction_Price_GraduallyReduced") && (

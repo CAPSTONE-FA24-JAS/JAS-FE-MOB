@@ -98,7 +98,7 @@ const BidInputMethod4: React.FC<BidInputProps> = ({
     if (status === "Pause") {
       return "PAUSED";
     }
-    if (status === "Canceled") {
+    if (status === "Cancelled") {
       return "CANCELLED";
     }
     if (isPlaceBidCus) {

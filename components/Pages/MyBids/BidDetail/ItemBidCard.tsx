@@ -150,7 +150,7 @@ const ItemBidCard: React.FC<ItemBidCardProps> = ({
         return "#7EBF9C";
       case "Sold":
         return "#4CAF50";
-      case "Canceled":
+      case "Cancelled":
         return "#FF0000";
       case "Pausing":
         return "#FFD700";
@@ -166,8 +166,8 @@ const ItemBidCard: React.FC<ItemBidCardProps> = ({
         return "Auctionning";
       case "Sold":
         return "Sold";
-      case "Canceled":
-        return "Canceled";
+      case "Cancelled":
+        return "Cancelled";
       case "Pausing":
         return "Paused";
       default:

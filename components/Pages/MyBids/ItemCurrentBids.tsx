@@ -76,7 +76,7 @@ const ItemCurrentBids: React.FC<ItemCurrentBidsProps> = ({
         return "#7EBF9C";
       case "Sold":
         return "#4CAF50";
-      case "Canceled":
+      case "Cancelled":
         return "#FF0000";
       case "Pausing":
         return "#FFD700";
@@ -92,8 +92,8 @@ const ItemCurrentBids: React.FC<ItemCurrentBidsProps> = ({
         return "Auctionning";
       case "Sold":
         return "Sold";
-      case "Canceled":
-        return "Canceled";
+      case "Cancelled":
+        return "Cancelled";
       case "Pausing":
         return "Paused";
       default:
@@ -123,8 +123,7 @@ const ItemCurrentBids: React.FC<ItemCurrentBidsProps> = ({
   return (
     <TouchableOpacity
       onPress={goToAuctionDetail}
-      className="flex-row flex-1 gap-2 p-4 my-1 bg-white rounded-lg shadow-lg"
-    >
+      className="flex-row flex-1 gap-2 p-4 my-1 bg-white rounded-lg shadow-lg">
       <View className="flex items-center w-[40%]">
         <View>
           <Image
@@ -143,8 +142,7 @@ const ItemCurrentBids: React.FC<ItemCurrentBidsProps> = ({
               : isLive === false && timeLeft !== "Ended" && isComingSoon
               ? "bg-yellow-600  p-2 mt-2 rounded-md  w-[100%]"
               : " bg-gray-600  p-2 mt-2 rounded-md  w-[100%]"
-          }
-        >
+          }>
           <Text className="text-lg font-bold text-center text-white">
             {isLive === true && timeLeft !== "Ended"
               ? "Live Bidding"
@@ -161,9 +159,8 @@ const ItemCurrentBids: React.FC<ItemCurrentBidsProps> = ({
       <View className="w-[58%] pl-4">
         <TouchableOpacity
           className={` rounded px-4 py-1 justify-center mr-4 flex-row items-center`}
-          style={{ backgroundColor: getStatusColor(status) }}
-        >
-          <Text className="text-base text-center font-semibold text-white uppercase">
+          style={{ backgroundColor: getStatusColor(status) }}>
+          <Text className="text-base font-semibold text-center text-white uppercase">
             {formatStatus(status)}
           </Text>
         </TouchableOpacity>
@@ -174,7 +171,7 @@ const ItemCurrentBids: React.FC<ItemCurrentBidsProps> = ({
         <Text className="text-base font-semibold text-gray-600">
           {lotNumber}
         </Text>
-        <Text className="text-xl font-bold mb-2">{title}</Text>
+        <Text className="mb-2 text-xl font-bold">{title}</Text>
         <View className="flex-row  w-[60%]">
           <Text className="text-base font-bold text-[#6c6c6c] ">Type: </Text>
           <Text className="text-[#6c6c6c] text-base ">
@@ -213,7 +210,7 @@ const ItemCurrentBids: React.FC<ItemCurrentBidsProps> = ({
             <Text className="text-base font-bold text-[#6c6c6c]">
               Buy Now:{" "}
             </Text>
-            <Text className="text-gray-800 font-semibold text-base ">
+            <Text className="text-base font-semibold text-gray-800 ">
               {price.toLocaleString("vi-VN", {
                 style: "currency",
                 currency: "VND",
@@ -226,7 +223,7 @@ const ItemCurrentBids: React.FC<ItemCurrentBidsProps> = ({
             <Text className="text-base font-bold text-[#6c6c6c]">
               Deposit:{" "}
             </Text>
-            <Text className="text-gray-800 font-semibold text-base ">
+            <Text className="text-base font-semibold text-gray-800 ">
               {itemBid.isDeposit ? "Yes" : "No"}
             </Text>
           </View>

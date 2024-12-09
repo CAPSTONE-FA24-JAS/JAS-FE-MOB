@@ -143,7 +143,7 @@ export function useBiddingMethod4(): UseBiddingResult {
     });
 
     connection.on("CanceledAuctionPublic", (message: string) => {
-      console.log(`${message}`);
+      console.log(`method 4 cancel ${message}`);
       setIsEndAuctionMethod4(true);
     });
   }, []);

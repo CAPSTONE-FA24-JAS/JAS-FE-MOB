@@ -22,7 +22,7 @@ const faqData: FAQItemProps[] = [
   {
     question: "Can I cancel my bid?",
     answer:
-      "Bids cannot be canceled once placed. Please ensure you're confident about your bid before placing it.",
+      "Bids cannot be Cancelled once placed. Please ensure you're confident about your bid before placing it.",
   },
 ];
 
@@ -30,12 +30,11 @@ const FAQItem: React.FC<FAQItemProps> = ({ question, answer }) => {
   const [isExpanded, setIsExpanded] = useState(false);
 
   return (
-    <View className="border-b border-gray-200 border-2 my-1 rounded-md">
+    <View className="my-1 border-2 border-b border-gray-200 rounded-md">
       <TouchableOpacity
-        className="p-4 flex-row justify-between items-center"
-        onPress={() => setIsExpanded(!isExpanded)}
-      >
-        <View className=" flex-row ">
+        className="flex-row items-center justify-between p-4"
+        onPress={() => setIsExpanded(!isExpanded)}>
+        <View className="flex-row ">
           <MaterialCommunityIcons name="chat" size={24} color="black" />
           <Text
             className="text-lg ml-2 w-[85%] font-semibold"
@@ -62,7 +61,7 @@ const FAQItem: React.FC<FAQItemProps> = ({ question, answer }) => {
 
 const InfoCard: React.FC = () => {
   return (
-    <ScrollView className="p-2 bg-white flex-1">
+    <ScrollView className="flex-1 p-2 bg-white">
       {faqData.map((item, index) => (
         <FAQItem key={index} question={item.question} answer={item.answer} />
       ))}

@@ -21,7 +21,7 @@ const faqData: FAQItemProps[] = [
   {
     question: "Can I cancel my bid?",
     answer:
-      "Bids cannot be canceled once placed. Please ensure you're confident about your bid before placing it.",
+      "Bids cannot be Cancelled once placed. Please ensure you're confident about your bid before placing it.",
   },
   {
     question: "How do I know if I've won an auction?",
@@ -41,9 +41,8 @@ const FAQItem: React.FC<FAQItemProps> = ({ question, answer }) => {
   return (
     <View className="border-b border-gray-200">
       <TouchableOpacity
-        className="p-4 flex-row justify-between items-center"
-        onPress={() => setIsExpanded(!isExpanded)}
-      >
+        className="flex-row items-center justify-between p-4"
+        onPress={() => setIsExpanded(!isExpanded)}>
         <Text className="text-lg">{question}</Text>
         <MaterialCommunityIcons
           name={isExpanded ? "chevron-up" : "chevron-down"}
@@ -62,8 +61,8 @@ const FAQItem: React.FC<FAQItemProps> = ({ question, answer }) => {
 
 const Help: React.FC = () => {
   return (
-    <ScrollView className="p-4 bg-white flex-1">
-      <Text className="text-2xl font-bold mb-4">
+    <ScrollView className="flex-1 p-4 bg-white">
+      <Text className="mb-4 text-2xl font-bold">
         Frequently Asked Questions
       </Text>
       {faqData.map((item, index) => (

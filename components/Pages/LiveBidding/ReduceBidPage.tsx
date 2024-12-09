@@ -243,7 +243,7 @@ const ReduceBidPage = () => {
         onClose={onClose}
       />
       <AuctionEndedModal
-        visible={endlotwithoutwinner || status === "Canceled"}
+        visible={endlotwithoutwinner || status === "Cancelled"}
         onClose={onClose}
       />
     </View>

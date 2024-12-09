@@ -93,7 +93,12 @@ export function useBiddingMethod3(): UseBiddingResult {
     connection.on(
       "SendBiddingPrice",
       (customerId: string, price: string, bidTime: string) => {
-        console.log("New bid from chưa handle", customerId, price, bidTime);
+        console.log(
+          "SendBiddingPrice New bid from chưa handle",
+          customerId,
+          price,
+          bidTime
+        );
 
         setMessages((prevMessages) => {
           const newBid = {
@@ -117,10 +122,13 @@ export function useBiddingMethod3(): UseBiddingResult {
       "SendBiddingPriceAfterProcessingStream",
       (cusid: string, price: number, bidtime: string, status: string) => {
         console.log(
-          `Processed bid from ${cusid}: ${price.toLocaleString("vi-VN", {
-            style: "currency",
-            currency: "VND",
-          })} at ${bidtime} with status ${status}`
+          `SendBiddingPriceAfterProcessingStream Processed bid from ${cusid}: ${price.toLocaleString(
+            "vi-VN",
+            {
+              style: "currency",
+              currency: "VND",
+            }
+          )} at ${bidtime} with status ${status}`
         );
 
         const newBid = {

@@ -86,7 +86,7 @@ const ItemLots: React.FC<ItemLotsProps> = ({
         return "bg-[#FFD700]";
       case "Sold":
         return "bg-[#4CAF50]";
-      case "Canceled":
+      case "Cancelled":
         return "bg-[#FF0000]";
       case "Passed": // Passed
         return "bg-[#0000FF]";
@@ -106,8 +106,8 @@ const ItemLots: React.FC<ItemLotsProps> = ({
         return "Auctionning";
       case "Sold":
         return "Sold";
-      case "Canceled":
-        return " Canceled";
+      case "Cancelled":
+        return " Cancelled";
       case "Passed":
         return " Passed";
       case "Pause":
@@ -120,14 +120,12 @@ const ItemLots: React.FC<ItemLotsProps> = ({
   return (
     <TouchableOpacity
       className="w-[47%] border-gray-100 border-2 rounded-lg mb-5 relative"
-      onPress={goToAuctionDetail}
-    >
+      onPress={goToAuctionDetail}>
       {/* Tag status ở góc phải */}
       <TouchableOpacity
         className={`absolute top-2 z-10 right-2 rounded ${getStatusColor(
           status
-        )} px-4 py-1 flex-row items-center`}
-      >
+        )} px-4 py-1 flex-row items-center`}>
         <Text className="text-base font-semibold text-white uppercase">
           {formatStatus(status)}
         </Text>
@@ -138,7 +136,7 @@ const ItemLots: React.FC<ItemLotsProps> = ({
           className="w-[100%] h-[200px] rounded-sm"
           source={{ uri: image }}
         />
-        <View className="flex gap-0 mt-2 mx-2">
+        <View className="flex gap-0 mx-2 mt-2">
           <Text className=" text-sm  text-[#8f8f8f] ">
             {moment(startTime).format(" DD/MM/YYYY")} -{" "}
             {moment(endTime).format(" DD/MM/YYYY")}
@@ -147,10 +145,9 @@ const ItemLots: React.FC<ItemLotsProps> = ({
             Lot #{id}
           </Text>
           <Text
-            className=" text-base font-bold text-black "
+            className="text-base font-bold text-black "
             numberOfLines={2} // Số dòng tối đa
-            ellipsizeMode="tail"
-          >
+            ellipsizeMode="tail">
             {name}
           </Text>
           {minPrice && maxPrice && (
@@ -183,7 +180,7 @@ const ItemLots: React.FC<ItemLotsProps> = ({
 
           {price && (
             <View className="flex-row ">
-              <Text className="text-gray-800 font-semibold text-base ">
+              <Text className="text-base font-semibold text-gray-800 ">
                 {price.toLocaleString("vi-VN", {
                   style: "currency",
                   currency: "VND",
@@ -198,7 +195,7 @@ const ItemLots: React.FC<ItemLotsProps> = ({
               {formatTypeBid(typeBid)}
             </Text>
           </View>
-          {/* <Text className="text-gray-700 text-base uppercase">{status}</Text> */}
+          {/* <Text className="text-base text-gray-700 uppercase">{status}</Text> */}
         </View>
       </View>
     </TouchableOpacity>

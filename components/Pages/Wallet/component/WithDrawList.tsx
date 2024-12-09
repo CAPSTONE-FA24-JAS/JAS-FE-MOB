@@ -70,7 +70,7 @@ const WithDrawList: React.FC<WithdrawListProps> = ({
         return "text-emerald-500";
       case "InProgress": // Đang xử lý
         return "text-amber-500";
-      case "Canceled": // Đã hủy (nếu có)
+      case "Cancelled": // Đã hủy (nếu có)
         return "text-rose-500";
       case "Requested": // Mới yêu cầu
         return "text-sky-500";

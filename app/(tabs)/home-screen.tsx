@@ -165,7 +165,7 @@ const HomeScreen = () => {
   return (
     <View className="flex-1 bg-white">
       {/* Reload Button */}
-      <View className="flex-row items-center justify-end p-4">
+      {/* <View className="flex-row items-center justify-end p-4">
         <TouchableOpacity
           onPress={fetchAuctions}
           className="flex-row items-center px-2 py-1 bg-gray-300 rounded"
@@ -173,7 +173,7 @@ const HomeScreen = () => {
           <MaterialIcons name="refresh" size={24} color="black" />
           <Text className="ml-2 font-semibold text-gray-700">Reload</Text>
         </TouchableOpacity>
-      </View>
+      </View> */}
       <FlatList
         data={auctions}
         keyExtractor={(item) => item.id.toString()}

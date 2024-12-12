@@ -2,6 +2,7 @@ import { placeBidFixedPriceAndSecret } from "@/api/bidApi";
 import {
   checkCustomerHaveBidPrice,
   checkCustomerInLot,
+  getAutoBidByCustomerLot,
   getLotDetailById,
   getTotalCustomerInLotFixedPrice,
   getWinnerForLot,
@@ -30,7 +31,7 @@ import {
 } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import moment from "moment-timezone";
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import {
   ActivityIndicator,
   Alert,
@@ -52,6 +53,7 @@ import {
   SecondaryDiamond,
   SecondaryShaphy,
 } from "@/app/types/consign_type";
+import AutoBidHistoryModal from "./ModalLot/AutoBidHistoryModal";
 
 interface DiamondInfo {
   mainDiamonds: {
@@ -212,6 +214,10 @@ const LotDetailScreen = () => {
   const [secretAuctionBidVisible, setSecretAuctionBidVisible] = useState(false);
   const [customerLotId, setCustomerLotId] = useState<number | null>(null);
   const [winnerCustomer, setWinnerCustomer] = useState<WinnerForLot[] | []>([]);
+  const [autoBidHistoryVisible, setAutoBidHistoryVisible] = useState(false);
+  const [hasAutoBidHistory, setHasAutoBidHistory] = useState(false);
+
+  console.log("customerLotIdsrf", customerLotId);
 
   // Existing declarations...
   const [currentPriceCheck, setCurrentPriceCheck] = useState<number | null>(
@@ -415,6 +421,28 @@ const LotDetailScreen = () => {
     }
   }, [id]);
 
+  useEffect(() => {
+    const checkAutoBidHistory = async () => {
+      if (customerLotId) {
+        try {
+          const response = await getAutoBidByCustomerLot(customerLotId);
+          if (response && response.length > 0) {
+            setHasAutoBidHistory(true);
+          } else {
+            setHasAutoBidHistory(false);
+          }
+        } catch (error) {
+          console.error("Error fetching AutoBid history:", error);
+          setHasAutoBidHistory(false);
+        }
+      } else {
+        setHasAutoBidHistory(false);
+      }
+    };
+
+    checkAutoBidHistory();
+  }, [customerLotId]);
+
   // Updated fetchRegistrationStatus function
   const fetchRegistrationStatus = useCallback(async () => {
     try {
@@ -598,7 +626,8 @@ const LotDetailScreen = () => {
       return (
         <View
           key={index}
-          className="p-3 mb-3 bg-white border border-gray-200 rounded-lg shadow-sm">
+          className="p-3 mb-3 bg-white border border-gray-200 rounded-lg shadow-sm"
+        >
           <Text className="mb-2 text-base font-semibold text-gray-800">
             {isMain ? "Main" : "Secondary"} Diamond #{index + 1}
           </Text>
@@ -636,7 +665,8 @@ const LotDetailScreen = () => {
       return (
         <View
           key={index}
-          className="p-3 mb-3 bg-white border border-gray-200 rounded-lg shadow-sm">
+          className="p-3 mb-3 bg-white border border-gray-200 rounded-lg shadow-sm"
+        >
           <Text className="mb-2 text-base font-semibold text-gray-800">
             {isMain ? "Main" : "Secondary"} Gemstone #{index + 1}
           </Text>
@@ -1004,6 +1034,14 @@ const LotDetailScreen = () => {
     }
   }
 
+  const handleViewAutoBidHistory = () => {
+    if (customerLotId) {
+      setAutoBidHistoryVisible(true);
+    } else {
+      showErrorMessage("No CustomerLot ID available.");
+    }
+  };
+
   return (
     <SafeAreaView className="flex-1 bg-white">
       <View className="flex-1">
@@ -1017,7 +1055,8 @@ const LotDetailScreen = () => {
             <Swiper
               showsPagination={true}
               autoplay={true}
-              style={{ height: "100%" }}>
+              style={{ height: "100%" }}
+            >
               {lotDetail?.jewelry?.imageJewelries?.length ?? 0 > 0 ? (
                 lotDetail?.jewelry?.imageJewelries.map((img, index) =>
                   img?.imageLink ? (
@@ -1041,7 +1080,8 @@ const LotDetailScreen = () => {
             <Text className="font-bold text-gray-400">Follow</Text>
             <TouchableOpacity
               onPress={handleAddWatching}
-              className="flex-row items-center gap-1">
+              className="flex-row items-center gap-1"
+            >
               {isWatching && (
                 <MaterialCommunityIcons name="star" size={24} color="yellow" />
               )}
@@ -1079,7 +1119,8 @@ const LotDetailScreen = () => {
                   <Text
                     className={`font-extrabold text-sm py-1 px-5 ${getStatusClass(
                       lotDetail?.status ?? ""
-                    )} rounded-md text-sm text-center uppercase text-white`}>
+                    )} rounded-md text-sm text-center uppercase text-white`}
+                  >
                     {lotDetail?.status}
                   </Text>
                 </View>
@@ -1197,7 +1238,8 @@ const LotDetailScreen = () => {
                       ? handleBuyNow
                       : handleSecretAuctionBid
                   }
-                  disabled={!isAuctionLive}>
+                  disabled={!isAuctionLive}
+                >
                   <Text className="font-semibold text-center text-white uppercase">
                     {typeBid === "Fixed_Price"
                       ? "BUY FIXED BID"
@@ -1208,14 +1250,28 @@ const LotDetailScreen = () => {
             {typeBid === "Public_Auction" &&
               !currentPriceCheck &&
               !bidTimeCheck && (
-                <TouchableOpacity
-                  onPress={handlePressAutoBid}
-                  className={`mb-3  bg-blue-500
-                   rounded-sm`}>
-                  <Text className="py-3 font-semibold text-center text-white">
-                    BID AUTOMATION
-                  </Text>
-                </TouchableOpacity>
+                <View className="w-full">
+                  {hasAutoBidHistory && (
+                    <TouchableOpacity
+                      onPress={handleViewAutoBidHistory}
+                      className={`mb-3  bg-white border border-blue-500 
+                   rounded-sm`}
+                    >
+                      <Text className="py-3 font-semibold uppercase text-center text-blue-500">
+                        View History AutoBid
+                      </Text>
+                    </TouchableOpacity>
+                  )}
+                  <TouchableOpacity
+                    onPress={handlePressAutoBid}
+                    className={`mb-3  bg-blue-500
+                   rounded-sm`}
+                  >
+                    <Text className="py-3 font-semibold text-center text-white">
+                      BID AUTOMATION
+                    </Text>
+                  </TouchableOpacity>
+                </View>
               )}
             {/* {typeBid !== "Fixed_Price" && isAuctionActive && (
                 <TouchableOpacity
@@ -1237,7 +1293,8 @@ const LotDetailScreen = () => {
                   <TouchableOpacity
                     className={`py-3
                                bg-blue-500  rounded-sm`}
-                    onPress={() => handleJoinToBid(typeBid)}>
+                    onPress={() => handleJoinToBid(typeBid)}
+                  >
                     <Text className="font-semibold text-center text-white uppercase">
                       View To Bid
                     </Text>
@@ -1254,7 +1311,8 @@ const LotDetailScreen = () => {
                         isAuctionLive ? "bg-blue-500" : "bg-gray-500"
                       }  rounded-sm`}
                       onPress={() => handleJoinToBid(typeBid)}
-                      disabled={!isAuctionLive}>
+                      disabled={!isAuctionLive}
+                    >
                       <Text className="font-semibold text-center text-white uppercase">
                         Join To Bid
                       </Text>
@@ -1267,10 +1325,12 @@ const LotDetailScreen = () => {
 
         {!isRegistered &&
           !(lotDetail?.status === "Passed") &&
-          !(lotDetail?.status === "Sold") && (
+          !(lotDetail?.status === "Sold") &&
+          !(lotDetail?.status === "Cancelled") && (
             <TouchableOpacity
               className={`py-3 mt-4 bg-blue-500  rounded-sm`}
-              onPress={handleRegisterToBid}>
+              onPress={handleRegisterToBid}
+            >
               <Text className="font-semibold text-center text-white uppercase">
                 Register To Bid
               </Text>
@@ -1317,6 +1377,12 @@ const LotDetailScreen = () => {
             item={lotDetail}
           />
         )}
+
+      <AutoBidHistoryModal
+        visible={autoBidHistoryVisible}
+        onClose={() => setAutoBidHistoryVisible(false)}
+        customerLotId={customerLotId ?? 0}
+      />
     </SafeAreaView>
   );
 };

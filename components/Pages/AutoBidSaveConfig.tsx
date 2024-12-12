@@ -15,6 +15,7 @@ import {
   View,
 } from "react-native";
 import DropDownPicker from "react-native-dropdown-picker";
+import LoadingOverlay from "../LoadingOverlay";
 
 type RootStackParamList = {
   BidAutomation: BidAutomationRouteParams;
@@ -42,6 +43,7 @@ const AutoBidSaveConfig: React.FC = () => {
   const navigation = useNavigation<BidAutomationScreenNavigationProp>();
   const route = useRoute<BidAutomationScreenRouteProp>();
   const { customerLotId, lotName, estimatedPrice, lotDetail } = route.params;
+  const [loading, setLoading] = useState<boolean>(false); // Thêm trạng thái loading
 
   const [startingPrice, setStartingPrice] = useState<number>(
     estimatedPrice.min
@@ -100,6 +102,8 @@ const AutoBidSaveConfig: React.FC = () => {
     }
 
     setErrorMessage(null);
+    setLoading(true); // Bắt đầu trạng thái loading
+
     try {
       await setAutoBidConfig(
         startingPrice,
@@ -115,11 +119,14 @@ const AutoBidSaveConfig: React.FC = () => {
         "Error",
         error.message || "Failed to save auto-bid configuration."
       );
+    } finally {
+      setLoading(false); // Kết thúc trạng thái loading
     }
   };
 
   return (
     <SafeAreaView className="flex-1 bg-white">
+      <LoadingOverlay visible={loading} />
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : undefined}
         style={{ flex: 1 }}
@@ -262,23 +269,22 @@ const AutoBidSaveConfig: React.FC = () => {
             </TouchableOpacity>
             <TextInput
               returnKeyType="done"
-              className="flex-1 px-4 py-2  font-semibold  h-[50px] text-lg text-center bg-gray-100"
+              className="flex-1 px-4 py-2 font-semibold h-[50px] text-lg text-center bg-gray-100"
               keyboardType="numeric"
               value={nextBidTime.toString()}
               onChangeText={(value) => {
                 const parsedValue = parseInt(value, 10);
                 setNextBidTime(
-                  isNaN(parsedValue)
-                    ? 1
-                    : Math.min(10, Math.max(1, parsedValue))
+                  isNaN(parsedValue) ? 1 : Math.max(1, parsedValue)
                 );
               }}
             />
+
             <TouchableOpacity
-              onPress={() => setNextBidTime((prev) => Math.min(10, prev + 1))}
+              onPress={() => setNextBidTime((prev) => prev + 1)} // Loại bỏ giới hạn tối đa
               className="px-4 py-2 bg-gray-200 rounded-r-lg"
             >
-              <Text className="text-xl  h-[35px]">+</Text>
+              <Text className="text-xl h-[35px]">+</Text>
             </TouchableOpacity>
           </View>
 

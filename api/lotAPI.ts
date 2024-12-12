@@ -360,3 +360,57 @@ export const checkPlaceBidReduceAuction = async (
     throw error;
   }
 };
+
+// Function to get auto-bid configuration by customer lot ID
+export const getAutoBidByCustomerLot = async (
+  customerLotId: number
+): Promise<
+  {
+    id: number;
+    minPrice: number;
+    maxPrice: number;
+    numberOfPriceStep: number;
+    timeIncrement: number;
+    isActive: boolean;
+    customerLotId: number;
+  }[]
+> => {
+  try {
+    const response = await axios.get<
+      Response<
+        {
+          id: number;
+          minPrice: number;
+          maxPrice: number;
+          numberOfPriceStep: number;
+          timeIncrement: number;
+          isActive: boolean;
+          customerLotId: number;
+        }[]
+      >
+    >(`${API_URL}/api/CustomerLots/GetAutoBidByCustomerLot`, {
+      params: { customerLotId },
+    });
+
+    if (response.data.isSuccess && response.data.data) {
+      console.log("Auto-bid configuration received:", response.data.data);
+      showSuccessMessage(
+        response.data.message ||
+          "Successfully retrieved auto-bid configuration."
+      );
+      return response.data.data;
+    } else {
+      throw new Error(
+        response.data.message || "Failed to retrieve auto-bid configuration."
+      );
+    }
+  } catch (error: any) {
+    console.error("Error retrieving auto-bid configuration:", error);
+    showErrorMessage("Unable to retrieve auto-bid configuration.");
+    throw new ApiError(
+      error.response?.data?.code || 500,
+      error.response?.data?.message ||
+        "Error retrieving auto-bid configuration."
+    );
+  }
+};

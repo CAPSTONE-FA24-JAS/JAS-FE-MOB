@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import {
   ActivityIndicator,
   FlatList,
+  RefreshControl,
   Text,
   TouchableOpacity,
   View,
@@ -14,33 +15,41 @@ const PastAuctions = () => {
   const [auctions, setAuctions] = useState<AuctionsData[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+  const [refreshing, setRefreshing] = useState<boolean>(false); // Thêm trạng thái làm mới
 
-  // Fetch auctions on component mount
-  useEffect(() => {
-    const fetchAuctions = async () => {
-      try {
-        const response = await viewAuctions();
-        console.log("responsePastAuc", response);
+  // Hàm gọi API để lấy danh sách đấu giá
+  const fetchAuctions = async () => {
+    try {
+      const response = await viewAuctions();
+      console.log("responsePastAuc", response);
 
-        if (response.isSuccess && response.data) {
-          // Filter auctions with status "Past"
-          const filteredAuctions = response.data.filter(
-            (auction) => auction.status === "Past"
-          );
-          setAuctions(filteredAuctions);
-        } else {
-          // Handle cases where response.data is null
-          setError(response.message || "No auctions found.");
-        }
-      } catch (err) {
-        setError("Failed to load auctions.");
-      } finally {
-        setLoading(false);
+      if (response.isSuccess && response.data) {
+        // Lọc các đấu giá với trạng thái "Past"
+        const filteredAuctions = response.data.filter(
+          (auction) => auction.status === "Past"
+        );
+        setAuctions(filteredAuctions);
+      } else {
+        setError(response.message || "No auctions found.");
       }
-    };
+    } catch (err) {
+      setError("Failed to load auctions.");
+    } finally {
+      setLoading(false);
+    }
+  };
 
+  // Gọi API khi component được mount
+  useEffect(() => {
     fetchAuctions();
   }, []);
+
+  // Hàm làm mới khi kéo để tải lại
+  const handleRefresh = async () => {
+    setRefreshing(true); // Bắt đầu trạng thái làm mới
+    await fetchAuctions(); // Tải lại danh sách đấu giá
+    setRefreshing(false); // Kết thúc làm mới
+  };
 
   if (loading) {
     return (
@@ -75,7 +84,8 @@ const PastAuctions = () => {
                 setError("Failed to load auctions.");
               })
               .finally(() => setLoading(false));
-          }}>
+          }}
+        >
           <Text className="text-white">Retry</Text>
         </TouchableOpacity>
       </View>
@@ -100,6 +110,12 @@ const PastAuctions = () => {
           />
         )}
         contentContainerStyle={{ padding: 10 }}
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={handleRefresh} // Kéo để làm mới
+          />
+        }
         ListEmptyComponent={
           <View className="items-center py-20">
             <Text className="font-semibold text-gray-500">

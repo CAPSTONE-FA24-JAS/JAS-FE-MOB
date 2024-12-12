@@ -7,6 +7,7 @@ import React, { useCallback, useEffect, useState } from "react";
 import {
   ActivityIndicator,
   FlatList,
+  RefreshControl,
   SafeAreaView,
   ScrollView,
   Text,
@@ -36,6 +37,7 @@ const InvoiceList: React.FC = () => {
   const [invoiceList, setInvoiceList] = useState<InvoiceData[]>([]);
   const [selectedStatus, setSelectedStatus] = useState<number>(2);
   const [loading, setLoading] = useState<boolean>(false);
+  const [refreshing, setRefreshing] = useState<boolean>(false); // Trạng thái làm mới
 
   // Cập nhật `selectedStatus` khi nhận `status` từ `params`
   useEffect(() => {
@@ -102,6 +104,12 @@ const InvoiceList: React.FC = () => {
     }, [selectedStatus, userId])
   );
 
+  // Hàm làm mới (pull-to-refresh)
+  const handleRefresh = async () => {
+    setRefreshing(true); // Bắt đầu trạng thái làm mới
+    await fetchInvoices();
+    setRefreshing(false); // Kết thúc làm mới
+  };
   // console.log("selectedStatus", selectedStatus, "invoiceList", invoiceList);
 
   // Danh sách các trạng thái hóa đơn
@@ -207,6 +215,19 @@ const InvoiceList: React.FC = () => {
               keyExtractor={(item) => item.id.toString()}
               contentContainerStyle={{ padding: 16 }}
               className="bg-white"
+              refreshControl={
+                <RefreshControl
+                  refreshing={refreshing}
+                  onRefresh={handleRefresh} // Gọi lại khi kéo để làm mới
+                />
+              }
+              ListEmptyComponent={
+                <View className="items-center justify-center flex-1">
+                  <Text className="text-lg text-center text-gray-700">
+                    No invoice found
+                  </Text>
+                </View>
+              }
             />
           )}
         </>

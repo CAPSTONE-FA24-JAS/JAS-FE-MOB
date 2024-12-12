@@ -8,6 +8,7 @@ import React, { useCallback, useEffect, useState } from "react";
 import {
   ActivityIndicator,
   FlatList,
+  RefreshControl,
   ScrollView,
   Text,
   TextInput,
@@ -46,6 +47,8 @@ const HistoryItemConsign: React.FC = () => {
   const [hasMore, setHasMore] = useState(true); // Trạng thái còn dữ liệu
   const [isFetching, setIsFetching] = useState(false);
 
+  const [refreshing, setRefreshing] = useState(false); // Thêm state cho làm mới
+
   const sellerId = useSelector(
     (state: RootState) => state.auth.userResponse?.customerDTO.id
   ); // Lấy userId từ Redux
@@ -71,6 +74,15 @@ const HistoryItemConsign: React.FC = () => {
       setSelectedStatus(tab); // Nếu có tab, sử dụng giá trị tab
     }
   }, [tab]);
+
+  // Hàm làm mới dữ liệu
+  const handleRefresh = async () => {
+    setRefreshing(true); // Bắt đầu trạng thái làm mới
+    setPage(1); // Reset trang về đầu
+    setItems([]); // Xóa danh sách cũ
+    await fetchConsignmentHistory(); // Gọi API để lấy dữ liệu mới
+    setRefreshing(false); // Kết thúc trạng thái làm mới
+  };
 
   // const scrollViewRef = useRef<ScrollView>(null);
 
@@ -240,6 +252,12 @@ const HistoryItemConsign: React.FC = () => {
                   />
                 )}
                 keyExtractor={(item) => item.id.toString()}
+                refreshControl={
+                  <RefreshControl
+                    refreshing={refreshing}
+                    onRefresh={handleRefresh} // Kéo để làm mới
+                  />
+                }
               />
               {hasMore && !loading && (
                 <View

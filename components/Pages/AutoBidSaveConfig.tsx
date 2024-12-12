@@ -94,7 +94,7 @@ const AutoBidSaveConfig: React.FC = () => {
       setErrorMessage("Number of price steps must be at least 1.");
       return;
     }
-    if (nextBidTime < 1 || nextBidTime > 10) {
+    if (nextBidTime < 1) {
       setErrorMessage("Time increment must be between 1 and 10 minutes.");
       return;
     }

@@ -5,6 +5,7 @@ import {
   TouchableOpacity,
   ActivityIndicator,
   FlatList,
+  RefreshControl,
 } from "react-native";
 import ItemAuctionHomePage from "@/components/Pages/ItemAuctionHome/ItemAuctionHomePage";
 import { AuctionsData } from "../types/auction_type";
@@ -26,6 +27,7 @@ const HomeScreen = () => {
   const [connection, setConnection] = useState<signalR.HubConnection | null>(
     null
   );
+  const [refreshing, setRefreshing] = useState<boolean>(false); // Trạng thái làm mới
 
   const fetchAuctions = async () => {
     try {
@@ -129,6 +131,12 @@ const HomeScreen = () => {
     };
   }, [connection]);
 
+  const handleRefresh = async () => {
+    setRefreshing(true); // Kích hoạt trạng thái làm mới
+    await fetchAuctions();
+    setRefreshing(false); // Kết thúc làm mới
+  };
+
   if (loading) {
     return (
       <View className="items-center justify-center flex-1">
@@ -175,6 +183,12 @@ const HomeScreen = () => {
           <View className="items-center py-20">
             <Text className="text-gray-500">No auctions available.</Text>
           </View>
+        }
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={handleRefresh} // Gọi lại khi làm mới
+          />
         }
       />
 

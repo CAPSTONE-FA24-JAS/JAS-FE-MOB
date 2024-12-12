@@ -200,6 +200,10 @@ export function useBiddingMethod3(): UseBiddingResult {
       console.log(`${message}`);
       setIsEndLot(true);
     });
+    connection.on("HetRound", (message: string) => {
+      console.log(`${message}`);
+      // setIsEndLot(true);
+    });
   }, []);
 
   const joinLiveBiddingMethod3 = useCallback(

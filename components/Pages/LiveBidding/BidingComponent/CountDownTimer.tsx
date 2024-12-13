@@ -59,6 +59,8 @@ const CountDownTimer: React.FC<CountDownTimerProps> = ({ endTime, status }) => {
       ? "Time's up!"
       : status === "Cancelled"
       ? "Cancelled"
+      : status === "Sold"
+      ? "Ends"
       : `Ends in ${days}d ${hours}h ${minutes}m ${seconds}s`;
   }, [timeLeft]);
 

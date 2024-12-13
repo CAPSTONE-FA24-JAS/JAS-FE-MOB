@@ -116,7 +116,7 @@ const BidInputMethod4: React.FC<BidInputProps> = ({
     loadingMethod4 ||
     item.status === "Passed" ||
     status === "Pause" ||
-    status === "Canceled" ||
+    status === "Cancelled" ||
     isPlaceBidCus;
 
   return (

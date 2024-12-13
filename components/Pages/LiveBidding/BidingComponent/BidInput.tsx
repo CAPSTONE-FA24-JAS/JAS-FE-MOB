@@ -136,7 +136,7 @@ const BidInput: React.FC<BidInputProps> = ({
       isEndLot || // Disable when auction is currently ended just for method 3
       checkProcessingBidOfMine(bids) ||
       status === "Pause" ||
-      status === "Cancel";
+      status === "Cancelled";
     return (
       <View className="w-full p-2">
         <Text className="text-sm font-bold text-center">
@@ -179,7 +179,7 @@ const BidInput: React.FC<BidInputProps> = ({
               isEndLot || // Disable when auction is currently ended just for method 3
               checkProcessingBidOfMine(bids) ||
               status === "Pause" ||
-              status === "Cancel"
+              status === "Cancelled"
             }
             onPress={handleSubmitBidMethod3}
             className={
@@ -190,7 +190,7 @@ const BidInput: React.FC<BidInputProps> = ({
               isEndLot || // Disable when auction is currently ended just for method 3
               checkProcessingBidOfMine(bids) ||
               status === "Pause" ||
-              status === "Cancel"
+              status === "Cancelled"
                 ? "w-[20%] flex items-center justify-center h-14 bg-gray-500 rounded-md"
                 : "w-[20%] flex items-center justify-center h-14 bg-blue-500 rounded-md "
             }>

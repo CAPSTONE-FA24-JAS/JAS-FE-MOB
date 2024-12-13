@@ -54,6 +54,7 @@ import {
   SecondaryShaphy,
 } from "@/app/types/consign_type";
 import AutoBidHistoryModal from "./ModalLot/AutoBidHistoryModal";
+import LoadingOverlay from "@/components/LoadingOverlay";
 
 interface DiamondInfo {
   mainDiamonds: {
@@ -160,6 +161,7 @@ export type BidFormRouteParams = {
   startBid: number;
   estimatedPrice: { min: number };
   lotDetail: LotDetail;
+  autoBids?: AutoBid[]; // Add autoBids property
 };
 
 type RouteParams = {
@@ -172,6 +174,16 @@ type RouteParams = {
   typeBid: string;
   status: string;
 };
+
+export interface AutoBid {
+  id: number;
+  minPrice: number;
+  maxPrice: number;
+  numberOfPriceStep: number;
+  timeIncrement: number;
+  isActive: boolean;
+  customerLotId: number;
+}
 
 type LotDetailScreenNavigationProp =
   NativeStackNavigationProp<RootStackParamList>;
@@ -216,6 +228,31 @@ const LotDetailScreen = () => {
   const [winnerCustomer, setWinnerCustomer] = useState<WinnerForLot[] | []>([]);
   const [autoBidHistoryVisible, setAutoBidHistoryVisible] = useState(false);
   const [hasAutoBidHistory, setHasAutoBidHistory] = useState(false);
+  const [autoBids, setAutoBids] = useState<AutoBid[]>([]);
+
+  useEffect(() => {
+    if (autoBidHistoryVisible && customerLotId) {
+      fetchAutoBids();
+    }
+  }, [autoBidHistoryVisible, customerLotId]);
+
+  const fetchAutoBids = async () => {
+    if (customerLotId) {
+      setLoading(true);
+      try {
+        const data = await getAutoBidByCustomerLot(customerLotId);
+        if (data) {
+          // Sắp xếp autoBids theo ID mới nhất lên đầu
+          const sortedData = data.sort((a, b) => b.id - a.id);
+          setAutoBids(sortedData);
+        }
+      } catch (error) {
+        showErrorMessage("Unable to fetch AutoBid history.");
+      } finally {
+        setLoading(false);
+      }
+    }
+  };
 
   console.log("customerLotIdsrf", customerLotId);
 
@@ -583,6 +620,7 @@ const LotDetailScreen = () => {
         startBid: lotDetail.startPrice ?? 0,
         estimatedPrice: { min: lotDetail.startPrice ?? 0 },
         lotDetail,
+        autoBids, // Pass autoBids here
       });
     } else {
       showErrorMessage("Lot details are not available.");
@@ -780,13 +818,13 @@ const LotDetailScreen = () => {
     );
   };
 
-  if (loading) {
-    return (
-      <SafeAreaView className="items-center justify-center flex-1 bg-white">
-        <ActivityIndicator size="large" color="#0000ff" />
-      </SafeAreaView>
-    );
-  }
+  // if (loading) {
+  //   return (
+  //     <SafeAreaView className="items-center justify-center flex-1 bg-white">
+  //       <ActivityIndicator size="large" color="#0000ff" />
+  //     </SafeAreaView>
+  //   );
+  // }
 
   if (error) {
     return (
@@ -1044,6 +1082,7 @@ const LotDetailScreen = () => {
 
   return (
     <SafeAreaView className="flex-1 bg-white">
+      <LoadingOverlay visible={loading} />
       <View className="flex-1">
         <ScrollView className="mb-20">
           {/* Countdown Timer */}
@@ -1382,6 +1421,8 @@ const LotDetailScreen = () => {
         visible={autoBidHistoryVisible}
         onClose={() => setAutoBidHistoryVisible(false)}
         customerLotId={customerLotId ?? 0}
+        loading={loading}
+        autoBids={autoBids}
       />
     </SafeAreaView>
   );

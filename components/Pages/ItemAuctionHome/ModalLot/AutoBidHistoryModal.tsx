@@ -10,52 +10,31 @@ import {
 import { getAutoBidByCustomerLot } from "@/api/lotAPI";
 import { showErrorMessage } from "@/components/FlashMessageHelpers";
 
+interface AutoBid {
+  id: number;
+  minPrice: number;
+  maxPrice: number;
+  numberOfPriceStep: number;
+  timeIncrement: number;
+  isActive: boolean;
+  customerLotId: number;
+}
+
 interface AutoBidHistoryModalProps {
   visible: boolean;
   onClose: () => void;
   customerLotId: number;
+  loading: boolean;
+  autoBids: AutoBid[];
 }
 
 const AutoBidHistoryModal: React.FC<AutoBidHistoryModalProps> = ({
   visible,
   onClose,
   customerLotId,
+  loading,
+  autoBids,
 }) => {
-  interface AutoBid {
-    id: number;
-    minPrice: number;
-    maxPrice: number;
-    numberOfPriceStep: number;
-    timeIncrement: number;
-    isActive: boolean;
-    customerLotId: number;
-  }
-
-  const [autoBids, setAutoBids] = useState<AutoBid[]>([]);
-  const [loading, setLoading] = useState(false);
-
-  useEffect(() => {
-    if (visible && customerLotId) {
-      fetchAutoBids();
-    }
-  }, [visible, customerLotId]);
-
-  const fetchAutoBids = async () => {
-    setLoading(true);
-    try {
-      const data = await getAutoBidByCustomerLot(customerLotId);
-      if (data) {
-        // Sắp xếp autoBids theo ID mới nhất lên đầu
-        const sortedData = data.sort((a, b) => b.id - a.id);
-        setAutoBids(sortedData);
-      }
-    } catch (error) {
-      showErrorMessage("Unable to fetch AutoBid history.");
-    } finally {
-      setLoading(false);
-    }
-  };
-
   const renderAutoBidItem = ({
     item,
     index,
@@ -67,15 +46,15 @@ const AutoBidHistoryModal: React.FC<AutoBidHistoryModalProps> = ({
       <Text className="text-gray-700">#{index + 1}</Text>
       <View className="flex-1 ml-4">
         <Text className="font-bold text-black">
-          Min Price:{" "}
-          {item.minPrice.toLocaleString("vi-VN", {
+          Max Price:{" "}
+          {item.maxPrice.toLocaleString("vi-VN", {
             style: "currency",
             currency: "VND",
           })}
         </Text>
-        <Text className="text-gray-500">
-          Max Price:{" "}
-          {item.maxPrice.toLocaleString("vi-VN", {
+        <Text className=" text-gray-500">
+          Min Price:{" "}
+          {item.minPrice.toLocaleString("vi-VN", {
             style: "currency",
             currency: "VND",
           })}
@@ -99,14 +78,12 @@ const AutoBidHistoryModal: React.FC<AutoBidHistoryModalProps> = ({
 
   return (
     <Modal visible={visible} transparent={true} animationType="slide">
-      <View className="flex-1 bg-black bg-opacity-50 justify-center">
-        <View className="bg-white mx-6 rounded-lg p-4">
+      <View className="flex-1 bg-black/50 bg-opacity-50 justify-center">
+        <View className="bg-white mx-6 rounded-lg p-4  max-h-[70%] ">
           <Text className="text-lg font-bold mb-4 text-center">
             AutoBid History
           </Text>
-          {loading ? (
-            <ActivityIndicator size="large" color="#0000ff" />
-          ) : autoBids.length > 0 ? (
+          {loading ? null : autoBids.length > 0 ? (
             <FlatList
               data={autoBids}
               keyExtractor={(item) => item.id.toString()}

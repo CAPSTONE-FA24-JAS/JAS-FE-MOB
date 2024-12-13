@@ -16,6 +16,7 @@ import {
 } from "react-native";
 import DropDownPicker from "react-native-dropdown-picker";
 import LoadingOverlay from "../LoadingOverlay";
+import { AutoBid } from "./ItemAuctionHome/LotDetailScreen";
 
 type RootStackParamList = {
   BidAutomation: BidAutomationRouteParams;
@@ -28,6 +29,7 @@ type BidAutomationRouteParams = {
   startBid: number;
   estimatedPrice: { min: number };
   lotDetail: LotDetail;
+  autoBids: AutoBid[];
 };
 
 type BidAutomationScreenRouteProp = RouteProp<
@@ -42,13 +44,23 @@ type BidAutomationScreenNavigationProp = NativeStackNavigationProp<
 const AutoBidSaveConfig: React.FC = () => {
   const navigation = useNavigation<BidAutomationScreenNavigationProp>();
   const route = useRoute<BidAutomationScreenRouteProp>();
-  const { customerLotId, lotName, estimatedPrice, lotDetail } = route.params;
+  const { customerLotId, lotName, estimatedPrice, lotDetail, autoBids } =
+    route.params;
   const [loading, setLoading] = useState<boolean>(false); // Thêm trạng thái loading
 
+  // Find maxPrice from autoBids
+  const maxAutoBidPrice =
+    autoBids?.reduce((max, bid) => {
+      return bid.maxPrice > max ? bid.maxPrice : max;
+    }, 0) + 1000;
+  // Set the minimum price to the highest maxPrice from autoBids
   const [startingPrice, setStartingPrice] = useState<number>(
-    estimatedPrice.min
+    maxAutoBidPrice ?? estimatedPrice.min
   );
-  const [maxPrice, setMaxPrice] = useState<number>(estimatedPrice.min + 300);
+
+  const [maxPrice, setMaxPrice] = useState<number>(
+    maxAutoBidPrice ? maxAutoBidPrice + 300 : estimatedPrice.min + 300
+  );
   const [numberOfPriceStep, setNumberOfPriceStep] = useState<number>(1);
   const [nextBidTime, setNextBidTime] = useState<number>(1); // Default to 1 minute
   const [step, setStep] = useState<number>(10000); // Default step size

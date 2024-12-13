@@ -16,8 +16,9 @@ const AuctionEndedModal: React.FC<AuctionEndedModalProps> = ({
       visible={visible}
       transparent={true}
       animationType="fade"
-      onRequestClose={onClose}>
-      <View className="items-center justify-center flex-1 px-4 bg-black/50">
+      onRequestClose={onClose}
+    >
+      <View className="items-center justify-center flex-1 px-4 bg-black/30">
         <View className="items-center w-full p-6 bg-white shadow-lg rounded-3xl">
           {/* Icon Section */}
           <Icon name="clock-end" size={60} color="#4A90E2" className="mb-4" />
@@ -29,13 +30,14 @@ const AuctionEndedModal: React.FC<AuctionEndedModalProps> = ({
 
           {/* Message Section */}
           <Text className="mb-6 text-base text-center text-gray-500">
-            Phiên đấu giá này đã kết thúc. Vui lòng quay lại sau để tham gia các
-            phiên đấu giá khác.
+            Phiên đấu giá này đã kết thúc. Vui lòng quay lại sau để thxam gia
+            các phiên đấu giá khác.
           </Text>
 
           <TouchableOpacity
             className="w-full px-6 py-3 bg-blue-500 rounded-full active:bg-blue-600"
-            onPress={onClose}>
+            onPress={onClose}
+          >
             <Text className="text-base font-semibold text-center text-white">
               Đóng
             </Text>

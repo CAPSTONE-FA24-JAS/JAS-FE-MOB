@@ -414,3 +414,50 @@ export const getAutoBidByCustomerLot = async (
     );
   }
 };
+
+// Function to update the active status of an autobid
+export const updateActiveForAutobid = async (
+  autobidId: number,
+  isActive: boolean
+): Promise<boolean> => {
+  try {
+    const response = await axios.put<ApiResponse>(
+      `${API_URL}/api/BidPrices/updateActiveForAutobid`,
+      null, // PUT request không cần body
+      {
+        params: { autobidId, isActive },
+      }
+    );
+
+    if (response.data.isSuccess) {
+      console.log(
+        `Successfully updated autobid status (ID: ${autobidId}): ${isActive}`
+      );
+      showSuccessMessage(
+        response.data.message || "Update autobid successfully."
+      );
+      return true;
+    } else {
+      showErrorMessage(
+        response.data.message || "Failed to update autobid status."
+      );
+      throw new Error(
+        response.data.message || "Failed to update autobid status."
+      );
+    }
+  } catch (error: any) {
+    console.error("Error updating autobid status:", error);
+    if (error.response && error.response.data) {
+      const { code, message } = error.response.data;
+      throw new ApiError(
+        code || 500,
+        message || "Unable to update autobid status."
+      );
+    } else if (error instanceof ApiError) {
+      throw error;
+    } else {
+      showErrorMessage("Unable to update autobid status.");
+      throw new ApiError(500, "Unable to update autobid status.");
+    }
+  }
+};

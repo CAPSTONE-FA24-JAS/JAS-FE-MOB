@@ -1178,7 +1178,7 @@ const LotDetailScreen = () => {
                 status === "Sold" && (
                   <View className="w-full p-4 mb-6 bg-green-50 rounded-xl">
                     <Text className="text-base font-medium text-center text-gray-600">
-                      Người thắng cuộc với giá:
+                      The winner with the price:
                     </Text>
                     <View className="flex-row items-center justify-center">
                       <Text className="text-base font-bold text-center text-green-600">

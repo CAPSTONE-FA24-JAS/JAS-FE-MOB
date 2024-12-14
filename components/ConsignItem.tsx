@@ -114,7 +114,7 @@ const ConsignItem: React.FC<ConsignItemProps> = ({
               className="w-[45%] p-2 mt-2 bg-gray-600 rounded"
             >
               <Text className="font-semibold text-center text-white">
-                XEM CHI TIẾT
+                VIEW DETAIL
               </Text>
             </TouchableOpacity>
           </View>

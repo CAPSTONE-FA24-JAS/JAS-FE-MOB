@@ -72,13 +72,13 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({
           onPress={pickImageFromCamera}
           className="flex-row items-center p-3 bg-gray-200 rounded-lg">
           <MaterialCommunityIcons name="camera" size={24} color="gray" />
-          <Text className="ml-2 font-semibold text-gray-700">Chụp ảnh</Text>
+          <Text className="ml-2 font-semibold text-gray-700">Take Photo</Text>
         </TouchableOpacity>
         <TouchableOpacity
           onPress={pickImageFromGallery}
           className="flex-row items-center p-3 bg-gray-200 rounded-lg">
           <MaterialCommunityIcons name="image" size={24} color="gray" />
-          <Text className="ml-2 font-semibold text-gray-700">Upload ảnh</Text>
+          <Text className="ml-2 font-semibold text-gray-700">Upload Image</Text>
         </TouchableOpacity>
       </View>
     </View>

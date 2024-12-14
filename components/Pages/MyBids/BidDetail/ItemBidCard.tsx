@@ -301,7 +301,7 @@ const ItemBidCard: React.FC<ItemBidCardProps> = ({
               onPress={goToAuctionDetail}
               className="px-3 py-1 bg-gray-600 rounded">
               <Text className="font-semibold text-center text-white">
-                XEM CHI TIẾT
+                VIEW DETAIL
               </Text>
             </TouchableOpacity>
           </View>

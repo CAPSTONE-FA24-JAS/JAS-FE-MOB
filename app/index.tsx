@@ -1,3 +1,4 @@
+
 // app/index.tsx
 
 import React from "react";
@@ -59,7 +60,7 @@ const App = () => {
               style={{ marginBottom: 40, shadowOpacity: 0.8 }}>
               <CustomButton
                 onPress={handleExplorePress}
-                title="BẮT ĐẦU KHÁM PHÁ"
+                title="START EXPLORING"
               />
             </Animated.View>
 

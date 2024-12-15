@@ -65,14 +65,12 @@ const AddressInfo: React.FC<AddressInfoProps> = ({
             isReceiveAtCompany
               ? "bg-blue-500 text-white"
               : "bg-gray-200 text-gray-800"
-          } p-2 w-[45%] rounded-md mr-2`}
-        >
+          } p-2 w-[45%] rounded-md mr-2`}>
           <Text
             className={`${
               !isReceiveAtCompany ? "text-gray-800" : "text-white"
-            } text-center font-semibold`}
-          >
-            Giao tại công ty
+            } text-center font-semibold`}>
+            Delivered at the company
           </Text>
         </TouchableOpacity>
 
@@ -82,18 +80,16 @@ const AddressInfo: React.FC<AddressInfoProps> = ({
             !isReceiveAtCompany
               ? "bg-blue-500 text-white"
               : "bg-gray-200 text-gray-800"
-          } p-2 rounded-md w-[45%]`}
-        >
+          } p-2 rounded-md w-[45%]`}>
           <Text
             className={`${
               !isReceiveAtCompany ? "text-white" : "text-gray-800"
-            } text-center font-semibold`}
-          >
-            Giao hàng tận nơi
+            } text-center font-semibold`}>
+            Home delivery
           </Text>
         </TouchableOpacity>
       </View>
-      <View className="py-3 px-3 border-2 border-gray-100 rounded-md">
+      <View className="px-3 py-3 border-2 border-gray-100 rounded-md">
         {/* Hiển thị địa chỉ tùy thuộc vào lựa chọn */}
         {isReceiveAtCompany ? (
           <View>
@@ -130,8 +126,7 @@ const AddressInfo: React.FC<AddressInfoProps> = ({
             </View>
             <TouchableOpacity
               onPress={onChooseAddress}
-              className="absolute top-0 right-0"
-            >
+              className="absolute top-0 right-0">
               <MaterialCommunityIcons name="pencil" size={24} color="#848484" />
             </TouchableOpacity>
           </View>

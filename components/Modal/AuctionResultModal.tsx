@@ -39,25 +39,25 @@ const AuctionResultModal: React.FC<AuctionResultModalProps> = ({
           {/* Title Section */}
           <Text className="mb-6 text-2xl font-bold text-center text-gray-800">
             {currentUser == userWinner
-              ? "Chúc mừng bạn đã thắng!"
-              : "Phiên đấu giá đã kết thúc"}
+              ? "Congratulations, you won!"
+              : "The auction session has ended"}
           </Text>
 
           {/* Info Section */}
           <View className="w-full p-4 mb-6 bg-gray-50 rounded-xl">
             <View className="flex-row items-center justify-between mb-2">
               <Text className="text-base font-medium text-gray-600">
-                Người thắng cuộc:
+                Winner:
               </Text>
               <Text className="text-base font-semibold text-blue-500">
-                {currentUser === userWinner ? "Bạn" : userWinner}
+                {currentUser === userWinner ? "You" : userWinner}
               </Text>
             </View>
 
             {currentUser == userWinner ? null : (
               <View className="flex-row items-center justify-between mb-2">
                 <Text className="text-base font-medium text-gray-600">
-                  Giá thắng:
+                  Winning Price:
                 </Text>
                 <Text className="text-base font-bold text-green-600">
                   {winningPrice}
@@ -67,7 +67,7 @@ const AuctionResultModal: React.FC<AuctionResultModalProps> = ({
 
             <View className="flex-row items-center justify-between">
               <Text className="text-base font-medium text-gray-600">
-                Giá thắng:
+                Winning Bid:
               </Text>
               <Text className="text-base font-bold text-green-600">
                 {winningPrice}
@@ -78,15 +78,15 @@ const AuctionResultModal: React.FC<AuctionResultModalProps> = ({
           {/* Message Section */}
           <Text className="mb-6 text-sm italic text-center text-gray-500">
             {currentUser === userWinner
-              ? "Xin chúc mừng! Bạn đã thắng phiên đấu giá này. Vui lòng kiểm tra email để biết thêm chi tiết về các bước tiếp theo."
-              : "Cảm ơn bạn đã tham gia đấu giá. Hẹn gặp lại bạn trong những phiên đấu giá tiếp theo!"}
+              ? "Congratulations! You have won this auction. Please check your email for more details on the next steps."
+              : "Thank you for participating in the auction. We look forward to seeing you in upcoming auctions!"}
           </Text>
 
           <TouchableOpacity
             className="w-full px-6 py-3 bg-blue-500 rounded-full active:bg-blue-600"
             onPress={onClose}>
             <Text className="text-base font-semibold text-center text-white">
-              Đóng
+              Close
             </Text>
           </TouchableOpacity>
         </View>

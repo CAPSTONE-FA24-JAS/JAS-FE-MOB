@@ -82,8 +82,7 @@ const CountdownTimerBid: React.FC<CountdownTimerProps> = ({
       style={[
         styles.container,
         currentStatus === "ended" && styles.endedBackground,
-      ]}
-    >
+      ]}>
       {renderContent()}
     </View>
   );

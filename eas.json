@@ -6,7 +6,7 @@
   "build": {
     "development": {
       "env": {
-        "EXPO_PUBLIC_API_URL": "https://api.jas.id.vn"
+        "EXPO_PUBLIC_API_URL": "http://103.163.25.53"
       },
       "developmentClient": true,
       "distribution": "internal",
@@ -19,7 +19,7 @@
     },
     "production": {
       "env": {
-        "EXPO_PUBLIC_API_URL": "https://api.jas.id.vn"
+        "EXPO_PUBLIC_API_URL": "http://103.163.25.53"
       },
       "autoIncrement": true,
       "android": {

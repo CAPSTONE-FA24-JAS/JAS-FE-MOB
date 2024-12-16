@@ -73,7 +73,6 @@ const ReduceBidPage = () => {
     error,
     isConnected,
     isEndAuctionMethod4,
-    messages,
     resultBidding,
     setResultBidding,
     winnerCustomer,

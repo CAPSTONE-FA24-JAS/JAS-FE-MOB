@@ -50,7 +50,7 @@ export interface LotDetail {
   deposit: number;
   floorFeePercent: number;
   currentPriceWinner: number;
-
+  bidIncrementTime?: number; //Auction_Price_GraduallyReduced
   startTime: string;
   endTime: string;
   actualEndTime: any;

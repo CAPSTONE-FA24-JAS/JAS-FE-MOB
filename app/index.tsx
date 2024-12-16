@@ -1,4 +1,3 @@
-
 // app/index.tsx
 
 import React from "react";

@@ -84,7 +84,7 @@ export const consignAnItem = async (
     );
 
     if (response.data.isSuccess) {
-      showSuccessMessage("Đã ký gửi vật phẩm thành công.");
+      showSuccessMessage("Item consigned successfully.");
       return response.data;
     } else {
       throw new Error(

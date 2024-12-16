@@ -130,7 +130,7 @@ const BidInputMethod4: React.FC<BidInputProps> = ({
               ? "w-[50%] flex items-center justify-center h-12 bg-gray-500 rounded-md"
               : "w-[50%] flex items-center justify-center h-12 bg-blue-500 rounded-md"
           }>
-          <Text className="text-xl font-semibold text-white">
+          <Text className="text-base font-semibold text-center text-white">
             {getButtonText()}
           </Text>
         </TouchableOpacity>

@@ -1,6 +1,6 @@
 import { viewAuctions } from "@/api/auctionApi";
 import PastAuctionCard from "@/components/Pages/PastAuction/PastAuctionCard";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import {
   ActivityIndicator,
   FlatList,
@@ -15,41 +15,76 @@ const PastAuctions = () => {
   const [auctions, setAuctions] = useState<AuctionsData[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
-  const [refreshing, setRefreshing] = useState<boolean>(false); // Thêm trạng thái làm mới
+  const [refreshing, setRefreshing] = useState<boolean>(false);
 
-  // Hàm gọi API để lấy danh sách đấu giá
   const fetchAuctions = async () => {
     try {
       const response = await viewAuctions();
       console.log("responsePastAuc", response);
 
-      if (response.isSuccess && response.data) {
-        // Lọc các đấu giá với trạng thái "Past"
+      if (response?.isSuccess && Array.isArray(response?.data)) {
         const filteredAuctions = response.data.filter(
-          (auction) => auction.status === "Past"
+          (auction): auction is AuctionsData => {
+            return (
+              auction !== null &&
+              typeof auction === "object" &&
+              auction.status === "Past" &&
+              typeof auction.id === "number" &&
+              auction.startTime !== null &&
+              auction.startTime !== undefined &&
+              auction.endTime !== null &&
+              auction.endTime !== undefined
+            );
+          }
         );
         setAuctions(filteredAuctions);
       } else {
-        setError(response.message || "No auctions found.");
+        setError(response?.message || "No auctions found.");
       }
     } catch (err) {
       setError("Failed to load auctions.");
+      console.error("Error fetching auctions:", err);
     } finally {
       setLoading(false);
     }
   };
 
-  // Gọi API khi component được mount
   useEffect(() => {
     fetchAuctions();
   }, []);
 
-  // Hàm làm mới khi kéo để tải lại
   const handleRefresh = async () => {
-    setRefreshing(true); // Bắt đầu trạng thái làm mới
-    await fetchAuctions(); // Tải lại danh sách đấu giá
-    setRefreshing(false); // Kết thúc làm mới
+    setRefreshing(true);
+    await fetchAuctions();
+    setRefreshing(false);
   };
+
+  // Sort auctions by most recent dates with null safety
+  const sortedAuctions = useMemo(() => {
+    return [...auctions].sort((a, b) => {
+      // Safely parse dates with fallback to current date if invalid
+      const getValidDate = (dateStr: string | null | undefined) => {
+        if (!dateStr) return new Date();
+        const parsedDate = new Date(dateStr);
+        return isNaN(parsedDate.getTime()) ? new Date() : parsedDate;
+      };
+
+      const aEndDate = getValidDate(a.endTime);
+      const bEndDate = getValidDate(b.endTime);
+      const aStartDate = getValidDate(a.startTime);
+      const bStartDate = getValidDate(b.startTime);
+
+      // First sort by end date (most recent first)
+      const endDateComparison = bEndDate.getTime() - aEndDate.getTime();
+
+      // If end dates are the same, sort by start date (most recent first)
+      if (endDateComparison === 0) {
+        return bStartDate.getTime() - aStartDate.getTime();
+      }
+
+      return endDateComparison;
+    });
+  }, [auctions]);
 
   if (loading) {
     return (
@@ -69,23 +104,8 @@ const PastAuctions = () => {
           onPress={() => {
             setLoading(true);
             setError(null);
-            viewAuctions()
-              .then((response) => {
-                if (response.isSuccess && response.data) {
-                  const filteredAuctions = response.data.filter(
-                    (auction) => auction.status === "Past"
-                  );
-                  setAuctions(filteredAuctions);
-                } else {
-                  setError(response.message || "No auctions found.");
-                }
-              })
-              .catch(() => {
-                setError("Failed to load auctions.");
-              })
-              .finally(() => setLoading(false));
-          }}
-        >
+            fetchAuctions();
+          }}>
           <Text className="text-white">Retry</Text>
         </TouchableOpacity>
       </View>
@@ -95,26 +115,25 @@ const PastAuctions = () => {
   return (
     <View className="flex-1 bg-white">
       <FlatList
-        data={auctions}
-        keyExtractor={(auction) => auction.id.toString()}
+        data={sortedAuctions}
+        keyExtractor={(auction) =>
+          auction?.id?.toString() ?? Math.random().toString()
+        }
         renderItem={({ item }) => (
           <PastAuctionCard
-            key={item.id}
-            auctionId={item.id}
-            auctionTitle={item.name || "No Name"}
-            auctionStartTime={item.startTime}
-            auctionEndTime={item.endTime}
-            auctionImage={item.imageLink}
-            auctionStatus={item.status}
-            totalLots={item.totalLot}
+            key={item?.id}
+            auctionId={item?.id ?? 0}
+            auctionTitle={item?.name || "No Name"}
+            auctionStartTime={item?.startTime ?? ""}
+            auctionEndTime={item?.endTime ?? ""}
+            auctionImage={item?.imageLink ?? ""}
+            auctionStatus={item?.status ?? "Past"}
+            totalLots={item?.totalLot ?? 0}
           />
         )}
         contentContainerStyle={{ padding: 10 }}
         refreshControl={
-          <RefreshControl
-            refreshing={refreshing}
-            onRefresh={handleRefresh} // Kéo để làm mới
-          />
+          <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
         }
         ListEmptyComponent={
           <View className="items-center py-20">

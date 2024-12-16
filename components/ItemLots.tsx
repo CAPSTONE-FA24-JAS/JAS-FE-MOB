@@ -70,7 +70,7 @@ const ItemLots: React.FC<ItemLotsProps> = ({
       case "Public_Auction":
         return "Public Auction";
       case "Auction_Price_GraduallyReduced":
-        return "Gradually Reduced Price";
+        return "Reverse Auction";
       default:
         return typeBid;
     }
@@ -190,7 +190,7 @@ const ItemLots: React.FC<ItemLotsProps> = ({
           )}
           {/* Show the typeBid */}
           <View className="flex-row  w-[60%]">
-            <Text className="text-base font-bold text-[#6c6c6c] ">Type: </Text>
+            <Text className="text-sm font-bold text-[#6c6c6c] ">Type: </Text>
             <Text className="text-[#6c6c6c] text-base ">
               {formatTypeBid(typeBid)}
             </Text>

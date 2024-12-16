@@ -152,8 +152,7 @@ const HomeScreen = () => {
         <Text className="text-red-500">{error}</Text>
         <TouchableOpacity
           className="px-4 py-2 mt-4 bg-blue-500 rounded"
-          onPress={fetchAuctions}
-        >
+          onPress={fetchAuctions}>
           <Text className="text-white">Retry</Text>
         </TouchableOpacity>
       </View>
@@ -197,14 +196,14 @@ const HomeScreen = () => {
           className="bg-green-500 p-3 rounded w-[45%]"
           onPress={() => router.push("/result-payment?isSuccess=true")}
         >
-          <Text className="text-white text-center font-bold">Success</Text>
+          <Text className="font-bold text-center text-white">Success</Text>
         </TouchableOpacity>
 
         <TouchableOpacity
           className="bg-red-500 p-3 rounded w-[45%]"
           onPress={() => router.push("/result-payment?isSuccess=false")}
         >
-          <Text className="text-white text-center font-bold">Failure</Text>
+          <Text className="font-bold text-center text-white">Failure</Text>
         </TouchableOpacity>
       </View> */}
     </View>

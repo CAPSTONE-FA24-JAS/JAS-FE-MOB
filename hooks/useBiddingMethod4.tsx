@@ -12,7 +12,6 @@ const API_BASE_URL = process.env.EXPO_PUBLIC_API_URL;
 interface UseBiddingResult {
   isConnected: boolean;
   endTime: string;
-  messages: Message[];
   error: string | null;
   joinLiveBiddingMethod4: (
     accountId: string | number,
@@ -34,7 +33,6 @@ interface UseBiddingResult {
 
 export function useBiddingMethod4(): UseBiddingResult {
   const [isConnected, setIsConnected] = useState(false);
-  const [messages, setMessages] = useState<Message[]>([]);
   const [endTime, setEndTime] = useState<string>("");
   const [error, setError] = useState<string | null>(null);
   useState<boolean>(false);
@@ -250,7 +248,6 @@ export function useBiddingMethod4(): UseBiddingResult {
         await connectionRef.current.stop();
         connectionRef.current = null;
         setIsConnected(false);
-        setMessages([]);
         setEndTime("");
         setError(null);
       } catch (err) {
@@ -272,7 +269,6 @@ export function useBiddingMethod4(): UseBiddingResult {
   return {
     isConnected,
     endTime,
-    messages,
     error,
     joinLiveBiddingMethod4,
     sendBidMethod4,

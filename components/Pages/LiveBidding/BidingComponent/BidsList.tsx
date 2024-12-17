@@ -5,12 +5,11 @@ import {
   showSuccessMessage,
 } from "@/components/FlashMessageHelpers";
 import { Message } from "@/hooks/useBiddingMethod3";
+import { RootState } from "@/redux/store";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import React, { useMemo } from "react";
-import { View, Text, TouchableOpacity, Alert } from "react-native";
-import PriceTimeline from "./PriceTimeline";
+import { Alert, Text, TouchableOpacity, View } from "react-native";
 import { useSelector } from "react-redux";
-import { AppDispatch, RootState } from "@/redux/store";
 
 interface BidsListProps {
   item: LotDetail;
@@ -107,8 +106,9 @@ const BidsList: React.FC<BidsListProps> = ({
       isEndLot ||
       item.status === "Sold" ||
       item.status === "Passed" ||
+      item.status === "Cancelled" ||
       status === "Pause" ||
-      status === "Cancel";
+      status === "Cancelled";
 
     return (
       <View className="mb-4">
@@ -208,20 +208,7 @@ const BidsList: React.FC<BidsListProps> = ({
           status={status || item.status}
           finalPriceSold={item.finalPriceSold || 0}
         /> */}
-        <View className="flex-row items-center justify-between pt-4 border-t border-gray-200">
-          <View className="flex-row items-center">
-            <MaterialCommunityIcons
-              name="account-group"
-              size={24}
-              color="#4B5563"
-              className="mr-2"
-            />
-            <Text className="text-base text-gray-600">Participants:</Text>
-          </View>
-          <Text className="text-lg font-semibold text-blue-600">
-            {amountCustomerBid || 0} people
-          </Text>
-        </View>
+
         <View className="flex-row items-center justify-around p-3 py-4 bg-white border border-gray-300 rounded-md">
           <Text className="text-lg">Current Price:</Text>
           <Text className="text-xl text-gray-600">

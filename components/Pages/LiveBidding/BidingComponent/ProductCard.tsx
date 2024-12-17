@@ -1,4 +1,5 @@
 import { LotDetail } from "@/app/types/lot_type";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 import React from "react";
 import { View, Text, Image } from "react-native";
 
@@ -12,6 +13,7 @@ interface ProductCardProps {
   stepBidIncrement?: number;
   status?: string;
   item: LotDetail;
+  amountCustomerBid?: string;
 }
 
 const ProductCard: React.FC<ProductCardProps> = ({
@@ -24,6 +26,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
   stepBidIncrement,
   status,
   item,
+  amountCustomerBid,
 }) => {
   return (
     <View className="p-2">
@@ -90,6 +93,21 @@ const ProductCard: React.FC<ProductCardProps> = ({
           </View>
         </View>
       )}
+
+      <View className="flex-row items-center justify-between pt-4 border-t border-gray-200">
+        <View className="flex-row items-center">
+          <MaterialCommunityIcons
+            name="account-group"
+            size={24}
+            color="#4B5563"
+            className="mr-2"
+          />
+          <Text className="text-base text-gray-600">Participants:</Text>
+        </View>
+        <Text className="text-lg font-semibold text-blue-600">
+          {amountCustomerBid || 0} people
+        </Text>
+      </View>
     </View>
   );
 };

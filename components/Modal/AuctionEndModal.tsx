@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Modal, View, Text, TouchableOpacity } from "react-native";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 
@@ -11,6 +11,20 @@ const AuctionEndedModal: React.FC<AuctionEndedModalProps> = ({
   visible,
   onClose,
 }) => {
+  useEffect(() => {
+    let timer: NodeJS.Timeout;
+
+    if (visible) {
+      timer = setTimeout(() => {
+        onClose();
+      }, 3000); // Đóng sau 3 giây
+    }
+
+    // Xóa timer nếu component unmount hoặc visible thay đổi
+    return () => {
+      if (timer) clearTimeout(timer);
+    };
+  }, [visible, onClose]);
   return (
     <Modal
       visible={visible}

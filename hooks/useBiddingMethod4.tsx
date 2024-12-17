@@ -29,6 +29,7 @@ interface UseBiddingResult {
   endlotwithoutwinner: boolean;
   milenstoneReduceTime: string;
   amoutCustomerBid: string;
+  isEndLot: boolean;
 }
 
 export function useBiddingMethod4(): UseBiddingResult {
@@ -47,6 +48,8 @@ export function useBiddingMethod4(): UseBiddingResult {
   const [status, setStatus] = useState<string>("");
   const [milenstoneReduceTime, setMilensStoneReduceTime] = useState<string>("");
   const [amoutCustomerBid, setAmoutCustomerBid] = useState<string>("");
+
+  const [isEndLot, setIsEndLot] = useState<boolean>(false);
 
   const connectionRef = useRef<HubConnection | null>(null);
 
@@ -143,6 +146,11 @@ export function useBiddingMethod4(): UseBiddingResult {
     connection.on("CanceledAuctionPublic", (message: string) => {
       console.log(`method 4 cancel ${message}`);
       setIsEndAuctionMethod4(true);
+    });
+
+    connection.on("AuctionPublicEnded", (message: string) => {
+      console.log(`${message}`);
+      setIsEndLot(true);
     });
   }, []);
 
@@ -283,5 +291,6 @@ export function useBiddingMethod4(): UseBiddingResult {
     endlotwithoutwinner,
     milenstoneReduceTime,
     amoutCustomerBid,
+    isEndLot,
   };
 }

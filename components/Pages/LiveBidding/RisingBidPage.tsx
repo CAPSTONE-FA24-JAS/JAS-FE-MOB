@@ -108,6 +108,7 @@ const RisingBidPage: React.FC = () => {
     winnerCustomer,
     winnerPrice,
     status,
+    amoutCustomerBid,
   } = useBiddingMethod3();
 
   useEffect(() => {
@@ -146,6 +147,7 @@ const RisingBidPage: React.FC = () => {
           stepBidIncrement={item.bidIncrement ?? 0}
           status={status}
           item={item}
+          amountCustomerBid={amoutCustomerBid}
         />
       ),
     },

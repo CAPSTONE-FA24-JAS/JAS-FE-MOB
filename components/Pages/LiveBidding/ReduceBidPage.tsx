@@ -83,6 +83,7 @@ const ReduceBidPage = () => {
     endlotwithoutwinner,
     milenstoneReduceTime,
     amoutCustomerBid,
+    isEndLot,
   } = useBiddingMethod4();
 
   const accountId = useSelector(
@@ -164,6 +165,7 @@ const ReduceBidPage = () => {
           stepBidIncrement={item.bidIncrement ?? 0}
           status={status}
           item={item}
+          amountCustomerBid={amoutCustomerBid}
         />
       ),
     },
@@ -242,7 +244,7 @@ const ReduceBidPage = () => {
         onClose={onClose}
       />
       <AuctionEndedModal
-        visible={endlotwithoutwinner || status === "Cancelled"}
+        visible={endlotwithoutwinner || isEndLot}
         onClose={onClose}
       />
     </View>

@@ -38,6 +38,7 @@ interface UseBiddingResult {
   setResultBidding: React.Dispatch<React.SetStateAction<string>>;
   isEndLot: boolean;
   status: string;
+  amoutCustomerBid: string;
 }
 
 export function useBiddingMethod3(): UseBiddingResult {
@@ -53,6 +54,7 @@ export function useBiddingMethod3(): UseBiddingResult {
   const [resultBidding, setResultBidding] = useState<string>("");
   const [isEndLot, setIsEndLot] = useState<boolean>(false);
   const [status, setStatus] = useState<string>("");
+  const [amoutCustomerBid, setAmoutCustomerBid] = useState<string>("");
 
   const connectionRef = useRef<HubConnection | null>(null);
 
@@ -195,6 +197,13 @@ export function useBiddingMethod3(): UseBiddingResult {
     //     setResultBidding(`${message} : ${price}`);
     //   }
     // );
+
+    connection.on("SendAmountCustomerBid", (msg: string, amount: string) => {
+      console.log(
+        `SendAmountCustomerBid Amount customer bid: ${msg} with amount ${amount}`
+      );
+      setAmoutCustomerBid(amount);
+    });
 
     connection.on("CanceledAuctionPublic", (message: string) => {
       console.log(`${message}`);
@@ -342,5 +351,6 @@ export function useBiddingMethod3(): UseBiddingResult {
     setResultBidding,
     isEndLot,
     status,
+    amoutCustomerBid,
   };
 }

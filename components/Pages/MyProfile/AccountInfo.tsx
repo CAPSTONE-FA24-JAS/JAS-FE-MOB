@@ -55,16 +55,29 @@ const AccountInfo: React.FC = () => {
     profileImage: "",
   });
 
+  const [initialProfile, setInitialProfile] = useState({
+    firstName: "",
+    lastName: "",
+    email: "",
+    dateOfBirth: "",
+    address: "",
+    gender: "Male",
+    citizenIdentificationCard: "",
+    profileImage: "",
+  });
+
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
   const [datePickerType, setDatePickerType] = useState<
     "dob" | "idIssue" | "idExpire"
   >("dob");
   const [isConfirmModalVisible, setConfirmModalVisible] = useState(false);
+  const [isSaveDisabled, setIsSaveDisabled] = useState(true);
 
   // Load initial data from userData
   useEffect(() => {
+    // Assuming userData is passed as a prop or fetched via API
     if (userData) {
-      setProfile({
+      const initialData = {
         firstName: userData.customerDTO.firstName,
         lastName: userData.customerDTO.lastName,
         email: userData.email,
@@ -84,7 +97,9 @@ const AccountInfo: React.FC = () => {
         profileImage:
           userData.customerDTO.profilePicture ||
           "https://t3.ftcdn.net/jpg/05/70/71/06/360_F_570710660_Jana1ujcJyQTiT2rIzvfmyXzXamVcby8.jpg",
-      });
+      };
+      setProfile(initialData);
+      setInitialProfile(initialData); // Store initial profile for comparison
     }
   }, [userData]);
 
@@ -96,6 +111,26 @@ const AccountInfo: React.FC = () => {
   const handleChange = (field: string, value: string) => {
     setProfile({ ...profile, [field]: value });
   };
+
+  // Check if the profile has changed
+  const hasProfileChanged = () => {
+    return (
+      profile.firstName !== initialProfile.firstName ||
+      profile.lastName !== initialProfile.lastName ||
+      profile.email !== initialProfile.email ||
+      profile.dateOfBirth !== initialProfile.dateOfBirth ||
+      profile.address !== initialProfile.address ||
+      profile.gender !== initialProfile.gender ||
+      profile.citizenIdentificationCard !==
+        initialProfile.citizenIdentificationCard ||
+      profile.profileImage !== initialProfile.profileImage
+    );
+  };
+
+  useEffect(() => {
+    // Disable/enable save button based on profile changes
+    setIsSaveDisabled(!hasProfileChanged());
+  }, [profile]);
 
   const handleSaveChanges = async () => {
     if (!userId) {
@@ -268,6 +303,15 @@ const AccountInfo: React.FC = () => {
               className="p-2 border-b border-gray-400"
             />
           </View>
+          <View className="mb-4">
+            <Text className="mb-1 font-semibold text-gray-700">Address</Text>
+            <TextInput
+              value={profile.address}
+              onChangeText={(value) => handleChange("address", value)}
+              placeholder="Enter your address"
+              className="p-2 border-b border-gray-400"
+            />
+          </View>
 
           <View className="mb-4">
             <Text className="mb-1 font-semibold text-gray-700">Gender</Text>
@@ -276,7 +320,8 @@ const AccountInfo: React.FC = () => {
                 onPress={() => setProfile({ ...profile, gender: "Male" })}
                 className={`flex-1 p-2 mr-2 rounded ${
                   profile.gender === "Male" ? "bg-blue-500" : "bg-gray-200"
-                }`}>
+                }`}
+              >
                 <Text className="font-semibold text-center text-white">
                   Male
                 </Text>
@@ -285,7 +330,8 @@ const AccountInfo: React.FC = () => {
                 onPress={() => setProfile({ ...profile, gender: "Female" })}
                 className={`flex-1 p-2 ml-2 rounded ${
                   profile.gender === "Female" ? "bg-pink-500" : "bg-gray-200"
-                }`}>
+                }`}
+              >
                 <Text className="font-semibold text-center text-white">
                   Female
                 </Text>
@@ -359,15 +405,20 @@ const AccountInfo: React.FC = () => {
 
           {/* Save Button */}
           <TouchableOpacity
-            className="p-3 mt-4 bg-blue-500 rounded-lg"
-            onPress={handleSaveChanges}>
+            className={`p-3 mt-4 ${
+              isSaveDisabled ? "bg-gray-500" : "bg-blue-500"
+            } bg-blue-500 rounded-lg`}
+            onPress={handleSaveChanges}
+            disabled={isSaveDisabled}
+          >
             <Text className="text-lg font-semibold text-center text-white uppercase">
               {isLoading ? "Save ..." : "Save Changes"}
             </Text>
           </TouchableOpacity>
           <TouchableOpacity
             className="p-3 mt-4 bg-red-500 rounded-lg"
-            onPress={toggleConfirmModal}>
+            onPress={toggleConfirmModal}
+          >
             <Text className="text-lg font-semibold text-center text-white uppercase">
               Delete My Account
             </Text>

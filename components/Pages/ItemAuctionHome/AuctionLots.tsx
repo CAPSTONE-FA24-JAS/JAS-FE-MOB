@@ -52,14 +52,8 @@ const AuctionLots: React.FC<AuctionLotsProps> = ({ dataAuction }) => {
         <TextInput
           placeholder="Search"
           returnKeyType="done"
-          className="border-[1px] border-slate-300 px-4 rounded-lg text-sm w-7/12 ml-3"
+          className="border-[1px] border-slate-300 px-4 rounded-lg text-sm w-full ml-3"
         />
-        <TouchableOpacity className="flex items-center justify-center w-2/12 rounded-md bg-slate-200">
-          <Text className="text-center">Filter</Text>
-        </TouchableOpacity>
-        <TouchableOpacity className="flex items-center justify-center w-2/12 rounded-md bg-slate-200">
-          <Text className="text-center">Sort</Text>
-        </TouchableOpacity>
       </View>
 
       {/* Hiển thị loading khi dữ liệu đang được tải */}

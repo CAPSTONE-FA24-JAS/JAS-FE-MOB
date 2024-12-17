@@ -102,13 +102,6 @@ const Terms: React.FC = () => {
           in the courts of [Your Country/Region].
         </Text>
       </View>
-
-      {/* Agreement Button */}
-      <TouchableOpacity className="mb-10 mt-6 p-4 bg-blue-500 rounded-lg">
-        <Text className="text-white text-center text-lg">
-          I Agree to the Terms and Conditions
-        </Text>
-      </TouchableOpacity>
     </ScrollView>
   );
 };

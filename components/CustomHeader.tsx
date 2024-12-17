@@ -1,13 +1,16 @@
 // /components/CustomHeader.tsx
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { View, Text, TouchableOpacity } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { useNavigation } from "@react-navigation/native";
+import { useIsFocused, useNavigation } from "@react-navigation/native";
 import { DrawerNavigationProp } from "@react-navigation/drawer";
 import { ParamListBase } from "@react-navigation/routers";
 import { createSelector } from "@reduxjs/toolkit";
-import { RootState } from "@/redux/store";
-import { useSelector } from "react-redux";
+import { RootState, AppDispatch } from "@/redux/store";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchNotifications } from "@/redux/slices/notificationSlice";
+import { getNotificationByAccountId } from "@/api/notificationApi";
+import { Notification } from "@/app/types/notification_type";
 
 interface CustomHeaderProps {
   title: string;
@@ -15,13 +18,31 @@ interface CustomHeaderProps {
 
 const CustomHeader: React.FC<CustomHeaderProps> = ({ title }) => {
   const navigation = useNavigation<DrawerNavigationProp<ParamListBase>>();
-  // Selector để lấy số lượng thông báo chưa đọc
-  const selectUnreadNotificationsCount = createSelector(
-    (state: RootState) => state.notifications.notifications,
-    (notifications) => notifications.filter((notif) => !notif.is_Read).length
-  );
+  const dispatch = useDispatch();
 
-  const unreadCount = useSelector(selectUnreadNotificationsCount);
+  // State to store notifications and unread count
+  const [notifications, setNotifications] = useState<Notification[]>([]);
+  const [unreadCount, setUnreadCount] = useState(0);
+
+  const userId = useSelector((state: RootState) => state.auth.userResponse?.id);
+
+  const isFocused = useIsFocused(); // Hook to check if screen is focused
+
+  // Fetch notifications when the screen is focused
+  useEffect(() => {
+    if (userId && isFocused) {
+      getNotificationByAccountId(userId, 1, 100) // Get first page, 100 items per page
+        .then((response) => {
+          const notifications = response.dataResponse; // Lấy dữ liệu thông báo từ dataResponse
+          setNotifications(notifications);
+          const unread = notifications.filter((notif) => !notif.is_Read).length; // Tính số lượng thông báo chưa đọc
+          setUnreadCount(unread);
+        })
+        .catch((error) => {
+          console.error("Error fetching notifications:", error);
+        });
+    }
+  }, [userId, isFocused]); // Only trigger when the screen is focused
 
   return (
     <View
@@ -38,10 +59,12 @@ const CustomHeader: React.FC<CustomHeaderProps> = ({ title }) => {
         shadowOpacity: 0.25, // Độ mờ của shadow
         shadowRadius: 3.84, // Bán kính của shadow
         elevation: 5, // Độ cao của shadow (Android)
-      }}>
+      }}
+    >
       <TouchableOpacity
         onPress={() => navigation.openDrawer()}
-        className="mx-4">
+        className="mx-4"
+      >
         <MaterialCommunityIcons name="menu" size={24} color="black" />
       </TouchableOpacity>
 
@@ -52,7 +75,8 @@ const CustomHeader: React.FC<CustomHeaderProps> = ({ title }) => {
 
         <TouchableOpacity
           className="flex-row justify-end"
-          onPress={() => navigation.navigate("Notification")}>
+          onPress={() => navigation.navigate("Notification")}
+        >
           <MaterialCommunityIcons
             name="bell"
             size={30}

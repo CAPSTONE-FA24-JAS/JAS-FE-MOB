@@ -18,10 +18,10 @@ export const getNotificationByAccountId = async (
     const response = await axios.get<Response<ResponseList<Notification>>>(
       `${API_URL}/api/Notifications/getNotificationsByAccount?accountId=${accountId}&pageIndex=${pageIndex}&pageSize=${pageSize}`
     );
-    console.log("notification");
+    // console.log("notification");
 
     if (response.data.isSuccess) {
-      console.log("data noti", response.data.data.dataResponse);
+      // console.log("data noti", response.data.data.dataResponse);
 
       return response.data.data;
     } else {

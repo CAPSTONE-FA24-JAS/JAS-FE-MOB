@@ -3,6 +3,7 @@
 import { Data } from "@/app/types/login_type";
 import { Response } from "@/app/types/respone_type";
 import { DataSignUpResponse, SignUpUser } from "@/app/types/signup_type";
+import { showErrorMessage } from "@/components/FlashMessageHelpers";
 import { login } from "@/redux/slices/authSlice";
 import { AppDispatch } from "@/redux/store";
 import axios from "axios";
@@ -67,6 +68,7 @@ export const registerApi = async (signupUser: SignUpUser): Promise<void> => {
       console.log("Registration successful. Redirecting to login...");
       router.push("/login"); // Chuyển hướng đến trang đăng nhập
     } else {
+      showErrorMessage(response.data.message || "Registration failed.");
       // Nếu đăng ký không thành công, ném ra lỗi với thông báo từ API
       throw new Error(response.data.message || "Registration failed.");
     }

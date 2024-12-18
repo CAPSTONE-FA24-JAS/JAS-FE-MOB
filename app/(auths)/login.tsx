@@ -76,19 +76,17 @@ const Login: React.FC = () => {
         // Fetch user profileMi
         if (userData?.id) {
           await dispatch(fetchProfile(userData.id));
-          console.log("Profile fetched successfully.");
-        }
-
-        // Fetch notifications
-        if (userData?.id) {
-          dispatch(
+          await dispatch(
             fetchNotifications({
               accountId: userData.id,
               page: 1,
               pageSize: 10,
-            }) // Fetch notifications with user ID
+            })
           );
+          console.log("Profile fetched successfully.");
         }
+
+        // Fetch notifications and store in Redux
 
         router.replace("/home-screen"); // Redirect to home screen
       } else {

@@ -20,7 +20,7 @@ type RootStackParamList = {
 const NotificationItem = ({ item }: { item: Notification }) => {
   const dispatch = useDispatch();
   const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
-  console.log("itemNoti.id", item.id);
+  // console.log("itemNoti.id", item.id);
 
   const getTypeColor = (item: Notification) => {
     switch (item.notifi_Type) {

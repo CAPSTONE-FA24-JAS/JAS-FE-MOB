@@ -59,6 +59,16 @@ const ProductCard: React.FC<ProductCardProps> = ({
                 currency: "VND",
               })}
             </Text>
+            {typeBid === "Auction_Price_GraduallyReduced" && (
+              <View className="flex-row items-center justify-between">
+                <Text className="text-sm font-medium text-gray-400">
+                  Time decrement:{" "}
+                  <Text className="text-blue-500">
+                    {item.bidIncrementTime ?? 0} seconds
+                  </Text>
+                </Text>
+              </View>
+            )}
             <View className="flex-row items-center justify-between">
               <Text className="text-sm font-medium text-gray-400">
                 Bid {typeBid === "Public_Auction" ? "increment" : "decrement"}{" "}
@@ -70,7 +80,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
                   })}
                 </Text>
               </Text>
-              <Text className="text-lg font-medium text-gray-400">
+              <Text className="text-base font-medium text-gray-400">
                 Status: <Text className="text-blue-500">{status}</Text>
               </Text>
             </View>
@@ -94,20 +104,22 @@ const ProductCard: React.FC<ProductCardProps> = ({
         </View>
       )}
 
-      <View className="flex-row items-center justify-between pt-4 border-t border-gray-200">
-        <View className="flex-row items-center">
-          <MaterialCommunityIcons
-            name="account-group"
-            size={24}
-            color="#4B5563"
-            className="mr-2"
-          />
-          <Text className="text-base text-gray-600">Participants:</Text>
+      {typeBid === "Auction_Price_GraduallyReduced" && (
+        <View className="flex-row items-center justify-between pt-4 border-t border-gray-200">
+          <View className="flex-row items-center">
+            <MaterialCommunityIcons
+              name="account-group"
+              size={24}
+              color="#4B5563"
+              className="mr-2"
+            />
+            <Text className="text-base text-gray-600">Bidder:</Text>
+          </View>
+          <Text className="text-lg font-semibold text-blue-600">
+            {amountCustomerBid || 0} people
+          </Text>
         </View>
-        <Text className="text-lg font-semibold text-blue-600">
-          {amountCustomerBid || 0} people
-        </Text>
-      </View>
+      )}
     </View>
   );
 };

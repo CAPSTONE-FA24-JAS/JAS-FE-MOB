@@ -88,8 +88,22 @@ const BidInput: React.FC<BidInputProps> = ({
     const numericValue = parseInt(newValue.replace(/,/g, ""), 10) || 0;
     setStepBidIncrement(() => numericValue);
     let bidValueCurr = highestBid;
+
     if (item.bidIncrement) {
-      bidValueCurr = numericValue * item.bidIncrement + highestBid;
+      // Tính giá trị bid mới
+      const calculatedBid = numericValue * item.bidIncrement + highestBid;
+
+      // Nếu có finalPriceSold và giá tính được vượt quá finalPriceSold
+      if (item.finalPriceSold && calculatedBid >= item.finalPriceSold) {
+        bidValueCurr = item.finalPriceSold;
+        // Optional: Cập nhật lại step để phù hợp với finalPriceSold
+        const correctedStep = Math.floor(
+          (item.finalPriceSold - highestBid) / item.bidIncrement
+        );
+        setStepBidIncrement(correctedStep);
+      } else {
+        bidValueCurr = calculatedBid;
+      }
     }
 
     setBidValue(bidValueCurr);
@@ -97,7 +111,17 @@ const BidInput: React.FC<BidInputProps> = ({
 
   useEffect(() => {
     if (item.bidIncrement && highestBid !== 0) {
-      setBidValue(highestBid + stepBidIncrement * item.bidIncrement);
+      const calculatedBid = highestBid + stepBidIncrement * item.bidIncrement;
+      if (item.finalPriceSold && calculatedBid >= item.finalPriceSold) {
+        setBidValue(item.finalPriceSold);
+        // Optional: Cập nhật lại step
+        const correctedStep = Math.floor(
+          (item.finalPriceSold - highestBid) / item.bidIncrement
+        );
+        setStepBidIncrement(correctedStep);
+      } else {
+        setBidValue(calculatedBid);
+      }
     }
   }, [highestBid]);
 
@@ -138,68 +162,49 @@ const BidInput: React.FC<BidInputProps> = ({
       status === "Pause" ||
       status === "Cancelled";
     return (
-      <View className="w-full p-2">
-        <Text className="text-sm font-bold text-center">
+      <View className="w-full px-2 pb-5">
+        <Text className="mb-2 text-sm font-bold text-center">
           Highest Price:{" "}
           {(highestBidActual ?? 0).toLocaleString("vi-VN", {
             style: "currency",
             currency: "VND",
           })}
         </Text>
-        <View className="flex-row items-center justify-between gap-2">
-          <View className="w-[20%] h-14 border border-gray-300 rounded-md bg-white">
-            <Text className="text-xs font-semibold text-center">Step</Text>
+        <View className="flex-row items-center justify-between gap-3">
+          <View className="w-[25%] h-14 border border-gray-300 rounded-md bg-white">
+            <Text className="pt-1 text-xs font-semibold text-center">Step</Text>
             <TextInput
               editable={!isAuctionEnded}
               value={stepBidIncrement.toLocaleString()}
               onChangeText={(e) => handleBidChangeMethod3(e)}
               keyboardType="numeric"
               returnKeyType="done"
-              className="flex-1 px-2 text-xs font-semibold text-center border-gray-300 h-14 border-x"
+              className="flex-1 px-2 text-sm font-semibold text-center"
             />
           </View>
 
-          <View className="w-[50%] flex-row items-center border border-gray-300 rounded-md">
+          <View className="w-[45%] h-14 flex-row items-center border border-gray-300 rounded-md bg-white">
             <TextInput
               value={bidValue.toLocaleString()}
               editable={false}
               keyboardType="numeric"
               returnKeyType="done"
-              className="flex-1 px-2 text-lg font-semibold text-center border-gray-300 h-14 border-x"
+              className="flex-1 px-2 text-base font-semibold text-center"
             />
           </View>
 
           <TouchableOpacity
-            disabled={
-              isEndAuctionMethod3 ||
-              item.status === "Sold" ||
-              item.status === "Passed" ||
-              item.status === "Pause" ||
-              loading ||
-              isEndLot || // Disable when auction is currently ended just for method 3
-              checkProcessingBidOfMine(bids) ||
-              status === "Pause" ||
-              status === "Cancelled"
-            }
+            disabled={isAuctionEnded}
             onPress={handleSubmitBidMethod3}
-            className={
-              isEndAuctionMethod3 ||
-              item.status === "Sold" ||
-              item.status === "Passed" ||
-              loading ||
-              isEndLot || // Disable when auction is currently ended just for method 3
-              checkProcessingBidOfMine(bids) ||
-              status === "Pause" ||
-              status === "Cancelled"
-                ? "w-[20%] flex items-center justify-center h-14 bg-gray-500 rounded-md"
-                : "w-[20%] flex items-center justify-center h-14 bg-blue-500 rounded-md "
-            }>
-            <Text className="text-xs font-semibold text-white">BIDDING</Text>
+            className={`w-[20%] h-14 items-center justify-center rounded-md ${
+              isAuctionEnded ? "bg-gray-500" : "bg-blue-500"
+            }`}>
+            <Text className="text-sm font-semibold text-white">BID</Text>
           </TouchableOpacity>
         </View>
 
         {error && (
-          <Text className="mt-2 text-center text-red-500">{error}</Text>
+          <Text className="mt-2 text-sm text-center text-red-500">{error}</Text>
         )}
       </View>
     );

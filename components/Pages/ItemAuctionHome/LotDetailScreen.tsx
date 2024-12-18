@@ -846,11 +846,21 @@ const LotDetailScreen = () => {
             <View className="flex-row gap-2 ">
               <Text className="text-base font-bold text-[#6c6c6c] ">Est:</Text>
               <Text className="text-[#6c6c6c] text-base ">
-                {(lotDetail?.startPrice || 0).toLocaleString("vi-VN", {
-                  style: "currency",
-                  currency: "VND",
-                })}{" "}
-                - Increasing
+                {(lotDetail?.jewelry.estimatePriceMin || 0).toLocaleString(
+                  "vi-VN",
+                  {
+                    style: "currency",
+                    currency: "VND",
+                  }
+                )}{" "}
+                -{" "}
+                {(lotDetail?.jewelry.estimatePriceMax || 0).toLocaleString(
+                  "vi-VN",
+                  {
+                    style: "currency",
+                    currency: "VND",
+                  }
+                )}
               </Text>
             </View>
           </View>

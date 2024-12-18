@@ -38,14 +38,12 @@ const ConfirmBuyNowModal: React.FC<ConfirmBuyNowModalProps> = ({
           <View className="flex-row justify-around">
             <TouchableOpacity
               onPress={onClose}
-              className="px-4 py-2 w-[45%] bg-gray-300 rounded"
-            >
+              className="px-4 py-2 w-[45%] bg-gray-300 rounded">
               <Text className="font-semibold text-center text-black">No</Text>
             </TouchableOpacity>
             <TouchableOpacity
               onPress={() => onConfirm(price)}
-              className="px-4 py-2 w-[45%] bg-blue-500 rounded"
-            >
+              className="px-4 py-2 w-[45%] bg-blue-500 rounded">
               <Text className="font-semibold text-center text-white">Yes</Text>
             </TouchableOpacity>
           </View>

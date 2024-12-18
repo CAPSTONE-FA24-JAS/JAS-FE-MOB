@@ -50,11 +50,10 @@ const AuctionResultModal: React.FC<AuctionResultModalProps> = ({
                 Winner:
               </Text>
               <Text className="text-base font-semibold text-blue-500">
-                {currentUser === userWinner ? "You" : userWinner}
+                {currentUser == userWinner ? "You" : userWinner}
               </Text>
             </View>
-
-            {currentUser == userWinner ? null : (
+            {winningPrice && (
               <View className="flex-row items-center justify-between mb-2">
                 <Text className="text-base font-medium text-gray-600">
                   Winning Price:
@@ -64,20 +63,11 @@ const AuctionResultModal: React.FC<AuctionResultModalProps> = ({
                 </Text>
               </View>
             )}
-
-            <View className="flex-row items-center justify-between">
-              <Text className="text-base font-medium text-gray-600">
-                Winning Bid:
-              </Text>
-              <Text className="text-base font-bold text-green-600">
-                {winningPrice}
-              </Text>
-            </View>
           </View>
 
           {/* Message Section */}
           <Text className="mb-6 text-sm italic text-center text-gray-500">
-            {currentUser === userWinner
+            {currentUser == userWinner
               ? "Congratulations! You have won this auction. Please check your email for more details on the next steps."
               : "Thank you for participating in the auction. We look forward to seeing you in upcoming auctions!"}
           </Text>

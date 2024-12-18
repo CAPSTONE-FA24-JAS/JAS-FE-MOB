@@ -21,6 +21,7 @@ interface BidsListProps {
   status?: string;
   milenstoneReduceTime?: string;
   amountCustomerBid?: string;
+  highestBid?: number;
 }
 
 const BidsList: React.FC<BidsListProps> = ({
@@ -33,6 +34,7 @@ const BidsList: React.FC<BidsListProps> = ({
   status,
   milenstoneReduceTime,
   amountCustomerBid,
+  highestBid,
 }) => {
   // Memoized sorted bids
 
@@ -65,6 +67,19 @@ const BidsList: React.FC<BidsListProps> = ({
     return `${formattedDate}.${milliseconds}`;
   };
 
+  const isReachedFinalPrice = (): boolean => {
+    if (item.finalPriceSold === 0) {
+      return false;
+    }
+    return (
+      bids?.some(
+        (bid) =>
+          bid.status.toLocaleLowerCase() === "success" &&
+          bid.currentPrice >= item.finalPriceSold
+      ) ?? false
+    );
+  };
+
   const handleBuyNow = async () => {
     Alert.alert(
       "Confirm Purchase",
@@ -88,6 +103,7 @@ const BidsList: React.FC<BidsListProps> = ({
               showErrorMessage("You have reached the limit price");
               return;
             }
+
             const response = await buyNowMethod3(currentCusId, item.id);
             if (response) {
               showSuccessMessage("Item purchased successfully!");
@@ -127,12 +143,16 @@ const BidsList: React.FC<BidsListProps> = ({
           </Text>
           <TouchableOpacity
             className={`px-4 py-3 rounded-md ${
-              isDisabled ? "bg-gray-400" : "bg-red-600"
+              isReachedFinalPrice() || isDisabled ? "bg-gray-400" : "bg-red-600"
             }`}
-            onPress={!isDisabled ? handleBuyNow : undefined}
-            disabled={isDisabled}>
+            onPress={
+              !isReachedFinalPrice() || !isDisabled ? handleBuyNow : undefined
+            }
+            disabled={isDisabled || isReachedFinalPrice()}>
             <Text className="font-semibold text-center text-white">
-              {isDisabled ? "AUCTION ENDED" : "BUY NOW"}
+              {isDisabled
+                ? (status ? status : "")?.toLocaleUpperCase()
+                : "Buy Now"}
             </Text>
           </TouchableOpacity>
           <Text className="mt-2 text-xs text-center text-gray-500">

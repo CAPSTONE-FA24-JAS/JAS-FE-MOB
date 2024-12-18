@@ -25,6 +25,9 @@ export const fetchNotifications = createAsyncThunk(
   ) => {
     const { accountId, page, pageSize } = args;
     try {
+      console.log("====================================");
+      console.log("Fetching notifications for account:", accountId);
+      console.log("====================================");
       const response = await getNotificationByAccountId(
         accountId,
         page,
@@ -45,6 +48,7 @@ const notificationSlice = createSlice({
   name: "Notification",
   initialState,
   reducers: {
+    // In notificationSlice.ts, add logging in setNotifications if needed
     setNotifications: (state, action: PayloadAction<Notification[]>) => {
       console.log("setNotifications payload:", action.payload); // Log payload
       state.notifications = action.payload;

@@ -110,7 +110,7 @@ const ItemCurrentBids: React.FC<ItemCurrentBidsProps> = ({
       case "Public_Auction":
         return "Public Auction";
       case "Auction_Price_GraduallyReduced":
-        return "Gradually Reduced Price";
+        return "Reverse Auction";
       default:
         return typeBid;
     }

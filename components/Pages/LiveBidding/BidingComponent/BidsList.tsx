@@ -41,6 +41,19 @@ const BidsList: React.FC<BidsListProps> = ({
     (state: RootState) => state.auth.userResponse?.customerDTO?.priceLimit
   );
 
+  const isReachedFinalPrice = (): boolean => {
+    if (item.finalPriceSold === 0) {
+      return false;
+    }
+    return (
+      bids?.some(
+        (bid) =>
+          bid.status.toLocaleLowerCase() === "success" &&
+          bid.currentPrice >= item.finalPriceSold
+      ) ?? false
+    );
+  };
+
   // Helper to format time
   const formatTime = (timeString: string) => {
     // Tách phần milliseconds từ chuỗi thời gian
@@ -108,7 +121,8 @@ const BidsList: React.FC<BidsListProps> = ({
       item.status === "Sold" ||
       item.status === "Passed" ||
       status === "Pause" ||
-      status === "Cancel";
+      status === "Cancel" ||
+      isReachedFinalPrice();
 
     return (
       <View className="mb-4">
@@ -132,7 +146,7 @@ const BidsList: React.FC<BidsListProps> = ({
             onPress={!isDisabled ? handleBuyNow : undefined}
             disabled={isDisabled}>
             <Text className="font-semibold text-center text-white">
-              {isDisabled ? "AUCTION ENDED" : "BUY NOW"}
+              {isDisabled ? "BUY NOW" : "BUY NOW"}
             </Text>
           </TouchableOpacity>
           <Text className="mt-2 text-xs text-center text-gray-500">

@@ -235,13 +235,23 @@ const ConsignDetailTimeLine: React.FC = () => {
         item?.imageValuations?.map((item) => item?.imageLink),
       name: item?.name,
       pricingTime: item?.pricingTime,
-      estimatedCost: `${(item?.estimatePriceMin || 0).toLocaleString("vi-VN", {
-        style: "currency",
-        currency: "VND",
-      })} - ${(item?.estimatePriceMax || 0).toLocaleString("vi-VN", {
+      estimatedCost: `${(item?.jewelry.estimatePriceMin || 0).toLocaleString(
+        "vi-VN",
+        {
+          style: "currency",
+          currency: "VND",
+        }
+      )} - ${(item?.jewelry.estimatePriceMax || 0).toLocaleString("vi-VN", {
         style: "currency",
         currency: "VND",
       })}`,
+      specificPrice: (item?.jewelry?.specificPrice || 0).toLocaleString(
+        "vi-VN",
+        {
+          style: "currency",
+          currency: "VND",
+        }
+      ),
       width: item?.width,
       height: item?.height,
       depth: item?.depth,
@@ -256,12 +266,14 @@ const ConsignDetailTimeLine: React.FC = () => {
       idExpirationDate: item?.seller?.idExpirationDate,
       country: "Viet Nam",
       email: item?.seller?.accountDTO?.email,
-
       descriptionCharacteristicDetails: item?.jewelry?.keyCharacteristicDetails,
       documentLink: item?.valuationDocuments?.filter(
         (i) => i.valuationDocumentType === "Authorized"
       )[0]?.documentLink,
       mainDiamonds: item?.jewelry?.mainDiamonds,
+      secondaryDiamonds: item?.jewelry?.secondaryDiamonds,
+      mainShaphies: item?.jewelry?.mainShaphies,
+      secondaryShaphies: item?.jewelry?.secondaryShaphies,
       creationDate: item?.creationDate,
     };
 
@@ -294,8 +306,7 @@ const ConsignDetailTimeLine: React.FC = () => {
             <Text
               className={`uppercase ${getStatusColor(
                 item?.status ?? "default"
-              )} px-2 py-1 rounded-md text-white text-center mb-2 text-base font-semibold uppercase`}
-            >
+              )} px-2 py-1 rounded-md text-white text-center mb-2 text-base font-semibold uppercase`}>
               {statusTextMap[item?.status as ConsignStatus]}
             </Text>
             <View className="flex-row items-center justify-between ">
@@ -339,8 +350,7 @@ const ConsignDetailTimeLine: React.FC = () => {
               ) : item?.status === "ManagerApproved" ? (
                 <TouchableOpacity
                   className="w-full p-2 mt-2 bg-blue-500 rounded"
-                  onPress={handleViewFinalValuation}
-                >
+                  onPress={handleViewFinalValuation}>
                   <Text className="font-bold text-center text-white">
                     Show Final Valuation Modal
                   </Text>
@@ -363,9 +373,8 @@ const ConsignDetailTimeLine: React.FC = () => {
                 onPress={() => {
                   Linking.openURL(document.imageLink);
                 }}
-                className="bg-blue-800 flex-row justify-center p-2 rounded-md shadow-md"
-              >
-                <Text className="font-semibold text-center mr-2 text-base text-white">
+                className="flex-row justify-center p-2 bg-blue-800 rounded-md shadow-md">
+                <Text className="mr-2 text-base font-semibold text-center text-white">
                   {" "}
                   File Gemstone
                 </Text>
@@ -418,8 +427,7 @@ const ConsignDetailTimeLine: React.FC = () => {
                                     )[0]?.documentLink
                                   )
                               : () => {}
-                          }
-                        >
+                          }>
                           <Text className="font-semibold text-gray-700">
                             Download delivery receipt
                           </Text>
@@ -429,8 +437,7 @@ const ConsignDetailTimeLine: React.FC = () => {
                     {event?.statusName == "Preliminary" && ( // chưa biết cái nào hiển thị tài liệu nên để đây
                       <TouchableOpacity
                         className="p-2 mt-1 bg-gray-200 rounded w-[140px] "
-                        onPress={handleViewPreValuation}
-                      >
+                        onPress={handleViewPreValuation}>
                         <Text className="font-semibold text-center text-gray-700">
                           View Preliminary
                         </Text>
@@ -440,8 +447,7 @@ const ConsignDetailTimeLine: React.FC = () => {
                     {event?.statusName == "Evaluated" && ( // chưa biết cái nào hiển thị tài liệu nên để đây
                       <TouchableOpacity
                         className="p-2 mt-1 bg-gray-200 rounded w-[140px] "
-                        onPress={handleViewFinalValuation}
-                      >
+                        onPress={handleViewFinalValuation}>
                         <Text className="font-semibold text-center text-gray-700">
                           View Evaluated
                         </Text>
@@ -456,10 +462,9 @@ const ConsignDetailTimeLine: React.FC = () => {
         {timeline.length > 4 && (
           <TouchableOpacity
             onPress={toggleExpanded}
-            className="flex-row items-center justify-center p-2 mt-2 bg-gray-100 rounded"
-          >
+            className="flex-row items-center justify-center p-2 mt-2 bg-gray-100 rounded">
             <Text className="mr-2">
-              {expanded ? "Thu gọn" : "Xem toàn bộ lịch sử"}
+              {expanded ? "Collapse" : "View full history"}
             </Text>
             {expanded ? (
               <AntDesign name="caretup" size={20} color="#4B5563" />

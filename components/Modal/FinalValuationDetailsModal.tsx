@@ -31,6 +31,7 @@ interface FinalValuationDetailsModalProps {
     depth: string;
     description: string;
     estimatedCost: string;
+    specificPrice: string;
     note: string;
     address: string;
     CCCD: string;
@@ -42,6 +43,9 @@ interface FinalValuationDetailsModalProps {
     descriptionCharacteristicDetails: KeyCharacteristicDetail[];
     documentLink: string;
     mainDiamonds: MainDiamond[];
+    secondaryDiamonds: any[];
+    mainShaphies: any[];
+    secondaryShaphies: any[];
     creationDate: string;
     status: string;
   };
@@ -107,19 +111,484 @@ const FinalValuationDetailsModal: React.FC<FinalValuationDetailsModalProps> = ({
       )}
     />
   );
+
+  const renderDiamondInfo = () => {
+    if (!details?.mainDiamonds?.length && !details?.secondaryDiamonds?.length) {
+      return null;
+    }
+
+    return (
+      <View className="mt-4">
+        {/* Main Diamonds */}
+        {details?.mainDiamonds?.length > 0 && (
+          <View>
+            <Text className="mb-2 text-xl font-bold">Main Diamonds</Text>
+            {details.mainDiamonds.map((diamond, index) => (
+              <View key={index} className="mb-3 ml-4">
+                {diamond?.name && (
+                  <View className="flex-row items-start gap-2">
+                    <Text className="text-lg text-gray-800">•</Text>
+                    <Text className="text-lg font-bold text-gray-700">
+                      Name:
+                    </Text>
+                    <Text className="text-lg text-gray-800">
+                      {diamond.name}
+                    </Text>
+                  </View>
+                )}
+                {diamond?.shape && (
+                  <View className="flex-row items-start gap-2">
+                    <Text className="text-lg text-gray-800">•</Text>
+                    <Text className="text-lg font-bold text-gray-700">
+                      Shape:
+                    </Text>
+                    <Text className="text-lg text-gray-800">
+                      {diamond.shape}
+                    </Text>
+                  </View>
+                )}
+                {diamond?.color && (
+                  <View className="flex-row items-start gap-2">
+                    <Text className="text-lg text-gray-800">•</Text>
+                    <Text className="text-lg font-bold text-gray-700">
+                      Color:
+                    </Text>
+                    <Text className="text-lg text-gray-800">
+                      {diamond.color}
+                    </Text>
+                  </View>
+                )}
+                {diamond?.cut && (
+                  <View className="flex-row items-start gap-2">
+                    <Text className="text-lg text-gray-800">•</Text>
+                    <Text className="text-lg font-bold text-gray-700">
+                      Cut:
+                    </Text>
+                    <Text className="text-lg text-gray-800">{diamond.cut}</Text>
+                  </View>
+                )}
+                {diamond?.clarity && (
+                  <View className="flex-row items-start gap-2">
+                    <Text className="text-lg text-gray-800">•</Text>
+                    <Text className="text-lg font-bold text-gray-700">
+                      Clarity:
+                    </Text>
+                    <Text className="text-lg text-gray-800">
+                      {diamond.clarity}
+                    </Text>
+                  </View>
+                )}
+                {diamond?.quantity && (
+                  <View className="flex-row items-start gap-2">
+                    <Text className="text-lg text-gray-800">•</Text>
+                    <Text className="text-lg font-bold text-gray-700">
+                      Quantity:
+                    </Text>
+                    <Text className="text-lg text-gray-800">
+                      {diamond.quantity}
+                    </Text>
+                  </View>
+                )}
+                {diamond?.settingType && (
+                  <View className="flex-row items-start gap-2">
+                    <Text className="text-lg text-gray-800">•</Text>
+                    <Text className="text-lg font-bold text-gray-700">
+                      Setting Type:
+                    </Text>
+                    <Text className="text-lg text-gray-800">
+                      {diamond.settingType}
+                    </Text>
+                  </View>
+                )}
+                {diamond?.dimension && (
+                  <View className="flex-row items-start gap-2">
+                    <Text className="text-lg text-gray-800">•</Text>
+                    <Text className="text-lg font-bold text-gray-700">
+                      Dimension:
+                    </Text>
+                    <Text className="text-lg text-gray-800">
+                      {diamond.dimension}
+                    </Text>
+                  </View>
+                )}
+                {diamond?.lengthWidthRatio && (
+                  <View className="flex-row items-start gap-2">
+                    <Text className="text-lg text-gray-800">•</Text>
+                    <Text className="text-lg font-bold text-gray-700">
+                      Length/Width Ratio:
+                    </Text>
+                    <Text className="text-lg text-gray-800">
+                      {diamond.lengthWidthRatio}
+                    </Text>
+                  </View>
+                )}
+                {diamond?.documentDiamonds?.length > 0 && (
+                  <View className="mt-2">
+                    <Text className="text-lg font-bold text-gray-700">
+                      Documents:
+                    </Text>
+                    {diamond.documentDiamonds.map((doc, docIndex) => (
+                      <TouchableOpacity
+                        key={docIndex}
+                        onPress={() => Linking.openURL(doc.documentLink)}
+                        className="flex-row items-center gap-2 mt-1 ml-4">
+                        <MaterialCommunityIcons
+                          name="file-document"
+                          size={20}
+                          color="#3B82F6"
+                        />
+                        <Text className="text-base text-blue-500 underline">
+                          {doc.documentTitle}
+                        </Text>
+                      </TouchableOpacity>
+                    ))}
+                  </View>
+                )}
+                {diamond?.imageDiamonds?.length > 0 && (
+                  <View className="mt-2">
+                    <Text className="text-lg font-bold text-gray-700">
+                      Images:
+                    </Text>
+                    <ScrollView horizontal className="mt-1">
+                      {diamond.imageDiamonds.map((img, imgIndex) => (
+                        <Image
+                          key={imgIndex}
+                          source={{ uri: img.imageLink }}
+                          className="w-20 h-20 mr-2 rounded"
+                          resizeMode="cover"
+                        />
+                      ))}
+                    </ScrollView>
+                  </View>
+                )}
+              </View>
+            ))}
+          </View>
+        )}
+
+        {/* Secondary Diamonds */}
+        {details?.secondaryDiamonds?.length > 0 && (
+          <View className="mt-4">
+            <Text className="mb-2 text-xl font-bold">Secondary Diamonds</Text>
+            {details.secondaryDiamonds.map((diamond, index) => (
+              <View key={index} className="mb-3 ml-4">
+                {diamond?.color && (
+                  <View className="flex-row items-start gap-2">
+                    <Text className="text-lg text-gray-800">•</Text>
+                    <Text className="text-lg font-bold text-gray-700">
+                      Color:
+                    </Text>
+                    <Text className="text-lg text-gray-800">
+                      {diamond.color}
+                    </Text>
+                  </View>
+                )}
+                {diamond?.clarity && (
+                  <View className="flex-row items-start gap-2">
+                    <Text className="text-lg text-gray-800">•</Text>
+                    <Text className="text-lg font-bold text-gray-700">
+                      Clarity:
+                    </Text>
+                    <Text className="text-lg text-gray-800">
+                      {diamond.clarity}
+                    </Text>
+                  </View>
+                )}
+                {diamond?.quantity && (
+                  <View className="flex-row items-start gap-2">
+                    <Text className="text-lg text-gray-800">•</Text>
+                    <Text className="text-lg font-bold text-gray-700">
+                      Quantity:
+                    </Text>
+                    <Text className="text-lg text-gray-800">
+                      {diamond.quantity}
+                    </Text>
+                  </View>
+                )}
+                {diamond?.settingType && (
+                  <View className="flex-row items-start gap-2">
+                    <Text className="text-lg text-gray-800">•</Text>
+                    <Text className="text-lg font-bold text-gray-700">
+                      Setting Type:
+                    </Text>
+                    <Text className="text-lg text-gray-800">
+                      {diamond.settingType}
+                    </Text>
+                  </View>
+                )}
+                {diamond?.documentDiamonds?.length > 0 && (
+                  <View className="mt-2">
+                    <Text className="text-lg font-bold text-gray-700">
+                      Documents:
+                    </Text>
+                    {diamond.documentDiamonds.map(
+                      (
+                        doc: {
+                          documentLink: string;
+                          documentTitle:
+                            | string
+                            | number
+                            | boolean
+                            | React.ReactElement<
+                                any,
+                                string | React.JSXElementConstructor<any>
+                              >
+                            | Iterable<React.ReactNode>
+                            | React.ReactPortal
+                            | null
+                            | undefined;
+                        },
+                        docIndex: React.Key | null | undefined
+                      ) => (
+                        <TouchableOpacity
+                          key={docIndex}
+                          onPress={() => Linking.openURL(doc.documentLink)}
+                          className="flex-row items-center gap-2 mt-1 ml-4">
+                          <MaterialCommunityIcons
+                            name="file-document"
+                            size={20}
+                            color="#3B82F6"
+                          />
+                          <Text className="text-base text-blue-500 underline">
+                            {doc.documentTitle}
+                          </Text>
+                        </TouchableOpacity>
+                      )
+                    )}
+                  </View>
+                )}
+                {diamond?.imageDiamonds?.length > 0 && (
+                  <View className="mt-2">
+                    <Text className="text-lg font-bold text-gray-700">
+                      Images:
+                    </Text>
+                    <ScrollView horizontal className="mt-1">
+                      {diamond.imageDiamonds.map(
+                        (
+                          img: { imageLink: any },
+                          imgIndex: React.Key | null | undefined
+                        ) => (
+                          <Image
+                            key={imgIndex}
+                            source={{ uri: img.imageLink }}
+                            className="w-20 h-20 mr-2 rounded"
+                            resizeMode="cover"
+                          />
+                        )
+                      )}
+                    </ScrollView>
+                  </View>
+                )}
+              </View>
+            ))}
+          </View>
+        )}
+      </View>
+    );
+  };
+
+  // Render Sapphire Information
+  const renderSapphireInfo = () => {
+    if (!details?.mainShaphies?.length && !details?.secondaryShaphies?.length) {
+      return null;
+    }
+
+    return (
+      <View className="mt-4">
+        {/* Main Sapphires */}
+        {details?.mainShaphies?.length > 0 && (
+          <View>
+            <Text className="mb-2 text-xl font-bold">Main Sapphires</Text>
+            {details.mainShaphies.map((sapphire, index) => (
+              <View key={index} className="mb-3 ml-4">
+                {sapphire?.color && (
+                  <View className="flex-row items-start gap-2">
+                    <Text className="text-lg text-gray-800">•</Text>
+                    <Text className="text-lg font-bold text-gray-700">
+                      Color:
+                    </Text>
+                    <Text className="text-lg text-gray-800">
+                      {sapphire.color}
+                    </Text>
+                  </View>
+                )}
+                {sapphire?.quantity && (
+                  <View className="flex-row items-start gap-2">
+                    <Text className="text-lg text-gray-800">•</Text>
+                    <Text className="text-lg font-bold text-gray-700">
+                      Quantity:
+                    </Text>
+                    <Text className="text-lg text-gray-800">
+                      {sapphire.quantity}
+                    </Text>
+                  </View>
+                )}
+                {sapphire?.dimension && (
+                  <View className="flex-row items-start gap-2">
+                    <Text className="text-lg text-gray-800">•</Text>
+                    <Text className="text-lg font-bold text-gray-700">
+                      Dimension:
+                    </Text>
+                    <Text className="text-lg text-gray-800">
+                      {sapphire.dimension}
+                    </Text>
+                  </View>
+                )}
+                {sapphire?.documentShaphies?.length > 0 && (
+                  <View className="mt-2">
+                    <Text className="text-lg font-bold text-gray-700">
+                      Documents:
+                    </Text>
+                    {sapphire.documentShaphies.map(
+                      (doc: any, docIndex: any) => (
+                        <TouchableOpacity
+                          key={docIndex}
+                          onPress={() => Linking.openURL(doc.documentLink)}
+                          className="flex-row items-center gap-2 mt-1 ml-4">
+                          <MaterialCommunityIcons
+                            name="file-document"
+                            size={20}
+                            color="#3B82F6"
+                          />
+                          <Text className="text-base text-blue-500 underline">
+                            {doc.documentTitle}
+                          </Text>
+                        </TouchableOpacity>
+                      )
+                    )}
+                  </View>
+                )}
+                {sapphire?.imageShaphies?.length > 0 && (
+                  <View className="mt-2">
+                    <Text className="text-lg font-bold text-gray-700">
+                      Images:
+                    </Text>
+                    <ScrollView horizontal className="mt-1">
+                      {sapphire.imageShaphies.map((img: any, imgIndex: any) => (
+                        <Image
+                          key={imgIndex}
+                          source={{ uri: img.imageLink }}
+                          className="w-20 h-20 mr-2 rounded"
+                          resizeMode="cover"
+                        />
+                      ))}
+                    </ScrollView>
+                  </View>
+                )}
+              </View>
+            ))}
+          </View>
+        )}
+
+        {/* Secondary Sapphires */}
+        {details?.secondaryShaphies?.length > 0 && (
+          <View className="mt-4">
+            <Text className="mb-2 text-xl font-bold">Secondary Sapphires</Text>
+            {details.secondaryShaphies.map((sapphire, index) => (
+              <View key={index} className="mb-3 ml-4">
+                {sapphire?.color && (
+                  <View className="flex-row items-start gap-2">
+                    <Text className="text-lg text-gray-800">•</Text>
+                    <Text className="text-lg font-bold text-gray-700">
+                      Color:
+                    </Text>
+                    <Text className="text-lg text-gray-800">
+                      {sapphire.color}
+                    </Text>
+                  </View>
+                )}
+                {sapphire?.quantity && (
+                  <View className="flex-row items-start gap-2">
+                    <Text className="text-lg text-gray-800">•</Text>
+                    <Text className="text-lg font-bold text-gray-700">
+                      Quantity:
+                    </Text>
+                    <Text className="text-lg text-gray-800">
+                      {sapphire.quantity}
+                    </Text>
+                  </View>
+                )}
+                {sapphire?.documentShaphies?.length > 0 && (
+                  <View className="mt-2">
+                    <Text className="text-lg font-bold text-gray-700">
+                      Documents:
+                    </Text>
+                    {sapphire.documentShaphies.map(
+                      (
+                        doc: {
+                          documentLink: string;
+                          documentTitle:
+                            | string
+                            | number
+                            | boolean
+                            | React.ReactElement<
+                                any,
+                                string | React.JSXElementConstructor<any>
+                              >
+                            | Iterable<React.ReactNode>
+                            | React.ReactPortal
+                            | null
+                            | undefined;
+                        },
+                        docIndex: React.Key | null | undefined
+                      ) => (
+                        <TouchableOpacity
+                          key={docIndex}
+                          onPress={() => Linking.openURL(doc.documentLink)}
+                          className="flex-row items-center gap-2 mt-1 ml-4">
+                          <MaterialCommunityIcons
+                            name="file-document"
+                            size={20}
+                            color="#3B82F6"
+                          />
+                          <Text className="text-base text-blue-500 underline">
+                            {doc.documentTitle}
+                          </Text>
+                        </TouchableOpacity>
+                      )
+                    )}
+                  </View>
+                )}
+                {sapphire?.imageShaphies?.length > 0 && (
+                  <View className="mt-2">
+                    <Text className="text-lg font-bold text-gray-700">
+                      Images:
+                    </Text>
+                    <ScrollView horizontal className="mt-1">
+                      {sapphire.imageShaphies.map(
+                        (
+                          img: { imageLink: any },
+                          imgIndex: React.Key | null | undefined
+                        ) => (
+                          <Image
+                            key={imgIndex}
+                            source={{ uri: img.imageLink }}
+                            className="w-20 h-20 mr-2 rounded"
+                            resizeMode="cover"
+                          />
+                        )
+                      )}
+                    </ScrollView>
+                  </View>
+                )}
+              </View>
+            ))}
+          </View>
+        )}
+      </View>
+    );
+  };
   return (
     <Modal
       visible={isVisible}
       animationType="fade"
       transparent={true}
-      onRequestClose={onClose}
-    >
+      onRequestClose={onClose}>
       <View className="items-center justify-center flex-1 bg-black/50">
         <View className="w-11/12 max-h-[95%] bg-white rounded-lg p-4">
           <TouchableOpacity
             onPress={onClose}
-            className="absolute top-4 right-4"
-          >
+            className="absolute top-4 right-4">
             <MaterialCommunityIcons name="close" size={24} color="#000" />
           </TouchableOpacity>
 
@@ -133,19 +602,17 @@ const FinalValuationDetailsModal: React.FC<FinalValuationDetailsModalProps> = ({
             <View className="relative items-center mb-4">
               <Image
                 source={{ uri: details?.images[currentImage] }}
-                className="w-full h-96 rounded-lg"
+                className="w-full rounded-lg h-96"
                 resizeMode="cover"
               />
               <TouchableOpacity
                 className="absolute left-0 p-4"
-                onPress={handlePreviousImage}
-              >
+                onPress={handlePreviousImage}>
                 <Text className="text-2xl text-white">{"<"}</Text>
               </TouchableOpacity>
               <TouchableOpacity
                 className="absolute right-0 p-4"
-                onPress={handleNextImage}
-              >
+                onPress={handleNextImage}>
                 <Text className="text-2xl text-white">{">"}</Text>
               </TouchableOpacity>
             </View>
@@ -222,7 +689,7 @@ const FinalValuationDetailsModal: React.FC<FinalValuationDetailsModalProps> = ({
 
             {/* Additional Description Fields */}
 
-            <View className="flex-row mt-2 items-start gap-2">
+            <View className="flex-row items-start gap-2 mt-2">
               <Text className="text-lg font-bold text-gray-700 ">
                 {" "}
                 Description:
@@ -247,19 +714,32 @@ const FinalValuationDetailsModal: React.FC<FinalValuationDetailsModalProps> = ({
               ))}
             </View>
 
-            <View className="flex-row justify-between w-[90%] my-5">
-              <Text className="text-xl font-bold text-gray-900 w-[50%]">
-                Total estimated retail replacement cost:
+            <View className="flex-row justify-between w-full m-2">
+              <Text className="w-8 text-base font-bold text-gray-900">
+                Est:
               </Text>
               {details?.estimatedCost ? (
-                <Text className="text-lg w-[50%] text-[#D80000] font-bold">
+                <Text className="text-base w-[80%] text-[#D80000] font-bold">
                   {" "}
                   {details?.estimatedCost}
                 </Text>
               ) : (
-                <Text className="text-lg  w-[50%] text-[#D80000] font-bold">
-                  {" "}
-                  $0
+                <Text className="text-base  w-[50%] text-[#D80000] font-bold">
+                  0vnd
+                </Text>
+              )}
+            </View>
+            <View className="flex-row justify-between w-[90%] my-5">
+              <Text className="text-base font-bold text-gray-900 w-[50%]">
+                Specific price:
+              </Text>
+              {details?.estimatedCost ? (
+                <Text className="text-base  w-[50%] text-[#D80000] font-bold">
+                  {details?.specificPrice}
+                </Text>
+              ) : (
+                <Text className="text-base  w-[50%] text-[#D80000] font-bold">
+                  0vnd
                 </Text>
               )}
             </View>
@@ -267,6 +747,11 @@ const FinalValuationDetailsModal: React.FC<FinalValuationDetailsModalProps> = ({
             <Text className="text-lg mb-4 text-[#D80000] font-bold">
               Note: {details?.note}
             </Text>
+
+            {renderDiamondInfo()}
+
+            {/* Sapphire Information */}
+            {renderSapphireInfo()}
             <Text className="mb-2 text-xl font-bold">
               Authorization Letter:
             </Text>
@@ -277,8 +762,7 @@ const FinalValuationDetailsModal: React.FC<FinalValuationDetailsModalProps> = ({
                     ? () => Linking.openURL(details?.documentLink)
                     : () => {}
                 }
-                className="flex-row items-center gap-2"
-              >
+                className="flex-row items-center gap-2">
                 <MaterialCommunityIcons
                   name="paperclip"
                   size={24}
@@ -297,8 +781,7 @@ const FinalValuationDetailsModal: React.FC<FinalValuationDetailsModalProps> = ({
             <View className="flex-row justify-center mt-4">
               <TouchableOpacity
                 className="px-8 py-3 bg-green-500 rounded-lg"
-                onPress={handlePowerOfAttorney}
-              >
+                onPress={handlePowerOfAttorney}>
                 <Text className="text-base font-bold text-white">APPROVE</Text>
               </TouchableOpacity>
             </View>
